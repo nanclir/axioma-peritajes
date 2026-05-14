@@ -13,8 +13,9 @@ export default function Nosotros() {
     <div className="min-h-screen bg-navy-900 pb-24">
       {/* Hero */}
       <div className="relative pt-20 pb-24 border-b border-slate-800">
-        <div className="absolute inset-0 z-0 opacity-20">
-           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center" />
+        <div className="absolute inset-0 z-0">
+           <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/50 to-transparent z-10" />
+           <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-80" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Nuestra Experiencia</h1>

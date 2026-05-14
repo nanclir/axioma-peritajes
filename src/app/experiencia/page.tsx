@@ -30,8 +30,12 @@ export default function Experiencia() {
   return (
     <div className="min-h-screen bg-navy-900 pb-24">
       {/* Hero */}
-      <div className="bg-navy-800 border-b border-slate-800 pt-20 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
+      <div className="relative pt-20 pb-24 border-b border-slate-800">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/50 to-transparent z-10" />
+          <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs.png')] bg-cover bg-center opacity-80" />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 text-gold-500 font-semibold mb-4 text-sm tracking-wide uppercase">
               <BookOpen className="h-5 w-5" /> Trayectoria Probada
