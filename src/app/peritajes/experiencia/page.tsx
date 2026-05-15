@@ -103,7 +103,7 @@ export default function Experiencia() {
             Nuestros líderes han participado directamente en la formulación de estos dictámenes. Hablemos sobre cómo blindar técnicamente su caso.
           </p>
           <Link
-            href="/contacto"
+            href="/peritajes/contacto"
             className="inline-block bg-navy-900 text-white px-8 py-4 rounded-sm font-bold hover:bg-navy-800 transition-colors shadow-lg"
           >
             Contactar a los Expertos

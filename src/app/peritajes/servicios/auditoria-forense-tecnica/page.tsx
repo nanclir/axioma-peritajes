@@ -66,7 +66,7 @@ export default function AuditoriaForenseTecnica() {
             </div>
             
             <div className="mt-8">
-              <Link href="/servicios" className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+              <Link href="/peritajes/servicios" className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2">
                 ← Volver a todos los servicios
               </Link>
             </div>

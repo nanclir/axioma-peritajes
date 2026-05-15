@@ -10,36 +10,31 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4 group">
               <ShieldCheck className="h-8 w-8 text-gold-500" />
               <span className="font-heading font-bold text-2xl tracking-tight text-white">
-                ACUMEN <span className="text-gold-500 font-light">Peritajes</span>
+                ACUMEN <span className="text-gold-500 font-light">Ingeniería</span>
               </span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              Especialistas en dictámenes periciales técnicos en ingeniería. Brindamos la verdad técnica e concluyente necesaria para la toma de decisiones críticas y la resolución de disputas en grandes proyectos de infraestructura.
+              Firma de ingeniería aumentada por Inteligencia Artificial. Centralizamos la experiencia y el conocimiento para resolver retos complejos en infraestructura y estructuración técnica a nivel nacional e internacional.
             </p>
           </div>
           
           <div>
-            <h3 className="font-heading font-semibold text-white mb-4">Servicios</h3>
+            <h3 className="font-heading font-semibold text-white mb-4">Líneas de Negocio</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/servicios/peritaje-estructural" className="text-slate-400 hover:text-gold-400 text-sm transition-colors">
-                  Peritaje Estructural
+                <Link href="/peritajes" className="text-slate-400 hover:text-gold-400 text-sm transition-colors">
+                  Acumen Peritajes
                 </Link>
               </li>
               <li>
-                <Link href="/servicios/peritaje-geotecnico" className="text-slate-400 hover:text-gold-400 text-sm transition-colors">
-                  Peritaje Geotécnico
-                </Link>
+                <span className="text-slate-500 text-sm">
+                  PMO & Infraestructura <span className="text-xs bg-navy-800 px-2 py-0.5 rounded-sm border border-slate-700 ml-2">Próximamente</span>
+                </span>
               </li>
               <li>
-                <Link href="/servicios/reclamaciones-ingenieria" className="text-slate-400 hover:text-gold-400 text-sm transition-colors">
-                  Reclamaciones en Ingeniería
-                </Link>
-              </li>
-              <li>
-                <Link href="/servicios/auditoria-forense-tecnica" className="text-slate-400 hover:text-gold-400 text-sm transition-colors">
-                  Auditoría Forense Técnica
-                </Link>
+                <span className="text-slate-500 text-sm">
+                  Consultoría Estratégica <span className="text-xs bg-navy-800 px-2 py-0.5 rounded-sm border border-slate-700 ml-2">Próximamente</span>
+                </span>
               </li>
             </ul>
           </div>

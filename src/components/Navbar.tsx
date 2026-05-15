@@ -10,10 +10,9 @@ export default function Navbar() {
 
   const links = [
     { name: "Inicio", href: "/" },
-    { name: "Nosotros", href: "/nosotros" },
-    { name: "Servicios", href: "/servicios" },
-    { name: "Experiencia", href: "/experiencia" },
-    { name: "Contacto", href: "/contacto" },
+    { name: "Filosofía", href: "/nosotros" },
+    { name: "División Peritajes", href: "/peritajes" },
+    { name: "Contacto", href: "/peritajes/contacto" },
   ];
 
   return (
@@ -24,7 +23,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-2 group">
               <ShieldCheck className="h-8 w-8 text-gold-500 group-hover:text-gold-400 transition-colors" />
               <span className="font-heading font-bold text-2xl tracking-tight text-white">
-                ACUMEN <span className="text-gold-500 font-light">Peritajes</span>
+                ACUMEN <span className="text-gold-500 font-light">Ingeniería</span>
               </span>
             </Link>
           </div>
@@ -41,7 +40,7 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/contacto"
+              href="/peritajes/contacto"
               className="bg-gold-500 hover:bg-gold-400 text-navy-900 px-5 py-2.5 rounded-sm font-semibold transition-all shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]"
             >
               Solicitar Asesoría

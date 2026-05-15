@@ -88,7 +88,7 @@ export default function Services() {
             Nuestra red de peritos y nuestro enfoque interdisciplinario nos permite abordar retos complejos de ingeniería en diversas áreas.
           </p>
           <Link
-            href="/contacto"
+            href="/peritajes/contacto"
             className="inline-block bg-white text-navy-900 px-8 py-3 rounded-sm font-bold hover:bg-slate-200 transition-colors shadow-lg"
           >
             Consultar Viabilidad del Caso
