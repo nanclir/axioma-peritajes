@@ -8,8 +8,8 @@ export const metadata = {
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-navy-900 pt-10 pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-navy-900 pt-10 pb-24 pattern-bg relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 glow-bg">
         
         {/* Header */}
         <div className="mb-16">
@@ -23,7 +23,7 @@ export default function Contact() {
           
           {/* Contact Info */}
           <div className="lg:col-span-1 space-y-8">
-            <div className="glass p-6 rounded-sm border-l-4 border-l-gold-500">
+            <div className="glass-card p-6 rounded-sm border-l-4 border-l-gold-500">
               <h3 className="text-xl font-heading font-bold text-white mb-6">Información Directa</h3>
               
               <ul className="space-y-6">

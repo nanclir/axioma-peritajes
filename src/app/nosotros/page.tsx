@@ -25,7 +25,7 @@ export default function Nosotros() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 relative glow-bg pattern-bg py-8">
         
         {/* Perfiles del Equipo */}
         <div className="mb-24">
@@ -33,7 +33,7 @@ export default function Nosotros() {
           <div className="space-y-12">
             
             {/* Ricardo Smith */}
-            <div className="glass rounded-sm overflow-hidden flex flex-col lg:flex-row">
+            <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group">
               <div className="lg:w-1/3 bg-navy-800 flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-700 min-h-[300px]">
                 <User className="h-24 w-24 text-slate-600 mb-4" />
                 <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider text-center">Foto pendiente</p>
@@ -75,7 +75,7 @@ export default function Nosotros() {
             </div>
 
             {/* Rafael Nanclares */}
-            <div className="glass rounded-sm overflow-hidden flex flex-col lg:flex-row">
+            <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group">
               <div className="lg:w-1/3 relative min-h-[400px]">
                 <Image 
                   src="/team/rafael.jpg" 
@@ -126,7 +126,7 @@ export default function Nosotros() {
             </div>
 
             {/* Juan David Naranjo */}
-            <div className="glass rounded-sm overflow-hidden flex flex-col lg:flex-row">
+            <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group">
               <div className="lg:w-1/3 bg-navy-800 flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-700 min-h-[300px]">
                 <User className="h-24 w-24 text-slate-600 mb-4" />
                 <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider text-center">Foto pendiente</p>

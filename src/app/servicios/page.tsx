@@ -54,12 +54,11 @@ export default function Services() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 glow-bg relative z-10 pattern-bg py-8">
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-20">
           {services.map((service) => (
-            <div key={service.id} className="glass p-10 group hover:-translate-y-1 transition-transform duration-300 border-t-4 border-t-transparent hover:border-t-gold-500 rounded-sm">
+            <div key={service.id} className="glass-card p-10 group border-t-4 border-t-transparent hover:border-t-gold-500 rounded-sm">
               <div className="flex items-start gap-6">
                 <div className="bg-navy-800 p-4 rounded-sm shrink-0 group-hover:bg-gold-500/10 transition-colors">
                   <service.icon className="h-8 w-8 text-gold-500" />

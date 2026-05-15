@@ -48,26 +48,26 @@ export default function Experiencia() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative">
         
         {/* Context Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <div className="glass p-8 rounded-sm">
-            <Scale className="h-10 w-10 text-gold-500 mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 relative z-10">
+          <div className="glass-card p-8 rounded-sm group">
+            <Scale className="h-10 w-10 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-xl font-heading font-bold text-white mb-2">Tribunales Administrativos</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
               Extensa participación ante el Tribunal Administrativo de Antioquia y Cundinamarca, sustentando peritajes ante magistrados y jueces.
             </p>
           </div>
-          <div className="glass p-8 rounded-sm">
-            <Building className="h-10 w-10 text-gold-500 mb-4" />
+          <div className="glass-card p-8 rounded-sm group">
+            <Building className="h-10 w-10 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-xl font-heading font-bold text-white mb-2">Grandes Constructoras</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
               Peritajes desarrollados en disputas que involucran a las principales firmas constructoras y proyectos de infraestructura del país.
             </p>
           </div>
-          <div className="glass p-8 rounded-sm">
-            <Briefcase className="h-10 w-10 text-gold-500 mb-4" />
+          <div className="glass-card p-8 rounded-sm group">
+            <Briefcase className="h-10 w-10 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-xl font-heading font-bold text-white mb-2">Entidades Públicas</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
               Análisis técnico y forense sobre actuaciones de Alcaldías, Gobernaciones, EDU, IDU y sistemas de transporte masivo (Metroplús, Transmilenio).
@@ -76,7 +76,7 @@ export default function Experiencia() {
         </div>
 
         {/* Detailed List */}
-        <div className="bg-navy-800 border border-slate-700 rounded-sm p-8 md:p-12 mb-16">
+        <div className="bg-navy-800 border border-slate-700 rounded-sm p-8 md:p-12 mb-16 glow-bg relative z-10 shadow-2xl">
           <div className="flex items-center gap-4 mb-10 border-b border-slate-700 pb-6">
             <Award className="h-8 w-8 text-gold-500" />
             <h2 className="text-2xl font-heading font-bold text-white">Detalle de Casos (2019 - 2024)</h2>

@@ -43,8 +43,8 @@ export default function Home() {
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-12 border-y border-slate-800 bg-navy-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 border-y border-slate-800 bg-navy-800/50 pattern-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-800">
             <div>
               <p className="text-4xl font-heading font-bold text-white mb-2">13+</p>
@@ -67,9 +67,8 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-navy-900 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-navy-800/50 via-navy-900 to-navy-900" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-navy-900 glow-bg">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">Especialidades <span className="text-gold-500">Técnicas</span></h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
@@ -78,7 +77,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass p-8 group hover:-translate-y-2 transition-transform duration-300">
+            <div className="glass-card p-8 group">
               <div className="h-14 w-14 bg-navy-700 rounded-sm flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
                 <Landmark className="h-7 w-7 text-gold-500" />
               </div>
@@ -91,7 +90,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="glass p-8 group hover:-translate-y-2 transition-transform duration-300 border-gold-500/30">
+            <div className="glass-card p-8 group">
               <div className="h-14 w-14 bg-gold-500/10 rounded-sm flex items-center justify-center mb-6">
                 <Scale className="h-7 w-7 text-gold-500" />
               </div>
@@ -104,7 +103,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="glass p-8 group hover:-translate-y-2 transition-transform duration-300">
+            <div className="glass-card p-8 group">
               <div className="h-14 w-14 bg-navy-700 rounded-sm flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
                 <FileText className="h-7 w-7 text-gold-500" />
               </div>

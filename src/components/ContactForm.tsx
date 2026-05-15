@@ -31,7 +31,7 @@ export default function ContactForm({ serviceName = "Asesoría General" }: { ser
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass p-8 rounded-sm">
+    <form onSubmit={handleSubmit} className="glass-card p-8 rounded-sm">
       <h3 className="text-2xl font-heading font-bold text-white mb-6">
         Solicite una Evaluación Confidencial
       </h3>

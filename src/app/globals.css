@@ -33,9 +33,38 @@
   }
 }
 
-/* Glassmorphism utilities */
+/* Glassmorphism and UI utilities */
 @layer utilities {
   .glass {
     @apply bg-navy-800/60 backdrop-blur-md border border-slate-800/50 shadow-xl;
+  }
+  
+  .glass-card {
+    @apply bg-navy-800/60 backdrop-blur-md border border-slate-800/80 shadow-xl transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply -translate-y-1 border-gold-500/40 shadow-[0_10px_30px_rgba(212,175,55,0.05)];
+  }
+
+  .glow-bg {
+    @apply relative;
+  }
+  
+  .glow-bg::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-navy-700/40 blur-[100px] rounded-full -z-10 pointer-events-none;
+  }
+  
+  .pattern-bg {
+    @apply relative;
+  }
+  
+  .pattern-bg::after {
+    content: '';
+    @apply absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay;
+    background-image: radial-gradient(var(--color-slate-300) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 0;
   }
 }
