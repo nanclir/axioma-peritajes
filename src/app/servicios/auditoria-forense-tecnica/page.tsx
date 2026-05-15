@@ -3,7 +3,7 @@ import { CheckCircle2, Search } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Auditoría Forense Técnica | Axioma Peritajes",
+  title: "Auditoría Forense Técnica | Acumen Peritajes",
   description: "Investigación exhaustiva e interdisciplinaria para detectar anomalías, fallas ocultas y responsabilidades en grandes proyectos de ingeniería.",
 };
 
@@ -61,7 +61,7 @@ export default function AuditoriaForenseTecnica() {
             <div className="bg-navy-800/50 p-6 border-l-4 border-gold-500 rounded-r-sm">
               <h3 className="text-lg font-heading font-bold text-white mb-2">Para Casos de Alta Complejidad</h3>
               <p className="text-slate-400 text-sm">
-                Nuestros hallazgos se documentan siguiendo la estricta cadena de custodia de la evidencia técnica, garantizando que el dictamen final sea una pieza clave e irrefutable ante órganos de control, aseguradoras o tribunales penales y administrativos.
+                Nuestros hallazgos se documentan siguiendo la estricta cadena de custodia de la evidencia técnica, garantizando que el dictamen final sea una pieza clave e concluyente ante órganos de control, aseguradoras o tribunales penales y administrativos.
               </p>
             </div>
             

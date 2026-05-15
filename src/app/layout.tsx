@@ -13,7 +13,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Axioma Peritajes | Expertos en Ingeniería y Reclamaciones",
+  title: "Acumen Peritajes | Expertos en Ingeniería y Reclamaciones",
   description: "Dictámenes periciales técnicos en ingeniería, reclamaciones y consultoría para proyectos de alta complejidad.",
 };
 

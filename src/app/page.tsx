@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, FileText, Landmark, Scale } from "lucide-react";
 
 export const metadata = {
-  title: "Axioma Peritajes | Dictámenes Periciales en Ingeniería",
+  title: "Acumen Peritajes | Dictámenes Periciales en Ingeniería",
   description: "Firma especializada en peritajes técnicos, evaluación estructural, geotecnia y reclamaciones en grandes obras de infraestructura. Asegure su verdad técnica.",
 };
 
@@ -22,7 +22,7 @@ export default function Home() {
               La Verdad Técnica para <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Decisiones Críticas</span>
             </h1>
             <p className="text-xl text-slate-300 mb-10 leading-relaxed max-w-2xl">
-              Somos la autoridad irrefutable en dictámenes periciales y reclamaciones de ingeniería. Protegemos sus intereses en proyectos de alta complejidad con rigor científico y seguridad jurídica.
+              Somos la autoridad concluyente en dictámenes periciales y reclamaciones de ingeniería. Protegemos sus intereses en proyectos de alta complejidad con rigor científico y seguridad jurídica.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -126,7 +126,7 @@ export default function Home() {
             No deje su reputación en la incertidumbre
           </h2>
           <p className="text-navy-800 text-xl mb-10 max-w-2xl mx-auto">
-            Garantice la solidez técnica de su defensa o reclamación con un dictamen irrefutable.
+            Garantice la solidez técnica de su defensa o reclamación con un dictamen concluyente.
           </p>
           <Link
             href="/contacto"

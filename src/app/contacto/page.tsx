@@ -2,7 +2,7 @@ import ContactForm from "@/components/ContactForm";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 export const metadata = {
-  title: "Contacto | Axioma Peritajes",
+  title: "Contacto | Acumen Peritajes",
   description: "Contacte a nuestros expertos para solicitar un dictamen pericial o asesoría en reclamaciones de ingeniería.",
 };
 
@@ -33,7 +33,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-white font-semibold">Oficina Principal</p>
-                    <p className="text-slate-400 text-sm mt-1">Calle 42 # 63 - 107<br/>Medellín, Colombia</p>
+                    <p className="text-slate-400 text-sm mt-1">Calle 20B sur #38-76 Interior 202<br/>Medellín, Colombia</p>
                   </div>
                 </li>
                 
@@ -43,7 +43,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-white font-semibold">Línea de Atención</p>
-                    <p className="text-slate-400 text-sm mt-1">+57 313 685 9878</p>
+                    <p className="text-slate-400 text-sm mt-1">3005771484</p>
                   </div>
                 </li>
                 
@@ -53,7 +53,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-white font-semibold">Correo Electrónico</p>
-                    <p className="text-slate-400 text-sm mt-1">contacto@axiomaperitajes.com</p>
+                    <p className="text-slate-400 text-sm mt-1">contacto@acumenperitajes.com</p>
                   </div>
                 </li>
               </ul>

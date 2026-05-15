@@ -2,7 +2,7 @@ import { Award, Briefcase, Building, Scale, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Experiencia y Casos de Éxito | Axioma Peritajes",
+  title: "Experiencia y Casos de Éxito | Acumen Peritajes",
   description: "Registro histórico detallado de nuestra participación en controversias de alta complejidad y peritajes técnicos ante estrados judiciales.",
 };
 
@@ -42,7 +42,7 @@ export default function Experiencia() {
             </div>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Registro Histórico de Peritajes</h1>
             <p className="text-xl text-slate-300 leading-relaxed max-w-2xl">
-              La solidez de Axioma Peritajes se fundamenta en un historial demostrable ante los más altos tribunales. Nuestra participación en controversias de infraestructura, disputas civiles y fallos administrativos nos ha consolidado como una autoridad técnica irrefutable en Colombia.
+              La solidez de Acumen Peritajes se fundamenta en un historial demostrable ante los más altos tribunales. Nuestra participación en controversias de infraestructura, disputas civiles y fallos administrativos nos ha consolidado como una autoridad técnica concluyente en Colombia.
             </p>
           </div>
         </div>

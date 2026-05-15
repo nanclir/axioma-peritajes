@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 
 export const metadata = {
-  title: "Política de Privacidad | Axioma Peritajes",
-  description: "Políticas de privacidad y tratamiento de datos personales de Axioma Peritajes.",
+  title: "Política de Privacidad | Acumen Peritajes",
+  description: "Políticas de privacidad y tratamiento de datos personales de Acumen Peritajes.",
 };
 
 export default function Privacidad() {
@@ -20,7 +20,7 @@ export default function Privacidad() {
         <div className="prose prose-invert prose-slate max-w-none">
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">1. Introducción</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            En Axioma Peritajes valoramos y respetamos su privacidad. Esta Política de Privacidad describe cómo recopilamos, usamos, protegemos y compartimos la información personal de nuestros clientes y visitantes a través de nuestro sitio web y en el marco de nuestros servicios de consultoría y dictámenes periciales.
+            En Acumen Peritajes valoramos y respetamos su privacidad. Esta Política de Privacidad describe cómo recopilamos, usamos, protegemos y compartimos la información personal de nuestros clientes y visitantes a través de nuestro sitio web y en el marco de nuestros servicios de consultoría y dictámenes periciales.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">2. Información que recopilamos</h2>
@@ -42,7 +42,7 @@ export default function Privacidad() {
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">4. Confidencialidad y Seguridad</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            Dada la naturaleza crítica y legal de los servicios de Axioma Peritajes, toda la información técnica, financiera y operativa de sus proyectos es tratada con el más alto nivel de confidencialidad (Secreto Profesional). Implementamos medidas de seguridad técnicas y organizativas diseñadas para proteger su información contra acceso no autorizado, alteración o destrucción.
+            Dada la naturaleza crítica y legal de los servicios de Acumen Peritajes, toda la información técnica, financiera y operativa de sus proyectos es tratada con el más alto nivel de confidencialidad (Secreto Profesional). Implementamos medidas de seguridad técnicas y organizativas diseñadas para proteger su información contra acceso no autorizado, alteración o destrucción.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">5. Sus Derechos (Ley 1581 de 2012)</h2>
@@ -54,7 +54,7 @@ export default function Privacidad() {
           <p className="text-slate-300 leading-relaxed mb-8">
             Si tiene alguna pregunta sobre esta Política de Privacidad o sobre el tratamiento de sus datos, puede contactarnos a:
             <br />
-            <strong>Email:</strong> gerencia@axiomaperitajes.com
+            <strong>Email:</strong> gerencia@acumenperitajes.com
           </p>
 
           <Link href="/" className="inline-block mt-8 text-gold-500 hover:text-gold-400 font-medium transition-colors">

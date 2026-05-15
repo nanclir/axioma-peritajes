@@ -3,8 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata = {
-  title: "Nosotros | Axioma Peritajes",
-  description: "Conozca nuestro equipo de ingenieros expertos con más de 40 años de experiencia combinada y nuestro historial de dictámenes periciales irrefutables.",
+  title: "Nosotros | Acumen Peritajes",
+  description: "Conozca nuestro equipo de ingenieros expertos con más de 40 años de experiencia combinada y nuestro historial de dictámenes periciales concluyentes.",
 };
 
 
@@ -20,7 +20,7 @@ export default function Nosotros() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Nuestra Experiencia</h1>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Nuestro principal activo es la vasta trayectoria de nuestro equipo directivo. Con más de 40 años de experiencia combinada en consultoría de ingeniería y administración pública, transformamos la complejidad técnica en certezas legales irrefutables.
+            Nuestro principal activo es la vasta trayectoria de nuestro equipo directivo. Con más de 40 años de experiencia combinada en consultoría de ingeniería y administración pública, transformamos la complejidad técnica en certezas legales concluyentes.
           </p>
         </div>
       </div>
@@ -177,7 +177,7 @@ export default function Nosotros() {
             <Award className="h-12 w-12 text-gold-500 mx-auto mb-4" />
             <h2 className="text-3xl font-heading font-bold text-white mb-4">Registro Histórico de Peritajes</h2>
             <p className="text-slate-400 max-w-3xl mx-auto mb-8">
-              La solidez de Axioma Peritajes no se basa en promesas, sino en una extensa participación demostrable en controversias de alta complejidad y estrados judiciales. Lo invitamos a conocer el detalle de los casos en los que hemos intervenido.
+              La solidez de Acumen Peritajes no se basa en promesas, sino en una extensa participación demostrable en controversias de alta complejidad y estrados judiciales. Lo invitamos a conocer el detalle de los casos en los que hemos intervenido.
             </p>
             <Link
               href="/experiencia"

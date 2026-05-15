@@ -24,7 +24,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-2 group">
               <ShieldCheck className="h-8 w-8 text-gold-500 group-hover:text-gold-400 transition-colors" />
               <span className="font-heading font-bold text-2xl tracking-tight text-white">
-                AXIOMA <span className="text-gold-500 font-light">Peritajes</span>
+                ACUMEN <span className="text-gold-500 font-light">Peritajes</span>
               </span>
             </Link>
           </div>

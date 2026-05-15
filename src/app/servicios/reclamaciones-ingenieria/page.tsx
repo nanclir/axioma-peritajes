@@ -3,7 +3,7 @@ import { CheckCircle2, Scale } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Reclamaciones en Ingeniería | Axioma Peritajes",
+  title: "Reclamaciones en Ingeniería | Acumen Peritajes",
   description: "Asesoría experta en reclamaciones de ingeniería, cuantificación de daños y desequilibrio económico en contratos de obra.",
 };
 
@@ -36,7 +36,7 @@ export default function ReclamacionesIngenieria() {
           <div>
             <h2 className="text-2xl font-heading font-bold text-white mb-6">Protección de sus Intereses Contractuales</h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
-              Los proyectos de infraestructura son susceptibles a imprevistos que alteran la ecuación económica inicial. Nuestro equipo interdisciplinario (ingenieros, peritos financieros y planificadores) documenta metódicamente las disrupciones para demostrar nexos de causalidad irrefutables.
+              Los proyectos de infraestructura son susceptibles a imprevistos que alteran la ecuación económica inicial. Nuestro equipo interdisciplinario (ingenieros, peritos financieros y planificadores) documenta metódicamente las disrupciones para demostrar nexos de causalidad concluyentes.
             </p>
             
             <ul className="space-y-4 mb-10">

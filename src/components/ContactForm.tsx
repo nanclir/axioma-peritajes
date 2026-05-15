@@ -24,7 +24,7 @@ export default function ContactForm({ serviceName = "Asesoría General" }: { ser
         <CheckCircle className="h-16 w-16 text-gold-500 mx-auto mb-6" />
         <h3 className="text-2xl font-heading font-bold text-white mb-2">Mensaje Enviado Exitosamente</h3>
         <p className="text-slate-400">
-          Un especialista de Axioma Peritajes se pondrá en contacto con usted en breve para discutir los detalles de su caso.
+          Un especialista de Acumen Peritajes se pondrá en contacto con usted en breve para discutir los detalles de su caso.
         </p>
       </div>
     );

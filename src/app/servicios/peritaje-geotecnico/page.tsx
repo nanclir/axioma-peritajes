@@ -3,7 +3,7 @@ import { CheckCircle2, FileText } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Peritaje Geotécnico | Axioma Peritajes",
+  title: "Peritaje Geotécnico | Acumen Peritajes",
   description: "Dictámenes periciales en geotecnia, fallas de taludes, cimentaciones y túneles. Asesoría técnica para controversias legales.",
 };
 
@@ -36,7 +36,7 @@ export default function PeritajeGeotecnico() {
           <div>
             <h2 className="text-2xl font-heading font-bold text-white mb-6">Objetividad en el Subsuelo</h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
-              Las fallas geotécnicas suelen presentar las controversias más complejas en los megaproyectos. Nuestro equipo posee la trayectoria necesaria para transformar datos geotécnicos complejos en argumentos técnicos irrefutables para jueces o árbitros.
+              Las fallas geotécnicas suelen presentar las controversias más complejas en los megaproyectos. Nuestro equipo posee la trayectoria necesaria para transformar datos geotécnicos complejos en argumentos técnicos concluyentes para jueces o árbitros.
             </p>
             
             <ul className="space-y-4 mb-10">

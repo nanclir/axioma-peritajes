@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, FileText, Landmark, Scale, Search } from "lucide-react";
 
 export const metadata = {
-  title: "Servicios de Peritaje | Axioma Peritajes",
+  title: "Servicios de Peritaje | Acumen Peritajes",
   description: "Servicios especializados en peritajes estructurales, geotécnicos y reclamaciones en ingeniería.",
 };
 

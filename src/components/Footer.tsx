@@ -10,11 +10,11 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4 group">
               <ShieldCheck className="h-8 w-8 text-gold-500" />
               <span className="font-heading font-bold text-2xl tracking-tight text-white">
-                AXIOMA <span className="text-gold-500 font-light">Peritajes</span>
+                ACUMEN <span className="text-gold-500 font-light">Peritajes</span>
               </span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              Especialistas en dictámenes periciales técnicos en ingeniería. Brindamos la verdad técnica e irrefutable necesaria para la toma de decisiones críticas y la resolución de disputas en grandes proyectos de infraestructura.
+              Especialistas en dictámenes periciales técnicos en ingeniería. Brindamos la verdad técnica e concluyente necesaria para la toma de decisiones críticas y la resolución de disputas en grandes proyectos de infraestructura.
             </p>
           </div>
           
@@ -49,15 +49,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-slate-400 text-sm">
                 <MapPin className="h-5 w-5 text-gold-500 shrink-0" />
-                <span>Calle 42 # 63 - 107<br/>Medellín, Colombia</span>
+                <span>Calle 20B sur #38-76 Interior 202<br/>Medellín, Colombia</span>
               </li>
               <li className="flex items-center gap-3 text-slate-400 text-sm">
                 <Phone className="h-5 w-5 text-gold-500 shrink-0" />
-                <span>+57 313 685 9878</span>
+                <span>3005771484</span>
               </li>
               <li className="flex items-center gap-3 text-slate-400 text-sm">
                 <Mail className="h-5 w-5 text-gold-500 shrink-0" />
-                <span>contacto@axiomaperitajes.com</span>
+                <span>contacto@acumenperitajes.com</span>
               </li>
             </ul>
           </div>
@@ -65,7 +65,7 @@ export default function Footer() {
         
         <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-500 text-sm">
-            &copy; {new Date().getFullYear()} Axioma Peritajes. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} Acumen Peritajes. Todos los derechos reservados.
           </p>
           <div className="mt-4 md:mt-0 flex gap-6">
             <Link href="/privacidad" className="text-slate-500 hover:text-white text-sm transition-colors">

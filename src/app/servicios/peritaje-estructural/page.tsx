@@ -3,7 +3,7 @@ import { CheckCircle2, Landmark } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Peritaje Estructural | Axioma Peritajes",
+  title: "Peritaje Estructural | Acumen Peritajes",
   description: "Servicios expertos de peritaje estructural. Análisis patológico y evaluación de vulnerabilidad sísmica para procesos legales.",
 };
 
@@ -23,7 +23,7 @@ export default function PeritajeEstructural() {
             </div>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Peritaje Estructural</h1>
             <p className="text-xl text-slate-300 leading-relaxed max-w-2xl">
-              Brindamos certeza técnica irrefutable sobre el estado, patologías y fallas constructivas en edificaciones y obras de infraestructura, respaldando su posición legal con evidencia científica sólida.
+              Brindamos certeza técnica concluyente sobre el estado, patologías y fallas constructivas en edificaciones y obras de infraestructura, respaldando su posición legal con evidencia científica sólida.
             </p>
           </div>
         </div>
