@@ -13,7 +13,7 @@ export default function LiderazgoPage() {
       <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
         <div className="absolute inset-0 bg-slate-50 z-0" />
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply" 
+          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" 
           style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />

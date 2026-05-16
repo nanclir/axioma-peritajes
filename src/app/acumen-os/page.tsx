@@ -17,7 +17,7 @@ export default function AcumenOSPage() {
         {/* Header Section */}
         <section className="relative pt-12 pb-24 border-b border-zinc-800 overflow-hidden">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-lighten pointer-events-none" 
+            className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
             style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
           />
 
