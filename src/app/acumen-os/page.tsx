@@ -7,28 +7,28 @@ export const metadata = {
 
 export default function AcumenOSPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-zinc-900 pt-28 pb-24 font-sans selection:bg-blue-500/30 selection:text-blue-900">
+    <div className="min-h-screen bg-slate-50 text-zinc-900 pb-24 font-sans selection:bg-blue-500/30 selection:text-blue-900">
       
       {/* Grid Background */}
       <div className="fixed inset-0 grid-bg opacity-[0.05] pointer-events-none z-0 filter invert"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header Section */}
-        <section className="relative pt-32 pb-24 overflow-hidden border-b border-zinc-200">
-          <div className="absolute inset-0 z-0">
-            <div 
-              className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
-              style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
-            />
-          </div>
+      {/* Header Section (Full Width) */}
+      <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
+        <div className="absolute inset-0 z-0">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
+            style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/80 via-slate-50/20 to-transparent z-10" />
+        </div>
 
-          <div className="relative z-10 flex items-center gap-3 mb-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-8">
              <div className="h-px w-8 bg-blue-600"></div>
              <span className="font-mono text-xs tracking-widest text-blue-600 uppercase font-bold">Architecture Overview</span>
           </div>
           
-          <div className="relative z-10 max-w-4xl">
+          <div className="max-w-4xl">
             <h1 className="text-5xl md:text-7xl font-heading font-bold text-zinc-900 mb-8 tracking-tight drop-shadow-sm">
               Ingeniería codificada en flujos de datos puros.
             </h1>
@@ -36,7 +36,10 @@ export default function AcumenOSPage() {
               ACUMEN OS no es un simple software; es el cerebro operativo de la firma. Hemos estructurado el conocimiento empírico de décadas en algoritmos de trazabilidad, dashboards analíticos y flujos de automatización con Inteligencia Artificial.
             </p>
           </div>
-        </section>
+        </div>
+      </section>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Manifesto Section & Flowchart */}
         <section className="py-24 border-b border-zinc-200">

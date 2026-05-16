@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ProyectosPage() {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-24">
+    <div className="min-h-screen bg-white pb-24">
       
       {/* Header */}
       <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
