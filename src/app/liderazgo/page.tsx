@@ -113,6 +113,10 @@ export default function LiderazgoPage() {
                 <p className="text-xs text-zinc-500">Experiencia estratégica en estructuración técnica en México (Nuevo León) y Colombia.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
