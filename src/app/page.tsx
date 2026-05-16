@@ -11,7 +11,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-slate-50/90 z-10" />
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-multiply" 
+            className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
             style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }} 
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
@@ -24,7 +24,7 @@ export default function Home() {
               Firma de Inteligencia Territorial
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-zinc-900 leading-[1.1] mb-8 tracking-tight text-balance">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-zinc-900 leading-[1.1] mb-8 tracking-tight text-balance">
               Ingeniería aumentada por datos, experiencia e inteligencia territorial.
             </h1>
             
@@ -197,7 +197,7 @@ export default function Home() {
             
             {/* Abstract Tech Visual */}
             <div className="relative h-[500px] w-full rounded-sm border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden flex items-center justify-center">
-               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-20 mix-blend-screen" />
+               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30 pointer-events-none" />
                <div className="text-center z-10">
                  <div className="w-24 h-24 mx-auto border border-blue-500/30 rounded-full flex items-center justify-center mb-4 relative">
                    <div className="absolute inset-0 border border-blue-400 rounded-full animate-[spin_4s_linear_infinite] border-t-transparent"></div>

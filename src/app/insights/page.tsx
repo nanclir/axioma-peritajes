@@ -14,7 +14,7 @@ export default function InsightsPage() {
       <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
         <div className="absolute inset-0 bg-slate-50 z-0" />
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply" 
+          className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
           style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />
@@ -62,7 +62,7 @@ export default function InsightsPage() {
           <article className="group cursor-default">
             <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative">
                <div 
-                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 mix-blend-multiply" 
+                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-80" 
                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
                />
             </div>

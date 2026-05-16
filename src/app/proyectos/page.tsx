@@ -33,7 +33,7 @@ export default function ProyectosPage() {
                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
                  style={{ backgroundImage: "url('/images/auditoria_forense_docs.png')" }}
                />
-               <div className="absolute inset-0 bg-blue-900/5 mix-blend-multiply" />
+               <div className="absolute inset-0 bg-blue-900/10" />
             </div>
             
             <div className="order-1 lg:order-2">
@@ -67,7 +67,7 @@ export default function ProyectosPage() {
                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
                />
-               <div className="absolute inset-0 bg-gold-900/10 mix-blend-multiply" />
+               <div className="absolute inset-0 bg-gold-900/10" />
             </div>
             
             <div>
