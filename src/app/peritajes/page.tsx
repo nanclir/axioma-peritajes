@@ -84,7 +84,10 @@ export default function PeritajesPage() {
           {/* Perfil Juan David Naranjo */}
           <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
             <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale">
-              <div className="absolute inset-0 bg-[url('/team/juan-david-naranjo.jpeg')] bg-cover bg-center z-0" />
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/team/juan-david-naranjo.jpeg')" }}
+              />
             </div>
             <div className="w-full md:w-2/3">
               <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Juan David Naranjo</h3>

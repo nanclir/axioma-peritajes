@@ -69,7 +69,10 @@ export default function LiderazgoPage() {
         <div className="grid md:grid-cols-12 gap-12 items-start">
           <div className="md:col-span-4 md:order-last relative aspect-[3/4] bg-zinc-200 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
              {/* Placeholder using existing photo */}
-             <div className="absolute inset-0 bg-[url('/team/rafael.jpg')] bg-cover bg-center z-0" />
+             <div 
+               className="absolute inset-0 bg-cover bg-center z-0" 
+               style={{ backgroundImage: "url('/team/rafael.jpg')" }}
+             />
              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/40 to-transparent z-10" />
           </div>
           

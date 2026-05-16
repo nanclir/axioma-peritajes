@@ -29,7 +29,10 @@ export default function ProyectosPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 relative aspect-[4/3] bg-zinc-100 border border-zinc-200 overflow-hidden group">
                {/* Usaremos imagen abstracta de SIG o wireframe */}
-               <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs.png')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
+               <div 
+                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+                 style={{ backgroundImage: "url('/images/auditoria_forense_docs.png')" }}
+               />
                <div className="absolute inset-0 bg-blue-900/5 mix-blend-multiply" />
             </div>
             
@@ -60,7 +63,10 @@ export default function ProyectosPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/3] bg-zinc-100 border border-zinc-200 overflow-hidden group">
                {/* Usaremos imagen abstracta de modelo estructural */}
-               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
+               <div 
+                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+                 style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+               />
                <div className="absolute inset-0 bg-gold-900/10 mix-blend-multiply" />
             </div>
             

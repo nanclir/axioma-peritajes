@@ -62,7 +62,7 @@ export default function ServiciosPage() {
             Soluciones críticas para infraestructuras complejas.
           </h1>
           <p className="text-xl text-zinc-600 leading-relaxed font-light">
-            Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la búsqueda de certidumbre absoluta.
+            Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
           </p>
         </div>
       </section>
