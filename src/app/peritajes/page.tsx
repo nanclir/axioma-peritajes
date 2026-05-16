@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Scale, Search, ShieldAlert, FileText, CheckCircle2 } from "lucide-react";
-import Image from "next/image";
 
 export const metadata = {
   title: "Peritajes Técnicos Forenses | ACUMEN INGENIERÍA S.A.S.",

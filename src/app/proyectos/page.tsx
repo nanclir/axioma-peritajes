@@ -1,5 +1,4 @@
-import { Map, BarChart2, Layers } from "lucide-react";
-import Image from "next/image";
+import { Map, Layers } from "lucide-react";
 
 export const metadata = {
   title: "Portafolio y Proyectos | ACUMEN INGENIERÍA S.A.S.",

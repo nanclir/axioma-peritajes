@@ -1,5 +1,4 @@
 import { ArrowRight, BookOpen, Globe2, BrainCircuit } from "lucide-react";
-import Image from "next/image";
 
 export const metadata = {
   title: "Liderazgo | ACUMEN INGENIERÍA S.A.S.",

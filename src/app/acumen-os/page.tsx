@@ -1,5 +1,4 @@
 import { ArrowRight, Terminal, Cpu, Network, ShieldCheck, Database } from "lucide-react";
-import Image from "next/image";
 
 export const metadata = {
   title: "ACUMEN OS | Inteligencia Operacional",
