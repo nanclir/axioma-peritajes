@@ -73,8 +73,15 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-8 bg-zinc-900/60 border border-zinc-700 rounded-sm">
+            <div className="relative flex flex-col items-center justify-center p-8 bg-zinc-900/60 border border-zinc-700 rounded-sm overflow-hidden">
               
+              {/* Background Image inside flowchart */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-lighten pointer-events-none" 
+                style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 to-transparent pointer-events-none" />
+
               <div className="absolute inset-0 dot-pattern opacity-10 mix-blend-screen pointer-events-none" />
 
               <h3 className="absolute top-6 left-6 font-mono text-xs tracking-widest text-zinc-400">SYSTEM.ARCHITECTURE</h3>
