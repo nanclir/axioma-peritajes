@@ -35,11 +35,11 @@ export default function LiderazgoPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
         <div className="grid md:grid-cols-12 gap-12 items-start">
           <div className="md:col-span-4 relative aspect-[3/4] bg-zinc-200 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-            {/* Placeholder until real photo is defined or linked */}
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/60 to-transparent z-10" />
-            <div className="absolute inset-0 flex items-center justify-center text-zinc-400 font-mono text-xs">
-              [ FOTOGRAFÍA RICARDO SMITH ]
-            </div>
+            <div 
+              className="absolute inset-0 bg-cover bg-center z-0" 
+              style={{ backgroundImage: "url('/images/ricardo_smith.jpg')" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/40 to-transparent z-10" />
           </div>
           
           <div className="md:col-span-8">

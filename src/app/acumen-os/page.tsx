@@ -7,13 +7,13 @@ export const metadata = {
 
 export default function AcumenOSPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-zinc-900 pb-24 font-sans selection:bg-blue-500/30 selection:text-blue-900">
+    <div className="min-h-screen bg-slate-50 text-zinc-900 pb-0 font-sans selection:bg-blue-500/30 selection:text-blue-900">
       
       {/* Grid Background */}
       <div className="fixed inset-0 grid-bg opacity-[0.05] pointer-events-none z-0 filter invert"></div>
 
       {/* Header Section (Full Width) */}
-      <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
+      <section className="relative pt-32 pb-24 overflow-hidden border-b border-zinc-200">
         <div className="absolute inset-0 z-0">
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
@@ -39,10 +39,9 @@ export default function AcumenOSPage() {
         </div>
       </section>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Manifesto Section & Flowchart */}
-        <section className="py-24 border-b border-zinc-200">
+      {/* Manifesto Section & Flowchart (Full Width) */}
+      <section className="py-24 bg-white relative overflow-hidden border-b border-zinc-200">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
             
             {/* Text Column */}
@@ -77,14 +76,14 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-8 bg-white border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="relative flex flex-col items-center justify-center p-8 bg-slate-50 border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
               
               {/* Background Image inside flowchart */}
               <div 
                 className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
                 style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/95 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-50/95 to-transparent pointer-events-none" />
 
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
 
@@ -92,11 +91,11 @@ export default function AcumenOSPage() {
 
               {/* Input Level */}
               <div className="flex w-full justify-around gap-4 mb-8 mt-12 relative z-10">
-                <div className="flex-1 bg-slate-50 border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
+                <div className="flex-1 bg-white border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
                   <span className="block text-xs font-mono text-zinc-500 mb-1">INPUT.01</span>
                   <span className="font-bold text-sm text-zinc-900">DATOS DEL PROYECTO</span>
                 </div>
-                <div className="flex-1 bg-slate-50 border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
+                <div className="flex-1 bg-white border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
                   <span className="block text-xs font-mono text-zinc-500 mb-1">INPUT.02</span>
                   <span className="font-bold text-sm text-zinc-900">CRITERIO HUMANO</span>
                 </div>
@@ -133,12 +132,43 @@ export default function AcumenOSPage() {
 
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Core Modules */}
-        <section className="py-24 border-b border-zinc-200">
+      {/* Core Modules (Full Bleed Background) */}
+      <section className="py-24 bg-slate-50 relative overflow-hidden border-b border-zinc-200">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+          style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-50/95 via-slate-50/70 to-transparent z-10" />
+
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
-             <div className="order-2 md:order-1 relative aspect-square border border-zinc-200 bg-white shadow-sm p-8 flex items-center justify-center overflow-hidden rounded-sm">
+             <div className="order-1 md:order-1 glass-card p-10 border border-zinc-200 shadow-xl">
+               <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-6">Trazabilidad Total</h2>
+               <p className="text-zinc-600 leading-relaxed mb-8">
+                 En proyectos de alta complejidad, la pérdida de información es el mayor riesgo. ACUMEN OS registra cada parámetro de diseño, cada decisión de interventoría y cada cambio contractual en una línea de tiempo inmutable.
+               </p>
+               <ul className="space-y-6">
+                 <li className="flex gap-4">
+                   <Database className="h-6 w-6 text-blue-600 shrink-0" />
+                   <div>
+                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">ARCHIVOS UNIFICADOS</h4>
+                     <p className="text-sm text-zinc-600">Centralización de planimetría, especificaciones e historial de cambios.</p>
+                   </div>
+                 </li>
+                 <li className="flex gap-4">
+                   <ShieldCheck className="h-6 w-6 text-emerald-500 shrink-0" />
+                   <div>
+                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">AUDITORÍA FORENSE</h4>
+                     <p className="text-sm text-zinc-600">Búsqueda semántica (NLP) sobre miles de documentos técnicos para identificar desviaciones en segundos.</p>
+                   </div>
+                 </li>
+               </ul>
+             </div>
+
+             <div className="order-2 md:order-2 relative aspect-square border border-zinc-200 bg-white shadow-sm p-8 flex items-center justify-center overflow-hidden rounded-sm">
                 <div 
                   className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
                   style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
@@ -166,36 +196,45 @@ export default function AcumenOSPage() {
                   </div>
                 </div>
              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* Intelligence / Dashboards */}
+      <section className="py-24 bg-white relative">
+         <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
+         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="grid md:grid-cols-2 gap-16 items-center">
+             <div className="order-2 md:order-1 relative aspect-square border border-zinc-200 bg-slate-50 p-8 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
+                {/* Background Image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
+                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-50/95 via-slate-50/50 to-transparent pointer-events-none" />
+                
+                <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
+                
+                <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl overflow-hidden">
+                   {/* Terminal Inner Background */}
+                   <div 
+                     className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
+                     style={{ backgroundImage: "url('/images/estructural_wireframe.png')", filter: "contrast(1.5) brightness(0.8)" }}
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none" />
+                   
+                   <div className="space-y-1 opacity-100 relative z-10">
+                     <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
+                     <p>{">"} LOADING TERRAIN DATA...</p>
+                     <p>{">"} 1,402,993 POINTS PROCESSED</p>
+                     <p>{">"} RUNNING STRESS SIMULATION</p>
+                     <p className="text-emerald-400 font-bold">{">"} ANALYSIS COMPLETE. STRUCTURAL INTEGRITY: 98.4%</p>
+                     <p className="animate-pulse">_</p>
+                   </div>
+                </div>
+             </div>
 
              <div className="order-1 md:order-2">
-               <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-6">Trazabilidad Total</h2>
-               <p className="text-zinc-600 leading-relaxed mb-8">
-                 En proyectos de alta complejidad, la pérdida de información es el mayor riesgo. ACUMEN OS registra cada parámetro de diseño, cada decisión de interventoría y cada cambio contractual en una línea de tiempo inmutable.
-               </p>
-               <ul className="space-y-6">
-                 <li className="flex gap-4">
-                   <Database className="h-6 w-6 text-blue-600 shrink-0" />
-                   <div>
-                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">ARCHIVOS UNIFICADOS</h4>
-                     <p className="text-sm text-zinc-600">Centralización de planimetría, especificaciones e historial de cambios.</p>
-                   </div>
-                 </li>
-                 <li className="flex gap-4">
-                   <ShieldCheck className="h-6 w-6 text-emerald-500 shrink-0" />
-                   <div>
-                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">AUDITORÍA FORENSE</h4>
-                     <p className="text-sm text-zinc-600">Búsqueda semántica (NLP) sobre miles de documentos técnicos para identificar desviaciones en segundos.</p>
-                   </div>
-                 </li>
-               </ul>
-             </div>
-           </div>
-        </section>
-
-        {/* Intelligence / Dashboards */}
-        <section className="py-24">
-           <div className="grid md:grid-cols-2 gap-16 items-center">
-             <div>
                <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-6">Analítica e Inteligencia Artificial</h2>
                <p className="text-zinc-600 leading-relaxed mb-8">
                  Pasamos de la intuición a la predicción. Implementamos modelos de Machine Learning y dashboards espaciales para mapear el riesgo territorial y la viabilidad de la infraestructura.
@@ -217,40 +256,10 @@ export default function AcumenOSPage() {
                  </li>
                </ul>
              </div>
-
-             <div className="relative aspect-square border border-zinc-200 bg-white p-8 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
-                {/* Background Image */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/50 to-transparent pointer-events-none" />
-                
-                <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
-                <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
-                
-                <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl overflow-hidden">
-                   {/* Terminal Inner Background */}
-                   <div 
-                     className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                     style={{ backgroundImage: "url('/images/estructural_wireframe.png')", filter: "contrast(1.5) brightness(0.8)" }}
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none" />
-                   
-                   <div className="space-y-1 opacity-100 relative z-10">
-                     <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
-                     <p>{">"} LOADING TERRAIN DATA...</p>
-                     <p>{">"} 1,402,993 POINTS PROCESSED</p>
-                     <p>{">"} RUNNING STRESS SIMULATION</p>
-                     <p className="text-emerald-400 font-bold">{">"} ANALYSIS COMPLETE. STRUCTURAL INTEGRITY: 98.4%</p>
-                     <p className="animate-pulse">_</p>
-                   </div>
-                </div>
-             </div>
            </div>
-        </section>
+         </div>
+      </section>
 
-      </div>
     </div>
   );
 }
