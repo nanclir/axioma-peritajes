@@ -13,8 +13,8 @@ export default function Home() {
       {/* Hero */}
       <div className="relative pt-20 pb-32 border-b border-slate-200">
         <div className="absolute inset-0 z-0">
-           <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-slate-50/90 to-slate-50 z-10" />
-           <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-20" />
+           <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-slate-50/80 to-slate-50 z-10" />
+           <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-60 mix-blend-multiply" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-gold-500/30 text-gold-500 text-sm font-semibold mb-8 backdrop-blur-sm">
@@ -55,7 +55,7 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group">
-              <div className="bg-slate-50/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-300 group-hover:border-gold-500/50 transition-colors">
+              <div className="bg-slate-100 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-200 group-hover:border-gold-500/50 transition-colors">
                 <BrainCircuit className="h-8 w-8 text-gold-500" />
               </div>
               <h3 className="text-2xl font-heading font-bold text-slate-900 mb-4">Conocimiento Estructurado</h3>
@@ -65,7 +65,7 @@ export default function Home() {
             </div>
             
             <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group border-gold-500/20">
-              <div className="bg-slate-50/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-300 group-hover:border-gold-500/50 transition-colors">
+              <div className="bg-slate-100 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-200 group-hover:border-gold-500/50 transition-colors">
                 <Zap className="h-8 w-8 text-gold-500" />
               </div>
               <h3 className="text-2xl font-heading font-bold text-slate-900 mb-4">IA Operativa</h3>
@@ -75,7 +75,7 @@ export default function Home() {
             </div>
             
             <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group">
-              <div className="bg-slate-50/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-300 group-hover:border-gold-500/50 transition-colors">
+              <div className="bg-slate-100 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-200 group-hover:border-gold-500/50 transition-colors">
                 <Shield className="h-8 w-8 text-gold-500" />
               </div>
               <h3 className="text-2xl font-heading font-bold text-slate-900 mb-4">Rigor Metodológico</h3>
@@ -99,8 +99,8 @@ export default function Home() {
           <div className="space-y-12">
             {/* Ricardo Smith */}
             <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group border border-slate-300/50 hover:border-gold-500/30 transition-colors">
-              <div className="lg:w-1/3 bg-white flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-300/50 min-h-[300px]">
-                <GraduationCap className="h-24 w-24 text-slate-500 mb-4" />
+              <div className="lg:w-1/3 bg-slate-50 flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-300/50 min-h-[300px]">
+                <GraduationCap className="h-24 w-24 text-slate-400 mb-4" />
               </div>
               <div className="lg:w-2/3 p-8 md:p-12 relative">
                 <div className="relative z-10">
@@ -131,7 +131,7 @@ export default function Home() {
 
             {/* Rafael Nanclares */}
             <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group border border-slate-300/50 hover:border-gold-500/30 transition-colors">
-              <div className="lg:w-1/3 relative min-h-[300px] bg-white">
+              <div className="lg:w-1/3 relative min-h-[300px] bg-slate-50">
                 <Image 
                   src="/team/rafael.jpg" 
                   alt="Rafael Nanclares" 
@@ -170,7 +170,7 @@ export default function Home() {
 
         {/* Líneas de Negocio CTA */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link href="/peritajes" className="glass-card p-8 border border-gold-500/30 hover:bg-white/80 transition-all group cursor-pointer relative overflow-hidden">
+          <Link href="/peritajes" className="glass-card p-8 border border-gold-500/30 hover:bg-slate-50 transition-all group cursor-pointer relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
             <h3 className="text-2xl font-heading font-bold text-slate-900 mb-2 relative z-10">Acumen Peritajes</h3>
             <p className="text-slate-500 text-sm mb-6 relative z-10">División forense y de experticia técnica en procesos judiciales y de arbitraje.</p>

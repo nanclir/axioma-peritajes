@@ -102,7 +102,7 @@ export default function Experiencia() {
         {/* CTA */}
         <div className="bg-gold-500 p-12 rounded-sm text-center max-w-4xl mx-auto">
           <h2 className="text-3xl font-heading font-bold text-white mb-4">¿Requiere un análisis similar para su proyecto?</h2>
-          <p className="text-navy-800 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-slate-900 font-medium text-lg mb-8 max-w-2xl mx-auto">
             Nuestros líderes han participado directamente en la formulación de estos dictámenes. Hablemos sobre cómo blindar técnicamente su caso.
           </p>
           <Link

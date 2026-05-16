@@ -10,8 +10,8 @@ export default function Nosotros() {
   return (
     <div className="min-h-screen bg-slate-50 pt-20 pb-24 glow-bg pattern-bg relative z-10">
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-slate-50/90 to-slate-50 z-10" />
-        <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs_v2.png')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-slate-50/95 to-slate-50 z-10" />
+        <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs_v2.png')] bg-cover bg-center opacity-40 mix-blend-multiply" />
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -51,9 +51,9 @@ export default function Nosotros() {
         </div>
 
         {/* Liderazgo */}
-        <div className="bg-white/80 border border-slate-300 rounded-sm p-12 text-center mb-20">
+        <div className="bg-slate-100/50 border border-slate-200 rounded-sm p-12 text-center mb-20 shadow-inner">
           <h2 className="text-3xl font-heading font-bold text-slate-900 mb-10">Liderazgo Estratégico</h2>
-          <p className="text-slate-500 max-w-3xl mx-auto mb-10">
+          <p className="text-slate-600 max-w-3xl mx-auto mb-10 text-lg">
             Nuestros directores acumulan décadas de experiencia liderando las entidades e infraestructuras más grandes de Colombia. Hoy, esa experiencia está integrada en la arquitectura de Acumen.
           </p>
           <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto text-left">

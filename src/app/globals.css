@@ -46,7 +46,7 @@
   
   .glow-bg::before {
     content: '';
-    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-slate-100 blur-[100px] rounded-full -z-10 pointer-events-none;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-gold-500/5 blur-[100px] rounded-full -z-10 pointer-events-none;
   }
   
   .pattern-bg {
@@ -55,7 +55,7 @@
   
   .pattern-bg::after {
     content: '';
-    @apply absolute inset-0 opacity-20 pointer-events-none mix-blend-multiply;
+    @apply absolute inset-0 opacity-[0.15] pointer-events-none mix-blend-multiply;
     background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
     background-size: 24px 24px;
     z-index: -1;
