@@ -10,7 +10,7 @@ export default function Home() {
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-60 pointer-events-none" 
+            className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
             style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }} 
           />
           {/* Soft gradient to keep text readable without hiding the image */}
@@ -28,7 +28,7 @@ export default function Home() {
               Ingeniería aumentada por datos, experiencia e inteligencia territorial.
             </h1>
             
-            <p className="text-xl md:text-2xl text-zinc-600 mb-12 max-w-2xl font-light leading-relaxed">
+            <p className="text-xl md:text-2xl text-zinc-800 mb-12 max-w-2xl font-normal leading-relaxed">
               No somos una empresa de planos tradicional. Transformamos la complejidad estructural y del territorio en decisiones estratégicas de alta precisión.
             </p>
             
@@ -62,10 +62,10 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl font-heading font-bold text-zinc-900 mb-8 leading-tight">
                 El rigor técnico se encuentra con la inteligencia operativa.
               </h2>
-              <p className="text-lg text-zinc-600 mb-6 leading-relaxed">
+              <p className="text-lg text-zinc-800 mb-6 leading-relaxed">
                 Nuestros directores acumulan décadas liderando las entidades e infraestructuras más complejas de Colombia. Hoy, toda esa trayectoria se ha sistematizado en protocolos estrictos, apoyados por Inteligencia Artificial y analítica espacial.
               </p>
-              <p className="text-lg text-zinc-600 leading-relaxed mb-10">
+              <p className="text-lg text-zinc-800 leading-relaxed mb-10">
                 El resultado es una firma boutique capaz de proveer dictámenes, diseños y gerencia con un nivel de trazabilidad y certidumbre único en el mercado.
               </p>
               <Link href="/liderazgo" className="text-zinc-900 font-bold border-b border-zinc-900 pb-1 hover:text-gold-500 hover:border-gold-500 transition-colors inline-flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
               <h2 className="text-4xl md:text-5xl font-heading font-bold text-zinc-900 mb-4">Líneas de Negocio</h2>
-              <p className="text-xl text-zinc-600 max-w-2xl">Intervenciones técnicas de alta precisión para el desarrollo y protección de la infraestructura.</p>
+              <p className="text-xl text-zinc-800 max-w-2xl">Intervenciones técnicas de alta precisión para el desarrollo y protección de la infraestructura.</p>
             </div>
             <Link href="/servicios" className="text-zinc-900 font-bold hover:text-gold-500 transition-colors inline-flex items-center gap-2 shrink-0">
               Ver todos los servicios <ArrowRight className="h-4 w-4" />
@@ -112,7 +112,7 @@ export default function Home() {
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Peritajes Técnicos</h3>
                 <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
               </div>
-              <p className="text-zinc-600">
+              <p className="text-zinc-800">
                 División forense altamente especializada. Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.
               </p>
             </Link>
@@ -122,7 +122,7 @@ export default function Home() {
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Infraestructura y PMO</h3>
                 <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
               </div>
-              <p className="text-zinc-600">
+              <p className="text-zinc-800">
                 Gerencia, estructuración y control de proyectos complejos. Modelado de riesgos y administración delegada bajo metodologías ágiles.
               </p>
             </Link>
@@ -132,7 +132,7 @@ export default function Home() {
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Movilidad y Territorio</h3>
                 <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
               </div>
-              <p className="text-zinc-600">
+              <p className="text-zinc-800">
                 Planificación urbana estratégica. Estudios de tránsito, evaluación de impacto y modelos integrados de ciudad inteligente.
               </p>
             </Link>

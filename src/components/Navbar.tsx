@@ -49,8 +49,8 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-gold-500 ${
-                  pathname.startsWith(link.href) ? "text-gold-500" : "text-zinc-600"
+                className={`text-sm font-semibold transition-colors hover:text-gold-500 ${
+                  pathname.startsWith(link.href) ? "text-gold-500" : "text-zinc-900"
                 }`}
               >
                 {link.name}
