@@ -226,8 +226,15 @@ export default function AcumenOSPage() {
                 <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
                 <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
                 
-                <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl">
-                   <div className="space-y-1 opacity-100">
+                <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl overflow-hidden">
+                   {/* Terminal Inner Background */}
+                   <div 
+                     className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
+                     style={{ backgroundImage: "url('/images/estructural_wireframe.png')", filter: "contrast(1.5) brightness(0.8)" }}
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none" />
+                   
+                   <div className="space-y-1 opacity-100 relative z-10">
                      <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
                      <p>{">"} LOADING TERRAIN DATA...</p>
                      <p>{">"} 1,402,993 POINTS PROCESSED</p>

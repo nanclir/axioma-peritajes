@@ -82,7 +82,7 @@ export default function PeritajesPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-4">El Equipo de Peritajes</h2>
         <p className="text-zinc-600 mb-12 max-w-2xl">
-          Esta división está liderada directamente por los directores de la firma, apoyados por expertos en visualización e ingeniería creativa para garantizar que la evidencia técnica sea irrefutable y comprensible para jueces y abogados.
+          Esta división está liderada directamente por los directores de la firma, apoyados por expertos en visualización e ingeniería creativa para garantizar que la evidencia técnica sea concluyente y comprensible para jueces y abogados.
         </p>
 
         <div className="grid md:grid-cols-2 gap-12 items-start">
