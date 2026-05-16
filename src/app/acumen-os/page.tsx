@@ -27,11 +27,11 @@ export default function AcumenOSPage() {
              <span className="font-mono text-xs tracking-widest text-blue-400 uppercase">Architecture Overview</span>
           </div>
           
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-8 tracking-tight">
+          <div className="relative z-10 max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-8 tracking-tight drop-shadow-md">
               Ingeniería codificada en flujos de datos puros.
             </h1>
-            <p className="text-xl md:text-2xl text-zinc-400 font-light leading-relaxed mb-10">
+            <p className="text-xl md:text-2xl text-zinc-200 font-light leading-relaxed mb-10 drop-shadow">
               ACUMEN OS no es un simple software; es el cerebro operativo de la firma. Hemos estructurado el conocimiento empírico de décadas en algoritmos de trazabilidad, dashboards analíticos y flujos de automatización con Inteligencia Artificial.
             </p>
           </div>
