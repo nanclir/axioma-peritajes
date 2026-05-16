@@ -36,9 +36,9 @@ export default function PeritajesPage() {
                 Casos de Estudio y Experiencia
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="inline-flex justify-center items-center px-6 py-3 border border-zinc-300 bg-white text-zinc-900 font-medium hover:bg-zinc-50 transition-colors">
+              <Link href="/contacto" className="inline-flex justify-center items-center px-6 py-3 border border-zinc-300 bg-white text-zinc-900 font-medium hover:bg-zinc-50 transition-colors">
                 Solicitar Evaluación
-              </button>
+              </Link>
             </div>
           </div>
         </div>

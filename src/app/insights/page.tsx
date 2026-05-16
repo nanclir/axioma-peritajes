@@ -36,7 +36,7 @@ export default function InsightsPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {/* Insight 1 */}
-          <article className="group cursor-pointer">
+          <article className="group cursor-default">
             <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative">
                <div 
                  className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0" 
@@ -47,19 +47,19 @@ export default function InsightsPage() {
               <BookOpen className="h-3 w-3" />
               <span>Ingeniería Digital</span>
             </div>
-            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 group-hover:text-gold-500 transition-colors">
+            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors">
               La ética de los algoritmos en la toma de decisiones de infraestructura pública.
             </h3>
             <p className="text-zinc-600 mb-6 text-sm leading-relaxed">
               Cómo los modelos probabilísticos y de IA deben ser auditados filosófica y técnicamente para evitar sesgos en el desarrollo territorial. Por Rafael Nanclares.
             </p>
-            <span className="text-gold-500 font-bold text-sm inline-flex items-center gap-2 group-hover:gap-3 transition-all">
-              Leer artículo <ArrowRight className="h-4 w-4" />
+            <span className="text-zinc-400 font-bold text-sm inline-flex items-center gap-2">
+              [ Próximamente ]
             </span>
           </article>
 
           {/* Insight 2 */}
-          <article className="group cursor-pointer">
+          <article className="group cursor-default">
             <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative">
                <div 
                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 mix-blend-multiply" 
@@ -70,14 +70,14 @@ export default function InsightsPage() {
               <BookOpen className="h-3 w-3" />
               <span>Optimización Hídrica</span>
             </div>
-            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 group-hover:text-gold-500 transition-colors">
+            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors">
               Decisiones con múltiples objetivos e incertidumbre en recursos hidráulicos.
             </h3>
             <p className="text-zinc-600 mb-6 text-sm leading-relaxed">
               Un repaso a la modelación avanzada de sistemas complejos ante la amenaza del cambio climático en Colombia. Basado en las publicaciones del PhD. Ricardo Smith.
             </p>
-            <span className="text-gold-500 font-bold text-sm inline-flex items-center gap-2 group-hover:gap-3 transition-all">
-              Leer artículo <ArrowRight className="h-4 w-4" />
+            <span className="text-zinc-400 font-bold text-sm inline-flex items-center gap-2">
+              [ Próximamente ]
             </span>
           </article>
 
