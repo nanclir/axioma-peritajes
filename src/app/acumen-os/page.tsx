@@ -213,17 +213,24 @@ export default function AcumenOSPage() {
                </ul>
              </div>
 
-             <div className="relative aspect-square border border-zinc-800 bg-zinc-900/40 p-8 flex items-center justify-center">
-                <div className="absolute inset-0 dot-pattern opacity-10 mix-blend-screen" />
+             <div className="relative aspect-square border border-zinc-800 bg-zinc-900/40 p-8 flex items-center justify-center overflow-hidden rounded-sm">
+                {/* Background Image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
+                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/40 to-transparent pointer-events-none" />
+                
+                <div className="absolute inset-0 dot-pattern opacity-10 mix-blend-screen pointer-events-none" />
                 <Terminal className="h-24 w-24 text-zinc-800 absolute opacity-30" />
                 
-                <div className="w-full h-full border border-zinc-700/50 p-4 bg-black/40 backdrop-blur-md relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end">
-                   <div className="space-y-1 opacity-70">
+                <div className="w-full h-full border border-zinc-700/50 p-4 bg-black/60 backdrop-blur-sm relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-2xl">
+                   <div className="space-y-1 opacity-100">
                      <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
                      <p>{">"} LOADING TERRAIN DATA...</p>
                      <p>{">"} 1,402,993 POINTS PROCESSED</p>
                      <p>{">"} RUNNING STRESS SIMULATION</p>
-                     <p className="text-emerald-400">{">"} ANALYSIS COMPLETE. STRUCTURAL INTEGRITY: 98.4%</p>
+                     <p className="text-emerald-400 font-bold">{">"} ANALYSIS COMPLETE. STRUCTURAL INTEGRITY: 98.4%</p>
                      <p className="animate-pulse">_</p>
                    </div>
                 </div>
