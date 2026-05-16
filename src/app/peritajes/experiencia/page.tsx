@@ -35,20 +35,28 @@ const casos = [
     id: 4,
     año: "2019",
     accionante: "Metroplús S.A.",
-    accionado: "Pablo Emilio Bocarejo & CEI S.A",
+    accionado: "Pablo Emilio Bocarejo & CEI S.A Contratistas Consultores",
     jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje técnico tendiente a determinar los perjuicios causados como consecuencia de la entrega tardía e incompleta de los estudios y diseños de la TRONCAL MEDELLÍN del sistema de transporte."
+    descripcion: "Peritaje técnico tendiente a determinar los perjuicios causados como consecuencia de la entrega tardía e incompleta de los estudios y diseños de la TRONCAL MEDELLÍN del sistema de transporte público."
   },
   {
     id: 5,
     año: "2019",
-    accionante: "Constructora Cuellar Serrano Gómez S.A.",
-    accionado: "Empresa para el Desarrollo Urbano - EDU",
+    accionante: "Sonia Isabel Urrea Quintero",
+    accionado: "Ingenio Vegachí, Gobernación de Antioquia, IDEA, Fabrica de Licores de Antioquia",
     jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje desde la Ingeniería Civil, que determinó el perjuicio económico causado a CUSEGO S.A. durante la construcción del Parque Biblioteca La Quintana."
+    descripcion: "Peritaje técnico desde la Ingeniería Agrícola, tendiente a determinar los perjuicios causados como consecuencia de la cancelación unilateral de un contrato de suministro de caña de azúcar."
   },
   {
     id: 6,
+    año: "2019",
+    accionante: "Constructora Cuellar Serrano Gómez S.A.",
+    accionado: "Empresa para el Desarrollo Urbano - EDU",
+    jurisdiccion: "Tribunal Administrativo de Antioquia",
+    descripcion: "Peritaje desde la Ingeniería Civil, que determinó el perjuicio económico causado a CUSEGO S.A. durante la construcción del Parque Biblioteca La Quintana, en la ciudad de Medellín."
+  },
+  {
+    id: 7,
     año: "2020",
     accionante: "Inversiones LIMI S.A.S.",
     accionado: "Alcaldía de Urrao y FONVIVIENDA",
@@ -56,31 +64,31 @@ const casos = [
     descripcion: "Peritaje técnico desde la Ingeniería Administrativa, que cuantificó los perjuicios causados durante el desarrollo de las etapas A y B del proyecto de vivienda Urraeños Sembrando el Progreso."
   },
   {
-    id: 7,
+    id: 8,
     año: "2021",
     accionante: "Construcciones Escobar Ortega S.A.S.",
     accionado: "Municipio de Bello",
     jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje técnico tendiente a determinar los perjuicios causados por el no pago de actas de obra para repotenciar la Institución Educativa Tomás Cadavid Restrepo."
-  },
-  {
-    id: 8,
-    año: "2021",
-    accionante: "Urbanización Las Casas del Camino",
-    accionado: "Municipio de Envigado",
-    jurisdiccion: "Extrajudicial / Pre-Jurídico",
-    descripcion: "Peritaje tendiente a determinar las causas del asentamiento de un muro de cerramiento y conexiones de estas fallas con las obras de ampliación vial adelantadas en 2017 por la Alcaldía."
+    descripcion: "Peritaje técnico tendiente a determinar los perjuicios causados como consecuencia del no pago de dos actas de obra del contrato 406 de 2017 para repotenciar la Institución Educativa Tomás Cadavid Restrepo."
   },
   {
     id: 9,
     año: "2021",
-    accionante: "Inversiones Alternova S.A.S.",
-    accionado: "Municipio de Rionegro",
-    jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje técnico tendiente a determinar el avalúo de una propiedad antes de ser sujeta de proceso de valorización y la viabilidad técnica de dicho proceso."
+    accionante: "Urbanización Las Casas del Camino",
+    accionado: "Municipio de Envigado",
+    jurisdiccion: "Extrajudicial / Pre-Jurídico",
+    descripcion: "Peritaje tendiente a determinar las causas del asentamiento de un muro de cerramiento en la Urbanización Las Casas del Camino, y conexiones de estas fallas con las obras de ampliación vial adelantadas en 2017 por la Alcaldía de Envigado."
   },
   {
     id: 10,
+    año: "2021",
+    accionante: "Inversiones Alternova S.A.S.",
+    accionado: "Municipio de Rionegro",
+    jurisdiccion: "Tribunal Administrativo de Antioquia",
+    descripcion: "Peritaje técnico desde la Ingeniería Civil, tendiente a determinar el avalúo de una propiedad en el Municipio de Rionegro, antes de ser sujeta de proceso de valorización y la viabilidad técnica de dicho proceso."
+  },
+  {
+    id: 11,
     año: "2021",
     accionante: "Banco Agrario de Colombia",
     accionado: "Comfamiliar Camacol Antioquia",
@@ -88,7 +96,7 @@ const casos = [
     descripcion: "Peritaje tendiente a determinar las condiciones técnicas constructivas de Viviendas de Interés Social Rural, ejecutadas en el marco de un contrato de administración."
   },
   {
-    id: 11,
+    id: 12,
     año: "2022",
     accionante: "Julián A. Bolívar, Luis A. Mejía y Claribel Rendón",
     accionado: "Municipio de Itagüí y Ruiz Sánchez S.A.S.",
@@ -96,36 +104,68 @@ const casos = [
     descripcion: "Peritaje Técnico tendiente a determinar las condiciones técnicas de construcción de la zona comercial del edificio Babilonia, demolido por amenaza de colapso y declaratoria de ruina."
   },
   {
-    id: 12,
+    id: 13,
     año: "2022",
-    accionante: "Familia Guerrero Mejía",
+    accionante: "Familia Mejía Guerrero",
     accionado: "Municipio de Rionegro",
     jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje Técnico tendiente a determinar las condiciones del cobro del impuesto Efecto Plusvalía en medio del cambio del Plan de Ordenamiento Territorial del año 2018."
+    descripcion: "Peritaje Técnico tendiente a determinar las condiciones por las cuales el Municipio de Rionegro adelantó el cobro del impuesto Efecto Plusvalía en el predio propiedad de los demandantes, en medio del cambio del Plan de Ordenamiento Territorial."
   },
   {
-    id: 13,
+    id: 14,
     año: "2022",
     accionante: "U.T. AIA AIM 2010 & Otros",
     accionado: "IDU & Transmilenio",
     jurisdiccion: "Tribunal Administrativo de Cundinamarca",
-    descripcion: "Peritaje Técnico tendiente a determinar las condiciones por las cuales se presentó desequilibrio económico en la ecuación contractual, dentro del contrato de obra 04 de 2011."
-  },
-  {
-    id: 14,
-    año: "2023",
-    accionante: "Seguros del Estado S.A.",
-    accionado: "Municipio de Dabeiba",
-    jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje Técnico tendiente a determinar supuestos incumplimientos, errores en la planeación del contrato LP-002 de 2019 y el cumplimiento efectivo del contratista."
+    descripcion: "Peritaje Técnico de parte tendiente a determinar las condiciones técnicas y administrativas por las cuales se presentó desequilibrio económico en la ecuación contractual, dentro del contrato de obra 04 de 2011."
   },
   {
     id: 15,
-    año: "2024",
-    accionante: "Consorcio Génesis, Estructuras y Pavimentos S.A.S. y Otros",
-    accionado: "Distrito Especial de Medellín",
+    año: "2022",
+    accionante: "Banco Agrario de Colombia",
+    accionado: "Comfamiliar Camacol Antioquia",
+    jurisdiccion: "Cámara de Comercio de Bogotá",
+    descripcion: "Peritaje tendiente a determinar las condiciones técnicas constructivas de algunas Viviendas de Interés Social Rural, ejecutadas en el marco del contrato de Gerencia Integral GI 006-2012."
+  },
+  {
+    id: 16,
+    año: "2023",
+    accionante: "Inversiones DIRMA Ltda.",
+    accionado: "Municipio de Rionegro",
     jurisdiccion: "Tribunal Administrativo de Antioquia",
-    descripcion: "Peritaje Técnico para determinar las causas de la licitación No. 70007451 para pavimentación de la red vial del Distrito (contrato superior a $60.000 millones)."
+    descripcion: "Peritaje Técnico tendiente a determinar las condiciones por las cuales el Municipio adelantó el cobro del impuesto Efecto Plusvalía en el predio propiedad de los demandantes."
+  },
+  {
+    id: 17,
+    año: "2023",
+    accionante: "Grupo Empresarial SPO S.A.S.",
+    accionado: "Municipio de Dabeiba",
+    jurisdiccion: "Tribunal Administrativo de Antioquia",
+    descripcion: "Peritaje Técnico tendiente a determinar los supuestos incumplimientos que se aducen en la demanda, los errores en la planeación del contrato LP-002 de 2019 y el cumplimiento efectivo del contratista."
+  },
+  {
+    id: 18,
+    año: "2024",
+    accionante: "COMFENALCO ANTIOQUIA",
+    accionado: "ISVIMED",
+    jurisdiccion: "COMFENALCO ANTIOQUIA",
+    descripcion: "Revisión documental para verificar y determinar el estado de cumplimiento de las obligaciones a cargo de Comfenalco en el marco del convenio 521 del 2017 para desarrollar un proyecto mixto de VIS y VIP denominado Colinas de Occidente."
+  },
+  {
+    id: 19,
+    año: "2025",
+    accionante: "Consorcio Génesis",
+    accionado: "Distrito de Medellín",
+    jurisdiccion: "Tribunal Administrativo de Antioquia",
+    descripcion: "Peritaje Técnico para analizar si los requisitos exigidos por la entidad contratante para con el proponente en todos los términos se cumplían cabalmente y que la propuesta se encontraba habilitada."
+  },
+  {
+    id: 20,
+    año: "2026",
+    accionante: "Arquitectos e Ingenieros Asociados AIA",
+    accionado: "Fondo de Adaptación",
+    jurisdiccion: "Tribunal Administrativo de Sucre",
+    descripcion: "Peritaje Técnico tendiente a determinar si se generaron mayores costos para el contratista en la etapa de diseños y reconstrucción de la infraestructura educativa (I.E. El Palomar y San José) en el Departamento de Sucre."
   }
 ];
 

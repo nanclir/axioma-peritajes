@@ -20,9 +20,9 @@ export default function Footer() {
               a través de datos y rigor metodológico.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-zinc-500 hover:text-white transition-colors">
+              <Link href="/contacto" className="text-zinc-500 hover:text-white transition-colors">
                 Contacto
-              </a>
+              </Link>
             </div>
           </div>
 
