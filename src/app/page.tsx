@@ -196,14 +196,13 @@ export default function Home() {
             </div>
             
             {/* Abstract Tech Visual */}
-            <div className="relative h-[500px] w-full rounded-sm border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden flex items-center justify-center">
-               {/* Clean dark background for the tech visual */}
+            <div className="relative h-[500px] w-full flex items-center justify-center">
                <div className="text-center z-10">
-                 <div className="w-24 h-24 mx-auto border border-blue-500/30 rounded-full flex items-center justify-center mb-4 relative">
-                   <div className="absolute inset-0 border border-blue-400 rounded-full animate-[spin_4s_linear_infinite] border-t-transparent"></div>
-                   <Hexagon className="h-8 w-8 text-blue-400" />
+                 <div className="w-24 h-24 mx-auto border border-blue-500/30 rounded-full flex items-center justify-center mb-4 relative shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                   <div className="absolute inset-0 border border-blue-400 rounded-full animate-[spin_4s_linear_infinite] border-t-transparent shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
+                   <Hexagon className="h-8 w-8 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
                  </div>
-                 <p className="text-zinc-500 font-mono text-sm">ANALÍTICA TERRITORIAL ACTIVA</p>
+                 <p className="text-blue-400 font-mono text-sm tracking-widest drop-shadow-md font-bold">ANALÍTICA TERRITORIAL ACTIVA</p>
                </div>
             </div>
           </div>
