@@ -74,16 +74,16 @@ export default function Home() {
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100">
-                <Hexagon className="h-8 w-8 text-gold-500 mb-4" />
-                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2">Ingeniería Digital</h3>
+              <Link href="/acumen-os" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block">
+                <Hexagon className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">Ingeniería Digital</h3>
                 <p className="text-zinc-500 text-sm">Modelado, Dashboards y Gemelos Digitales.</p>
-              </div>
-              <div className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 mt-12">
-                <Map className="h-8 w-8 text-gold-500 mb-4" />
-                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2">SIG y Analítica</h3>
+              </Link>
+              <Link href="/servicios" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block mt-12">
+                <Map className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">SIG y Analítica</h3>
                 <p className="text-zinc-500 text-sm">Inteligencia espacial aplicada a grandes proyectos.</p>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
