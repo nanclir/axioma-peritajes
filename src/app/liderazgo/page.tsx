@@ -82,7 +82,7 @@ export default function LiderazgoPage() {
                 Ingeniero Civil, Especialista en Gerencia de Construcciones y Magíster en Filosofía. Su perfil híbrido fusiona la gerencia de alta complejidad en infraestructura con el pensamiento crítico, la ética tecnológica y la inteligencia artificial, formación consolidada con sus estudios en Inteligencia Artificial en la Universidad de Berkeley.
               </p>
               <p>
-                Con más de 20 años de experiencia, ha fungido como Secretario de Infraestructura Física de Antioquia, teniendo bajo su responsabilidad estructuraciones estratégicas a escala departamental. A nivel internacional, ha sido Asesor de infraestructura del Secretario de Infraestructura del estado de Nuevo León (México).
+                Con más de 20 años de experiencia, ha fungido como Secretario de Infraestructura Física de Antioquia y Secretario de Tránsito y Transporte de la ciudad de Medellín, teniendo bajo su responsabilidad estructuraciones estratégicas a gran escala. A nivel internacional, ha sido Asesor de infraestructura del Secretario de Infraestructura del estado de Nuevo León (México).
               </p>
               <p>
                 En Acumen, es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la manera en que la consultoría de infraestructura opera en el siglo XXI.
