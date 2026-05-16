@@ -127,12 +127,12 @@ export default function AcumenOSPage() {
         {/* Core Modules */}
         <section className="py-24 border-b border-zinc-800">
            <div className="grid md:grid-cols-2 gap-16 items-center">
-             <div className="order-2 md:order-1 relative aspect-square border border-zinc-800 bg-zinc-900/40 p-8 flex items-center justify-center overflow-hidden">
+             <div className="order-2 md:order-1 relative aspect-square border border-zinc-800 bg-zinc-900/40 p-8 flex items-center justify-center overflow-hidden rounded-sm">
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-screen" 
+                  className="absolute inset-0 bg-cover bg-center opacity-100 mix-blend-lighten" 
                   style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/80 to-zinc-950" />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none" />
                 
                 {/* Abstract UI Elements */}
                 <div className="relative z-10 w-full max-w-sm">
