@@ -9,6 +9,10 @@ export const metadata = {
 export default function Nosotros() {
   return (
     <div className="min-h-screen bg-navy-900 pt-20 pb-24 glow-bg pattern-bg relative z-10">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-900/60 via-navy-900/90 to-navy-900 z-10" />
+        <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-20" />
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -57,14 +61,14 @@ export default function Nosotros() {
               <h4 className="text-gold-500 font-bold text-xl mb-1">Ing. Ricardo Smith Quintero, PhD.</h4>
               <p className="text-slate-400 text-sm mb-4">Ingeniero Civil, MS.c., PhD. Civil Engineering</p>
               <p className="text-slate-300 text-sm">
-                Ex Director del Área Metropolitana y Ex Secretario de Tránsito. Amplia trayectoria en alta consultoría de infraestructura y movilidad para entidades como el BID, Findeter, Túnel de Oriente y Nippon KOEI LAC.
+                Destacada trayectoria académica como Director de la Escuela de Geociencias y Medio Ambiente, y del programa de Doctorado en Ingeniería en la Universidad Nacional. Ex Director del Área Metropolitana y Ex Secretario de Tránsito. Amplia trayectoria en alta consultoría para entidades como el BID, Findeter y Nippon KOEI LAC.
               </p>
             </div>
             <div className="glass-card p-6 border-l-4 border-l-gold-500">
               <h4 className="text-gold-500 font-bold text-xl mb-1">Ing. Rafael Andrés Nanclares Ospina</h4>
               <p className="text-slate-400 text-sm mb-4">Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía</p>
               <p className="text-slate-300 text-sm">
-                Ex Gerente del Túnel de Oriente y del Túnel del Toyo, y Gerente de Bienestar Económico en Comfenalco Antioquia. Más de 24 años de experiencia estructurando megaproyectos de alto impacto nacional.
+                Asesor de infraestructura del Secretario de Infraestructura de Nuevo León (México) y Gerente de Bienestar Económico en Comfenalco Antioquia. Más de 24 años de experiencia estructurando megaproyectos de alto impacto nacional.
               </p>
             </div>
           </div>

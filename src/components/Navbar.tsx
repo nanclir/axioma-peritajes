@@ -12,6 +12,7 @@ export default function Navbar() {
     { name: "Inicio", href: "/" },
     { name: "Filosofía", href: "/nosotros" },
     { name: "División Peritajes", href: "/peritajes" },
+    { name: "Experiencia", href: "/peritajes/experiencia" },
     { name: "Contacto", href: "/peritajes/contacto" },
   ];
 

@@ -14,7 +14,7 @@ export default function Home() {
       <div className="relative pt-20 pb-32 border-b border-slate-800">
         <div className="absolute inset-0 z-0">
            <div className="absolute inset-0 bg-gradient-to-b from-navy-900/40 via-navy-900/80 to-navy-900 z-10" />
-           <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-40" />
+           <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-20" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy-800/80 border border-gold-500/30 text-gold-500 text-sm font-semibold mb-8 backdrop-blur-sm">

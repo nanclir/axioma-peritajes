@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 
 export const metadata = {
-  title: "Política de Privacidad | Acumen Peritajes",
-  description: "Políticas de privacidad y tratamiento de datos personales de Acumen Peritajes.",
+  title: "Política de Privacidad | Acumen Ingeniería",
+  description: "Políticas de privacidad y tratamiento de datos personales de Acumen Ingeniería S.A.S.",
 };
 
 export default function Privacidad() {
@@ -20,7 +20,7 @@ export default function Privacidad() {
         <div className="prose prose-invert prose-slate max-w-none">
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">1. Introducción</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            En Acumen Peritajes valoramos y respetamos su privacidad. Esta Política de Privacidad describe cómo recopilamos, usamos, protegemos y compartimos la información personal de nuestros clientes y visitantes a través de nuestro sitio web y en el marco de nuestros servicios de consultoría y dictámenes periciales.
+            En Acumen Ingeniería S.A.S. valoramos y respetamos su privacidad. Esta Política de Privacidad describe cómo recopilamos, usamos, protegemos y compartimos la información personal de nuestros clientes y visitantes a través de nuestro sitio web y en el marco de nuestros servicios de consultoría, gerencia de proyectos y dictámenes periciales.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">2. Información que recopilamos</h2>
@@ -33,7 +33,7 @@ export default function Privacidad() {
             La información recopilada se utiliza exclusivamente para los siguientes propósitos:
           </p>
           <ul className="list-disc list-inside text-slate-300 mb-6 space-y-2">
-            <li>Proveer, operar y mantener nuestros servicios de peritaje.</li>
+            <li>Proveer, operar y mantener nuestros servicios de ingeniería, consultoría y peritajes.</li>
             <li>Mejorar, personalizar y expandir nuestro sitio web.</li>
             <li>Comprender y analizar cómo utiliza nuestra plataforma.</li>
             <li>Comunicarnos con usted para responder consultas, enviar cotizaciones y proveer servicio al cliente.</li>
@@ -42,7 +42,7 @@ export default function Privacidad() {
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">4. Confidencialidad y Seguridad</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            Dada la naturaleza crítica y legal de los servicios de Acumen Peritajes, toda la información técnica, financiera y operativa de sus proyectos es tratada con el más alto nivel de confidencialidad (Secreto Profesional). Implementamos medidas de seguridad técnicas y organizativas diseñadas para proteger su información contra acceso no autorizado, alteración o destrucción.
+            Dada la naturaleza crítica, técnica y legal de los servicios de Acumen Ingeniería S.A.S., toda la información operativa, forense y financiera de sus proyectos es tratada con el más alto nivel de confidencialidad (Secreto Profesional). Implementamos estrictas medidas de seguridad diseñadas para proteger su información corporativa contra acceso no autorizado, alteración o filtración.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">5. Sus Derechos (Ley 1581 de 2012)</h2>
@@ -54,7 +54,7 @@ export default function Privacidad() {
           <p className="text-slate-300 leading-relaxed mb-8">
             Si tiene alguna pregunta sobre esta Política de Privacidad o sobre el tratamiento de sus datos, puede contactarnos a:
             <br />
-            <strong>Email:</strong> gerencia@acumenperitajes.com
+            <strong>Email:</strong> gerencia@acumeningenieria.com
           </p>
 
           <Link href="/" className="inline-block mt-8 text-gold-500 hover:text-gold-400 font-medium transition-colors">

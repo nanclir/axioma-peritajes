@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Scale } from "lucide-react";
 
 export const metadata = {
-  title: "Términos y Condiciones | Acumen Peritajes",
-  description: "Términos y condiciones de uso del sitio web y servicios de Acumen Peritajes.",
+  title: "Términos y Condiciones | Acumen Ingeniería",
+  description: "Términos y condiciones de uso del sitio web y servicios de Acumen Ingeniería S.A.S.",
 };
 
 export default function Terminos() {
@@ -20,7 +20,7 @@ export default function Terminos() {
         <div className="prose prose-invert prose-slate max-w-none">
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">1. Aceptación de los Términos</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            Al acceder y utilizar el sitio web de Acumen Peritajes (en adelante, "la Firma"), usted acepta cumplir y estar sujeto a estos Términos y Condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio web.
+            Al acceder y utilizar el sitio web de Acumen Ingeniería S.A.S. (en adelante, "la Firma"), usted acepta cumplir y estar sujeto a estos Términos y Condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro sitio web.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">2. Naturaleza de los Servicios</h2>
@@ -30,7 +30,7 @@ export default function Terminos() {
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">3. Propiedad Intelectual</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            Todo el contenido presente en este sitio, incluyendo pero no limitado a textos, gráficos, logotipos, íconos, imágenes, metodologías descritas y código fuente, es propiedad exclusiva de Acumen Peritajes o de sus licenciantes y está protegido por las leyes de propiedad intelectual de Colombia e internacionales. Queda estrictamente prohibida su reproducción sin autorización escrita.
+            Todo el contenido presente en este sitio, incluyendo pero no limitado a textos, gráficos, logotipos, íconos, imágenes, metodologías descritas (Acumen OS) y código fuente, es propiedad exclusiva de Acumen Ingeniería S.A.S. o de sus licenciantes y está protegido por las leyes de propiedad intelectual de Colombia e internacionales. Queda estrictamente prohibida su reproducción sin autorización escrita.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">4. Exactitud de la Información</h2>
@@ -40,7 +40,7 @@ export default function Terminos() {
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">5. Limitación de Responsabilidad</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            En ningún caso Acumen Peritajes será responsable por cualquier pérdida o daño, incluyendo sin limitación, pérdida o daño indirecto o consecuente, o cualquier pérdida o daño derivado de la pérdida de datos o beneficios que surjan de, o en conexión con, el uso de este sitio web.
+            En ningún caso Acumen Ingeniería S.A.S. será responsable por cualquier pérdida o daño, incluyendo sin limitación, pérdida o daño indirecto o consecuente, o cualquier pérdida o daño derivado de la pérdida de datos o beneficios que surjan de, o en conexión con, el uso de este sitio web.
           </p>
 
           <h2 className="text-2xl font-heading font-bold text-white mt-8 mb-4">6. Ley Aplicable</h2>

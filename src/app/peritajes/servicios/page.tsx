@@ -12,28 +12,28 @@ const services = [
     title: "Peritaje Estructural",
     description: "Evaluación técnica de fallas estructurales, vulnerabilidad sísmica y análisis patológico para procesos legales.",
     icon: Landmark,
-    href: "/servicios/peritaje-estructural"
+    href: "/peritajes/servicios/peritaje-estructural"
   },
   {
     id: "peritaje-geotecnico",
     title: "Peritaje Geotécnico",
     description: "Análisis de inestabilidad de taludes, fallas en cimentaciones y túneles basado en evidencia científica.",
     icon: FileText,
-    href: "/servicios/peritaje-geotecnico"
+    href: "/peritajes/servicios/peritaje-geotecnico"
   },
   {
     id: "reclamaciones-ingenieria",
     title: "Reclamaciones en Ingeniería",
     description: "Cuantificación del desequilibrio económico, daños y sobrecostos en contratos de infraestructura pública y privada.",
     icon: Scale,
-    href: "/servicios/reclamaciones-ingenieria"
+    href: "/peritajes/servicios/reclamaciones-ingenieria"
   },
   {
     id: "auditoria-forense",
     title: "Auditoría Forense Técnica",
     description: "Investigación exhaustiva para detectar anomalías técnicas, desviaciones y responsabilidades en el desarrollo de grandes obras.",
     icon: Search,
-    href: "/servicios/auditoria-forense-tecnica"
+    href: "/peritajes/servicios/auditoria-forense-tecnica"
   }
 ];
 
@@ -43,8 +43,8 @@ export default function Services() {
       {/* Hero */}
       <div className="relative pt-24 pb-24 border-b border-slate-800">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/50 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/60 to-navy-900/40 z-10" />
+          <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Nuestros Servicios</h1>
