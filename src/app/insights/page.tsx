@@ -17,7 +17,7 @@ export default function InsightsPage() {
             className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
             style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/95 via-slate-50/70 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/80 via-slate-50/20 to-transparent z-10" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

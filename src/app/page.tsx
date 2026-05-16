@@ -14,17 +14,17 @@ export default function Home() {
             style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }} 
           />
           {/* Soft gradient to keep text readable without hiding the image */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/90 via-slate-50/50 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/80 via-slate-50/20 to-transparent z-10" />
         </div>
         
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-zinc-200 bg-white/50 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-widest text-zinc-600">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-zinc-200 bg-white/80 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-widest text-zinc-600 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-gold-500 animate-pulse"></span>
               Firma de Inteligencia Territorial
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-zinc-900 leading-[1.1] mb-8 tracking-tight text-balance">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-zinc-900 leading-[1.1] mb-8 tracking-tight text-balance drop-shadow-sm">
               Ingeniería aumentada por datos, experiencia e inteligencia territorial.
             </h1>
             
@@ -140,57 +140,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ACUMEN OS Section (Palantir Tech Break) */}
-      <section className="py-32 bg-zinc-950 text-white relative overflow-hidden cinematic-glow border-t-4 border-gold-500">
-        <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0"></div>
+      {/* ACUMEN OS Section (Light Mode) */}
+      <section className="py-32 bg-white text-zinc-900 relative overflow-hidden border-t-4 border-gold-500">
+        <div className="absolute inset-0 grid-bg opacity-[0.03] pointer-events-none z-0 filter invert"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-60 pointer-events-none z-0" 
+          className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none z-0" 
           style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
         />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-10" />
+        
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-zinc-800 bg-zinc-900 rounded-full text-xs font-mono text-zinc-400">
+              <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-zinc-200 bg-slate-50 rounded-full text-xs font-mono text-zinc-500 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                 <span>SYSTEM ONLINE</span>
               </div>
-              <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 tracking-tight text-white">
-                ACUMEN <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">OS 1.0</span>
+              <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 tracking-tight text-zinc-900">
+                ACUMEN <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">OS 1.0</span>
               </h2>
-              <p className="text-xl text-zinc-400 mb-8 font-light leading-relaxed">
+              <p className="text-xl text-zinc-600 mb-8 font-light leading-relaxed">
                 El sistema operativo de nuestra firma. Hemos codificado décadas de conocimiento en ingeniería dentro de flujos de trabajo automatizados.
               </p>
               
               <ul className="space-y-6 mb-12">
                 <li className="flex items-start gap-4">
-                  <div className="bg-zinc-900 p-2 rounded-sm border border-zinc-800 shrink-0">
-                    <Database className="h-5 w-5 text-blue-400" />
+                  <div className="bg-slate-50 p-2 rounded-sm border border-zinc-200 shrink-0 shadow-sm">
+                    <Database className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-200 mb-1">Trazabilidad Total de Datos</h4>
-                    <p className="text-zinc-500 text-sm">Auditoría continua sobre cada parámetro de diseño y cálculo.</p>
+                    <h4 className="font-bold text-zinc-900 mb-1">Trazabilidad Total de Datos</h4>
+                    <p className="text-zinc-600 text-sm">Auditoría continua sobre cada parámetro de diseño y cálculo.</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="bg-zinc-900 p-2 rounded-sm border border-zinc-800 shrink-0">
-                    <BarChart3 className="h-5 w-5 text-emerald-400" />
+                  <div className="bg-slate-50 p-2 rounded-sm border border-zinc-200 shrink-0 shadow-sm">
+                    <BarChart3 className="h-5 w-5 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-200 mb-1">Dashboards Interactivos</h4>
-                    <p className="text-zinc-500 text-sm">Visualización en tiempo real del estado de controversias y proyectos.</p>
+                    <h4 className="font-bold text-zinc-900 mb-1">Dashboards Interactivos</h4>
+                    <p className="text-zinc-600 text-sm">Visualización en tiempo real del estado de controversias y proyectos.</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="bg-zinc-900 p-2 rounded-sm border border-zinc-800 shrink-0">
-                    <Workflow className="h-5 w-5 text-gold-400" />
+                  <div className="bg-slate-50 p-2 rounded-sm border border-zinc-200 shrink-0 shadow-sm">
+                    <Workflow className="h-5 w-5 text-gold-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-200 mb-1">Inteligencia Operacional</h4>
-                    <p className="text-zinc-500 text-sm">Análisis de grandes volúmenes de documentos legales y técnicos vía IA.</p>
+                    <h4 className="font-bold text-zinc-900 mb-1">Inteligencia Operacional</h4>
+                    <p className="text-zinc-600 text-sm">Análisis de grandes volúmenes de documentos legales y técnicos vía IA.</p>
                   </div>
                 </li>
               </ul>
               
-              <Link href="/acumen-os" className="inline-flex items-center gap-2 text-white font-mono hover:text-blue-400 transition-colors">
+              <Link href="/acumen-os" className="inline-flex items-center gap-2 text-zinc-900 font-mono font-bold hover:text-blue-600 transition-colors">
                 [ DESCUBRIR LA ARQUITECTURA ] <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
