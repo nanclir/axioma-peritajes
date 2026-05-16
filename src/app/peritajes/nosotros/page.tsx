@@ -90,31 +90,30 @@ export default function Nosotros() {
                 </div>
                 <div className="relative z-10">
                   <h3 className="text-2xl font-heading font-bold text-gold-500 mb-2">Ing. Rafael Andrés Nanclares Ospina</h3>
-                  <p className="text-white font-medium mb-6">Ingeniero Civil, Especialista en Gerencia de Construcciones, Candidato a Máster en Filosofía</p>
+                  <p className="text-white font-medium mb-6">Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía</p>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div>
                       <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3 border-b border-slate-700 pb-2">
                         <Building2 className="h-5 w-5 text-gold-500" /> Cargos Significativos
                       </h4>
                       <ul className="space-y-2 text-slate-400 text-sm list-disc list-inside">
-                        <li>Gerente de Bienestar Económico en Comfenalco Antioquia (Estructuración y ejecución de inversiones por COP 14.324M).</li>
                         <li>Secretario de Infraestructura del Departamento de Antioquia.</li>
+                        <li>Gerente de Bienestar Económico en Comfenalco Antioquia.</li>
                         <li>Gerente Técnico en FUREL S.A.</li>
-                        <li>Asesor Estratégico Grupo Empresarial OMEGA ENLACES (México) y del Estado de Nuevo León.</li>
-                        <li>Secretario de Tránsito de Medellín.</li>
+                        <li>Secretario de Tránsito y Transporte de Medellín.</li>
                         <li>Miembro suplente de Junta Directiva de Hidroituango.</li>
                         <li>Presidente de las Juntas Directivas de Metroplús, Aeropuerto Olaya Herrera y Terminal de Transporte de Medellín.</li>
                       </ul>
                     </div>
                     <div>
                       <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3 border-b border-slate-700 pb-2">
-                        <Gavel className="h-5 w-5 text-gold-500" /> Experticia Pericial y Consultoría
+                        <Gavel className="h-5 w-5 text-gold-500" /> Experticia Pericial y Formación
                       </h4>
                       <p className="text-slate-400 text-sm mb-3">
-                        Más de 24 años de experiencia liderando megaproyectos. Estructuró técnica y contractualmente el Túnel del Toyo.
+                        Más de 23 años de experiencia en el sector público y privado liderando megaproyectos. Cuenta con estudios en Inteligencia Artificial por la Universidad de California, Berkeley.
                       </p>
                       <p className="text-slate-400 text-sm font-semibold mb-3">
-                        Lideró la estructuración técnica, ambiental y financiera del Túnel de Oriente, garantizando su viabilidad operativa y financiera.
+                        Aporta un enfoque analítico, filosófico y tecnológico para el análisis detallado de expedientes forenses.
                       </p>
                       <p className="text-slate-400 text-sm font-bold text-gold-500">
                         Ha participado activamente en la realización de la totalidad de los peritajes listados en el registro histórico de la firma.
@@ -144,9 +143,9 @@ export default function Nosotros() {
                         <Building2 className="h-5 w-5 text-gold-500" /> Cargos Significativos
                       </h4>
                       <ul className="space-y-2 text-slate-400 text-sm list-disc list-inside">
-                        <li>Gerente y director de empresas consultoras y constructoras de ingeniería.</li>
-                        <li>Más de 21 años de experiencia en dirección administrativa, técnica y financiera.</li>
-                        <li>Formulador de proyectos de infraestructura para Fundación Fraternidad y Fundación Bertha Martínez de Jaramillo.</li>
+                        <li>Más de 21 años de experiencia en dirección administrativa, técnica y financiera en consultoría y construcción.</li>
+                        <li>Formulador de proyectos de infraestructura para Fundación Fraternidad, Fundación Bertha Martínez de Jaramillo y Alianza Para el Desarrollo.</li>
+                        <li>Gerente de empresas consultoras y constructoras de ingeniería.</li>
                       </ul>
                     </div>
                     <div>
@@ -154,13 +153,10 @@ export default function Nosotros() {
                         <Gavel className="h-5 w-5 text-gold-500" /> Experticia Pericial y Consultoría
                       </h4>
                       <p className="text-slate-400 text-sm mb-3">
-                        Su trayectoria como Gerente Técnico y Administrativo le otorga una visión integral invaluable. Posee amplia experticia en el análisis, procesamiento y recolección de información técnica, financiera y administrativa en contratos de infraestructura.
+                        Posee amplia experticia en el análisis, procesamiento y recolección de información técnica, financiera y administrativa en contratos de infraestructura.
                       </p>
                       <p className="text-slate-400 text-sm font-semibold mb-3">
-                        Se ha desempeñado como analista experto de costos y presupuestos ante el Tribunal Administrativo de Antioquia y otras entidades.
-                      </p>
-                      <p className="text-slate-400 text-sm font-bold text-gold-500">
-                        Ha participado activamente en la realización de la totalidad de los peritajes listados en el registro histórico de la firma.
+                        Se ha desempeñado como analista experto para peritajes de ingeniería, costos y presupuestos ante el Tribunal Administrativo de Antioquia y otras entidades.
                       </p>
                     </div>
                   </div>

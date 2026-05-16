@@ -24,6 +24,9 @@ const peritajes = [
   { id: 15, text: "Seguros del Estado S.A. vs Municipio de Dabeiba (Escenarios deportivos) - Tribunal Administrativo de Antioquia (2023)." },
   { id: 16, text: "Inversiones DIRMA S.A.S. vs Municipio de Rionegro (Efecto Plusvalía POT) - Tribunal Administrativo de Antioquia (2024)." },
   { id: 17, text: "Consorcio Génesis & Otros vs Distrito de Medellín (Licitación pavimentación) - Tribunal Administrativo de Antioquia (2024)." },
+  { id: 18, text: "Grupo Empresarial SPO S.A.S vs Municipio de Dabeiba (Incumplimientos contrato LP-002) - Tribunal Administrativo de Antioquia (2023)." },
+  { id: 19, text: "Revisión documental Convenio 521 de 2017 (Proyecto Colinas de Occidente) - Comfenalco Antioquia (2024)." },
+  { id: 20, text: "Arquitectos e Ingenieros Asociados AIA vs Fondo de Adaptación (I.E. El Palomar y San José) - Tribunal Administrativo de Sucre (2026)." },
 ];
 
 export default function Experiencia() {
@@ -79,7 +82,7 @@ export default function Experiencia() {
         <div className="bg-navy-800 border border-slate-700 rounded-sm p-8 md:p-12 mb-16 glow-bg relative z-10 shadow-2xl">
           <div className="flex items-center gap-4 mb-10 border-b border-slate-700 pb-6">
             <Award className="h-8 w-8 text-gold-500" />
-            <h2 className="text-2xl font-heading font-bold text-white">Detalle de Casos (2019 - 2024)</h2>
+            <h2 className="text-2xl font-heading font-bold text-white">Detalle de Casos (2019 - Presente)</h2>
           </div>
           
           <div className="space-y-6">

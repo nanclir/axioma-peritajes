@@ -1,153 +1,202 @@
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, Cpu, Network, Briefcase, FileSearch } from "lucide-react";
+import { ArrowRight, BrainCircuit, Shield, Zap, GraduationCap, Building2 } from "lucide-react";
+import Image from "next/image";
 
 export const metadata = {
-  title: "Acumen Ingeniería | Firma Aumentada por IA",
-  description: "Una arquitectura inteligente de ingeniería, conocimiento y automatización. Transformamos el conocimiento técnico y estratégico en activos operacionales.",
+  title: "Acumen Ingeniería | Inteligencia Aumentada",
+  description: "Firma de ingeniería aumentada por Inteligencia Artificial.",
 };
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-20 glow-bg pattern-bg">
+    <div className="min-h-screen bg-navy-900 pb-24 glow-bg pattern-bg">
+      {/* Hero */}
+      <div className="relative pt-20 pb-32 border-b border-slate-800">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/80 to-navy-900/40 z-10" />
-          {/* We can use a generic AI / tech background image later, for now we use a gradient */}
+           <div className="absolute inset-0 bg-gradient-to-b from-navy-900/40 via-navy-900/80 to-navy-900 z-10" />
+           <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-40" />
         </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-navy-800/80 border border-gold-500/30 text-gold-500 text-sm font-semibold mb-8 backdrop-blur-sm">
+            <BrainCircuit className="h-4 w-4" /> ACUMEN OS 1.0
+          </div>
+          <h1 className="text-5xl md:text-7xl font-heading font-bold text-white mb-6 tracking-tight drop-shadow-xl">
+            Ingeniería Aumentada <br />
+            <span className="text-gold-500">por Inteligencia Artificial</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-12 drop-shadow-md">
+            No construimos una empresa tradicional. Estructuramos conocimiento técnico, estratégico y legal sobre una arquitectura inteligente.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/peritajes"
+              className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-900 px-8 py-4 rounded-sm font-bold transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]"
+            >
+              Acumen Peritajes <ArrowRight className="h-5 w-5" />
+            </Link>
+            <a
+              href="#liderazgo"
+              className="inline-flex justify-center items-center gap-2 bg-navy-800/80 hover:bg-navy-700 text-white px-8 py-4 rounded-sm font-medium border border-slate-700 transition-colors backdrop-blur-sm"
+            >
+              Liderazgo Estratégico
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative z-10">
         
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-500/10 border border-gold-500/20 text-gold-500 mb-8">
-              <BrainCircuit className="h-4 w-4" />
-              <span className="text-sm font-semibold tracking-wide uppercase">Ingeniería Aumentada por IA</span>
+        {/* Filosofía */}
+        <div className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">La Evolución de la Ingeniería</h2>
+            <div className="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group">
+              <div className="bg-navy-900/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-700 group-hover:border-gold-500/50 transition-colors">
+                <BrainCircuit className="h-8 w-8 text-gold-500" />
+              </div>
+              <h3 className="text-2xl font-heading font-bold text-white mb-4">Conocimiento Estructurado</h3>
+              <p className="text-slate-400 leading-relaxed">
+                El verdadero activo es nuestra estructura de conocimiento. Documentamos, iteramos y automatizamos metodologías complejas de infraestructura, creando nuestro sistema operativo interno.
+              </p>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold font-heading leading-tight mb-6 text-white">
-              Sistemas de Ingeniería <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Inteligente y Estratégica</span>
-            </h1>
-            <p className="text-xl text-slate-300 mb-10 leading-relaxed max-w-2xl">
-              ACUMEN OS 1.0 no es una empresa tradicional. Somos una arquitectura de conocimiento, automatización e inteligencia artificial aplicada a la resolución de problemas técnicos complejos en infraestructura y obras civiles.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="#lineas-negocio"
-                className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-900 px-8 py-4 rounded-sm font-semibold transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] text-lg"
-              >
-                Nuestras Líneas <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/nosotros"
-                className="inline-flex justify-center items-center px-8 py-4 rounded-sm font-semibold text-white border border-slate-600 hover:bg-slate-800 hover:border-slate-500 transition-all text-lg"
-              >
-                Filosofía Operativa
-              </Link>
+            
+            <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group border-gold-500/20">
+              <div className="bg-navy-900/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-700 group-hover:border-gold-500/50 transition-colors">
+                <Zap className="h-8 w-8 text-gold-500" />
+              </div>
+              <h3 className="text-2xl font-heading font-bold text-white mb-4">IA Operativa</h3>
+              <p className="text-slate-400 leading-relaxed">
+                La Inteligencia Artificial no reemplaza nuestro criterio o experiencia; los amplifica. Aumenta nuestra capacidad analítica, productividad técnica y la velocidad de estructuración forense.
+              </p>
+            </div>
+            
+            <div className="glass-card p-10 hover:-translate-y-2 transition-all duration-300 group">
+              <div className="bg-navy-900/50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 border border-slate-700 group-hover:border-gold-500/50 transition-colors">
+                <Shield className="h-8 w-8 text-gold-500" />
+              </div>
+              <h3 className="text-2xl font-heading font-bold text-white mb-4">Rigor Metodológico</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Integración de protocolos internos, Standard Operating Procedures (SOPs) y flujos organizacionales estrictos para garantizar resultados irrefutables en tribunales y megaproyectos.
+              </p>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Filosofía Section */}
-      <section className="py-24 border-y border-slate-800 bg-navy-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-6">El Conocimiento como <span className="text-gold-500">Activo</span></h2>
-              <p className="text-slate-400 text-lg leading-relaxed mb-6">
-                La Inteligencia Artificial no reemplaza nuestro criterio, experiencia ni pensamiento estratégico. Los amplifica.
-              </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-4">
-                  <div className="mt-1 bg-navy-700 p-2 rounded-sm text-gold-500">
-                    <Cpu className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-bold mb-1">Productividad Aumentada</h4>
-                    <p className="text-slate-400 text-sm">Flujos de trabajo documentados y automatizados para máxima eficiencia.</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1 bg-navy-700 p-2 rounded-sm text-gold-500">
-                    <Network className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-bold mb-1">Arquitectura Organizacional</h4>
-                    <p className="text-slate-400 text-sm">Gestión del conocimiento centralizada en ACUMEN OS.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div className="glass-card p-10 rounded-sm relative">
-              <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-20 grayscale" />
-              <div className="relative z-10">
-                <h3 className="text-2xl font-bold font-heading text-white mb-6">Liderazgo</h3>
-                <div className="space-y-6">
-                  <div className="border-b border-slate-700 pb-6">
-                    <p className="text-gold-500 font-bold text-lg">Ing. Ricardo Smith Quintero, PhD.</p>
-                    <p className="text-slate-400 text-sm">Director de Estrategia e Infraestructura</p>
-                  </div>
-                  <div>
-                    <p className="text-gold-500 font-bold text-lg">Ing. Rafael Nanclares</p>
-                    <p className="text-slate-400 text-sm">Director de Operaciones e Inteligencia Territorial</p>
+        {/* Liderazgo Directivo */}
+        <div id="liderazgo" className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Dirección Estratégica</h2>
+            <div className="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+            <p className="mt-6 text-slate-400 max-w-2xl mx-auto">
+              Nuestros directores acumulan décadas de experiencia liderando las entidades e infraestructuras más complejas del país.
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {/* Ricardo Smith */}
+            <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group border border-slate-700/50 hover:border-gold-500/30 transition-colors">
+              <div className="lg:w-1/3 bg-navy-800 flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-700/50 min-h-[300px]">
+                <GraduationCap className="h-24 w-24 text-slate-600 mb-4" />
+              </div>
+              <div className="lg:w-2/3 p-8 md:p-12 relative">
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-gold-500 mb-2">Ing. Ricardo Agustín Smith Quintero, PhD.</h3>
+                  <p className="text-white font-medium mb-6 text-lg">Ingeniero Civil, Master of Science y PhD. Civil Engineering</p>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
+                        <Building2 className="h-5 w-5 text-gold-500" /> Cargos Principales
+                      </h4>
+                      <p className="text-slate-400 leading-relaxed">
+                        Ex Director del Área Metropolitana del Valle de Aburrá, Secretario de Tránsito y Transporte de Medellín, y Alcalde (e) de Medellín. 
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
+                        <Shield className="h-5 w-5 text-gold-500" /> Consultoría y Experticia
+                      </h4>
+                      <p className="text-slate-400 leading-relaxed">
+                        Consultor experto para entidades como The Nature Conservancy, el Banco Interamericano de Desarrollo (BID), Findeter y Nippon KOEI LAC. Perito técnico activo ante el Tribunal Administrativo de Antioquia en procesos de alta complejidad.
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <Link href="/nosotros" className="mt-8 inline-block text-gold-500 hover:text-gold-400 font-medium flex items-center gap-2 group">
-                  Conocer al equipo <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
+              </div>
+            </div>
+
+            {/* Rafael Nanclares */}
+            <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group border border-slate-700/50 hover:border-gold-500/30 transition-colors">
+              <div className="lg:w-1/3 relative min-h-[300px] bg-navy-800">
+                <Image 
+                  src="/team/rafael.jpg" 
+                  alt="Rafael Nanclares" 
+                  fill 
+                  className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-500"
+                />
+              </div>
+              <div className="lg:w-2/3 p-8 md:p-12 relative">
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold text-gold-500 mb-2">Ing. Rafael Andrés Nanclares Ospina</h3>
+                  <p className="text-white font-medium mb-6 text-lg">Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía</p>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
+                        <Building2 className="h-5 w-5 text-gold-500" /> Cargos Principales
+                      </h4>
+                      <p className="text-slate-400 leading-relaxed">
+                        Secretario de Infraestructura del Departamento de Antioquia. Ex Secretario de Transportes y Tránsito de la ciudad de Medellín. Gerente de Bienestar Económico en Comfenalco Antioquia.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
+                        <BrainCircuit className="h-5 w-5 text-gold-500" /> Formación Adicional
+                      </h4>
+                      <p className="text-slate-400 leading-relaxed">
+                        Cuenta con estudios y formación en Inteligencia Artificial aplicada en la Universidad de California, Berkeley. Combina un enfoque analítico, filosófico y tecnológico para la creación de soluciones sustentables.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Líneas de Negocio */}
-      <section id="lineas-negocio" className="py-24 bg-navy-900 glow-bg pattern-bg relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">Líneas de Negocio</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              Soluciones hiper-especializadas respaldadas por rigor científico y tecnológico.
-            </p>
+        {/* Líneas de Negocio CTA */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Link href="/peritajes" className="glass-card p-8 border border-gold-500/30 hover:bg-navy-800/80 transition-all group cursor-pointer relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+            <h3 className="text-2xl font-heading font-bold text-white mb-2 relative z-10">Acumen Peritajes</h3>
+            <p className="text-slate-400 text-sm mb-6 relative z-10">División forense y de experticia técnica en procesos judiciales y de arbitraje.</p>
+            <div className="inline-flex items-center text-gold-500 font-semibold text-sm relative z-10 group-hover:translate-x-2 transition-transform">
+              Ver División Operativa <ArrowRight className="ml-2 h-4 w-4" />
+            </div>
+          </Link>
+
+          <div className="glass-card p-8 border border-slate-700/50 opacity-70 relative overflow-hidden">
+            <h3 className="text-2xl font-heading font-bold text-white mb-2">Proyectos y PMO</h3>
+            <p className="text-slate-400 text-sm mb-6">Administración delegada y gerencia de proyectos de infraestructura.</p>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300">
+              Próximamente
+            </span>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Link href="/peritajes" className="glass-card p-10 group block hover:border-gold-500 transition-all cursor-pointer">
-              <div className="h-16 w-16 bg-navy-800 rounded-sm flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
-                <FileSearch className="h-8 w-8 text-gold-500" />
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-white mb-4">Acumen Peritajes</h3>
-              <p className="text-slate-400 mb-6 leading-relaxed">
-                Nuestra división de investigaciones forenses, reclamaciones contractuales y dictámenes técnicos para grandes proyectos de infraestructura.
-              </p>
-              <span className="text-gold-500 font-medium inline-flex items-center gap-2">
-                Ingresar a la división <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-
-            <div className="glass-card p-10 border-slate-800/40 opacity-80 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-navy-800 text-slate-400 text-xs px-3 py-1 rounded-full font-semibold border border-slate-700">En desarrollo</div>
-              <div className="h-16 w-16 bg-navy-800 rounded-sm flex items-center justify-center mb-6">
-                <Briefcase className="h-8 w-8 text-slate-500" />
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-slate-300 mb-4">PMO & Infraestructura</h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">
-                Gestión estructurada de proyectos, flujos operativos y administración eficiente de megaproyectos.
-              </p>
-            </div>
-
-            <div className="glass-card p-10 border-slate-800/40 opacity-80 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-navy-800 text-slate-400 text-xs px-3 py-1 rounded-full font-semibold border border-slate-700">En desarrollo</div>
-              <div className="h-16 w-16 bg-navy-800 rounded-sm flex items-center justify-center mb-6">
-                <BrainCircuit className="h-8 w-8 text-slate-500" />
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-slate-300 mb-4">Estrategia Territorial</h3>
-              <p className="text-slate-500 mb-6 leading-relaxed">
-                Consultoría para movilidad, sistemas de transporte masivo y planificación inteligente de ciudades.
-              </p>
-            </div>
+          <div className="glass-card p-8 border border-slate-700/50 opacity-70 relative overflow-hidden">
+            <h3 className="text-2xl font-heading font-bold text-white mb-2">Consultoría</h3>
+            <p className="text-slate-400 text-sm mb-6">Asesoría estratégica de alto nivel para entidades públicas y privadas.</p>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300">
+              Próximamente
+            </span>
           </div>
         </div>
-      </section>
+
+      </div>
     </div>
   );
 }
