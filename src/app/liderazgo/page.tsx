@@ -113,50 +113,6 @@ export default function LiderazgoPage() {
                 <p className="text-xs text-zinc-500">Experiencia estratégica en estructuración técnica en México (Nuevo León) y Colombia.</p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Perfil Juan David Naranjo */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-32 mb-16">
-        <div className="grid md:grid-cols-12 gap-12 items-start">
-          <div className="md:col-span-4 relative aspect-[3/4] bg-zinc-200 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-             <div 
-               className="absolute inset-0 bg-cover bg-center z-0" 
-               style={{ backgroundImage: "url('/team/juan-david-naranjo.jpeg')" }}
-             />
-             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/40 to-transparent z-10" />
-          </div>
-          
-          <div className="md:col-span-8">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-zinc-900 mb-2">Juan David Naranjo</h2>
-            <p className="text-gold-500 font-medium uppercase tracking-widest text-sm mb-8">Director Asociado / Ingeniería Estructural y Forense</p>
-            
-            <div className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed font-light mb-8">
-              <p>
-                Líder técnico especializado en el análisis de patologías estructurales y la dirección de peritajes forenses para proyectos de infraestructura. Su capacidad analítica permite desglosar las fallas materiales y operativas complejas en datos técnicos irrefutables.
-              </p>
-              <p>
-                Ha participado como experto clave en la evaluación de siniestros, colapsos y reclamaciones, trabajando en conjunto con firmas de interventoría y entidades gubernamentales para determinar causas raíz bajo estrictos estándares científicos y normativos.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-3 gap-6 pt-8 border-t border-zinc-200">
-              <div>
-                <BookOpen className="h-5 w-5 text-zinc-900 mb-3" />
-                <h4 className="font-bold text-zinc-900 text-sm mb-1">Rigor Pericial</h4>
-                <p className="text-xs text-zinc-500">Evaluación exhaustiva de patologías y fallas estructurales.</p>
-              </div>
-              <div>
-                <Globe2 className="h-5 w-5 text-zinc-900 mb-3" />
-                <h4 className="font-bold text-zinc-900 text-sm mb-1">Visión Normativa</h4>
-                <p className="text-xs text-zinc-500">Alineación de dictámenes con los códigos de construcción vigentes.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }
