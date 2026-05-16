@@ -51,11 +51,11 @@ export default function Nosotros() {
                         <Building2 className="h-5 w-5 text-gold-500" /> Cargos Significativos
                       </h4>
                       <ul className="space-y-2 text-slate-400 text-sm list-disc list-inside">
-                        <li>Director del Área Metropolitana del Valle de Aburrá.</li>
-                        <li>Secretario de Tránsito y Transporte del Municipio de Medellín.</li>
-                        <li>Alcalde (e) de Medellín.</li>
-                        <li>Miembro de la Junta Directiva del Metro de Medellín y Presidente de la Junta Directiva de Metroplús (fase de construcción).</li>
-                        <li>Director de la Escuela de Geociencias y Medio Ambiente, y del programa de Doctorado en Ingeniería (UNAL Medellín).</li>
+                        <li>Consultor experto para The Nature Conservancy, BID, Findeter y Nippon KOEI LAC.</li>
+                        <li>Director de proyecto para el Plan Maestro de Movilidad de Villavicencio.</li>
+                        <li>Ex Director del Área Metropolitana del Valle de Aburrá y Secretario de Tránsito de Medellín.</li>
+                        <li>Alcalde (e) de Medellín y Miembro de la Junta Directiva del Metro.</li>
+                        <li>Director de la Escuela de Geociencias y Medio Ambiente, y del Doctorado en Ingeniería (UNAL).</li>
                       </ul>
                     </div>
                     <div>
@@ -63,10 +63,10 @@ export default function Nosotros() {
                         <Gavel className="h-5 w-5 text-gold-500" /> Experticia Pericial y Consultoría
                       </h4>
                       <p className="text-slate-400 text-sm mb-3">
-                        Ha participado destacadamente en la estructuración del plan de infraestructura del Metro de Medellín, Metroplús y Transmetro de Barranquilla.
+                        Extensa trayectoria en alta consultoría, incluyendo conceptos sobre cumplimiento de obras para Comfenalco, Findeter y seguridad vial (Túnel Aburrá Oriente).
                       </p>
                       <p className="text-slate-400 text-sm font-semibold">
-                        Ha liderado la realización de más de 18 peritajes técnicos de ingeniería para el Tribunal Administrativo de Antioquia.
+                        Perito activo para el Tribunal Administrativo de Antioquia en numerosos procesos relacionados con la Ingeniería Civil.
                       </p>
                     </div>
                   </div>
@@ -90,14 +90,14 @@ export default function Nosotros() {
                 </div>
                 <div className="relative z-10">
                   <h3 className="text-2xl font-heading font-bold text-gold-500 mb-2">Ing. Rafael Andrés Nanclares Ospina</h3>
-                  <p className="text-white font-medium mb-6">Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía y Ética</p>
+                  <p className="text-white font-medium mb-6">Ingeniero Civil, Especialista en Gerencia de Construcciones, Candidato a Máster en Filosofía</p>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div>
                       <h4 className="flex items-center gap-2 text-slate-200 font-semibold mb-3 border-b border-slate-700 pb-2">
                         <Building2 className="h-5 w-5 text-gold-500" /> Cargos Significativos
                       </h4>
                       <ul className="space-y-2 text-slate-400 text-sm list-disc list-inside">
-                        <li>Gerente de Bienestar Económico en Comfenalco Antioquia.</li>
+                        <li>Gerente de Bienestar Económico en Comfenalco Antioquia (Estructuración y ejecución de inversiones por COP 14.324M).</li>
                         <li>Secretario de Infraestructura del Departamento de Antioquia.</li>
                         <li>Gerente Técnico en FUREL S.A.</li>
                         <li>Asesor Estratégico Grupo Empresarial OMEGA ENLACES (México) y del Estado de Nuevo León.</li>
