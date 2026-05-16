@@ -21,10 +21,10 @@ export default function Navbar() {
   const links = [
     { name: "Firma", href: "/liderazgo" },
     { name: "Servicios", href: "/servicios" },
-    { name: "ACUMEN OS", href: "/acumen-os" },
     { name: "Proyectos", href: "/proyectos" },
     { name: "Insights", href: "/insights" },
     { name: "Peritajes", href: "/peritajes" },
+    { name: "ACUMEN OS", href: "/acumen-os" },
   ];
 
   return (
