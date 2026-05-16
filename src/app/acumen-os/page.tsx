@@ -35,8 +35,8 @@ export default function AcumenOSPage() {
         <section className="py-24 border-b border-zinc-800">
            <div className="grid md:grid-cols-2 gap-16 items-center">
              <div className="order-2 md:order-1 relative aspect-square border border-zinc-800 bg-zinc-900/40 p-8 flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs.png')] bg-cover bg-center opacity-30 mix-blend-screen grayscale" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-zinc-950 via-transparent to-zinc-900/20" />
+                <div className="absolute inset-0 bg-[url('/images/tech_tunnel.png')] bg-cover bg-center opacity-50 mix-blend-screen" />
+                <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/80 to-zinc-950" />
                 
                 {/* Abstract UI Elements */}
                 <div className="relative z-10 w-full max-w-sm">

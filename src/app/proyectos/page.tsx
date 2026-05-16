@@ -30,7 +30,7 @@ export default function ProyectosPage() {
             <div className="order-2 lg:order-1 relative aspect-[4/3] bg-zinc-100 border border-zinc-200 overflow-hidden group">
                {/* Usaremos imagen abstracta de SIG o wireframe */}
                <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs.png')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
-               <div className="absolute inset-0 bg-blue-900/10 mix-blend-multiply" />
+               <div className="absolute inset-0 bg-blue-900/5 mix-blend-multiply" />
             </div>
             
             <div className="order-1 lg:order-2">

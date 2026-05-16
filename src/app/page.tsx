@@ -10,8 +10,8 @@ export default function Home() {
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-slate-50/90 z-10" />
-          <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-30 mix-blend-multiply" />
-          <div className="absolute inset-0 dot-pattern opacity-60 z-10" />
+          <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-60 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
         
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
