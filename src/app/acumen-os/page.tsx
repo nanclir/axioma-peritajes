@@ -17,10 +17,10 @@ export default function AcumenOSPage() {
         {/* Header Section */}
         <section className="relative pt-12 pb-24 border-b border-zinc-800">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-screen pointer-events-none" 
+            className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-lighten pointer-events-none" 
             style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 to-zinc-950 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/30 to-zinc-950 pointer-events-none" />
 
           <div className="relative z-10 flex items-center gap-3 mb-8">
              <div className="h-px w-8 bg-blue-500"></div>
