@@ -51,8 +51,12 @@ export default function Home() {
       </section>
 
       {/* Philosophy / Statement */}
-      <section className="py-32 bg-white relative z-10 border-t border-zinc-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-32 bg-white relative z-10 border-t border-zinc-100 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-5 mix-blend-multiply pointer-events-none" 
+          style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
             <div>
               <h2 className="text-3xl md:text-5xl font-heading font-bold text-zinc-900 mb-8 leading-tight">
@@ -86,8 +90,12 @@ export default function Home() {
       </section>
 
       {/* Markets / Services (Arup structure) */}
-      <section className="py-32 bg-slate-50 border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-32 bg-slate-50 relative border-t border-zinc-200 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-5 mix-blend-multiply pointer-events-none" 
+          style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
               <h2 className="text-4xl md:text-5xl font-heading font-bold text-zinc-900 mb-4">Líneas de Negocio</h2>
@@ -134,7 +142,11 @@ export default function Home() {
 
       {/* ACUMEN OS Section (Palantir Tech Break) */}
       <section className="py-32 bg-zinc-950 text-white relative overflow-hidden cinematic-glow border-t-4 border-gold-500">
-        <div className="absolute inset-0 grid-bg opacity-20"></div>
+        <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-screen pointer-events-none z-0" 
+          style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+        />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>

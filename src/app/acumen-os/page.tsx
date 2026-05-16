@@ -15,8 +15,14 @@ export default function AcumenOSPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
-        <section className="pt-12 pb-24 border-b border-zinc-800">
-          <div className="flex items-center gap-3 mb-8">
+        <section className="relative pt-12 pb-24 border-b border-zinc-800">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-screen pointer-events-none" 
+            style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 to-zinc-950 pointer-events-none" />
+
+          <div className="relative z-10 flex items-center gap-3 mb-8">
              <div className="h-px w-8 bg-blue-500"></div>
              <span className="font-mono text-xs tracking-widest text-blue-400 uppercase">Architecture Overview</span>
           </div>
