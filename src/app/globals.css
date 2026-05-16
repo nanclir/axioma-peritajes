@@ -1,16 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-900: #0C1524;
-  --color-navy-800: #121E36;
-  --color-navy-700: #1A2B4A;
   --color-gold-500: #D4AF37;
   --color-gold-400: #E2C45F;
   --color-gold-600: #AA8B28;
-  --color-slate-100: #F8FAFC;
-  --color-slate-200: #E2E8F0;
-  --color-slate-300: #CBD5E1;
-  --color-slate-800: #26344A;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
@@ -18,8 +11,8 @@
 
 @layer base {
   :root {
-    --background: var(--color-navy-900);
-    --foreground: var(--color-slate-100);
+    --background: #FFFFFF;
+    --foreground: #0F172A; /* slate-900 */
   }
 
   body {
@@ -33,18 +26,18 @@
   }
 }
 
-/* Glassmorphism and UI utilities */
+/* Glassmorphism and UI utilities para Tema Claro */
 @layer utilities {
   .glass {
-    @apply bg-navy-800/60 backdrop-blur-md border border-slate-800/50 shadow-xl;
+    @apply bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm;
   }
   
   .glass-card {
-    @apply bg-navy-800/60 backdrop-blur-md border border-slate-800/80 shadow-xl transition-all duration-300;
+    @apply bg-white border border-slate-200 shadow-sm transition-all duration-300;
   }
   
   .glass-card:hover {
-    @apply -translate-y-1 border-gold-500/40 shadow-[0_10px_30px_rgba(212,175,55,0.05)];
+    @apply -translate-y-1 border-gold-500/40 shadow-lg;
   }
 
   .glow-bg {
@@ -53,18 +46,18 @@
   
   .glow-bg::before {
     content: '';
-    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-navy-700/40 blur-[100px] rounded-full -z-10 pointer-events-none;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-slate-100 blur-[100px] rounded-full -z-10 pointer-events-none;
   }
   
   .pattern-bg {
-    @apply relative;
+    @apply relative z-0;
   }
   
   .pattern-bg::after {
     content: '';
-    @apply absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay;
-    background-image: radial-gradient(var(--color-slate-300) 1px, transparent 1px);
+    @apply absolute inset-0 opacity-20 pointer-events-none mix-blend-multiply;
+    background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
     background-size: 24px 24px;
-    z-index: 0;
+    z-index: -1;
   }
 }

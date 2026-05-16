@@ -39,16 +39,16 @@ const services = [
 
 export default function Services() {
   return (
-    <div className="min-h-screen bg-navy-900 pb-24">
+    <div className="min-h-screen bg-slate-50 pb-24">
       {/* Hero */}
-      <div className="relative pt-24 pb-24 border-b border-slate-800">
+      <div className="relative pt-24 pb-24 border-b border-slate-200">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/60 to-navy-900/40 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-slate-50/80 to-slate-50/50 z-10" />
           <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Nuestros Servicios</h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 mb-6">Nuestros Servicios</h1>
+          <p className="text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">
             Ofrecemos análisis especializados para resolver las controversias técnicas más exigentes en el sector de la ingeniería y la infraestructura.
           </p>
         </div>
@@ -60,12 +60,12 @@ export default function Services() {
           {services.map((service) => (
             <div key={service.id} className="glass-card p-10 group border-t-4 border-t-transparent hover:border-t-gold-500 rounded-sm">
               <div className="flex items-start gap-6">
-                <div className="bg-navy-800 p-4 rounded-sm shrink-0 group-hover:bg-gold-500/10 transition-colors">
+                <div className="bg-white p-4 rounded-sm shrink-0 group-hover:bg-gold-500/10 transition-colors">
                   <service.icon className="h-8 w-8 text-gold-500" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-heading font-bold text-white mb-3">{service.title}</h3>
-                  <p className="text-slate-400 mb-6 leading-relaxed">
+                  <h3 className="text-2xl font-heading font-bold text-slate-900 mb-3">{service.title}</h3>
+                  <p className="text-slate-500 mb-6 leading-relaxed">
                     {service.description}
                   </p>
                   <Link 
@@ -82,14 +82,14 @@ export default function Services() {
         </div>
 
         {/* Banner CTA */}
-        <div className="mt-20 bg-gradient-to-r from-navy-800 to-navy-900 border border-slate-800 p-12 rounded-sm text-center">
-          <h2 className="text-3xl font-heading font-bold text-white mb-4">¿Su caso requiere una especialidad diferente?</h2>
-          <p className="text-slate-400 max-w-2xl mx-auto mb-8">
+        <div className="mt-20 bg-gradient-to-r from-white to-slate-50 border border-slate-200 p-12 rounded-sm text-center">
+          <h2 className="text-3xl font-heading font-bold text-slate-900 mb-4">¿Su caso requiere una especialidad diferente?</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto mb-8">
             Nuestra red de peritos y nuestro enfoque interdisciplinario nos permite abordar retos complejos de ingeniería en diversas áreas.
           </p>
           <Link
             href="/peritajes/contacto"
-            className="inline-block bg-white text-navy-900 px-8 py-3 rounded-sm font-bold hover:bg-slate-200 transition-colors shadow-lg"
+            className="inline-block bg-white text-white px-8 py-3 rounded-sm font-bold hover:bg-slate-200 transition-colors shadow-lg"
           >
             Consultar Viabilidad del Caso
           </Link>
