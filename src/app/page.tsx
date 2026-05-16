@@ -9,12 +9,12 @@ export default function Home() {
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-slate-50/90 z-10" />
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+            className="absolute inset-0 bg-cover bg-center opacity-60 pointer-events-none" 
             style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }} 
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+          {/* Soft gradient to keep text readable without hiding the image */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/90 via-slate-50/50 to-transparent z-10" />
         </div>
         
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -53,7 +53,7 @@ export default function Home() {
       {/* Philosophy / Statement */}
       <section className="py-32 bg-white relative z-10 border-t border-zinc-100 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" 
+          className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
           style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,7 +92,7 @@ export default function Home() {
       {/* Markets / Services (Arup structure) */}
       <section className="py-32 bg-slate-50 relative border-t border-zinc-200 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" 
+          className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
           style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,7 +144,7 @@ export default function Home() {
       <section className="py-32 bg-zinc-950 text-white relative overflow-hidden cinematic-glow border-t-4 border-gold-500">
         <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none z-0"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none z-0" 
+          className="absolute inset-0 bg-cover bg-center opacity-60 pointer-events-none z-0" 
           style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -197,7 +197,7 @@ export default function Home() {
             
             {/* Abstract Tech Visual */}
             <div className="relative h-[500px] w-full rounded-sm border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden flex items-center justify-center">
-               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30 pointer-events-none" />
+               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-60 pointer-events-none" />
                <div className="text-center z-10">
                  <div className="w-24 h-24 mx-auto border border-blue-500/30 rounded-full flex items-center justify-center mb-4 relative">
                    <div className="absolute inset-0 border border-blue-400 rounded-full animate-[spin_4s_linear_infinite] border-t-transparent"></div>
