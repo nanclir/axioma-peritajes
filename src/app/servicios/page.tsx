@@ -53,17 +53,29 @@ const services = [
 
 export default function ServiciosPage() {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-24">
+    <div className="min-h-screen bg-slate-50 pb-24">
       
       {/* Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
-            Soluciones críticas para infraestructuras complejas.
-          </h1>
-          <p className="text-xl text-zinc-600 leading-relaxed font-light">
-            Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
-          </p>
+      <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
+        <div className="absolute inset-0 bg-slate-50 z-0" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply" 
+          style={{ backgroundImage: "url('/images/auditoria_forense_docs.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold font-mono tracking-widest text-zinc-500 uppercase bg-zinc-200 mb-6">
+              Áreas de Práctica
+            </div>
+            <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
+              Soluciones críticas para infraestructuras complejas.
+            </h1>
+            <p className="text-xl text-zinc-600 leading-relaxed font-light">
+              Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
+            </p>
+          </div>
         </div>
       </section>
 

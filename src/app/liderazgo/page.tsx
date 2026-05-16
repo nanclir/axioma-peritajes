@@ -7,17 +7,26 @@ export const metadata = {
 
 export default function LiderazgoPage() {
   return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-24">
+    <div className="min-h-screen bg-slate-50 pb-24">
       
       {/* Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
-            Pensamiento estratégico aplicado al territorio.
-          </h1>
-          <p className="text-xl text-zinc-600 leading-relaxed font-light">
-            Acumen no es una estructura burocrática tradicional. Somos una firma boutique donde el liderazgo intelectual de nuestros socios interviene directamente en los desafíos más complejos de cada proyecto.
-          </p>
+      <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
+        <div className="absolute inset-0 bg-slate-50 z-0" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply" 
+          style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
+              Pensamiento estratégico aplicado al territorio.
+            </h1>
+            <p className="text-xl text-zinc-600 leading-relaxed font-light">
+              Acumen no es una estructura burocrática tradicional. Somos una firma boutique donde el liderazgo intelectual de nuestros socios interviene directamente en los desafíos más complejos de cada proyecto.
+            </p>
+          </div>
         </div>
       </section>
 

@@ -8,33 +8,38 @@ export const metadata = {
 
 export default function PeritajesPage() {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-24">
+    <div className="min-h-screen bg-white pb-24">
       
-      {/* Header */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-        <div className="max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-zinc-200 bg-slate-50 rounded-full text-xs font-bold uppercase tracking-widest text-zinc-600">
-            Línea de Negocio Especializada
-          </div>
-          <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
-            Peritaje Técnico Forense.
-          </h1>
-          <p className="text-xl text-zinc-600 leading-relaxed font-light mb-8">
-            Cuando la infraestructura falla, las implicaciones técnicas, legales y financieras exigen una investigación con rigor científico. Proveemos dictámenes periciales concluyentes para tribunales, cortes y litigios de alta complejidad.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/peritajes/experiencia"
-              className="inline-flex justify-center items-center gap-2 bg-zinc-900 text-white px-6 py-3 font-medium transition-colors hover:bg-gold-500"
-            >
-              Casos de Estudio y Experiencia <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/contacto"
-              className="inline-flex justify-center items-center gap-2 bg-white text-zinc-900 px-6 py-3 font-medium border border-zinc-200 transition-colors hover:border-zinc-900"
-            >
-              Solicitar Evaluación
-            </Link>
+      {/* Header con Imagen de Fondo */}
+      <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
+        <div className="absolute inset-0 bg-slate-50 z-0" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-multiply" 
+          style={{ backgroundImage: "url('/images/hero_home_peritaje.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold font-mono tracking-widest text-zinc-500 uppercase bg-zinc-200 mb-6">
+              Línea de Negocio Especializada
+            </div>
+            <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
+              Peritaje Técnico Forense.
+            </h1>
+            <p className="text-xl text-zinc-600 leading-relaxed font-light mb-10">
+              Cuando la infraestructura falla, las implicaciones técnicas, legales y financieras exigen una investigación con rigor científico. Proveemos dictámenes periciales concluyentes para tribunales, cortes y litigios de alta complejidad.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/peritajes/experiencia" className="inline-flex justify-center items-center px-6 py-3 bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition-all group">
+                Casos de Estudio y Experiencia
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <button className="inline-flex justify-center items-center px-6 py-3 border border-zinc-300 bg-white text-zinc-900 font-medium hover:bg-zinc-50 transition-colors">
+                Solicitar Evaluación
+              </button>
+            </div>
           </div>
         </div>
       </section>
