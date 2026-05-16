@@ -12,7 +12,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-20">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/50 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-slate-50/80 to-transparent z-10" />
           <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-80" />
         </div>
         
@@ -27,7 +27,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/peritajes/contacto"
-                className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-white px-8 py-4 rounded-sm font-semibold transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] text-lg"
+                className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-slate-900 px-8 py-4 rounded-sm font-semibold transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] text-lg"
               >
                 Solicitar Dictamen <ArrowRight className="h-5 w-5" />
               </Link>
@@ -128,7 +128,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-gold-500">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6">
             No deje su reputación en la incertidumbre
           </h2>
           <p className="text-slate-900 text-xl mb-10 max-w-2xl mx-auto font-medium">

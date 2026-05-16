@@ -30,7 +30,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/peritajes"
-              className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-white px-8 py-4 rounded-sm font-bold transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]"
+              className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-slate-900 px-8 py-4 rounded-sm font-bold transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]"
             >
               Acumen Peritajes <ArrowRight className="h-5 w-5" />
             </Link>
@@ -100,7 +100,7 @@ export default function Home() {
             {/* Ricardo Smith */}
             <div className="glass-card rounded-sm overflow-hidden flex flex-col lg:flex-row group border border-slate-300/50 hover:border-gold-500/30 transition-colors">
               <div className="lg:w-1/3 bg-slate-50 flex flex-col items-center justify-center p-12 border-b lg:border-b-0 lg:border-r border-slate-300/50 min-h-[300px]">
-                <GraduationCap className="h-24 w-24 text-slate-400 mb-4" />
+                <GraduationCap className="h-24 w-24 text-slate-500 mb-4" />
               </div>
               <div className="lg:w-2/3 p-8 md:p-12 relative">
                 <div className="relative z-10">

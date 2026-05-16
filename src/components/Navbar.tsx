@@ -41,7 +41,7 @@ export default function Navbar() {
             ))}
             <Link
               href="/peritajes/contacto"
-              className="bg-gold-500 hover:bg-gold-600 text-white px-5 py-2.5 rounded-sm font-semibold transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
+              className="bg-gold-500 hover:bg-gold-600 text-slate-900 px-5 py-2.5 rounded-sm font-semibold transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
             >
               Solicitar Asesoría
             </Link>

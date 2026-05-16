@@ -28,9 +28,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-navy-900 text-slate-100 font-sans selection:bg-gold-500 selection:text-navy-900">
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-gold-500 selection:text-slate-900">
         <Navbar />
         <main className="flex-1 pt-20">
           {children}

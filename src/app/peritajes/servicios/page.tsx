@@ -89,7 +89,7 @@ export default function Services() {
           </p>
           <Link
             href="/peritajes/contacto"
-            className="inline-block bg-white text-white px-8 py-3 rounded-sm font-bold hover:bg-slate-200 transition-colors shadow-lg"
+            className="inline-block bg-white text-slate-900 px-8 py-3 rounded-sm font-bold hover:bg-slate-200 transition-colors shadow-lg"
           >
             Consultar Viabilidad del Caso
           </Link>

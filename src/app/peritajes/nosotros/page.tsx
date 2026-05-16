@@ -14,7 +14,7 @@ export default function Nosotros() {
       {/* Hero */}
       <div className="relative pt-20 pb-24 border-b border-slate-200">
         <div className="absolute inset-0 z-0">
-           <div className="absolute inset-0 bg-gradient-to-r from-navy-900/80 via-navy-900/50 to-transparent z-10" />
+           <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-slate-50/80 to-transparent z-10" />
            <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-80" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -177,7 +177,7 @@ export default function Nosotros() {
             </p>
             <Link
               href="/peritajes/experiencia"
-              className="inline-block bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-3 rounded-sm font-bold hover:bg-gold-500 hover:text-white transition-colors"
+              className="inline-block bg-transparent border-2 border-gold-500 text-gold-500 px-8 py-3 rounded-sm font-bold hover:bg-gold-500 hover:text-slate-900 transition-colors"
             >
               Ver Casos de Éxito y Experiencia
             </Link>
@@ -186,8 +186,8 @@ export default function Nosotros() {
 
         {/* CTA */}
         <div className="bg-gold-500 p-12 rounded-sm text-center max-w-4xl mx-auto">
-          <h2 className="text-3xl font-heading font-bold text-white mb-6">El rigor técnico que su caso necesita</h2>
-          <p className="text-navy-800 text-lg mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-heading font-bold text-slate-900 mb-6">El rigor técnico que su caso necesita</h2>
+          <p className="text-slate-800 text-lg mb-8 max-w-2xl mx-auto">
             Cuente con la experticia de nuestro equipo directivo para estructurar dictámenes o controvertir argumentos en tribunales.
           </p>
           <Link

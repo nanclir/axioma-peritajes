@@ -79,7 +79,7 @@ export default function Nosotros() {
           <h2 className="text-3xl font-heading font-bold text-slate-900 mb-6">Conozca nuestra primera división operativa</h2>
           <Link
             href="/peritajes"
-            className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-white px-8 py-4 rounded-sm font-bold transition-all shadow-xl text-lg"
+            className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-slate-900 px-8 py-4 rounded-sm font-bold transition-all shadow-xl text-lg"
           >
             Acumen Peritajes <ArrowRight className="h-5 w-5" />
           </Link>
