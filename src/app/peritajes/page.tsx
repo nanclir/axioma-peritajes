@@ -1,147 +1,121 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, FileText, Landmark, Scale } from "lucide-react";
+import { ArrowRight, Scale, Search, ShieldAlert, FileText, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 export const metadata = {
-  title: "Acumen Peritajes | Dictámenes Periciales en Ingeniería",
-  description: "Firma especializada en peritajes técnicos, evaluación estructural, geotecnia y reclamaciones en grandes obras de infraestructura. Asegure su verdad técnica.",
+  title: "Peritajes Técnicos Forenses | ACUMEN INGENIERÍA S.A.S.",
+  description: "División forense especializada en dictámenes técnicos para litigios y tribunales de arbitramento.",
 };
 
-export default function Home() {
+export default function PeritajesPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-20">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-slate-50/80 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[url('/images/hero_home_peritaje.png')] bg-cover bg-center opacity-80" />
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-7xl font-bold font-heading leading-tight mb-6">
-              La Verdad Técnica para <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Decisiones Críticas</span>
-            </h1>
-            <p className="text-xl text-slate-500 mb-10 leading-relaxed max-w-2xl">
-              Somos la autoridad concluyente en dictámenes periciales y reclamaciones de ingeniería. Protegemos sus intereses en proyectos de alta complejidad con rigor científico y seguridad jurídica.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/peritajes/contacto"
-                className="inline-flex justify-center items-center gap-2 bg-gold-500 hover:bg-gold-400 text-slate-900 px-8 py-4 rounded-sm font-semibold transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] text-lg"
-              >
-                Solicitar Dictamen <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/peritajes/servicios"
-                className="inline-flex justify-center items-center px-6 py-4 rounded-sm font-semibold text-slate-900 border border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all text-base"
-              >
-                Servicios
-              </Link>
-              <Link
-                href="/peritajes/experiencia"
-                className="inline-flex justify-center items-center px-6 py-4 rounded-sm font-semibold text-slate-900 border border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all text-base"
-              >
-                Experiencia (Casos)
-              </Link>
-            </div>
+    <div className="min-h-screen bg-white pt-32 pb-24">
+      
+      {/* Header */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <div className="max-w-4xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-zinc-200 bg-slate-50 rounded-full text-xs font-bold uppercase tracking-widest text-zinc-600">
+            Línea de Negocio Especializada
           </div>
-        </div>
-      </section>
-
-      {/* Trust Indicators */}
-      <section className="py-12 border-y border-slate-200 bg-white/50 pattern-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-800">
-            <div>
-              <p className="text-4xl font-heading font-bold text-slate-900 mb-2">13+</p>
-              <p className="text-slate-500 text-sm uppercase tracking-wider">Años de Experiencia</p>
-            </div>
-            <div>
-              <p className="text-4xl font-heading font-bold text-slate-900 mb-2">Casos</p>
-              <p className="text-slate-500 text-sm uppercase tracking-wider">Historial Demostrable</p>
-            </div>
-            <div>
-              <p className="text-4xl font-heading font-bold text-slate-900 mb-2">100%</p>
-              <p className="text-slate-500 text-sm uppercase tracking-wider">Rigor Técnico</p>
-            </div>
-            <div>
-              <p className="text-4xl font-heading font-bold text-slate-900 mb-2">Alto</p>
-              <p className="text-slate-500 text-sm uppercase tracking-wider">Impacto Financiero</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-24 bg-slate-50 glow-bg">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-4">Especialidades <span className="text-gold-500">Técnicas</span></h2>
-            <p className="text-slate-500 max-w-2xl mx-auto text-lg">
-              Abordamos cada caso con metodología científica para asegurar conclusiones definitivas en disputas legales y contractuales.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass-card p-8 group">
-              <div className="h-14 w-14 bg-slate-100 rounded-sm flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
-                <Landmark className="h-7 w-7 text-gold-500" />
-              </div>
-              <h3 className="text-xl font-heading font-bold text-slate-900 mb-4">Peritaje Estructural</h3>
-              <p className="text-slate-500 mb-6 line-clamp-3">
-                Análisis patológico de estructuras, evaluación de vulnerabilidad sísmica y determinación de causas en fallas constructivas para procesos judiciales.
-              </p>
-              <Link href="/peritajes/servicios/peritaje-estructural" className="text-gold-500 font-medium inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                Saber más <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="glass-card p-8 group">
-              <div className="h-14 w-14 bg-gold-500/10 rounded-sm flex items-center justify-center mb-6">
-                <Scale className="h-7 w-7 text-gold-500" />
-              </div>
-              <h3 className="text-xl font-heading font-bold text-slate-900 mb-4">Reclamaciones en Ingeniería</h3>
-              <p className="text-slate-500 mb-6 line-clamp-3">
-                Cuantificación de daños, sobrecostos y desequilibrios económicos en contratos de obra pública y privada. Acompañamiento en tribunales de arbitramento.
-              </p>
-              <Link href="/peritajes/servicios/reclamaciones-ingenieria" className="text-gold-500 font-medium inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                Saber más <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="glass-card p-8 group">
-              <div className="h-14 w-14 bg-slate-100 rounded-sm flex items-center justify-center mb-6 group-hover:bg-gold-500/20 transition-colors">
-                <FileText className="h-7 w-7 text-gold-500" />
-              </div>
-              <h3 className="text-xl font-heading font-bold text-slate-900 mb-4">Peritaje Geotécnico</h3>
-              <p className="text-slate-500 mb-6 line-clamp-3">
-                Dictámenes sobre inestabilidad de taludes, fallas en cimentaciones y movimientos de tierra. Experticia en proyectos de túneles y vías.
-              </p>
-              <Link href="/peritajes/servicios/peritaje-geotecnico" className="text-gold-500 font-medium inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                Saber más <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gold-500">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6">
-            No deje su reputación en la incertidumbre
-          </h2>
-          <p className="text-slate-900 text-xl mb-10 max-w-2xl mx-auto font-medium">
-            Garantice la solidez técnica de su defensa o reclamación con un dictamen concluyente.
+          <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
+            Peritaje Técnico Forense.
+          </h1>
+          <p className="text-xl text-zinc-600 leading-relaxed font-light mb-8">
+            Cuando la infraestructura falla, las implicaciones técnicas, legales y financieras exigen una investigación con rigor científico. Proveemos dictámenes periciales concluyentes para tribunales, cortes y litigios de alta complejidad.
           </p>
-          <Link
-            href="/peritajes/contacto"
-            className="inline-flex justify-center items-center gap-2 bg-slate-50 hover:bg-white text-slate-900 px-10 py-4 rounded-sm font-bold transition-all text-lg shadow-xl"
-          >
-            Contactar a un Experto
-          </Link>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="/peritajes/experiencia"
+              className="inline-flex justify-center items-center gap-2 bg-zinc-900 text-white px-6 py-3 font-medium transition-colors hover:bg-gold-500"
+            >
+              Casos de Estudio y Experiencia <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/contacto"
+              className="inline-flex justify-center items-center gap-2 bg-white text-zinc-900 px-6 py-3 font-medium border border-zinc-200 transition-colors hover:border-zinc-900"
+            >
+              Solicitar Evaluación
+            </Link>
+          </div>
         </div>
       </section>
+
+      {/* Áreas de Actuación */}
+      <section className="bg-slate-50 border-y border-zinc-200 py-24 mb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-12">Áreas de Actuación Forense</h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="glass-card p-8">
+              <Scale className="h-8 w-8 text-gold-500 mb-6" />
+              <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Tribunales de Arbitramento</h3>
+              <p className="text-zinc-600 text-sm leading-relaxed">
+                Conceptos técnicos imparciales y sustentación experta en audiencias para resolución de controversias entre concesionarios, contratistas y el Estado.
+              </p>
+            </div>
+            
+            <div className="glass-card p-8">
+              <Search className="h-8 w-8 text-gold-500 mb-6" />
+              <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Auditoría Estructural y Geotécnica</h3>
+              <p className="text-zinc-600 text-sm leading-relaxed">
+                Identificación de patologías, fallas de diseño o errores constructivos mediante ensayos no destructivos y modelamiento retrospectivo.
+              </p>
+            </div>
+            
+            <div className="glass-card p-8">
+              <FileText className="h-8 w-8 text-gold-500 mb-6" />
+              <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Reclamaciones y Desequilibrios</h3>
+              <p className="text-zinc-600 text-sm leading-relaxed">
+                Análisis de cronogramas, presupuestos y matrices de riesgo para determinar responsabilidades en sobrecostos o retrasos de megaobras.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Equipo Especializado */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-4">El Equipo de Peritajes</h2>
+        <p className="text-zinc-600 mb-12 max-w-2xl">
+          Esta división está liderada directamente por los directores de la firma, apoyados por expertos en visualización e ingeniería creativa para garantizar que la evidencia técnica sea irrefutable y comprensible para jueces y abogados.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          
+          {/* Perfil Juan David Naranjo */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale">
+              <div className="absolute inset-0 bg-[url('/foto%20juan%20david%20naranjo.jpeg')] bg-cover bg-center z-0" />
+            </div>
+            <div className="w-full md:w-2/3">
+              <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Juan David Naranjo</h3>
+              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Especialista en Visualización / Perspectógrafo</p>
+              <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                Ingeniero y experto en "Ingeniería Creativa". Su rol dentro de la división de peritajes es traducir hallazgos matemáticos, fallas estructurales y modelos complejos en material visual 3D, diagramas interactivos y exposiciones gráficas de alto impacto que permiten a las cortes comprender la verdad técnica de manera inequívoca.
+              </p>
+              <ul className="space-y-2 text-sm text-zinc-600">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelado 3D Forense</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Exposición Visual en Audiencias</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Reconstrucción Digital de Fallas</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Liderazgo Matriz */}
+          <div className="border border-zinc-200 bg-slate-50 p-8 flex flex-col justify-center shadow-sm h-full">
+            <ShieldAlert className="h-10 w-10 text-zinc-400 mb-6" />
+            <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Dirección Técnica Central</h3>
+            <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+              Todos los peritajes de esta línea de negocio son auditados, firmados y sustentados por <strong>Ricardo Smith</strong> y <strong>Rafael Nanclares</strong>. Garantizamos que el peso intelectual e institucional de nuestra firma matriz respalda cada dictamen.
+            </p>
+            <Link href="/liderazgo" className="text-zinc-900 font-bold text-sm hover:text-gold-500 transition-colors inline-flex items-center gap-2">
+              Ver perfiles directivos <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
     </div>
   );
 }

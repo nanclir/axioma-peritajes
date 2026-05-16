@@ -1,57 +1,74 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { Menu, X, Hexagon } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
-    { name: "Inicio", href: "/" },
-    { name: "Nuestra Firma", href: "/nosotros" },
-    { name: "División Peritajes", href: "/peritajes" },
-    { name: "Contacto", href: "/peritajes/contacto" },
+    { name: "Firma", href: "/liderazgo" },
+    { name: "Servicios", href: "/servicios" },
+    { name: "ACUMEN OS", href: "/acumen-os" },
+    { name: "Proyectos", href: "/proyectos" },
+    { name: "Insights", href: "/insights" },
+    { name: "Peritajes", href: "/peritajes" },
   ];
 
   return (
-    <nav className="fixed w-full z-50 top-0 transition-all duration-300 glass border-b-0 border-slate-200">
+    <nav 
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/90 backdrop-blur-md border-b border-slate-200 py-3 shadow-sm" : "bg-transparent py-5"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2 group">
-              <ShieldCheck className="h-8 w-8 text-gold-500 group-hover:text-gold-400 transition-colors" />
-              <span className="font-heading font-bold text-2xl tracking-tight text-slate-900">
-                ACUMEN <span className="text-gold-500 font-light">Ingeniería</span>
-              </span>
-            </Link>
-          </div>
+        <div className="flex justify-between items-center">
           
+          <Link href="/" className="flex items-center gap-2 group">
+            <Hexagon className="h-7 w-7 text-zinc-900 group-hover:text-gold-500 transition-colors" />
+            <span className="font-heading font-bold text-xl tracking-tight text-zinc-900">
+              ACUMEN
+            </span>
+          </Link>
+
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {links.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-slate-700 hover:text-gold-500 transition-colors"
+                className={`text-sm font-medium transition-colors hover:text-gold-500 ${
+                  pathname.startsWith(link.href) ? "text-gold-500" : "text-zinc-600"
+                }`}
               >
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/peritajes/contacto"
-              className="bg-gold-500 hover:bg-gold-600 text-slate-900 px-5 py-2.5 rounded-sm font-semibold transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
+            <Link 
+              href="/contacto"
+              className="ml-4 text-xs font-bold uppercase tracking-wider text-white bg-zinc-900 px-5 py-2.5 hover:bg-gold-500 transition-colors"
             >
-              Solicitar Asesoría
+              Contacto
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-700 hover:text-slate-900 focus:outline-none"
+              className="text-zinc-900 hover:text-gold-500 transition-colors"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -61,24 +78,29 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-white border-t border-slate-200"
-        >
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden bg-white border-b border-slate-200 absolute w-full shadow-lg">
+          <div className="px-4 pt-2 pb-6 space-y-1">
             {links.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-gold-500 hover:bg-slate-50 transition-colors"
                 onClick={() => setIsOpen(false)}
+                className={`block px-3 py-4 text-base font-medium border-b border-slate-100 ${
+                  pathname.startsWith(link.href) ? "text-gold-500" : "text-zinc-900"
+                }`}
               >
                 {link.name}
               </Link>
             ))}
+            <Link
+              href="/contacto"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-4 text-base font-bold text-gold-500"
+            >
+              Contacto
+            </Link>
           </div>
-        </motion.div>
+        </div>
       )}
     </nav>
   );
