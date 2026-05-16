@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hexagon, MapPin, Mail, Linkedin } from "lucide-react";
+import { Hexagon, MapPin, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,7 +21,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-zinc-500 hover:text-white transition-colors">
-                <Linkedin className="h-5 w-5" />
+                Contacto
               </a>
             </div>
           </div>
