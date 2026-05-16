@@ -11,12 +11,13 @@ export default function LiderazgoPage() {
       
       {/* Header */}
       <section className="relative pt-32 pb-24 mb-24 overflow-hidden border-b border-zinc-200">
-        <div className="absolute inset-0 bg-slate-50 z-0" />
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" 
-          style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent" />
+        <div className="absolute inset-0 z-0">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-60 pointer-events-none" 
+            style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-50/95 via-slate-50/70 to-transparent z-10" />
+        </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">

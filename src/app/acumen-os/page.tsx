@@ -15,11 +15,13 @@ export default function AcumenOSPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
-        <section className="relative pt-12 pb-24 border-b border-zinc-800 overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-            style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
-          />
+        <section className="relative pt-32 pb-24 overflow-hidden border-b border-zinc-800">
+          <div className="absolute inset-0 z-0">
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
+              style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+            />
+          </div>
 
           <div className="relative z-10 flex items-center gap-3 mb-8">
              <div className="h-px w-8 bg-blue-500"></div>
