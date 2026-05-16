@@ -197,7 +197,7 @@ export default function Home() {
             
             {/* Abstract Tech Visual */}
             <div className="relative h-[500px] w-full rounded-sm border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden flex items-center justify-center">
-               <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-60 pointer-events-none" />
+               {/* Clean dark background for the tech visual */}
                <div className="text-center z-10">
                  <div className="w-24 h-24 mx-auto border border-blue-500/30 rounded-full flex items-center justify-center mb-4 relative">
                    <div className="absolute inset-0 border border-blue-400 rounded-full animate-[spin_4s_linear_infinite] border-t-transparent"></div>
