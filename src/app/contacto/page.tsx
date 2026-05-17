@@ -19,10 +19,20 @@ export default function ContactoPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/contact', {
+      const finalData = {
+        ...formData,
+        access_key: "95ce9c1c-16f7-4dd2-9a50-15240090738d",
+        subject: `Nuevo requerimiento web: ${formData.asunto} - ${formData.empresa}`,
+        from_name: "Web ACUMEN Ingeniería"
+      };
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(finalData)
       });
       
       if (response.ok) {
