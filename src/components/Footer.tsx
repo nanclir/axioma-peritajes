@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hexagon, MapPin, Mail } from "lucide-react";
+import { Hexagon, MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -47,6 +47,12 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-zinc-500" />
                 <span>contacto@acumeningenieria.com</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-zinc-500" />
+                <a href="https://wa.me/573005771484" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  +57 300 577 1484
+                </a>
               </li>
             </ul>
           </div>
