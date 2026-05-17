@@ -73,6 +73,20 @@ export default function ContactoPage() {
                   <p className="text-zinc-600">contacto@acumeningenieria.com</p>
                 </div>
               </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex items-center justify-center w-6 h-6 text-gold-500 shrink-0">
+                  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-zinc-900 mb-1">WhatsApp / Línea Directa</h4>
+                  <p className="text-zinc-600">
+                    <a href="https://wa.me/573005771484" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 font-medium transition-colors">
+                      +57 300 577 1484
+                    </a>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
