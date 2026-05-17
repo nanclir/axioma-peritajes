@@ -40,17 +40,16 @@ export default function AcumenOSPage() {
       </section>
 
       {/* Manifesto Section & Flowchart (Full Width) */}
-      <section className="py-24 bg-white relative overflow-hidden border-b border-zinc-200">
+      <section className="py-24 bg-slate-50 relative overflow-hidden border-b border-zinc-200">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+          className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
           style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
             
             {/* Text Column */}
-            <div className="prose prose-zinc max-w-none">
+            <div className="prose prose-zinc max-w-none glass-card p-8 md:p-12 border border-zinc-200">
               <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-6">
                 Ingeniería aumentada por inteligencia artificial.
               </h2>
@@ -208,10 +207,9 @@ export default function AcumenOSPage() {
       {/* Intelligence / Dashboards */}
       <section className="py-24 bg-white relative overflow-hidden">
          <div 
-           className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+           className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none" 
            style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
          />
-         <div className="absolute inset-0 bg-gradient-to-l from-white/95 via-white/80 to-transparent z-0" />
          <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none z-0" />
          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -244,7 +242,7 @@ export default function AcumenOSPage() {
                 </div>
              </div>
 
-             <div className="order-1 md:order-2">
+             <div className="order-1 md:order-2 glass-card p-8 md:p-12 border border-zinc-200">
                <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-6">Analítica e Inteligencia Artificial</h2>
                <p className="text-zinc-600 leading-relaxed mb-8">
                  Pasamos de la intuición a la predicción. Implementamos modelos de Machine Learning y dashboards espaciales para mapear el riesgo territorial y la viabilidad de la infraestructura.
