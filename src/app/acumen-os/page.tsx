@@ -241,6 +241,15 @@ export default function AcumenOSPage() {
                   <p className="text-[8px] font-mono text-zinc-500 break-all">HASH: 0x8F9A2B4C6D8E0F1A3B5C7D9E</p>
                 </div>
 
+                {/* Final Output Layer */}
+                <div className="w-px h-6 border-l-2 border-dashed border-zinc-500 relative z-0 mt-0 mb-1">
+                  <ArrowRight className="absolute bottom-0 -ml-[9px] text-zinc-500 h-4 w-4 rotate-90" />
+                </div>
+                
+                <div className="w-full max-w-sm bg-zinc-900 border border-gold-500/50 shadow-2xl p-4 text-center relative z-10 rounded-sm mt-0">
+                  <h4 className="font-heading font-bold text-sm text-white tracking-widest uppercase">Output: Informes de alta ingeniería</h4>
+                </div>
+
               </div>
             </div>
           </div>
