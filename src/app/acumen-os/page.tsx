@@ -41,6 +41,11 @@ export default function AcumenOSPage() {
 
       {/* Manifesto Section & Flowchart (Full Width) */}
       <section className="py-24 bg-white relative overflow-hidden border-b border-zinc-200">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+          style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
             
@@ -76,14 +81,14 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-8 bg-slate-50 border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="relative flex flex-col items-center justify-center p-8 glass-card border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
               
               {/* Background Image inside flowchart */}
               <div 
                 className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
                 style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-50/95 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/80 to-white/20 pointer-events-none" />
 
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
 
@@ -201,8 +206,13 @@ export default function AcumenOSPage() {
       </section>
 
       {/* Intelligence / Dashboards */}
-      <section className="py-24 bg-white relative">
-         <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
+      <section className="py-24 bg-white relative overflow-hidden">
+         <div 
+           className="absolute inset-0 bg-cover bg-center opacity-30 pointer-events-none" 
+           style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
+         />
+         <div className="absolute inset-0 bg-gradient-to-l from-white/95 via-white/80 to-transparent z-0" />
+         <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none z-0" />
          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
              <div className="order-2 md:order-1 relative aspect-square border border-zinc-200 bg-slate-50 p-8 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
