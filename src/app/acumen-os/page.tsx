@@ -82,12 +82,7 @@ export default function AcumenOSPage() {
             {/* Architecture Flowchart Visual */}
             <div className="relative flex flex-col items-center justify-center p-8 glass-card border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
               
-              {/* Background Image inside flowchart */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/80 to-white/20 pointer-events-none" />
+
 
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
 
@@ -173,11 +168,7 @@ export default function AcumenOSPage() {
              </div>
 
              <div className="order-2 md:order-2 relative aspect-square border border-zinc-200 bg-white shadow-sm p-8 flex items-center justify-center overflow-hidden rounded-sm">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none" />
+
                 
                 {/* Abstract UI Elements */}
                 <div className="relative z-10 w-full max-w-sm">
@@ -214,22 +205,12 @@ export default function AcumenOSPage() {
          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
              <div className="order-2 md:order-1 relative aspect-square border border-zinc-200 bg-slate-50 p-8 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
-                {/* Background Image */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                  style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-50/95 via-slate-50/50 to-transparent pointer-events-none" />
+
                 
                 <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
                 
                 <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl overflow-hidden">
-                   {/* Terminal Inner Background */}
-                   <div 
-                     className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" 
-                     style={{ backgroundImage: "url('/images/estructural_wireframe.png')", filter: "contrast(1.5) brightness(0.8)" }}
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none" />
+
                    
                    <div className="space-y-1 opacity-100 relative z-10">
                      <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
