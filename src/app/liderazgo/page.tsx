@@ -32,7 +32,7 @@ export default function LiderazgoPage() {
       </section>
 
       {/* Perfil Ricardo Smith */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
+      <section id="directores" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 scroll-mt-32">
         <div className="grid md:grid-cols-12 gap-12 items-start">
           <div className="md:col-span-4 relative aspect-[3/4] bg-zinc-200 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
             <div 

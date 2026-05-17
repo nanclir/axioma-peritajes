@@ -68,7 +68,7 @@ export default function Home() {
               <p className="text-lg text-zinc-800 leading-relaxed mb-10">
                 El resultado es una firma boutique capaz de proveer dictámenes, diseños y gerencia con un nivel de trazabilidad y certidumbre único en el mercado.
               </p>
-              <Link href="/liderazgo" className="text-zinc-900 font-bold border-b border-zinc-900 pb-1 hover:text-gold-500 hover:border-gold-500 transition-colors inline-flex items-center gap-2">
+              <Link href="/liderazgo#directores" className="text-zinc-900 font-bold border-b border-zinc-900 pb-1 hover:text-gold-500 hover:border-gold-500 transition-colors inline-flex items-center gap-2">
                 Conozca a nuestros directores <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
