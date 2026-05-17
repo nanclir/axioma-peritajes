@@ -109,16 +109,48 @@ export default function PeritajesPage() {
             </div>
           </div>
 
-          {/* Liderazgo Matriz */}
-          <div className="border border-zinc-200 bg-slate-50 p-8 flex flex-col justify-center shadow-sm h-full">
-            <ShieldAlert className="h-10 w-10 text-zinc-400 mb-6" />
-            <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Dirección Técnica Central</h3>
-            <p className="text-zinc-600 text-sm leading-relaxed mb-6">
-              Todos los peritajes de esta línea de negocio son auditados, firmados y sustentados por <strong>Ricardo Smith</strong> y <strong>Rafael Nanclares</strong>. Garantizamos que el peso intelectual e institucional de nuestra firma matriz respalda cada dictamen.
-            </p>
-            <Link href="/liderazgo" className="text-zinc-900 font-bold text-sm hover:text-gold-500 transition-colors inline-flex items-center gap-2">
-              Ver perfiles directivos <ArrowRight className="h-4 w-4" />
-            </Link>
+          {/* Perfil Ricardo Smith */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500">
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/images/ricardo_smith.jpg')" }}
+              />
+            </div>
+            <div className="w-full md:w-2/3">
+              <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Ricardo A. Smith Quintero</h3>
+              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Socio Director / Dirección Técnica</p>
+              <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                Ph.D. por Colorado State University y ex-Decano de la Facultad de Minas. Su rol en peritajes asegura un respaldo intelectual inobjetable, aplicando modelos matemáticos avanzados y rigor metodológico para garantizar la solidez de cada dictamen ante tribunales.
+              </p>
+              <ul className="space-y-2 text-sm text-zinc-600">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Dirección Técnica Central</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Sustentación en Tribunales</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelamiento Avanzado</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Perfil Rafael Nanclares */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500">
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/team/rafael-nanclares.jpg')" }}
+              />
+            </div>
+            <div className="w-full md:w-2/3">
+              <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Rafael Nanclares Ospina</h3>
+              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Socio Director / Estratega Forense</p>
+              <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                Ingeniero Civil y Magíster en Filosofía. Su rol es integrar el análisis técnico profundo con herramientas tecnológicas (ACUMEN OS) y estructurar el peritaje para asegurar que la evidencia soporte estratégicamente la teoría del caso del equipo jurídico.
+              </p>
+              <ul className="space-y-2 text-sm text-zinc-600">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estructuración Forense</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Integración Tecnológica (IA/BIM)</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estrategia con Firmas Legales</li>
+              </ul>
+            </div>
           </div>
 
         </div>
