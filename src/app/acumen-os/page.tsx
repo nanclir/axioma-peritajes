@@ -151,8 +151,30 @@ export default function AcumenOSPage() {
                   </div>
                 </div>
 
-                {/* Connectors from Level 2 to Core */}
-                <div className="w-full flex-1 min-h-[40px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                {/* Connectors from Level 2 to 2.5 */}
+                <div className="w-full h-8 flex justify-center pointer-events-none z-0 mt-2">
+                  <svg className="w-full h-full" preserveAspectRatio="none">
+                    <path d="M 16% 0 L 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
+                    <path d="M 84% 0 L 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
+                  </svg>
+                </div>
+
+                {/* Level 2.5: Structuring Layer (New) */}
+                <div className="flex w-full justify-between gap-3 px-2 relative z-10">
+                  <div className="flex-1 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm border border-emerald-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-emerald-700 font-bold">LEGAL.GRAPH</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center bg-blue-50/50 backdrop-blur-sm border border-blue-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-blue-700 font-bold">BIM.CLOUD</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm border border-indigo-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-indigo-700 font-bold">RISK.MATRIX</span>
+                  </div>
+                </div>
+
+                {/* Connectors from Level 2.5 to Core */}
+                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
                     <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                     <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
