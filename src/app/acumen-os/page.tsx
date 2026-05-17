@@ -127,7 +127,7 @@ export default function AcumenOSPage() {
                 {/* Level 2: AI Processing (New) */}
                 <div className="w-full relative flex flex-col items-center mt-2">
                   {/* Connectors from Level 1 to 2 */}
-                  <div className="w-full h-8 flex justify-center pointer-events-none z-0">
+                  <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                     <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                       <path d="M 16 0 L 16 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                       <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -152,7 +152,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Connectors from Level 2 to 2.5 */}
-                <div className="w-full h-8 flex justify-center pointer-events-none z-0 mt-2">
+                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 16 0 L 16 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
