@@ -80,7 +80,7 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-8 glass-card border border-zinc-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="relative flex flex-col items-center justify-center p-0 h-full">
               
 
 
@@ -167,7 +167,7 @@ export default function AcumenOSPage() {
                </ul>
              </div>
 
-             <div className="order-2 md:order-2 relative aspect-square border border-zinc-200 bg-white shadow-sm p-8 flex items-center justify-center overflow-hidden rounded-sm">
+             <div className="order-2 md:order-2 relative flex items-center justify-center h-[400px]">
 
                 
                 {/* Abstract UI Elements */}
@@ -204,7 +204,7 @@ export default function AcumenOSPage() {
          <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none z-0" />
          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
-             <div className="order-2 md:order-1 relative aspect-square border border-zinc-200 bg-slate-50 p-8 flex items-center justify-center overflow-hidden rounded-sm shadow-sm">
+             <div className="order-2 md:order-1 relative flex items-center justify-center h-[400px]">
 
                 
                 <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
