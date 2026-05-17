@@ -100,7 +100,7 @@ export default function AcumenOSPage() {
               {/* Traveling Dot */}
               <div className="absolute w-2 h-2 bg-blue-500 rounded-full left-1/2 -translate-x-1/2 shadow-[0_0_15px_3px_rgba(59,130,246,0.8)] z-30 animate-master-drop pointer-events-none"></div>
 
-              <div className="w-full flex flex-col items-center justify-between h-full relative z-10 mt-8 mb-2">
+              <div className="w-full flex flex-col items-center justify-start relative z-10 mt-8 mb-2">
                 
                 {/* Level 1: Data Ingestion */}
                 <div className="flex w-full justify-between gap-2 md:gap-4">
@@ -127,7 +127,7 @@ export default function AcumenOSPage() {
                 {/* Level 2: AI Processing (New) */}
                 <div className="w-full relative flex flex-col items-center mt-2">
                   {/* Connectors from Level 1 to 2 */}
-                  <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                  <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                     <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                       <path d="M 16 0 L 16 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                       <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -152,7 +152,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Connectors from Level 2 to 2.5 */}
-                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 16 0 L 16 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -174,7 +174,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Connectors from Level 2.5 to Core */}
-                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 16 0 C 16 50, 50 50, 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -198,7 +198,7 @@ export default function AcumenOSPage() {
                   </div>
                 </div>
                 {/* Connectors from Core to Audit Layer */}
-                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 50 0 C 50 50, 16 50, 16 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -220,7 +220,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Connectors from Audit Layer to Dictamen */}
-                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 16 0 C 16 50, 50 50, 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
