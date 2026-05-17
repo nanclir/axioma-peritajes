@@ -25,7 +25,7 @@ export default function InsightsPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
               Liderazgo Intelectual.
             </h1>
-            <p className="text-xl text-zinc-600 leading-relaxed font-light mb-8">
+            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal mb-8">
               Análisis profundo sobre el impacto de la Inteligencia Artificial en la ingeniería, la ética del desarrollo territorial y el futuro de la movilidad urbana, escrito por nuestros socios directores.
             </p>
           </div>

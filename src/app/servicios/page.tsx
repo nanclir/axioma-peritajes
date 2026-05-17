@@ -73,7 +73,7 @@ export default function ServiciosPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
               Soluciones críticas para infraestructuras complejas.
             </h1>
-            <p className="text-xl text-zinc-600 leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal">
               Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
             </p>
           </div>

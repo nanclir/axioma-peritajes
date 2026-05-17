@@ -24,7 +24,7 @@ export default function LiderazgoPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
               Pensamiento estratégico aplicado al territorio.
             </h1>
-            <p className="text-xl text-zinc-600 leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-zinc-800 font-normal leading-relaxed">
               Acumen no es una estructura burocrática tradicional. Somos una firma boutique donde el liderazgo intelectual de nuestros socios interviene directamente en los desafíos más complejos de cada proyecto.
             </p>
           </div>

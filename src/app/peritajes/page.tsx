@@ -28,7 +28,7 @@ export default function PeritajesPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
               Peritaje Técnico Forense.
             </h1>
-            <p className="text-xl text-zinc-600 leading-relaxed font-light mb-10">
+            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal mb-10">
               Cuando la infraestructura falla, las implicaciones técnicas, legales y financieras exigen una investigación con rigor científico. Proveemos dictámenes periciales concluyentes para tribunales, cortes y litigios de alta complejidad.
             </p>
             

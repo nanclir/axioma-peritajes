@@ -24,7 +24,7 @@ export default function ProyectosPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
               Impacto territorial, medido en datos.
             </h1>
-            <p className="text-xl text-zinc-600 leading-relaxed font-light mb-8">
+            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal mb-8">
               Nuestros proyectos no se documentan solo con fotografías; los medimos a través de gemelos digitales, capas SIG y analítica de impacto.
             </p>
           </div>
