@@ -82,16 +82,31 @@ export default function AcumenOSPage() {
 
             {/* Architecture Flowchart Visual */}
             <div className="relative flex flex-col items-center justify-start p-0 h-full w-full pt-2">
+              <style>{`
+                @keyframes masterDrop {
+                  0% { top: 0%; opacity: 0; }
+                  10% { opacity: 1; }
+                  90% { opacity: 1; }
+                  100% { top: 98%; opacity: 0; }
+                }
+                .animate-master-drop {
+                  animation: masterDrop 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                }
+              `}</style>
+              
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
               <h3 className="absolute top-0 left-0 font-mono text-xs tracking-widest text-zinc-500 font-bold">SYSTEM.ARCHITECTURE_V3</h3>
+
+              {/* Traveling Dot */}
+              <div className="absolute w-2 h-2 bg-blue-500 rounded-full left-1/2 -translate-x-1/2 shadow-[0_0_15px_3px_rgba(59,130,246,0.8)] z-30 animate-master-drop pointer-events-none"></div>
 
               <div className="w-full flex flex-col items-center justify-between h-full relative z-10 mt-8 mb-2">
                 
                 {/* Level 1: Data Ingestion */}
                 <div className="flex w-full justify-between gap-2 md:gap-4">
                   <div className="flex-1 flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-1 z-10">
-                      <FileText className="w-4 h-4 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-full border border-emerald-300 bg-emerald-50 shadow-sm flex items-center justify-center mb-1 z-10">
+                      <FileText className="w-4 h-4 text-emerald-500" />
                     </div>
                     <span className="text-[9px] font-mono text-zinc-500 text-center">DOCS.LEGALES</span>
                   </div>
@@ -102,8 +117,8 @@ export default function AcumenOSPage() {
                     <span className="text-[9px] font-mono text-blue-600 font-bold text-center">GEO.DATA</span>
                   </div>
                   <div className="flex-1 flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-1 z-10">
-                      <Activity className="w-4 h-4 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-full border border-indigo-300 bg-indigo-50 shadow-sm flex items-center justify-center mb-1 z-10">
+                      <Activity className="w-4 h-4 text-indigo-500" />
                     </div>
                     <span className="text-[9px] font-mono text-zinc-500 text-center">SENSORS.IOT</span>
                   </div>
@@ -114,23 +129,23 @@ export default function AcumenOSPage() {
                   {/* Connectors from Level 1 to 2 */}
                   <div className="w-full h-8 flex justify-center pointer-events-none z-0">
                     <svg className="w-full h-full" preserveAspectRatio="none">
-                      <path d="M 16% 0 C 16% 50, 16% 50, 16% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="2 2" />
-                      <path d="M 50% 0 L 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1.5" className="animate-pulse" />
-                      <path d="M 84% 0 C 84% 50, 84% 50, 84% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="2 2" />
+                      <path d="M 16% 0 L 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
+                      <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
+                      <path d="M 84% 0 L 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
                     </svg>
                   </div>
 
                   <div className="flex w-full justify-between gap-2 px-2 relative z-10">
-                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-zinc-200 shadow-sm py-2 px-1 rounded">
-                      <span className="text-[8px] font-mono text-blue-600 font-bold">NLP.ENGINE</span>
+                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-emerald-200 shadow-sm py-2 px-1 rounded">
+                      <span className="text-[8px] font-mono text-emerald-600 font-bold">NLP.ENGINE</span>
                       <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Análisis Semántico</span>
                     </div>
                     <div className="flex-1 flex flex-col items-center bg-blue-50/80 backdrop-blur-sm border border-blue-200 shadow-sm py-2 px-1 rounded">
                       <span className="text-[8px] font-mono text-blue-600 font-bold">VISION.AI</span>
                       <span className="text-[7px] text-blue-500 leading-tight text-center mt-0.5">Fotogrametría</span>
                     </div>
-                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-zinc-200 shadow-sm py-2 px-1 rounded">
-                      <span className="text-[8px] font-mono text-blue-600 font-bold">PREDICTIVE.ML</span>
+                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-indigo-200 shadow-sm py-2 px-1 rounded">
+                      <span className="text-[8px] font-mono text-indigo-600 font-bold">PREDICTIVE.ML</span>
                       <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Simulación</span>
                     </div>
                   </div>
@@ -139,9 +154,9 @@ export default function AcumenOSPage() {
                 {/* Connectors from Level 2 to Core */}
                 <div className="w-full h-12 relative flex justify-center mt-1 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#3b82f6" strokeWidth="2" className="animate-pulse" />
-                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                   </svg>
                 </div>
 
@@ -154,18 +169,18 @@ export default function AcumenOSPage() {
                     <Hexagon className="w-12 h-12 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
                     <h4 className="font-heading font-bold text-sm text-zinc-900 tracking-widest">ACUMEN CORE</h4>
                     <div className="flex gap-1.5 mt-2">
-                      <span className="text-[8px] font-mono bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">LLM.SYNC</span>
-                      <span className="text-[8px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">BIM.SYNC</span>
+                      <span className="text-[8px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">LLM.SYNC</span>
+                      <span className="text-[8px] font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">BIM.SYNC</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-12 bg-gradient-to-b from-blue-400 to-gold-400 relative z-0 mt-1 mb-1">
-                  <ArrowRight className="absolute bottom-0 -ml-2 text-gold-500 h-4 w-4 rotate-90" />
+                <div className="w-px h-12 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-1 mb-1">
+                  <ArrowRight className="absolute bottom-0 -ml-2 text-emerald-500 h-4 w-4 rotate-90" />
                 </div>
                 
-                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gold-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-auto">
+                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-emerald-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-auto">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
                     <h4 className="font-heading font-bold text-xs text-zinc-900">DICTAMEN VERIFICADO</h4>
