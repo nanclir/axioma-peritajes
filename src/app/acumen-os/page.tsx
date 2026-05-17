@@ -197,9 +197,39 @@ export default function AcumenOSPage() {
                     </div>
                   </div>
                 </div>
+                {/* Connectors from Core to Audit Layer */}
+                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                  <svg className="w-full h-full" preserveAspectRatio="none">
+                    <path d="M 50% 0 C 50% 50, 16% 50, 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
+                    <path d="M 50% 0 C 50% 50, 84% 50, 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                  </svg>
+                </div>
+
+                {/* Level 4: Validation & Audit */}
+                <div className="flex w-full justify-between gap-3 px-2 relative z-10">
+                  <div className="flex-1 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm border border-emerald-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-emerald-700 font-bold">CRYPTO.LEDGER</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center bg-blue-50/50 backdrop-blur-sm border border-blue-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-blue-700 font-bold">EXPERT.REVIEW</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center bg-white/40 backdrop-blur-sm border border-indigo-200/50 shadow-sm py-2 px-2 rounded-lg">
+                    <span className="text-[9px] font-mono text-indigo-700 font-bold">QA.TESTING</span>
+                  </div>
+                </div>
+
+                {/* Connectors from Audit Layer to Dictamen */}
+                <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                  <svg className="w-full h-full" preserveAspectRatio="none">
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                  </svg>
+                </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-6 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-1 mb-1">
+                <div className="w-px h-6 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-0 mb-1">
                   <ArrowRight className="absolute bottom-0 -ml-2 text-emerald-500 h-4 w-4 rotate-90" />
                 </div>
                 
