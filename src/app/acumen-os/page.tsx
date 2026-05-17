@@ -220,7 +220,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Connectors from Audit Layer to Dictamen */}
-                <div className="w-full h-8 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
+                <div className="w-full h-20 relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M 16 0 C 16 50, 50 50, 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" fill="none" stroke="#71717a" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -229,7 +229,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-6 border-l-2 border-dashed border-zinc-500 relative z-0 mt-0 mb-1">
+                <div className="w-px h-10 border-l-2 border-dashed border-zinc-500 relative z-0 mt-0 mb-1">
                   <ArrowRight className="absolute bottom-0 -ml-[9px] text-zinc-500 h-4 w-4 rotate-90" />
                 </div>
                 
@@ -242,7 +242,7 @@ export default function AcumenOSPage() {
                 </div>
 
                 {/* Final Output Layer */}
-                <div className="w-px h-6 border-l-2 border-dashed border-zinc-500 relative z-0 mt-0 mb-1">
+                <div className="w-px h-16 border-l-2 border-dashed border-zinc-500 relative z-0 mt-2 mb-2">
                   <ArrowRight className="absolute bottom-0 -ml-[9px] text-zinc-500 h-4 w-4 rotate-90" />
                 </div>
                 
