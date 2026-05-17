@@ -135,24 +135,24 @@ export default function AcumenOSPage() {
                     </svg>
                   </div>
 
-                  <div className="flex w-full justify-between gap-2 px-2 relative z-10">
-                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-emerald-200 shadow-sm py-2 px-1 rounded">
-                      <span className="text-[8px] font-mono text-emerald-600 font-bold">NLP.ENGINE</span>
-                      <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Análisis Semántico</span>
+                  <div className="flex w-full justify-between gap-3 px-2 relative z-10">
+                    <div className="flex-1 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm border border-emerald-200 shadow-sm py-4 px-2 rounded-lg min-h-[60px]">
+                      <span className="text-[10px] font-mono text-emerald-600 font-bold">NLP.ENGINE</span>
+                      <span className="text-[9px] text-zinc-500 leading-tight text-center mt-1">Análisis Semántico</span>
                     </div>
-                    <div className="flex-1 flex flex-col items-center bg-blue-50/80 backdrop-blur-sm border border-blue-200 shadow-sm py-2 px-1 rounded">
-                      <span className="text-[8px] font-mono text-blue-600 font-bold">VISION.AI</span>
-                      <span className="text-[7px] text-blue-500 leading-tight text-center mt-0.5">Fotogrametría</span>
+                    <div className="flex-1 flex flex-col items-center justify-center bg-blue-50/80 backdrop-blur-sm border border-blue-200 shadow-sm py-4 px-2 rounded-lg min-h-[60px]">
+                      <span className="text-[10px] font-mono text-blue-600 font-bold">VISION.AI</span>
+                      <span className="text-[9px] text-blue-500 leading-tight text-center mt-1">Fotogrametría</span>
                     </div>
-                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-indigo-200 shadow-sm py-2 px-1 rounded">
-                      <span className="text-[8px] font-mono text-indigo-600 font-bold">PREDICTIVE.ML</span>
-                      <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Simulación</span>
+                    <div className="flex-1 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm border border-indigo-200 shadow-sm py-4 px-2 rounded-lg min-h-[60px]">
+                      <span className="text-[10px] font-mono text-indigo-600 font-bold">PREDICTIVE.ML</span>
+                      <span className="text-[9px] text-zinc-500 leading-tight text-center mt-1">Simulación</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Connectors from Level 2 to Core */}
-                <div className="w-full h-12 relative flex justify-center mt-1 pointer-events-none z-0">
+                <div className="w-full flex-1 min-h-[40px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
                     <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                     <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
@@ -160,16 +160,15 @@ export default function AcumenOSPage() {
                   </svg>
                 </div>
 
-                {/* Level 3: Center Core (Extruded) */}
-                <div className="relative flex flex-1 items-center justify-center mt-2 mb-2 w-full">
-                  <div className="absolute w-56 h-56 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
-                  <div className="absolute w-40 h-40 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
+                {/* Level 3: Center Core (Halved) */}
+                <div className="relative flex items-center justify-center mt-2 mb-2 w-full">
+                  <div className="absolute w-40 h-40 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
+                  <div className="absolute w-28 h-28 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
                   
-                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-6 h-full min-h-[180px] w-[80%] rounded-2xl border border-white/60 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-                    <Hexagon className="w-14 h-14 text-gold-500 drop-shadow-md mb-3" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
-                    <h4 className="font-heading font-bold text-base text-zinc-900 tracking-widest">ACUMEN CORE</h4>
-                    <p className="text-[9px] text-zinc-500 mb-3 tracking-widest uppercase">Motor de Inferencia Analítica</p>
-                    <div className="flex flex-wrap justify-center gap-1.5 mt-auto">
+                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-4 w-[60%] min-h-[100px] rounded-2xl border border-white/60 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)]">
+                    <Hexagon className="w-10 h-10 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
+                    <h4 className="font-heading font-bold text-sm text-zinc-900 tracking-widest">ACUMEN CORE</h4>
+                    <div className="flex flex-wrap justify-center gap-1.5 mt-2">
                       <span className="text-[8px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">LLM.SYNC</span>
                       <span className="text-[8px] font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">BIM.SYNC</span>
                       <span className="text-[8px] font-mono bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">KNOWLEDGE.GRAPH</span>
