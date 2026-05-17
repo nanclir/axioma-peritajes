@@ -21,7 +21,7 @@ export default function Home() {
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-zinc-200 bg-white/80 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-widest text-zinc-600 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-gold-500 animate-pulse"></span>
-              Firma de Inteligencia Territorial
+              Firma de Ingeniería
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-zinc-900 leading-[1.1] mb-8 tracking-tight text-balance drop-shadow-sm">
