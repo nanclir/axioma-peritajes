@@ -81,68 +81,96 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-0 h-full w-full">
+            <div className="relative flex flex-col items-center justify-start p-0 h-full w-full pt-2">
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
-              <h3 className="absolute top-0 left-0 font-mono text-xs tracking-widest text-zinc-500 font-bold">SYSTEM.ARCHITECTURE_V2</h3>
+              <h3 className="absolute top-0 left-0 font-mono text-xs tracking-widest text-zinc-500 font-bold">SYSTEM.ARCHITECTURE_V3</h3>
 
-              <div className="w-full flex flex-col items-center relative z-10 mt-8">
-                {/* Top Layer - Data Ingestion */}
-                <div className="flex w-full justify-between gap-2 md:gap-4 mb-8">
+              <div className="w-full flex flex-col items-center justify-between h-full relative z-10 mt-8 mb-2">
+                
+                {/* Level 1: Data Ingestion */}
+                <div className="flex w-full justify-between gap-2 md:gap-4">
                   <div className="flex-1 flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-2 z-10">
-                      <FileText className="w-5 h-5 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-1 z-10">
+                      <FileText className="w-4 h-4 text-zinc-400" />
                     </div>
-                    <span className="text-[10px] font-mono text-zinc-500 text-center">DOCS.LEGALES</span>
+                    <span className="text-[9px] font-mono text-zinc-500 text-center">DOCS.LEGALES</span>
                   </div>
                   <div className="flex-1 flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full border border-blue-300 bg-blue-50 shadow-sm flex items-center justify-center mb-2 z-10">
-                      <MapPin className="w-5 h-5 text-blue-500" />
+                    <div className="w-10 h-10 rounded-full border border-blue-300 bg-blue-50 shadow-sm flex items-center justify-center mb-1 z-10">
+                      <MapPin className="w-4 h-4 text-blue-500" />
                     </div>
-                    <span className="text-[10px] font-mono text-blue-600 font-bold text-center">GEO.DATA</span>
+                    <span className="text-[9px] font-mono text-blue-600 font-bold text-center">GEO.DATA</span>
                   </div>
                   <div className="flex-1 flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-2 z-10">
-                      <Activity className="w-5 h-5 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-1 z-10">
+                      <Activity className="w-4 h-4 text-zinc-400" />
                     </div>
-                    <span className="text-[10px] font-mono text-zinc-500 text-center">SENSORS.IOT</span>
+                    <span className="text-[9px] font-mono text-zinc-500 text-center">SENSORS.IOT</span>
                   </div>
                 </div>
 
-                {/* Connecting lines top to center */}
-                <div className="absolute top-16 left-0 w-full h-32 flex justify-center pointer-events-none z-0">
+                {/* Level 2: AI Processing (New) */}
+                <div className="w-full relative flex flex-col items-center mt-2">
+                  {/* Connectors from Level 1 to 2 */}
+                  <div className="w-full h-8 flex justify-center pointer-events-none z-0">
+                    <svg className="w-full h-full" preserveAspectRatio="none">
+                      <path d="M 16% 0 C 16% 50, 16% 50, 16% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="2 2" />
+                      <path d="M 50% 0 L 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1.5" className="animate-pulse" />
+                      <path d="M 84% 0 C 84% 50, 84% 50, 84% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="2 2" />
+                    </svg>
+                  </div>
+
+                  <div className="flex w-full justify-between gap-2 px-2 relative z-10">
+                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-zinc-200 shadow-sm py-2 px-1 rounded">
+                      <span className="text-[8px] font-mono text-blue-600 font-bold">NLP.ENGINE</span>
+                      <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Análisis Semántico</span>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center bg-blue-50/80 backdrop-blur-sm border border-blue-200 shadow-sm py-2 px-1 rounded">
+                      <span className="text-[8px] font-mono text-blue-600 font-bold">VISION.AI</span>
+                      <span className="text-[7px] text-blue-500 leading-tight text-center mt-0.5">Fotogrametría</span>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center bg-white/60 backdrop-blur-sm border border-zinc-200 shadow-sm py-2 px-1 rounded">
+                      <span className="text-[8px] font-mono text-blue-600 font-bold">PREDICTIVE.ML</span>
+                      <span className="text-[7px] text-zinc-500 leading-tight text-center mt-0.5">Simulación</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connectors from Level 2 to Core */}
+                <div className="w-full h-12 relative flex justify-center mt-1 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 4" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#93c5fd" strokeWidth="2" className="animate-pulse" />
-                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 4" />
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#3b82f6" strokeWidth="2" className="animate-pulse" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
                   </svg>
                 </div>
 
-                {/* Center Core */}
-                <div className="relative flex items-center justify-center mt-12 mb-12">
-                  <div className="absolute w-56 h-56 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
-                  <div className="absolute w-40 h-40 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
+                {/* Level 3: Center Core */}
+                <div className="relative flex items-center justify-center mt-1 mb-1">
+                  <div className="absolute w-44 h-44 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
+                  <div className="absolute w-32 h-32 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
                   
-                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/60 shadow-xl">
-                    <Hexagon className="w-16 h-16 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
-                    <h4 className="font-heading font-bold text-lg text-zinc-900 tracking-widest">ACUMEN CORE</h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="text-[9px] font-mono bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">LLM.ENGINE</span>
-                      <span className="text-[9px] font-mono bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">BIM.SYNC</span>
+                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-xl">
+                    <Hexagon className="w-12 h-12 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
+                    <h4 className="font-heading font-bold text-sm text-zinc-900 tracking-widest">ACUMEN CORE</h4>
+                    <div className="flex gap-1.5 mt-2">
+                      <span className="text-[8px] font-mono bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">LLM.SYNC</span>
+                      <span className="text-[8px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">BIM.SYNC</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-16 bg-gradient-to-b from-blue-400 to-gold-400 relative z-0 -mt-12 mb-0">
+                <div className="w-px h-12 bg-gradient-to-b from-blue-400 to-gold-400 relative z-0 mt-1 mb-1">
                   <ArrowRight className="absolute bottom-0 -ml-2 text-gold-500 h-4 w-4 rotate-90" />
                 </div>
                 
-                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gold-300 shadow-lg p-5 text-center relative z-10 rounded-sm">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                    <h4 className="font-heading font-bold text-md text-zinc-900">DICTAMEN VERIFICADO</h4>
+                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gold-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-auto">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <h4 className="font-heading font-bold text-xs text-zinc-900">DICTAMEN VERIFICADO</h4>
                   </div>
-                  <p className="text-[10px] font-mono text-zinc-500 break-all">HASH: 0x8F9A2B4C6D8E0F1A3B5C7D9E</p>
+                  <p className="text-[8px] font-mono text-zinc-500 break-all">HASH: 0x8F9A2B4C6D8E0F1A3B5C7D9E</p>
                 </div>
 
               </div>
