@@ -87,28 +87,6 @@ export default function PeritajesPage() {
 
         <div className="grid md:grid-cols-2 gap-12 items-start">
           
-          {/* Perfil Juan David Naranjo */}
-          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
-            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale">
-              <div 
-                className="absolute inset-0 bg-cover bg-center z-0" 
-                style={{ backgroundImage: "url('/team/juan-david-naranjo.jpeg')" }}
-              />
-            </div>
-            <div className="w-full md:w-2/3">
-              <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Juan David Naranjo</h3>
-              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Especialista en Visualización / Perspectógrafo</p>
-              <p className="text-zinc-600 text-sm leading-relaxed mb-6">
-                Ingeniero y experto en "Ingeniería Creativa". Su rol dentro de la división de peritajes es traducir hallazgos matemáticos, fallas estructurales y modelos complejos en material visual 3D, diagramas interactivos y exposiciones gráficas de alto impacto que permiten a las cortes comprender la verdad técnica de manera inequívoca.
-              </p>
-              <ul className="space-y-2 text-sm text-zinc-600">
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelado 3D Forense</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Exposición Visual en Audiencias</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Reconstrucción Digital de Fallas</li>
-              </ul>
-            </div>
-          </div>
-
           {/* Perfil Ricardo Smith */}
           <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
             <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500">
@@ -149,6 +127,28 @@ export default function PeritajesPage() {
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estructuración Forense</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Integración Tecnológica (IA/BIM)</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estrategia con Firmas Legales</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Perfil Juan David Naranjo */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500">
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/team/juan-david-naranjo.jpeg')" }}
+              />
+            </div>
+            <div className="w-full md:w-2/3">
+              <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Juan David Naranjo</h3>
+              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Especialista en Visualización / Perspectógrafo</p>
+              <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                Ingeniero y experto en "Ingeniería Creativa". Su rol dentro de la división de peritajes es traducir hallazgos matemáticos, fallas estructurales y modelos complejos en material visual 3D, diagramas interactivos y exposiciones gráficas de alto impacto que permiten a las cortes comprender la verdad técnica de manera inequívoca.
+              </p>
+              <ul className="space-y-2 text-sm text-zinc-600">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelado 3D Forense</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Exposición Visual en Audiencias</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Reconstrucción Digital de Fallas</li>
               </ul>
             </div>
           </div>
