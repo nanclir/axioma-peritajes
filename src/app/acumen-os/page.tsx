@@ -1,4 +1,4 @@
-import { ArrowRight, Terminal, Cpu, Network, ShieldCheck, Database } from "lucide-react";
+import { ArrowRight, Terminal, Cpu, Network, ShieldCheck, Database, Hexagon, Activity, FileText, MapPin, Lock } from "lucide-react";
 
 export const metadata = {
   title: "ACUMEN OS | Inteligencia Operacional",
@@ -81,55 +81,71 @@ export default function AcumenOSPage() {
             </div>
 
             {/* Architecture Flowchart Visual */}
-            <div className="relative flex flex-col items-center justify-center p-0 h-full">
-              
-
-
+            <div className="relative flex flex-col items-center justify-center p-0 h-full w-full">
               <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none" />
+              <h3 className="absolute top-0 left-0 font-mono text-xs tracking-widest text-zinc-500 font-bold">SYSTEM.ARCHITECTURE_V2</h3>
 
-              <h3 className="absolute top-6 left-6 font-mono text-xs tracking-widest text-zinc-500 font-bold">SYSTEM.ARCHITECTURE</h3>
-
-              {/* Input Level */}
-              <div className="flex w-full justify-around gap-4 mb-8 mt-12 relative z-10">
-                <div className="flex-1 bg-white border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
-                  <span className="block text-xs font-mono text-zinc-500 mb-1">INPUT.01</span>
-                  <span className="font-bold text-sm text-zinc-900">DATOS DEL PROYECTO</span>
+              <div className="w-full flex flex-col items-center relative z-10 mt-8">
+                {/* Top Layer - Data Ingestion */}
+                <div className="flex w-full justify-between gap-2 md:gap-4 mb-8">
+                  <div className="flex-1 flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-2 z-10">
+                      <FileText className="w-5 h-5 text-zinc-400" />
+                    </div>
+                    <span className="text-[10px] font-mono text-zinc-500 text-center">DOCS.LEGALES</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full border border-blue-300 bg-blue-50 shadow-sm flex items-center justify-center mb-2 z-10">
+                      <MapPin className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <span className="text-[10px] font-mono text-blue-600 font-bold text-center">GEO.DATA</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full border border-zinc-300 bg-white shadow-sm flex items-center justify-center mb-2 z-10">
+                      <Activity className="w-5 h-5 text-zinc-400" />
+                    </div>
+                    <span className="text-[10px] font-mono text-zinc-500 text-center">SENSORS.IOT</span>
+                  </div>
                 </div>
-                <div className="flex-1 bg-white border border-zinc-200 shadow-sm p-4 text-center rounded-sm">
-                  <span className="block text-xs font-mono text-zinc-500 mb-1">INPUT.02</span>
-                  <span className="font-bold text-sm text-zinc-900">CRITERIO HUMANO</span>
+
+                {/* Connecting lines top to center */}
+                <div className="absolute top-16 left-0 w-full h-32 flex justify-center pointer-events-none z-0">
+                  <svg className="w-full h-full" preserveAspectRatio="none">
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 4" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#93c5fd" strokeWidth="2" className="animate-pulse" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#d4d4d8" strokeWidth="1" strokeDasharray="4 4" />
+                  </svg>
                 </div>
-              </div>
 
-              {/* Connecting Lines */}
-              <div className="flex justify-center w-full relative z-0 h-8 -mt-8 mb-4">
-                <div className="w-1/2 border-b border-r border-zinc-300"></div>
-                <div className="w-1/2 border-b border-l border-zinc-300"></div>
-              </div>
-              <div className="w-px h-8 bg-zinc-300 relative z-0"></div>
+                {/* Center Core */}
+                <div className="relative flex items-center justify-center mt-12 mb-12">
+                  <div className="absolute w-56 h-56 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
+                  <div className="absolute w-40 h-40 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
+                  
+                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/60 shadow-xl">
+                    <Hexagon className="w-16 h-16 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
+                    <h4 className="font-heading font-bold text-lg text-zinc-900 tracking-widest">ACUMEN CORE</h4>
+                    <div className="flex gap-2 mt-2">
+                      <span className="text-[9px] font-mono bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">LLM.ENGINE</span>
+                      <span className="text-[9px] font-mono bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">BIM.SYNC</span>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Core Engine Level */}
-              <div className="w-full bg-blue-50 border border-blue-200 shadow-sm p-6 text-center relative z-10">
-                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-emerald-400 to-blue-600"></div>
-                 <h4 className="font-heading font-bold text-xl text-blue-900 mb-2 tracking-widest">ACUMEN OS CORE</h4>
-                 <div className="flex justify-center gap-2 text-xs font-mono text-blue-700 font-bold">
-                   <span className="px-2 py-1 bg-white border border-blue-200 rounded">IA</span>
-                   <span className="px-2 py-1 bg-white border border-blue-200 rounded">BIM / SIG</span>
-                   <span className="px-2 py-1 bg-white border border-blue-200 rounded">AUTOMATIZACIÓN</span>
-                 </div>
-              </div>
+                {/* Bottom Layer */}
+                <div className="w-px h-16 bg-gradient-to-b from-blue-400 to-gold-400 relative z-0 -mt-12 mb-0">
+                  <ArrowRight className="absolute bottom-0 -ml-2 text-gold-500 h-4 w-4 rotate-90" />
+                </div>
+                
+                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gold-300 shadow-lg p-5 text-center relative z-10 rounded-sm">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                    <h4 className="font-heading font-bold text-md text-zinc-900">DICTAMEN VERIFICADO</h4>
+                  </div>
+                  <p className="text-[10px] font-mono text-zinc-500 break-all">HASH: 0x8F9A2B4C6D8E0F1A3B5C7D9E</p>
+                </div>
 
-              {/* Connecting Line */}
-              <div className="w-px h-12 bg-gradient-to-b from-blue-400 to-gold-400 relative z-0">
-                <ArrowRight className="absolute bottom-0 -ml-2 text-gold-500 h-4 w-4 rotate-90" />
               </div>
-
-              {/* Output Level */}
-              <div className="w-full bg-white border border-gold-400 shadow-sm p-6 text-center relative z-10 mt-2">
-                 <h4 className="font-heading font-bold text-lg text-gold-600 mb-1">DECISIONES DE ALTO VALOR</h4>
-                 <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Trazabilidad Técnica y Legal</p>
-              </div>
-
             </div>
           </div>
         </div>
@@ -171,24 +187,47 @@ export default function AcumenOSPage() {
              <div className="order-2 md:order-2 relative flex items-center justify-center h-[400px]">
 
                 
-                {/* Abstract UI Elements */}
-                <div className="relative z-10 w-full max-w-sm">
-                  <div className="flex items-center justify-between border-b border-zinc-200 pb-2 mb-4">
-                    <span className="font-mono text-xs text-zinc-500 font-bold">DATA.STREAM_01</span>
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                {/* Abstract UI Elements - Audit Ledger */}
+                <div className="relative z-10 w-full max-w-sm bg-white/40 backdrop-blur-sm border border-zinc-200/50 p-6 rounded-lg shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-zinc-200/60 pb-3 mb-5">
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-emerald-600" />
+                      <span className="font-mono text-xs text-zinc-600 font-bold tracking-wider">AUDIT.LEDGER_SYS</span>
+                    </div>
+                    <div className="flex gap-1.5 items-center">
+                      <span className="text-[9px] font-mono text-zinc-400">SYNCING</span>
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <div className="h-2 w-full bg-zinc-100 rounded overflow-hidden">
-                      <div className="h-full bg-blue-500/70 w-[78%]"></div>
+                  
+                  <div className="relative border-l border-zinc-300 ml-3 space-y-6 pb-2">
+                    
+                    {/* Node 1 */}
+                    <div className="relative pl-6">
+                      <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-zinc-300 border-2 border-white"></div>
+                      <span className="text-[10px] font-mono text-zinc-400 block mb-1">T-MINUS 04:12:00</span>
+                      <p className="text-xs font-bold text-zinc-900 leading-tight">Modificación Estructural Detectada</p>
+                      <p className="text-[9px] font-mono text-zinc-500 mt-1 truncate">REV.01_PL_ESTRUCTURAL_V3.dwg</p>
                     </div>
-                    <div className="h-2 w-full bg-zinc-100 rounded overflow-hidden">
-                      <div className="h-full bg-blue-500/50 w-[45%]"></div>
+
+                    {/* Node 2 */}
+                    <div className="relative pl-6">
+                      <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-blue-500 border-2 border-white animate-pulse"></div>
+                      <span className="text-[10px] font-mono text-blue-500 font-bold block mb-1">PROCESSING NOW</span>
+                      <p className="text-xs font-bold text-blue-900 leading-tight">Análisis de Tolerancias vía IA</p>
+                      <div className="mt-2 h-1 w-full bg-blue-100 rounded overflow-hidden">
+                        <div className="h-full bg-blue-500 w-[68%]"></div>
+                      </div>
                     </div>
-                    <div className="h-2 w-full bg-zinc-100 rounded overflow-hidden">
-                      <div className="h-full bg-blue-500/90 w-[92%]"></div>
+
+                    {/* Node 3 */}
+                    <div className="relative pl-6 opacity-40">
+                      <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full border-2 border-zinc-300 bg-white"></div>
+                      <span className="text-[10px] font-mono text-zinc-400 block mb-1">PENDING VERIFICATION</span>
+                      <p className="text-xs font-bold text-zinc-900 leading-tight">Generación de Sello Criptográfico</p>
+                      <p className="text-[9px] font-mono text-zinc-500 mt-1">AWAITING NLP CONSENSUS</p>
                     </div>
+
                   </div>
                 </div>
              </div>
@@ -206,22 +245,48 @@ export default function AcumenOSPage() {
          <div className="absolute inset-0 dot-pattern opacity-10 filter invert pointer-events-none z-0" />
          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="grid md:grid-cols-2 gap-16 items-center">
-             <div className="order-2 md:order-1 relative flex items-center justify-center h-[400px]">
+             <div className="order-2 md:order-1 relative flex items-center justify-center h-[450px]">
+                {/* Abstract UI Elements - Digital Twin HUD */}
+                <div className="relative z-10 w-full max-w-lg bg-slate-900/90 backdrop-blur-md border border-blue-500/30 p-1 rounded-lg shadow-2xl flex overflow-hidden">
+                  
+                  {/* Left Panel: Console */}
+                  <div className="w-1/2 p-5 font-mono text-[10px] text-blue-300 flex flex-col justify-end relative bg-black/40">
+                    <div className="absolute top-3 left-3 text-zinc-500 text-[9px] tracking-widest">SYS.CONSOLE</div>
+                    <div className="space-y-1.5 opacity-90 mt-8">
+                      <p>{">"} INITIALIZING MODEL_GEO_V4</p>
+                      <p className="text-zinc-500">{">"} LOADING MESH: 1.4M VERTICES...</p>
+                      <p>{">"} CALCULATING STRESS TENSORS</p>
+                      <p>{">"} APPLYING NON-LINEAR SOLVER</p>
+                      <p className="text-emerald-400 font-bold mt-2">{">"} ANALYSIS COMPLETE. INTEGRITY: 98.4%</p>
+                      <p className="animate-pulse">_</p>
+                    </div>
+                  </div>
 
-                
-                <Terminal className="h-24 w-24 text-zinc-200 absolute opacity-50" />
-                
-                <div className="w-full h-full border border-zinc-300 p-4 bg-slate-900 relative z-10 font-mono text-xs text-blue-300 flex flex-col justify-end rounded-sm shadow-xl overflow-hidden">
-
-                   
-                   <div className="space-y-1 opacity-100 relative z-10">
-                     <p>{">"} INITIALIZING MODEL [ACUMEN_GEO_V4]</p>
-                     <p>{">"} LOADING TERRAIN DATA...</p>
-                     <p>{">"} 1,402,993 POINTS PROCESSED</p>
-                     <p>{">"} RUNNING STRESS SIMULATION</p>
-                     <p className="text-emerald-400 font-bold">{">"} ANALYSIS COMPLETE. STRUCTURAL INTEGRITY: 98.4%</p>
-                     <p className="animate-pulse">_</p>
-                   </div>
+                  {/* Right Panel: Radar/Scanner */}
+                  <div className="w-1/2 p-5 relative flex items-center justify-center border-l border-blue-500/20">
+                    <div className="absolute top-3 left-3 text-zinc-500 text-[9px] tracking-widest">SPATIAL.SCAN</div>
+                    <div className="absolute top-3 right-3 text-blue-400 text-[9px] font-mono">LAT:6.2442</div>
+                    <div className="absolute bottom-3 right-3 text-blue-400 text-[9px] font-mono">LNG:-75.5812</div>
+                    
+                    {/* Radar Circles */}
+                    <div className="relative w-32 h-32 flex items-center justify-center">
+                      <div className="absolute inset-0 border border-blue-500/30 rounded-full"></div>
+                      <div className="absolute w-24 h-24 border border-blue-400/20 rounded-full border-dashed animate-[spin_10s_linear_infinite]"></div>
+                      <div className="absolute w-16 h-16 border border-emerald-500/40 rounded-full"></div>
+                      
+                      {/* Scanning Line */}
+                      <div className="absolute w-full h-full animate-[spin_4s_linear_infinite]">
+                        <div className="w-1/2 h-px bg-gradient-to-r from-transparent to-emerald-400 absolute top-1/2 left-1/2 origin-left"></div>
+                      </div>
+                      
+                      {/* Blips */}
+                      <div className="absolute w-1.5 h-1.5 bg-emerald-400 rounded-full top-6 right-8 animate-pulse"></div>
+                      <div className="absolute w-1 h-1 bg-blue-400 rounded-full bottom-8 left-10"></div>
+                      
+                      <Network className="w-5 h-5 text-emerald-500/80 absolute z-10" />
+                    </div>
+                  </div>
+                  
                 </div>
              </div>
 
