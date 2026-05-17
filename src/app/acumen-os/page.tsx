@@ -160,27 +160,29 @@ export default function AcumenOSPage() {
                   </svg>
                 </div>
 
-                {/* Level 3: Center Core */}
-                <div className="relative flex items-center justify-center mt-1 mb-1">
-                  <div className="absolute w-44 h-44 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
-                  <div className="absolute w-32 h-32 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
+                {/* Level 3: Center Core (Extruded) */}
+                <div className="relative flex flex-1 items-center justify-center mt-2 mb-2 w-full">
+                  <div className="absolute w-56 h-56 border border-blue-200 rounded-full animate-[spin_20s_linear_infinite] opacity-50"></div>
+                  <div className="absolute w-40 h-40 border border-gold-200 rounded-full animate-[spin_15s_linear_infinite_reverse] opacity-50"></div>
                   
-                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-xl">
-                    <Hexagon className="w-12 h-12 text-gold-500 drop-shadow-md mb-2" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
-                    <h4 className="font-heading font-bold text-sm text-zinc-900 tracking-widest">ACUMEN CORE</h4>
-                    <div className="flex gap-1.5 mt-2">
+                  <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-md p-6 h-full min-h-[180px] w-[80%] rounded-2xl border border-white/60 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+                    <Hexagon className="w-14 h-14 text-gold-500 drop-shadow-md mb-3" fill="currentColor" fillOpacity={0.1} strokeWidth={1.5} />
+                    <h4 className="font-heading font-bold text-base text-zinc-900 tracking-widest">ACUMEN CORE</h4>
+                    <p className="text-[9px] text-zinc-500 mb-3 tracking-widest uppercase">Motor de Inferencia Analítica</p>
+                    <div className="flex flex-wrap justify-center gap-1.5 mt-auto">
                       <span className="text-[8px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">LLM.SYNC</span>
                       <span className="text-[8px] font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">BIM.SYNC</span>
+                      <span className="text-[8px] font-mono bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">KNOWLEDGE.GRAPH</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-12 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-1 mb-1">
+                <div className="w-px h-6 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-1 mb-1">
                   <ArrowRight className="absolute bottom-0 -ml-2 text-emerald-500 h-4 w-4 rotate-90" />
                 </div>
                 
-                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-emerald-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-auto">
+                <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-emerald-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-0">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
                     <h4 className="font-heading font-bold text-xs text-zinc-900">DICTAMEN VERIFICADO</h4>
