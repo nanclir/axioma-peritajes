@@ -129,9 +129,9 @@ export default function AcumenOSPage() {
                   {/* Connectors from Level 1 to 2 */}
                   <div className="w-full h-8 flex justify-center pointer-events-none z-0">
                     <svg className="w-full h-full" preserveAspectRatio="none">
-                      <path d="M 16% 0 L 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
-                      <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
-                      <path d="M 84% 0 L 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
+                      <path d="M 16% 0 L 16% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                      <path d="M 50% 0 L 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                      <path d="M 84% 0 L 84% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                     </svg>
                   </div>
 
@@ -154,9 +154,9 @@ export default function AcumenOSPage() {
                 {/* Connectors from Level 2 to 2.5 */}
                 <div className="w-full h-8 flex justify-center pointer-events-none z-0 mt-2">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 16% 0 L 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
-                    <path d="M 84% 0 L 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60 animate-pulse" />
+                    <path d="M 16% 0 L 16% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 84% 0 L 84% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                   </svg>
                 </div>
 
@@ -176,9 +176,9 @@ export default function AcumenOSPage() {
                 {/* Connectors from Level 2.5 to Core */}
                 <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
-                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                   </svg>
                 </div>
 
@@ -200,9 +200,9 @@ export default function AcumenOSPage() {
                 {/* Connectors from Core to Audit Layer */}
                 <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 50% 0 C 50% 50, 16% 50, 16% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
-                    <path d="M 50% 0 C 50% 50, 84% 50, 84% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 C 50% 50, 16% 50, 16% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 C 50% 50, 84% 50, 84% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                   </svg>
                 </div>
 
@@ -222,15 +222,15 @@ export default function AcumenOSPage() {
                 {/* Connectors from Audit Layer to Dictamen */}
                 <div className="w-full flex-1 min-h-[30px] relative flex justify-center mt-2 mb-2 pointer-events-none z-0">
                   <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
-                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#60a5fa" strokeWidth="2" className="opacity-80" />
-                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 16% 0 C 16% 50, 50% 50, 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 50% 0 L 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
+                    <path d="M 84% 0 C 84% 50, 50% 50, 50% 100" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-60" />
                   </svg>
                 </div>
 
                 {/* Bottom Layer */}
-                <div className="w-px h-6 bg-gradient-to-b from-blue-400 to-emerald-400 relative z-0 mt-0 mb-1">
-                  <ArrowRight className="absolute bottom-0 -ml-2 text-emerald-500 h-4 w-4 rotate-90" />
+                <div className="w-px h-6 border-l-2 border-dashed border-zinc-400 opacity-60 relative z-0 mt-0 mb-1">
+                  <ArrowRight className="absolute bottom-0 -ml-[9px] text-zinc-400 h-4 w-4 rotate-90" />
                 </div>
                 
                 <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-emerald-300 shadow-lg p-3 text-center relative z-10 rounded-sm mt-0">
