@@ -23,7 +23,6 @@ export default function Navbar() {
     { name: "Servicios", href: "/servicios" },
     { name: "Proyectos", href: "/proyectos" },
     { name: "Insights", href: "/insights" },
-    { name: "Peritajes", href: "/peritajes" },
     { name: "ACUMEN OS", href: "/acumen-os" },
   ];
 

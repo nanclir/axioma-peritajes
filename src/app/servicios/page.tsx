@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database } from "lucide-react";
+import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
@@ -12,6 +12,13 @@ const services = [
     description: "División forense altamente especializada. Dictámenes técnicos concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
     icon: <Search className="h-6 w-6" />,
     href: "/peritajes",
+    highlight: true,
+  },
+  {
+    title: "Obras Subterráneas",
+    description: "Túneles, estabilización de taludes e infraestructura compleja. Experiencia demostrada en megaproyectos viales, mineros e hidroeléctricos.",
+    icon: <Pickaxe className="h-6 w-6" />,
+    href: "/obras-subterraneas",
     highlight: true,
   },
   {
