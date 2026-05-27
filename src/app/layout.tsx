@@ -16,8 +16,20 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "ACUMEN INGENIERÍA S.A.S. | Inteligencia Territorial e Ingeniería Aumentada",
-  description: "Firma boutique de inteligencia técnica aplicada al territorio. Ingeniería aumentada por datos, experiencia e inteligencia artificial.",
+  title: {
+    default: "ACUMEN INGENIERÍA | Peritajes Técnicos y Auditoría Forense",
+    template: "%s | ACUMEN INGENIERÍA",
+  },
+  description: "Firma experta en peritajes técnicos, dictámenes periciales para litigios, obras subterráneas y gerencia de proyectos de infraestructura en Colombia. Inteligencia territorial aumentada.",
+  keywords: ["Peritaje Técnico", "Dictamen Pericial", "Auditoría Forense", "Obras Subterráneas", "Ingeniería Aumentada", "Colombia", "Infraestructura"],
+  openGraph: {
+    title: "ACUMEN INGENIERÍA | Peritajes Técnicos de Alta Precisión",
+    description: "Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.",
+    url: "https://www.acumeningenieria.com",
+    siteName: "ACUMEN INGENIERÍA",
+    locale: "es_CO",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
