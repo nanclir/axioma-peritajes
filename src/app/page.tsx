@@ -160,7 +160,7 @@ export default function Home() {
               </div>
             </Link>
 
-            <Link href="/servicios" className="glass-card p-10 group block">
+            <Link href="/riesgo-hidroclimatologico" className="glass-card p-10 group block">
               <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
                 <Waves className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
