@@ -122,6 +122,16 @@ export default function Home() {
                 </p>
               </div>
             </Link>
+
+            <Link href="/riesgo-hidroclimatologico" className="glass-card p-10 group block">
+              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
+                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
+                <Waves className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-800">
+                Modelación de datos hídricos, escenarios de cambio climático y evaluación de riesgos para la resiliencia de la infraestructura.
+              </p>
+            </Link>
             
             <Link href="/obras-subterraneas" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
               <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
@@ -158,16 +168,6 @@ export default function Home() {
                   Evaluación de sistemas de drenaje urbano y estanques de retención mediante el análisis de curvas de Intensidad-Duración-Frecuencia (IDF) para ciudades resilientes.
                 </p>
               </div>
-            </Link>
-
-            <Link href="/riesgo-hidroclimatologico" className="glass-card p-10 group block">
-              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
-                <Waves className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
-              </div>
-              <p className="text-zinc-800">
-                Modelación de datos hídricos, escenarios de cambio climático y evaluación de riesgos para la resiliencia de la infraestructura.
-              </p>
             </Link>
           </div>
         </div>
