@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe } from "lucide-react";
+import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
@@ -12,6 +12,13 @@ const services = [
     description: "División forense altamente especializada. Dictámenes técnicos concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
     icon: <Search className="h-6 w-6" />,
     href: "/peritajes",
+    highlight: true,
+  },
+  {
+    title: "Riesgo Hidroclimatológico y Ambiental",
+    description: "Modelación de datos hídricos, escenarios de cambio climático y evaluación estocástica de riesgos para infraestructuras.",
+    icon: <Waves className="h-6 w-6" />,
+    href: "/riesgo-hidroclimatologico",
     highlight: true,
   },
   {
@@ -81,7 +88,7 @@ export default function ServiciosPage() {
               Soluciones críticas para infraestructuras complejas.
             </h1>
             <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal">
-              Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras seis líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
+              Integramos rigor técnico tradicional con analítica de datos e inteligencia artificial. Nuestras líneas de servicio operan bajo un mismo núcleo: la reducción de incertidumbre.
             </p>
           </div>
         </div>
