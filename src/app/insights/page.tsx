@@ -35,51 +35,56 @@ export default function InsightsPage() {
       {/* Artículos (Estilo Buro Happold / Arup) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          {/* Insight 1 */}
-          <article className="group cursor-default">
-            <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative">
+          {/* Whitepaper 1 */}
+          <article className="group cursor-pointer">
+            <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative border border-zinc-200">
                <div 
                  className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0" 
                  style={{ backgroundImage: "url('/images/geotecnico_tunnel.png')" }}
                />
+               <div className="absolute top-4 left-4 bg-zinc-900 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider">
+                 Whitepaper
+               </div>
             </div>
             <div className="flex items-center gap-2 mb-4 text-xs font-mono text-zinc-500 uppercase tracking-widest">
               <BookOpen className="h-3 w-3" />
-              <span>Ingeniería Digital</span>
+              <span>Hidrología Estocástica</span>
             </div>
-            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors">
-              La ética de los algoritmos en la toma de decisiones de infraestructura pública.
+            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors group-hover:text-gold-500">
+              El fin de la estacionariedad: Diseño de infraestructuras frente al cambio climático.
             </h3>
             <p className="text-zinc-600 mb-6 text-sm leading-relaxed">
-              Cómo los modelos probabilísticos y de IA deben ser auditados filosófica y técnicamente para evitar sesgos en el desarrollo territorial. Por Rafael Nanclares.
+              Por qué los diseños hidrológicos tradicionales exigen nuevos modelos estocásticos para procesos no estacionarios.
             </p>
-            <span className="text-zinc-400 font-bold text-sm inline-flex items-center gap-2">
-              [ Próximamente ]
-            </span>
+            <Link href="#" className="inline-flex items-center gap-2 text-zinc-900 font-bold hover:text-gold-500 transition-colors">
+              Descargar Whitepaper <ArrowRight className="h-4 w-4" />
+            </Link>
           </article>
 
-          {/* Insight 2 */}
-          <article className="group cursor-default">
-            <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative">
+          {/* Whitepaper 2 */}
+          <article className="group cursor-pointer">
+            <div className="aspect-[4/3] bg-zinc-100 overflow-hidden mb-6 relative border border-zinc-200">
                <div 
-                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0 opacity-80" 
-                 style={{ backgroundImage: "url('/images/estructural_wireframe.png')" }}
+                 className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0" 
+                 style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
                />
+               <div className="absolute top-4 left-4 bg-zinc-900 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider">
+                 Whitepaper
+               </div>
             </div>
             <div className="flex items-center gap-2 mb-4 text-xs font-mono text-zinc-500 uppercase tracking-widest">
               <BookOpen className="h-3 w-3" />
-              <span>Optimización Hídrica</span>
+              <span>Riesgo y Data Science</span>
             </div>
-            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors">
-              Decisiones con múltiples objetivos e incertidumbre en recursos hidráulicos.
+            <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-3 transition-colors group-hover:text-gold-500">
+              Reduciendo la incertidumbre en Megaproyectos.
             </h3>
             <p className="text-zinc-600 mb-6 text-sm leading-relaxed">
-              Un repaso a la modelación avanzada de sistemas complejos ante la amenaza del cambio climático en Colombia. Basado en las publicaciones del PhD. Ricardo Smith.
+              Aplicación de Inteligencia Artificial y métodos bayesianos para el análisis de riesgo hidrológico y ambiental.
             </p>
-            <span className="text-zinc-400 font-bold text-sm inline-flex items-center gap-2">
-              [ Próximamente ]
-            </span>
+            <Link href="#" className="inline-flex items-center gap-2 text-zinc-900 font-bold hover:text-gold-500 transition-colors">
+              Descargar Whitepaper <ArrowRight className="h-4 w-4" />
+            </Link>
           </article>
 
         </div>

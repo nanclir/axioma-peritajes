@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Mountain, ShieldAlert, Pickaxe, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Mountain, ShieldAlert, Pickaxe, CheckCircle2, Waves } from "lucide-react";
 
 export const metadata = {
   title: "Obras Subterráneas e Infraestructura Compleja | ACUMEN INGENIERÍA S.A.S.",
@@ -47,9 +47,9 @@ export default function ObrasSubterraneasPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-12">Nuestras Áreas de Especialidad</h2>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm">
-              <Pickaxe className="h-8 w-8 text-gold-500 mb-6" />
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm flex flex-col">
+              <Pickaxe className="h-8 w-8 text-gold-500 mb-6 shrink-0" />
               <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Túneles y Obras Subterráneas</h3>
               <p className="text-zinc-600 text-sm leading-relaxed mb-4">
                 Optimización de métodos de excavación, sistemas de pre-soporte, pozos profundos y chimeneas de equilibrio (Raise Boring).
@@ -60,8 +60,8 @@ export default function ObrasSubterraneasPage() {
               </ul>
             </div>
             
-            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm">
-              <Mountain className="h-8 w-8 text-gold-500 mb-6" />
+            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm flex flex-col">
+              <Mountain className="h-8 w-8 text-gold-500 mb-6 shrink-0" />
               <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Estabilización de Taludes</h3>
               <p className="text-zinc-600 text-sm leading-relaxed mb-4">
                 Tratamiento de terrenos mediante alternativas de contención y bioingeniería para materiales de alta humedad.
@@ -72,8 +72,8 @@ export default function ObrasSubterraneasPage() {
               </ul>
             </div>
             
-            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm">
-              <ShieldAlert className="h-8 w-8 text-gold-500 mb-6" />
+            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm flex flex-col">
+              <ShieldAlert className="h-8 w-8 text-gold-500 mb-6 shrink-0" />
               <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Soporte Técnico y Reclamaciones</h3>
               <p className="text-zinc-600 text-sm leading-relaxed mb-4">
                 Justificación técnica y financiera de sobrecostos o retrasos por externalidades y condiciones logísticas extremas.
@@ -81,6 +81,16 @@ export default function ObrasSubterraneasPage() {
               <ul className="space-y-2 text-xs text-zinc-500 mt-auto">
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Auditoría de rendimientos</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Defensa de equilibrio económico</li>
+              </ul>
+            </div>
+
+            <div className="glass-card p-8 bg-white border border-zinc-100 shadow-sm flex flex-col">
+              <Waves className="h-8 w-8 text-gold-500 mb-6 shrink-0" />
+              <h3 className="text-xl font-heading font-bold text-zinc-900 mb-3">Auditoría Ambiental y Análisis de Riesgo Estocástico</h3>
+              <ul className="space-y-2 text-xs text-zinc-500 mt-auto">
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Análisis estadístico y detección de cambios en la calidad del agua, suelo y aire</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Análisis de incertidumbre de cargas de sedimentos y sedimentación de embalses</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Modelación de vulnerabilidad, resiliencia y riesgo en estructuras</li>
               </ul>
             </div>
           </div>

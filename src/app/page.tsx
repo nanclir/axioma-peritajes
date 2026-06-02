@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map } from "lucide-react";
+import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History } from "lucide-react";
 
 export default function Home() {
   return (
@@ -29,7 +29,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl text-zinc-800 mb-12 max-w-2xl font-normal leading-relaxed">
-              No somos una empresa de planos tradicional. Transformamos la complejidad estructural y del territorio en decisiones estratégicas de alta precisión.
+              No somos una empresa de planos tradicional. Transformamos la complejidad estructural, del territorio y la incertidumbre climática en decisiones estratégicas de alta precisión y certidumbre matemática.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -106,7 +106,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Link href="/peritajes" className="glass-card p-10 group block">
               <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Peritajes Técnicos</h3>
@@ -115,6 +115,12 @@ export default function Home() {
               <p className="text-zinc-800">
                 División forense altamente especializada. Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.
               </p>
+              <div className="mt-6 pt-6 border-t border-zinc-100">
+                <h4 className="text-sm font-bold text-zinc-900 mb-2">Peritaje Forense Hidroclimatológico</h4>
+                <p className="text-sm text-zinc-600">
+                  Análisis retrospectivo y estadístico de eventos extremos para determinar causas de fallos de infraestructura, integrando sistemas hídricos, variabilidad hidrológica y efectos antrópicos.
+                </p>
+              </div>
             </Link>
             
             <Link href="/obras-subterraneas" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
@@ -145,6 +151,22 @@ export default function Home() {
               </div>
               <p className="text-zinc-800">
                 Planificación urbana estratégica. Estudios de tránsito, evaluación de impacto y modelos integrados de ciudad inteligente.
+              </p>
+              <div className="mt-6 pt-6 border-t border-zinc-100">
+                <h4 className="text-sm font-bold text-zinc-900 mb-2">Diseño Urbano y Drenaje Inteligente</h4>
+                <p className="text-sm text-zinc-600">
+                  Evaluación de sistemas de drenaje urbano y estanques de retención mediante el análisis de curvas de Intensidad-Duración-Frecuencia (IDF) para ciudades resilientes.
+                </p>
+              </div>
+            </Link>
+
+            <Link href="/servicios" className="glass-card p-10 group block">
+              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
+                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
+                <Waves className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-800">
+                Modelación de datos hídricos, escenarios de cambio climático y evaluación de riesgos para la resiliencia de la infraestructura.
               </p>
             </Link>
           </div>
@@ -200,6 +222,24 @@ export default function Home() {
                   <div>
                     <h4 className="font-bold text-zinc-900 mb-1">Inteligencia Operacional</h4>
                     <p className="text-zinc-600 text-sm">Análisis de grandes volúmenes de documentos legales y técnicos vía IA.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="bg-slate-50 p-2 rounded-sm border border-zinc-200 shrink-0 shadow-sm">
+                    <Network className="h-5 w-5 text-indigo-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-900 mb-1">Motor de Probabilidad y Gemelos Digitales Hídricos</h4>
+                    <p className="text-zinc-600 text-sm">Codificación algorítmica de modelación estocástica y simulaciones espaciales (Kriging). Generación de dashboards interactivos en tiempo real para análisis de redes hídricas, predicción de rendimientos y evaluación de proyectos de recursos hídricos bajo variabilidad climática.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="bg-slate-50 p-2 rounded-sm border border-zinc-200 shrink-0 shadow-sm">
+                    <History className="h-5 w-5 text-rose-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-900 mb-1">Reconstrucción Estocástica de Datos</h4>
+                    <p className="text-zinc-600 text-sm">Algoritmos avanzados para la imputación, extensión y reconstrucción de series climatológicas e hidrológicas incompletas o de corto registro.</p>
                   </div>
                 </li>
               </ul>
