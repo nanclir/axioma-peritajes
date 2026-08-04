@@ -107,28 +107,30 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/peritajes" className="glass-card p-10 group block">
-              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Peritajes Técnicos</h3>
-                <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
+            <Link href="/peritajes" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs_v2.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Peritajes Técnicos</h3>
+                <ArrowRight className="h-5 w-5 text-zinc-500 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
               </div>
-              <p className="text-zinc-800">
+              <p className="text-zinc-400 relative z-10">
                 División forense altamente especializada. Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.
               </p>
-              <div className="mt-6 pt-6 border-t border-zinc-100">
-                <h4 className="text-sm font-bold text-zinc-900 mb-2">Peritaje Forense Hidroclimatológico</h4>
-                <p className="text-sm text-zinc-600">
+              <div className="mt-6 pt-6 border-t border-zinc-800 relative z-10">
+                <h4 className="text-sm font-bold text-white mb-2">Peritaje Forense Hidroclimatológico</h4>
+                <p className="text-sm text-zinc-500">
                   Análisis retrospectivo y estadístico de eventos extremos para determinar causas de fallos de infraestructura, integrando sistemas hídricos, variabilidad hidrológica y efectos antrópicos.
                 </p>
               </div>
             </Link>
 
-            <Link href="/riesgo-hidroclimatologico" className="glass-card p-10 group block">
-              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
-                <Waves className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
+            <Link href="/riesgo-hidroclimatologico" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Riesgo Hidroclimatológico y Ambiental</h3>
+                <Waves className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
               </div>
-              <p className="text-zinc-800">
+              <p className="text-zinc-400 relative z-10">
                 Modelación de datos hídricos, escenarios de cambio climático y evaluación de riesgos para la resiliencia de la infraestructura.
               </p>
             </Link>
@@ -144,12 +146,13 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href="/ordenamiento-territorial" className="glass-card p-10 group block">
-              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Ordenamiento Territorial</h3>
-                <MapPin className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
+            <Link href="/ordenamiento-territorial" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Ordenamiento Territorial</h3>
+                <MapPin className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
               </div>
-              <p className="text-zinc-800">
+              <p className="text-zinc-400 relative z-10">
                 Planificación urbana y metropolitana, política de vivienda e instrumentos de financiación de suelo para el desarrollo de ciudades sostenibles.
               </p>
             </Link>

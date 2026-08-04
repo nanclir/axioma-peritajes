@@ -33,7 +33,7 @@ const services = [
     description: "Planeación a escala municipal y metropolitana. Instrumentos de gestión del suelo, modelos de ciudad sostenible y vivienda de interés social.",
     icon: <MapPin className="h-6 w-6" />,
     href: "/ordenamiento-territorial",
-    highlight: false,
+    highlight: true,
   },
   {
     title: "Movilidad y Dinámica Urbana",
