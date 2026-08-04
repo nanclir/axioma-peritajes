@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History } from "lucide-react";
+import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin } from "lucide-react";
 
 export default function Home() {
   return (
@@ -144,13 +144,13 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href="/servicios" className="glass-card p-10 group block">
+            <Link href="/ordenamiento-territorial" className="glass-card p-10 group block">
               <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Infraestructura y PMO</h3>
-                <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
+                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Ordenamiento Territorial</h3>
+                <MapPin className="h-6 w-6 text-zinc-400 group-hover:text-gold-500 transition-all" />
               </div>
               <p className="text-zinc-800">
-                Gerencia, estructuración y control de proyectos complejos. Modelado de riesgos y administración delegada bajo metodologías ágiles.
+                Planificación urbana y metropolitana, política de vivienda e instrumentos de financiación de suelo para el desarrollo de ciudades sostenibles.
               </p>
             </Link>
 

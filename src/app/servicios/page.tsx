@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves } from "lucide-react";
+import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves, MapPin } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
@@ -29,10 +29,10 @@ const services = [
     highlight: true,
   },
   {
-    title: "Estructuración e Infraestructura",
-    description: "Diseño conceptual, prefactibilidad y factibilidad de grandes infraestructuras. Modelado avanzado de túneles, puentes y sistemas hidráulicos.",
-    icon: <HardHat className="h-6 w-6" />,
-    href: "/contacto",
+    title: "Ordenamiento Territorial y Planificación Estratégica",
+    description: "Planeación a escala municipal y metropolitana. Instrumentos de gestión del suelo, modelos de ciudad sostenible y vivienda de interés social.",
+    icon: <MapPin className="h-6 w-6" />,
+    href: "/ordenamiento-territorial",
     highlight: false,
   },
   {
