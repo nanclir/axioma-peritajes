@@ -110,11 +110,10 @@ export default function RiesgoHidroclimatologicoPage() {
           
           {/* Perfil Ricardo Smith */}
           <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm">
-            <div className="w-full md:w-1/3 lg:w-1/4 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500 border border-zinc-200">
-              {/* NOTE: Placeholder image until ricardo_smith.jpg is uploaded */}
+            <div className="w-full md:w-1/3 lg:w-1/4 relative aspect-[3/4] bg-zinc-100 transition-all duration-500 border border-zinc-200">
               <div 
                 className="absolute inset-0 bg-cover bg-[position:center_top] z-0" 
-                style={{ backgroundImage: "url('/images/auditoria_forense_docs_v2.png')" }}
+                style={{ backgroundImage: "url('/team/ricardo_smith.jpeg')" }}
               />
             </div>
             <div className="w-full md:w-2/3 lg:w-3/4">
