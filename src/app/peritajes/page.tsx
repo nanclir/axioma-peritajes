@@ -92,7 +92,7 @@ export default function PeritajesPage() {
             <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500">
               <div 
                 className="absolute inset-0 bg-cover bg-center z-0" 
-                style={{ backgroundImage: "url('/images/ricardo_smith.jpg')" }}
+                style={{ backgroundImage: "url('/team/ricardo_smith.jpeg')" }}
               />
             </div>
             <div className="w-full md:w-2/3">

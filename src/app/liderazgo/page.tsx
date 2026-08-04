@@ -37,7 +37,7 @@ export default function LiderazgoPage() {
           <div className="md:col-span-4 relative aspect-[3/4] bg-zinc-200 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
             <div 
               className="absolute inset-0 bg-cover bg-center z-0" 
-              style={{ backgroundImage: "url('/images/ricardo_smith.jpg')" }}
+              style={{ backgroundImage: "url('/team/ricardo_smith.jpeg')" }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/40 to-transparent z-10" />
           </div>
