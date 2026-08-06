@@ -11,7 +11,7 @@ const proyectos = [
     icon: Scale,
     description: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas.",
     stats: [
-      { value: "+50", label: "Peritajes Realizados" },
+      { value: "+30", label: "Peritajes Realizados" },
       { value: "+35 Años", label: "Trayectoria Conjunta" }
     ],
     image: "/images/auditoria_forense_docs_v2.png",
