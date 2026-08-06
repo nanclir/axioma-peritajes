@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowRight, Scale, Search, ShieldAlert, FileText, CheckCircle2 } from "lucide-react";
 
 export const metadata = {
-  title: "Peritajes Técnicos Forenses | ACUMEN INGENIERÍA S.A.S.",
-  description: "División forense especializada en dictámenes técnicos para litigios y tribunales de arbitramento.",
+  title: "Peritajes Técnicos | ACUMEN INGENIERÍA S.A.S.",
+  description: "División especializada en dictámenes técnicos para litigios y tribunales de arbitramento.",
 };
 
 export default function PeritajesPage() {
@@ -26,7 +26,7 @@ export default function PeritajesPage() {
               Línea de Negocio Especializada
             </div>
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight">
-              Peritaje Técnico Forense.
+              Peritaje Técnico.
             </h1>
             <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal mb-10">
               Cuando la infraestructura falla, las implicaciones técnicas, legales y financieras exigen una investigación con rigor científico. Proveemos dictámenes periciales concluyentes para tribunales, cortes y litigios de alta complejidad.
@@ -48,7 +48,7 @@ export default function PeritajesPage() {
       {/* Áreas de Actuación */}
       <section className="bg-slate-50 border-y border-zinc-200 py-24 mb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-12">Áreas de Actuación Forense</h2>
+          <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-12">Áreas de Actuación</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="glass-card p-8">
@@ -119,12 +119,12 @@ export default function PeritajesPage() {
             </div>
             <div className="w-full md:w-2/3">
               <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Rafael Nanclares Ospina</h3>
-              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Socio Director / Estratega Forense</p>
+              <p className="text-gold-500 font-medium uppercase tracking-widest text-xs mb-4">Socio Director / Estratega Pericial</p>
               <p className="text-zinc-600 text-sm leading-relaxed mb-6">
                 Ingeniero Civil y Magíster en Filosofía. Su rol es integrar el análisis técnico profundo con herramientas tecnológicas (ACUMEN OS) y estructurar el peritaje para asegurar que la evidencia soporte estratégicamente la teoría del caso del equipo jurídico.
               </p>
               <ul className="space-y-2 text-sm text-zinc-600">
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estructuración Forense</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estructuración Pericial</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Integración Tecnológica (IA/BIM)</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Estrategia con Firmas Legales</li>
               </ul>
@@ -146,7 +146,7 @@ export default function PeritajesPage() {
                 Ingeniero y experto en "Ingeniería Creativa". Su rol dentro de la división de peritajes es traducir hallazgos matemáticos, fallas estructurales y modelos complejos en material visual 3D, diagramas interactivos y exposiciones gráficas de alto impacto que permiten a las cortes comprender la verdad técnica de manera inequívoca.
               </p>
               <ul className="space-y-2 text-sm text-zinc-600">
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelado 3D Forense</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Modelado 3D Pericial</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Exposición Visual en Audiencias</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500" /> Reconstrucción Digital de Fallas</li>
               </ul>

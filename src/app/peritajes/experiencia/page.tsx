@@ -184,7 +184,7 @@ export default function ExperienciaPeritajes() {
             Base de Casos y Experiencia.
           </h1>
           <p className="text-lg text-zinc-600 max-w-3xl leading-relaxed">
-            Un registro detallado de los dictámenes técnicos y peritajes forenses liderados por nuestros expertos ante los principales tribunales administrativos y centros de arbitraje del país.
+            Un registro detallado de los dictámenes técnicos y peritajes liderados por nuestros expertos ante los principales tribunales administrativos y centros de arbitraje del país.
           </p>
         </div>
 

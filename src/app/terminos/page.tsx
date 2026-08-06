@@ -27,7 +27,7 @@ export default function TerminosPage() {
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">1. Naturaleza de los Servicios</h3>
           <p>
-            ACUMEN proporciona servicios de consultoría técnica de alto nivel, inteligencia territorial y modelado forense. Toda la información contenida en nuestro sitio web, en la sección de *Insights* o en los resúmenes de *Proyectos*, es de carácter informativo y no constituye, por sí sola, una relación de consultoría vinculante ni asesoría legal directa hasta que no medie un contrato formal.
+            ACUMEN proporciona servicios de consultoría técnica de alto nivel, inteligencia territorial y modelado técnico. Toda la información contenida en nuestro sitio web, en la sección de *Insights* o en los resúmenes de *Proyectos*, es de carácter informativo y no constituye, por sí sola, una relación de consultoría vinculante ni asesoría legal directa hasta que no medie un contrato formal.
           </p>
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">2. Propiedad Intelectual</h3>

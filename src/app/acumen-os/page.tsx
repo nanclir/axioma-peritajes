@@ -282,7 +282,7 @@ export default function AcumenOSPage() {
                  <li className="flex gap-4">
                    <ShieldCheck className="h-6 w-6 text-emerald-500 shrink-0" />
                    <div>
-                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">AUDITORÍA FORENSE</h4>
+                     <h4 className="font-bold text-zinc-900 mb-1 font-mono text-sm">AUDITORÍA TÉCNICA</h4>
                      <p className="text-sm text-zinc-600">Búsqueda semántica (NLP) sobre miles de documentos técnicos para identificar desviaciones en segundos.</p>
                    </div>
                  </li>

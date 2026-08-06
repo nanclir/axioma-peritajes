@@ -86,7 +86,7 @@ export default function InquiryIAMockup() {
                   {isProcessing ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /> Análisis en curso...</>
                   ) : (
-                    "Ejecutar Análisis Forense"
+                    "Ejecutar Análisis Técnico"
                   )}
                 </button>
               </>

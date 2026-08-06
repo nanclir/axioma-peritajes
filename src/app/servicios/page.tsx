@@ -8,8 +8,8 @@ export const metadata = {
 
 const services = [
   {
-    title: "Peritajes Técnicos Forenses",
-    description: "División forense altamente especializada. Dictámenes técnicos concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
+    title: "Peritajes Técnicos",
+    description: "División técnica altamente especializada. Dictámenes técnicos concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
     icon: <Search className="h-6 w-6" />,
     href: "/peritajes",
     highlight: true,

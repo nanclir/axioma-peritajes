@@ -17,11 +17,11 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "ACUMEN INGENIERÍA | Peritajes Técnicos y Auditoría Forense",
+    default: "ACUMEN INGENIERÍA | Peritajes Técnicos y Auditoría Técnica",
     template: "%s | ACUMEN INGENIERÍA",
   },
   description: "Firma experta en peritajes técnicos, dictámenes periciales para litigios, obras subterráneas y gerencia de proyectos de infraestructura en Colombia. Inteligencia territorial aumentada.",
-  keywords: ["Peritaje Técnico", "Dictamen Pericial", "Auditoría Forense", "Obras Subterráneas", "Ingeniería Aumentada", "Colombia", "Infraestructura"],
+  keywords: ["Peritaje Técnico", "Dictamen Pericial", "Auditoría Técnica", "Obras Subterráneas", "Ingeniería Aumentada", "Colombia", "Infraestructura"],
   openGraph: {
     title: "ACUMEN INGENIERÍA | Peritajes Técnicos de Alta Precisión",
     description: "Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.",

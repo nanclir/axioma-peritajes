@@ -114,10 +114,10 @@ export default function Home() {
                 <ArrowRight className="h-5 w-5 text-zinc-500 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
               </div>
               <p className="text-zinc-400 relative z-10">
-                División forense altamente especializada. Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.
+                División pericial altamente especializada. Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.
               </p>
               <div className="mt-6 pt-6 border-t border-zinc-800 relative z-10">
-                <h4 className="text-sm font-bold text-white mb-2">Peritaje Forense Hidroclimatológico</h4>
+                <h4 className="text-sm font-bold text-white mb-2">Peritaje Técnico Hidroclimatológico</h4>
                 <p className="text-sm text-zinc-500">
                   Análisis retrospectivo y estadístico de eventos extremos para determinar causas de fallos de infraestructura, integrando sistemas hídricos, variabilidad hidrológica y efectos antrópicos.
                 </p>

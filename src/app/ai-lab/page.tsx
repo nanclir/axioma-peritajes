@@ -75,7 +75,7 @@ export default function AILab() {
                 InquiryIA <span className="text-[10px] font-mono bg-blue-500/20 text-blue-300 px-2 py-1 rounded border border-blue-500/30">MVP LISTO</span>
               </h3>
               <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                Agente forense para revisión documental. Procesa cientos de folios de contratos, actas y pólizas usando NLP para extraer inconsistencias y generar líneas de tiempo forenses en arbitramentos.
+                Agente técnico para revisión documental. Procesa cientos de folios de contratos, actas y pólizas usando NLP para extraer inconsistencias y generar líneas de tiempo periciales en arbitramentos.
               </p>
               <Link href="/inquiry-ia" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
                 ABRIR TERMINAL <ChevronRight className="h-4 w-4" />

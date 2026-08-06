@@ -8,7 +8,7 @@ export default function ContactoPage() {
     empresa: "",
     contacto: "",
     email: "",
-    asunto: "Peritaje Forense",
+    asunto: "Peritaje Técnico",
     mensaje: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,7 +37,7 @@ export default function ContactoPage() {
       
       if (response.ok) {
         setIsSuccess(true);
-        setFormData({ empresa: "", contacto: "", email: "", asunto: "Peritaje Forense", mensaje: "" });
+        setFormData({ empresa: "", contacto: "", email: "", asunto: "Peritaje Técnico", mensaje: "" });
       } else {
         alert("Hubo un error al enviar el mensaje. Por favor intente más tarde.");
       }
@@ -134,7 +134,7 @@ export default function ContactoPage() {
                 <div>
                   <label className="block text-xs font-bold text-zinc-900 uppercase tracking-widest mb-2">Asunto Principal</label>
                   <select name="asunto" value={formData.asunto} onChange={handleChange} className="w-full bg-slate-50 border border-zinc-200 px-4 py-3 focus:outline-none focus:border-gold-500 transition-colors text-zinc-600">
-                    <option>Peritaje Forense</option>
+                    <option>Peritaje Técnico</option>
                     <option>Estructuración de Infraestructura</option>
                     <option>Modelado SIG y Analítica</option>
                     <option>ACUMEN OS / Trazabilidad</option>

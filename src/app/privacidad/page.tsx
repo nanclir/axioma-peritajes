@@ -27,7 +27,7 @@ export default function PrivacidadPage() {
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">1. Identidad del Responsable</h3>
           <p>
-            ACUMEN INGENIERÍA S.A.S. es una sociedad comercial debidamente constituida bajo las leyes de la República de Colombia, con domicilio principal en la ciudad de Medellín. Somos los responsables del tratamiento de los datos que recabamos a través de nuestros servicios de consultoría, peritaje técnico forense e inteligencia territorial.
+            ACUMEN INGENIERÍA S.A.S. es una sociedad comercial debidamente constituida bajo las leyes de la República de Colombia, con domicilio principal en la ciudad de Medellín. Somos los responsables del tratamiento de los datos que recabamos a través de nuestros servicios de consultoría, peritaje técnico e inteligencia territorial.
           </p>
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">2. Finalidad del Tratamiento de Datos</h3>
@@ -35,7 +35,7 @@ export default function PrivacidadPage() {
             Los datos personales e información técnica suministrada serán utilizados con los siguientes propósitos:
           </p>
           <ul className="list-disc pl-6 space-y-2 mt-4">
-            <li>Estructuración de dictámenes periciales e investigaciones forenses de infraestructura.</li>
+            <li>Estructuración de dictámenes periciales e investigaciones periciales de infraestructura.</li>
             <li>Gestión y trazabilidad de proyectos mediante nuestra plataforma ACUMEN OS.</li>
             <li>Contacto técnico o comercial relacionado con nuestros servicios de consultoría e ingeniería digital.</li>
             <li>Cumplimiento de obligaciones legales y contractuales vigentes en el territorio colombiano.</li>
@@ -43,7 +43,7 @@ export default function PrivacidadPage() {
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">3. Seguridad de la Información (ACUMEN OS)</h3>
           <p>
-            Entendemos que los proyectos de infraestructura y los litigios técnicos manejan información altamente sensible. Los datos cargados o gestionados a través de ACUMEN OS están protegidos mediante protocolos de encriptación y control de acceso estricto. La información de los peritajes forenses goza de confidencialidad y reserva profesional.
+            Entendemos que los proyectos de infraestructura y los litigios técnicos manejan información altamente sensible. Los datos cargados o gestionados a través de ACUMEN OS están protegidos mediante protocolos de encriptación y control de acceso estricto. La información de los peritajes técnicos goza de confidencialidad y reserva profesional.
           </p>
 
           <h3 className="text-zinc-900 font-bold font-heading mt-8 mb-4">4. Derechos de los Titulares</h3>

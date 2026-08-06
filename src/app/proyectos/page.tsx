@@ -187,11 +187,11 @@ const proyectos = [
   },
   {
     title: "Asesoría Pericial - Túnel de La Línea",
-    tag: "INGENIERÍA FORENSE",
+    tag: "INGENIERÍA PERICIAL",
     icon: Scale,
-    description: "Asesoría técnica en ingeniería forense al perito independiente sobre los sobrecostos y perjuicios en la terminación del Túnel Piloto y de Rescate del Cruce de la Cordillera Central.",
+    description: "Asesoría técnica al perito independiente sobre los sobrecostos y perjuicios en la terminación del Túnel Piloto y de Rescate del Cruce de la Cordillera Central.",
     stats: [
-      { value: "Forense", label: "Dictamen Independiente" },
+      { value: "Peritaje", label: "Dictamen Independiente" },
       { value: "Megaobra", label: "Infraestructura Nacional" }
     ],
     image: "/images/tunel_linea_forense_1786043664626.jpg",
