@@ -34,7 +34,7 @@ export default function RiesgoHidroclimatologicoPage() {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contacto" className="inline-flex justify-center items-center px-6 py-3 bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition-all group">
-                Consultar un Peritaje
+                Solicitar Asesoría
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
