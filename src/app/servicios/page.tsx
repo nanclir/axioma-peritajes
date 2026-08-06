@@ -43,13 +43,6 @@ const services = [
     highlight: false,
   },
   {
-    title: "SIG y Analítica Territorial",
-    description: "Inteligencia espacial pura. Levantamiento, procesamiento y visualización de datos georreferenciados para la toma de decisiones a escala de ciudad y región.",
-    icon: <Network className="h-6 w-6" />,
-    href: "/contacto",
-    highlight: false,
-  },
-  {
     title: "Evaluación de Riesgos y Vulnerabilidad",
     description: "Análisis determinísticos y probabilísticos para evaluar fragilidad estructural, riesgos geotécnicos y resiliencia ante amenazas naturales y antrópicas.",
     icon: <FileLineChart className="h-6 w-6" />,
