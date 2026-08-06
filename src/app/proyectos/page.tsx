@@ -194,7 +194,7 @@ const proyectos = [
       { value: "Forense", label: "Dictamen Independiente" },
       { value: "Megaobra", label: "Infraestructura Nacional" }
     ],
-    image: "/images/tunel_toyo_concept_1786023543800.jpg",
+    image: "/images/tunel_linea_forense_1786043664626.jpg",
     bgAccent: "bg-red-900/10",
   }
 ];
