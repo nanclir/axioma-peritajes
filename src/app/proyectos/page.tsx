@@ -14,7 +14,7 @@ const proyectos = [
       { value: "100%", label: "Cobertura Analizada" },
       { value: "SETP", label: "Estructuración Integral" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/villavicencio_mobility_1786042561203.jpg",
     bgAccent: "bg-blue-900/10",
   },
   {
@@ -26,7 +26,7 @@ const proyectos = [
       { value: "SITM", label: "Diseño e Integración" },
       { value: "SITP", label: "Equipamientos" }
     ],
-    image: "/images/estructural_wireframe.png",
+    image: "/images/barranquilla_transit_1786042570363.jpg",
     bgAccent: "bg-gold-900/10",
   },
   {
@@ -38,7 +38,7 @@ const proyectos = [
       { value: "SIG", label: "Cuenca Hidrográfica" },
       { value: "Ambiental", label: "Planeación" }
     ],
-    image: "/images/geotecnico_tunnel.png",
+    image: "/images/rio_bogota_water_1786042578592.jpg",
     bgAccent: "bg-cyan-900/10",
   },
   {
@@ -50,7 +50,7 @@ const proyectos = [
       { value: "BID", label: "Entidad Financiadora" },
       { value: "5 Años", label: "Proyección Estratégica" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/panama_strategy_1786042585977.jpg",
     bgAccent: "bg-indigo-900/10",
   },
   {
@@ -62,7 +62,7 @@ const proyectos = [
       { value: "3", label: "Ciudades Analizadas" },
       { value: "HQI", label: "Estándares Globales" }
     ],
-    image: "/images/estructural_wireframe.png",
+    image: "/images/hqi_infrastructure_1786042622321.jpg",
     bgAccent: "bg-emerald-900/10",
   },
   {
@@ -74,7 +74,7 @@ const proyectos = [
       { value: "UPME", label: "Sector Nacional" },
       { value: "Energía", label: "Proyección Estratégica" }
     ],
-    image: "/images/geotecnico_tunnel.png",
+    image: "/images/upme_energy_1786042631100.jpg",
     bgAccent: "bg-amber-900/10",
   },
   {
@@ -86,7 +86,7 @@ const proyectos = [
       { value: "BID", label: "Financiador" },
       { value: "Data", label: "Priorización" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/bid_aqueduct_1786042641361.jpg",
     bgAccent: "bg-teal-900/10",
   },
   {
@@ -98,7 +98,7 @@ const proyectos = [
       { value: "$1.14B", label: "Valor de Contratación" },
       { value: "85%", label: "Red Vial Óptima" }
     ],
-    image: "/images/estructural_wireframe.png",
+    image: "/images/tunel_toyo_concept_1786023543800.jpg",
     bgAccent: "bg-orange-900/10",
   },
   {
@@ -110,7 +110,7 @@ const proyectos = [
       { value: "125", label: "Municipios" },
       { value: ">1.500", label: "Cuadras Pavimentadas" }
     ],
-    image: "/images/geotecnico_tunnel.png",
+    image: "/images/mejoremos_cuadra_1786042649737.jpg",
     bgAccent: "bg-zinc-900/10",
   },
   {
@@ -122,7 +122,7 @@ const proyectos = [
       { value: "ICANH", label: "Patrimonio Nacional" },
       { value: "IA & TIC", label: "Transformación Digital" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/icanh_restructure_1786042677047.jpg",
     bgAccent: "bg-purple-900/10",
   },
   {
@@ -134,7 +134,7 @@ const proyectos = [
       { value: "México", label: "Cooperación Internacional" },
       { value: "Urbano", label: "Desarrollo Sostenible" }
     ],
-    image: "/images/estructural_wireframe.png",
+    image: "/images/peti_topochico_1786042685216.jpg",
     bgAccent: "bg-sky-900/10",
   },
   {
@@ -146,7 +146,7 @@ const proyectos = [
       { value: "3", label: "Municipios Integrados" },
       { value: "Tejido Social", label: "Impacto Comunitario" }
     ],
-    image: "/images/geotecnico_tunnel.png",
+    image: "/images/peti_alianzareal_1786042694192.jpg",
     bgAccent: "bg-rose-900/10",
   },
   {
@@ -158,7 +158,7 @@ const proyectos = [
       { value: "ITS", label: "Infraestructura Tecnológica" },
       { value: "10 Años", label: "Modelamiento Financiero" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/simm_concept_1786023553652.jpg",
     bgAccent: "bg-slate-900/10",
   },
   {
@@ -170,7 +170,7 @@ const proyectos = [
       { value: "100%", label: "Ejecución Presupuestal" },
       { value: "Cable", label: "Sistemas Aéreos" }
     ],
-    image: "/images/estructural_wireframe.png",
+    image: "/images/cables_aereos_1786042703328.jpg",
     bgAccent: "bg-stone-900/10",
   },
   {
@@ -182,7 +182,7 @@ const proyectos = [
       { value: "$14.3B", label: "Inversión en Sedes" },
       { value: "100%", label: "Certificación Habitacional" }
     ],
-    image: "/images/geotecnico_tunnel.png",
+    image: "/images/comfenalco_habitat_1786042761412.jpg",
     bgAccent: "bg-green-900/10",
   },
   {
@@ -194,7 +194,7 @@ const proyectos = [
       { value: "Forense", label: "Dictamen Independiente" },
       { value: "Megaobra", label: "Infraestructura Nacional" }
     ],
-    image: "/images/auditoria_forense_docs.png",
+    image: "/images/tunel_toyo_concept_1786023543800.jpg",
     bgAccent: "bg-red-900/10",
   }
 ];
