@@ -6,18 +6,6 @@ import {
 
 const proyectos = [
   {
-    title: "Peritajes Técnicos",
-    tag: "TRIBUNALES Y CONTROVERSIAS",
-    icon: Scale,
-    description: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas.",
-    stats: [
-      { value: "+30", label: "Peritajes Realizados" },
-      { value: "+35 Años", label: "Trayectoria Conjunta" }
-    ],
-    image: "/images/Visual_Auscultacion_Amplia_2_AltaResolucion.jpg",
-    bgAccent: "bg-zinc-900/10",
-  },
-  {
     title: "Plan Maestro de Movilidad Sostenible - Villavicencio",
     tag: "ESTRUCTURACIÓN INTEGRAL",
     icon: Bus,
@@ -208,6 +196,18 @@ const proyectos = [
     ],
     image: "/images/tunel_linea_forense_1786043664626.jpg",
     bgAccent: "bg-red-900/10",
+  },
+  {
+    title: "Peritajes Técnicos",
+    tag: "TRIBUNALES Y CONTROVERSIAS",
+    icon: Scale,
+    description: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas.",
+    stats: [
+      { value: "+30", label: "Peritajes Realizados" },
+      { value: "+35 Años", label: "Trayectoria Conjunta" }
+    ],
+    image: "/images/Visual_Auscultacion_Amplia_2_AltaResolucion.jpg",
+    bgAccent: "bg-zinc-900/10",
   }
 ];
 
