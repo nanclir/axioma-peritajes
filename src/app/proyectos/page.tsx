@@ -14,7 +14,7 @@ const proyectos = [
       { value: "+30", label: "Peritajes Realizados" },
       { value: "+35 Años", label: "Trayectoria Conjunta" }
     ],
-    image: "/images/auditoria_forense_docs_v2.png",
+    image: "/images/Visual_Auscultacion_Amplia_2_AltaResolucion.jpg",
     bgAccent: "bg-zinc-900/10",
   },
   {
