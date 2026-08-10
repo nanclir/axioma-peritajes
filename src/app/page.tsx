@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin } from "lucide-react";
+import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin, TrendingUp, Award } from "lucide-react";
 
 export default function Home() {
   return (
@@ -107,6 +107,39 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Link href="/decision-intelligence-lab" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Decision Intelligence Lab®</h3>
+                <Network className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-400 relative z-10">
+                Arquitectura de decisiones para infraestructura, territorio y riesgos. Estructuración lógica, modelos de IA y criterios multicriterio.
+              </p>
+            </Link>
+
+            <Link href="/futureproof-decisions" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">FutureProof Decisions®</h3>
+                <TrendingUp className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-400 relative z-10">
+                Ingeniería para decisiones bajo incertidumbre. Evaluamos riesgos desde modelos predictivos hasta Robust Decision Making (RDM).
+              </p>
+            </Link>
+
+            <Link href="/acreditacion-ingenieria" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs_v2.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Acreditación de Ingeniería</h3>
+                <Award className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-400 relative z-10">
+                Acompañamiento integral para programas de ingeniería. Autoevaluación, evidencias e informes CNA potenciados por analítica de datos e IA.
+              </p>
+            </Link>
+
             <Link href="/peritajes" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
               <div className="absolute inset-0 bg-[url('/images/auditoria_forense_docs_v2.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
               <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">

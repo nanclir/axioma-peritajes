@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves, MapPin } from "lucide-react";
+import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves, MapPin, TrendingUp, Award } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
@@ -8,8 +8,29 @@ export const metadata = {
 
 const services = [
   {
+    title: "Decision Intelligence Lab®",
+    description: "Arquitectura de decisiones para infraestructura, territorio y riesgos. Estructuración lógica de datos, modelos de IA y criterios multicriterio para decisiones transparentes y defendibles.",
+    icon: <Network className="h-6 w-6" />,
+    href: "/decision-intelligence-lab",
+    highlight: true,
+  },
+  {
+    title: "FutureProof Decisions®",
+    description: "Ingeniería para decisiones bajo incertidumbre. Evaluamos riesgos desde modelos predictivos a corto plazo y simulaciones estocásticas hasta Robust Decision Making (RDM) para incertidumbre profunda.",
+    icon: <TrendingUp className="h-6 w-6" />,
+    href: "/futureproof-decisions",
+    highlight: true,
+  },
+  {
+    title: "Acreditación de Alta Calidad para Programas de Ingeniería (CNA)",
+    description: "Acompañamiento integral para programas de ingeniería. Diagnóstico, autoevaluación, diseño de evidencias e informes CNA potenciados por analítica de datos e inteligencia artificial.",
+    icon: <Award className="h-6 w-6" />,
+    href: "/acreditacion-ingenieria",
+    highlight: false,
+  },
+  {
     title: "Peritajes Técnicos",
-    description: "División técnica altamente especializada. Dictámenes técnicos concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
+    description: "División técnica altamente especializada. Dictámenes concluyentes para litigios, tribunales de arbitramento y controversias contractuales complejas en megaobras.",
     icon: <Search className="h-6 w-6" />,
     href: "/peritajes",
     highlight: true,
