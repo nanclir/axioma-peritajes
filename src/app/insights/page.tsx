@@ -1,14 +1,13 @@
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import InsightsClient from "./InsightsClient";
 
 export const metadata = {
   title: "Insights | ACUMEN INGENIERÍA S.A.S.",
-  description: "Análisis territorial, movilidad e inteligencia artificial aplicada a la infraestructura por los directores de Acumen.",
+  description: "Liderazgo intelectual en infraestructura, territorio, movilidad y decisiones. Publicaciones científicas y artículos por los socios directores.",
 };
 
 export default function InsightsPage() {
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50 pb-12">
       
       {/* Header */}
       <section className="relative pt-32 pb-24 overflow-hidden border-b border-zinc-200">
@@ -25,19 +24,16 @@ export default function InsightsPage() {
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-zinc-900 mb-6 tracking-tight text-balance">
               Liderazgo Intelectual.
             </h1>
-            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal mb-8">
-              Análisis profundo sobre el impacto de la Inteligencia Artificial en la ingeniería, la ética del desarrollo territorial y el futuro de la movilidad urbana, escrito por nuestros socios directores.
+            <p className="text-xl md:text-2xl text-zinc-800 leading-relaxed font-normal">
+              Análisis profundo sobre el impacto de la Inteligencia Artificial en la ingeniería, la planeación territorial y el futuro de la movilidad urbana, respaldado por nuestra producción científica.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Artículos (Lienzo en Blanco) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center text-zinc-400 py-20 border-2 border-dashed border-zinc-200 rounded-sm">
-          <p className="text-sm">Lienzo en blanco para las próximas publicaciones e insights estratégicos.</p>
-        </div>
-      </section>
+      {/* Render Interactivo de Cliente */}
+      <InsightsClient />
+
     </div>
   );
 }
