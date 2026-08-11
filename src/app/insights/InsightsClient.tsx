@@ -15,6 +15,22 @@ const books = [
     info: "ISBN 978-958-59494-7-8",
   },
   {
+    title: "Conduciendo futuros",
+    subtitle: "Plan de infraestructura, transporte y movilidad para Antioquia 2030",
+    author: "Nanclares R.A., Maldonado J. (UT Steer Davies Gleave y OPUS) y Gobernación de Antioquia",
+    publisher: "Gobernación de Antioquia",
+    year: "2015",
+    info: "ISBN 978-958-8955-02-5",
+  },
+  {
+    title: "Espacios públicos para el encuentro y la reconciliación",
+    subtitle: "Arquitectura éticamente responsable: Mejorar la vida de las personas con presupuesto limitado",
+    author: "Nanclares R.A. (Gerencia Operativa de Proyectos Especiales) y Gobernación de Antioquia",
+    publisher: "Gobernación de Antioquia",
+    year: "2015",
+    info: "Medellín, Colombia",
+  },
+  {
     title: "Subalimentación",
     subtitle: "Una Estrategia para Fortalecer los Sistemas de Transporte Público y para la Disminución de la Pobreza",
     author: "Smith R.A. y Frasser H.",
@@ -29,6 +45,46 @@ const books = [
     publisher: "Asomovilidad",
     year: "2015",
     info: "ISBN 978-958-58983-0-1",
+  },
+  {
+    title: "Medellín, la ciudad de la movilidad inteligente",
+    subtitle: "Balance de gestión Enero de 2008 - Noviembre de 2011",
+    author: "Nanclares R.A. (Secretario), Smith R.A. (Secretario 2008-2011) y Alcaldía de Medellín",
+    publisher: "Secretaría de Transportes y Tránsito de Medellín",
+    year: "2011",
+    info: "Biblioteca de Movilidad Ciudadana",
+  },
+  {
+    title: "Movilidad, Derecho Ciudadano: Educación Vial",
+    subtitle: "Estrategias de seguridad vial, autocuidado y pedagogía en las vías de la ciudad",
+    author: "Nanclares R.A. (Secretario), Muñoz D.E. y Alcaldía de Medellín",
+    publisher: "Secretaría de Transportes y Tránsito de Medellín",
+    year: "2011",
+    info: "Colección Análisis",
+  },
+  {
+    title: "Movilidad, responsabilidad de todos: Mapa de actores",
+    subtitle: "Metodología y caracterización para la articulación institucional de la movilidad",
+    author: "Nanclares R.A. (Secretario), Carmona S.I. y Alcaldía de Medellín",
+    publisher: "Secretaría de Transportes y Tránsito de Medellín",
+    year: "2011",
+    info: "Colección Análisis",
+  },
+  {
+    title: "La Modernización de la Secretaría de Transportes y Tránsito de Medellín",
+    subtitle: "Transformación tecnológica, SIMOC, redes sociales y Centro de Control de Tránsito",
+    author: "Nanclares R.A. (Secretario), Pérez E.M., Quiceno J.C., Ruiz C.L., Ortega S.A. y Alcaldía de Medellín",
+    publisher: "Secretaría de Transportes y Tránsito de Medellín",
+    year: "2011",
+    info: "Biblioteca de Movilidad Ciudadana",
+  },
+  {
+    title: "Informe Anual de Accidentalidad 2010",
+    subtitle: "Estadísticas y análisis de siniestralidad vial para el soporte de políticas públicas",
+    author: "Nanclares R.A. (Secretario), Aristizábal J.F. y Alcaldía de Medellín",
+    publisher: "Secretaría de Transportes y Tránsito de Medellín",
+    year: "2011",
+    info: "Colección Análisis",
   },
   {
     title: "El Sector Eléctrico Colombiano",
@@ -76,7 +132,6 @@ const books = [
     author: "Salas J.D., W.A. Hall y R.A. Smith (Editado por E. Guggino, G. Rossi y D. Hendricks)",
     publisher: "The Hague, Netherlands",
     year: "1983",
-    info: "Edición internacional",
   },
 ];
 
@@ -158,11 +213,11 @@ export default function InsightsClient() {
 
   const filteredBooks = selectedAuthor === "all" 
     ? books 
-    : books.filter(b => b.author.includes(selectedAuthor));
+    : books.filter(b => b.author.toLowerCase().includes(selectedAuthor));
 
   const filteredArticles = selectedAuthor === "all" 
     ? articles 
-    : articles.filter(a => a.author.includes(selectedAuthor));
+    : articles.filter(a => a.author.toLowerCase().includes(selectedAuthor));
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-24">
@@ -211,7 +266,7 @@ export default function InsightsClient() {
           </button>
         </div>
 
-        {/* Dynamic Author Filter (for future expansion) */}
+        {/* Dynamic Author Filter */}
         {activeTab === "academic" && (
           <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 bg-white border border-zinc-200 px-3 py-2 rounded-sm">
             <User className="h-3 w-3 text-zinc-400" />
@@ -222,9 +277,8 @@ export default function InsightsClient() {
               className="bg-transparent font-bold text-zinc-800 focus:outline-none cursor-pointer"
             >
               <option value="all">Todos los directores</option>
-              <option value="Ricardo Smith">Dr. Ricardo Smith</option>
-              {/* Option to add the user's publications later */}
-              {/* <option value="Rafael Nanclares">Ing. Rafael Nanclares</option> */}
+              <option value="smith">Dr. Ricardo Smith</option>
+              <option value="nanclares">Ing. Rafael Nanclares</option>
             </select>
           </div>
         )}
