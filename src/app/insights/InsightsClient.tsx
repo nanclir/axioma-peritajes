@@ -153,7 +153,7 @@ const articles = [
 ];
 
 export default function InsightsClient() {
-  const [activeTab, setActiveTab] = useState<"blog" | "academic">("blog");
+  const [activeTab, setActiveTab] = useState<"blog" | "academic">("academic");
   const [selectedAuthor, setSelectedAuthor] = useState<string>("all");
 
   const filteredBooks = selectedAuthor === "all" 
@@ -190,16 +190,6 @@ export default function InsightsClient() {
       <div className="flex flex-col sm:flex-row justify-between items-center border-b border-zinc-200 pb-6 mb-12 gap-6">
         <div className="flex gap-4">
           <button
-            onClick={() => setActiveTab("blog")}
-            className={`px-6 py-3 font-medium transition-all text-sm uppercase tracking-wider rounded-sm ${
-              activeTab === "blog"
-                ? "bg-zinc-900 text-white shadow-sm"
-                : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-300"
-            }`}
-          >
-            Artículos y Divulgación
-          </button>
-          <button
             onClick={() => setActiveTab("academic")}
             className={`px-6 py-3 font-medium transition-all text-sm uppercase tracking-wider rounded-sm ${
               activeTab === "academic"
@@ -208,6 +198,16 @@ export default function InsightsClient() {
             }`}
           >
             Biblioteca Científica
+          </button>
+          <button
+            onClick={() => setActiveTab("blog")}
+            className={`px-6 py-3 font-medium transition-all text-sm uppercase tracking-wider rounded-sm ${
+              activeTab === "blog"
+                ? "bg-zinc-900 text-white shadow-sm"
+                : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-300"
+            }`}
+          >
+            Artículos y Divulgación
           </button>
         </div>
 
