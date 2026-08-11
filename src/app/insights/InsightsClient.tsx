@@ -8,16 +8,16 @@ import { BookOpen, Award, FileText, Network, ExternalLink, User } from "lucide-r
 const books = [
   {
     title: "Vehículos Eléctricos Livianos en Colombia",
-    subtitle: "Oportunidades y retos para una movilidad sostenible e incluyente",
-    author: "Dr. Ricardo Smith",
+    subtitle: "Oportunidades y retos para una movilidad sostenible e incluyente en las ciudades del país",
+    author: "Smith R.A.",
     publisher: "Asomovilidad",
     year: "2016",
     info: "ISBN 978-958-59494-7-8",
   },
   {
     title: "Subalimentación",
-    subtitle: "Estrategia para Fortalecer Sistemas de Transporte Público y Disminución de Pobreza",
-    author: "Dr. Ricardo Smith y H. Frasser",
+    subtitle: "Una Estrategia para Fortalecer los Sistemas de Transporte Público y para la Disminución de la Pobreza",
+    author: "Smith R.A. y Frasser H.",
     publisher: "Asomovilidad",
     year: "2015",
     info: "ISBN 978-958-58983-1-8",
@@ -25,7 +25,7 @@ const books = [
   {
     title: "Movilidad en Zonas Rurales de Colombia",
     subtitle: "Estudio de conectividad y desarrollo para el campo colombiano",
-    author: "Dr. Ricardo Smith y L. Gómez",
+    author: "Smith R.A. y Gómez L.",
     publisher: "Asomovilidad",
     year: "2015",
     info: "ISBN 978-958-58983-0-1",
@@ -33,39 +33,39 @@ const books = [
   {
     title: "El Sector Eléctrico Colombiano",
     subtitle: "Orígenes, Evolución y Retos. Un Siglo de Desarrollo",
-    author: "Dr. Ricardo Smith, F. Ochoa y L.J. Villegas",
+    author: "Smith R.A., Ochoa F. y Villegas L.J.",
     publisher: "Interconexión Eléctrica S.A. E.S.P. – ISA -",
     year: "2002",
     info: "Medellín, Colombia",
   },
   {
     title: "Decisiones con Múltiples Objetivos e Incertidumbre",
-    subtitle: "Segunda edición ampliada y corregida",
-    author: "Dr. Ricardo Smith, O.J. Mesa, I. Dyner, G.P. Jaramillo, G. Poveda y D. Valencia",
-    publisher: "Posgrado en Aprovechamiento de Recursos Hidráulicos, UNAL",
+    subtitle: "Segunda edición ampliada y corregida. Serie Aperiódica No. 13",
+    author: "Smith R.A., Mesa O.J., Dyner I., Jaramillo G.P., Poveda G. y Valencia D.",
+    publisher: "Posgrado en Aprovechamiento de los Recursos Hidráulicos, Facultad de Minas, Universidad Nacional de Colombia",
     year: "2000",
-    info: "Facultad de Minas, Medellín",
+    info: "Medellín, Colombia",
   },
   {
     title: "Futuros para una Energía Sostenible en Colombia",
-    subtitle: "Planificación energética y ambiental",
-    author: "Dr. Ricardo Smith, A.I. Cadena, F. Betancourt, J.P. Bonolla, I. Dyner, C. Fonseca, J. Pinto, D. Vesga, E. Larsen, U. Boman y F. Knecht",
+    subtitle: "Planificación energética y prospectiva de sostenibilidad",
+    author: "Smith R.A., A.I. Cadena, F. Betancourt, J.P. Bonolla, G. Corredor, I. Dyner, C. Fonseca, J. Pinto y D. Vesga, Larsen E., Boman U. y Knecht F.",
     publisher: "Unidad de Planeación Minero Energética – UPME -",
     year: "2000",
-    info: "Bogotá, Colombia",
+    info: "Mayo, 2000",
   },
   {
     title: "Hidrología de Antioquia",
     subtitle: "Diseño de Obras Civiles con Énfasis en Información Escasa",
-    author: "M.V. Vélez y Dr. Ricardo Smith",
+    author: "Vélez M.V. y Smith R.A.",
     publisher: "Gobernación de Antioquia",
     year: "1997",
     info: "Medellín, Colombia",
   },
   {
-    title: "Statistical Computer Techniques in Hydrology",
+    title: "Statistical Computer Techniques in Hydrology and Water Resources",
     subtitle: "Computer programming applications in water resources engineering",
-    author: "J.D. Salas, Dr. Ricardo Smith, G.Q. Tabios y J.H. Heo",
+    author: "Salas J.D., Smith R.A., Tabios G.Q. y Heo J.H.",
     publisher: "Department of Civil Engineering, Colorado State University",
     year: "1992",
     info: "Fort Collins, Colorado, EE. UU.",
@@ -73,79 +73,79 @@ const books = [
   {
     title: "Operation of Complex Water Systems",
     subtitle: "Capítulo IV: Disaggregation and aggregation of water systems",
-    author: "J.D. Salas, W.A. Hall y Dr. Ricardo Smith",
+    author: "Salas J.D., W.A. Hall y R.A. Smith (Editado por E. Guggino, G. Rossi y D. Hendricks)",
     publisher: "The Hague, Netherlands",
     year: "1983",
-    info: "Edición técnica internacional",
+    info: "Edición internacional",
   },
 ];
 
 const articles = [
   {
     title: "Energy Technology Options for Sustainable Rural Livelihoods: A Participatory Multi-Criteria Decision-Support-System",
-    author: "J. Cherni, F. Henao, P. Jaramillo, Dr. Ricardo Smith y I. Dyner",
-    journal: "Energy Policy",
+    author: "J Cherni, F. Henao, P. Jaramillo, R. Smith, and I. Dyner",
+    journal: "Energy Policy (Accepted)",
     year: "2006",
   },
   {
     title: "Multi-Decision-Maker Equalizer: A Multiobjective Decision Support System for Multiple Decision Makers",
-    author: "P. Jaramillo, Dr. Ricardo Smith y J. Andréu",
+    author: "Jaramillo P., Smith R. y Andréu J.",
     journal: "Annals of Operations Research",
-    info: "Vol. 138, No. 1, pp 97 - 111",
+    info: "Vol. 138, No. 1, pp 97 - 111, ISSN 02545330",
     year: "2005",
   },
   {
     title: "Energy Scenarios for Colombia: process and content",
-    author: "Dr. Ricardo Smith, D.R.A. Vesga, A.I. Cadena, U. Boman, E. Larsen y I. Dyner",
+    author: "Smith R.A., Vesga D.R.A., Cadena A.I., Boman U., Larsen E. y Dyner I.",
     journal: "FUTURES",
     info: "Vol. 37, pp 1 – 17",
     year: "2005",
   },
   {
     title: "Metodología para priorización de zonas de intervención en proyectos de inversión en una cuenca",
-    author: "G.P. Jaramillo, Dr. Ricardo Smith y J.I. Vélez",
+    author: "Jaramillo G.P., Smith R.A. y Vélez J.I.",
     journal: "Gestión y Ambiente",
     info: "Vol. 6, No. 1, pp. 25-38",
     year: "2003",
   },
   {
     title: "Aplicación de Optimización Multiobjetivo con Algoritmos Genéticos a un Problema de Electrificación Rural",
-    author: "A. Pulgarín y Dr. Ricardo Smith",
+    author: "Pulgarín A. y Smith R.A.",
     journal: "Energética",
     info: "No. 26",
     year: "2001",
   },
   {
     title: "A Comparative Analysis of Various Optimization Expansion Models",
-    author: "Dr. Ricardo Smith y A.M. Villegas",
+    author: "Smith R.A. y Villegas A.M.",
     journal: "International Transactions of Operational Research (ITOR)",
     info: "Vol. 4, No. 1, pp. 35-44, Gran Bretaña",
     year: "1997",
   },
   {
     title: "A Rural Electrification Expansion Model",
-    author: "Dr. Ricardo Smith y O.J. Mesa",
+    author: "Smith R.A. y Mesa O.J.",
     journal: "International Transactions of Operational Research (ITOR)",
     info: "Vol. 3, No. 3/4, pp. 319-325, Gran Bretaña",
     year: "1996",
   },
   {
     title: "System Dynamics Modelling for Residential Energy Efficiency Analysis and Management",
-    author: "I. Dyner, Dr. Ricardo Smith y G.E. Peña",
+    author: "Dyner I., Smith R.A. y Peña G.E.",
     journal: "Journal of The Operational Research Society",
     info: "Vol. 46, pp 1163-1173",
     year: "1995",
   },
   {
     title: "Análisis Económico, Social y Ambiental de los Planes de Expansión del Sector Eléctrico Colombiano",
-    author: "C.M. Nicholls, Dr. Ricardo Smith y O.J. Mesa",
+    author: "Nicholls C.M., Smith R.A. y Mesa O.J.",
     journal: "Revista Energética",
     info: "No. 6, Medellín",
     year: "1990",
   },
   {
     title: "Physical Basis of Stochastic Models of Annual Flows",
-    author: "J.D. Salas y Dr. Ricardo Smith",
+    author: "Salas J.D. y R.A. Smith",
     journal: "Water Resources Research",
     info: "Vol. 17, No. 2, pp 428-430, Washington, EE. UU.",
     year: "1981",
@@ -240,7 +240,11 @@ export default function InsightsClient() {
           </p>
         </div>
       ) : (
-        <div className="space-y-20">
+        <div className="space-y-16">
+          
+          <div className="text-zinc-700 text-base leading-relaxed bg-white border border-zinc-200 p-6 rounded-sm max-w-4xl shadow-sm">
+            La producción científica e intelectual de nuestros directores comprende <strong>270 artículos</strong> presentados en congresos nacionales e internacionales, más de <strong>70 artículos</strong> en revistas nacionales e internacionales y <strong>18 libros</strong> en inglés y español. A continuación se listan las publicaciones más importantes y/o más recientes:
+          </div>
           
           {/* Books Sub-section */}
           <div>
