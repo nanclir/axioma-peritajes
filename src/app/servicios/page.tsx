@@ -26,7 +26,7 @@ const services = [
     description: "Acompañamiento integral para programas de ingeniería. Diagnóstico, autoevaluación, diseño de evidencias e informes CNA potenciados por analítica de datos e inteligencia artificial.",
     icon: <Award className="h-6 w-6" />,
     href: "/acreditacion-ingenieria",
-    highlight: false,
+    highlight: true,
   },
   {
     title: "Peritajes Técnicos",
