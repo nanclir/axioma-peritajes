@@ -14,8 +14,8 @@
 
     <style>
         :root {
-            --bg-dark: rgba(9, 11, 16, 0.9);
-            --zinc-panel: rgba(18, 22, 32, 0.95);
+            --bg-dark: #090b10;
+            --panel-bg: #121620;
             --zinc-border: #1e2535;
             --acumen-blue: #2977fd;
             --acumen-emerald: #10b981;
@@ -30,7 +30,115 @@
             overflow: hidden;
             font-family: 'Outfit', sans-serif;
             color: var(--text-main);
-            background-color: #000;
+            background-color: var(--bg-dark);
+        }
+
+        /* Desktop Onboarding Landing Page */
+        #desktop-onboarding {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .onboarding-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            max-width: 800px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card-header {
+            text-align: center;
+            border-bottom: 1px solid var(--zinc-border);
+            padding-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header h2 span {
+            color: var(--acumen-blue);
+        }
+
+        .card-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .onboarding-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .step-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .step-num {
+            background-color: rgba(41, 119, 253, 0.1);
+            color: var(--acumen-blue);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border: 1px solid rgba(41, 119, 253, 0.2);
+        }
+
+        .step-col h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .step-col p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .qr-code-img {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+            height: 150px;
+        }
+
+        .hiro-marker-img {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+            height: 150px;
+            border: 2px solid #000;
         }
 
         /* 2D HUD UI Overlay - Placed on top of the camera feed */
@@ -286,9 +394,41 @@
             50% { opacity: 1; }
             100% { opacity: 0.4; }
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Onboarding Desktop (Visible only on desktop/tablet view) -->
+    <div id="desktop-onboarding" class="hidden">
+        <div class="onboarding-card">
+            <div class="card-header">
+                <h2>ACUMEN OS 1.0 <span>WebAR Simulator</span></h2>
+                <p>Ecosistema de Agentes de IA en Realidad Aumentada</p>
+            </div>
+            
+            <div class="onboarding-grid">
+                <!-- Step 1: Scan QR -->
+                <div class="step-col">
+                    <div class="step-num">1</div>
+                    <h4>Escanea con tu Celular</h4>
+                    <p>Abre la cámara de tu smartphone y escanea este código QR para abrir el visor WebAR en tu dispositivo móvil.</p>
+                    <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.acumeningenieria.com/os/" alt="QR Code ACUMEN OS">
+                </div>
+                
+                <!-- Step 2: Scan Hiro -->
+                <div class="step-col">
+                    <div class="step-num">2</div>
+                    <h4>Apunta a este Marcador</h4>
+                    <p>Una vez abierta la web en tu celular, dale permisos a la cámara y apunta hacia este marcador en tu pantalla para proyectar el holograma.</p>
+                    <img class="hiro-marker-img" src="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/HIRO.jpg" alt="Marcador Hiro">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Camera scanning warning alert -->
     <div id="marker-alert">
@@ -339,9 +479,8 @@
     </div>
 
     <!-- WebAR A-Frame Scene -->
-    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' vr-mode-ui="enabled: false">
+    <a-scene id="ar-scene" embedded arjs='sourceType: webcam; debugUIEnabled: false;' vr-mode-ui="enabled: false">
         
-        <!-- Camera asset -->
         <a-entity camera></a-entity>
 
         <!-- Script containing custom procedural high-tech mountain model generation -->
@@ -355,49 +494,33 @@
                     const el = this.el;
                     const data = this.data;
                     
-                    // Create Plane Geometry (3x3 meters, 40x40 segments for organic detail)
                     const geom = new THREE.PlaneGeometry(2.5, 2.5, 36, 36);
                     const pos = geom.attributes.position;
                     
-                    // Displace vertices to sculpt the mountain + road cut
                     for (let i = 0; i < pos.count; i++) {
                         let x = pos.getX(i);
                         let y = pos.getY(i);
-                        
                         let z = 0;
                         
-                        // If outside the roadway/tunnel canal (road width is ~0.4m)
                         if (Math.abs(x) > 0.25) {
-                            // Rise the mountain sides
                             let factorX = Math.abs(x) - 0.25;
-                            // Higher slope towards the back (Y < 0)
                             let factorY = (1.25 - y) * 0.4;
-                            
                             z = factorX * 1.8 + factorY;
-                            
-                            // Add fractal noise for organic rocky ridges
                             z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
                             z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
                         } else {
-                            // In the tunnel canal
-                            // Flat road at the front (Y > -0.2), tunnel mountain roof at the back (Y < -0.2)
                             if (y < -0.25) {
-                                // Create the mountain cover above the tunnel portal
                                 let tunnelProgress = -0.25 - y;
                                 z = Math.min(0.65, tunnelProgress * 1.5);
-                                // Bumpy noise on top of tunnel
                                 z += Math.sin(x * 12) * Math.cos(y * 12) * 0.05;
                             }
                         }
-                        
-                        // Prevent negative elevation
                         z = Math.max(0, z);
                         pos.setZ(i, z);
                     }
                     
                     geom.computeVertexNormals();
                     
-                    // Create two layers for CGI style: Solid dark base + Bright cyan wireframe overlay
                     const solidMaterial = new THREE.MeshStandardMaterial({
                         color: data.colorSolid,
                         roughness: 0.9,
@@ -414,26 +537,20 @@
                         opacity: 0.65
                     });
                     
-                    // Create meshes
                     const solidMesh = new THREE.Mesh(geom, solidMaterial);
                     const wireMesh = new THREE.Mesh(geom, wireMaterial);
-                    
-                    // Parent group
                     const group = new THREE.Group();
                     group.add(solidMesh);
                     group.add(wireMesh);
                     
-                    // Set object on entity
                     el.setObject3D('mesh', group);
                 }
             });
 
-            // Landslide procedural shape
             AFRAME.registerComponent('landslide-mesh', {
                 init: function () {
                     const geom = new THREE.SphereGeometry(0.35, 12, 12);
                     const pos = geom.attributes.position;
-                    // Make it organic and bumpy
                     for(let i=0; i<pos.count; i++) {
                         let x = pos.getX(i);
                         let y = pos.getY(i);
@@ -467,61 +584,53 @@
 
                 <!-- Solid Roadway -->
                 <a-box position="0 0.005 0.3" width="0.5" height="0.01" depth="1.9" material="color: #090b10; opacity: 0.95; transparent: true"></a-box>
-                <!-- Road markings (glowing cyan line) -->
+                <!-- Road markings -->
                 <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.9" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5"></a-box>
 
                 <!-- Solid Concrete Tunnel Entrance Portal -->
                 <a-entity id="tunnel-entrance-solid" position="0 0.22 -0.22" rotation="0 0 0">
-                    <!-- Solid Wall -->
                     <a-box position="0 0 -0.02" width="0.6" height="0.45" depth="0.04" material="color: #1e293b; roughness: 0.8; flatShading: true"></a-box>
                     <a-box position="0 0 -0.02" width="0.61" height="0.46" depth="0.041" material="color: #2977fd; wireframe: true; transparent: true; opacity: 0.6"></a-box>
-                    <!-- Tunnel inner lining (tube) -->
+                    <!-- Tunnel inner lining -->
                     <a-cylinder position="0 0 -0.4" radius="0.22" height="0.8" rotation="90 0 0" theta-start="0" theta-length="180" 
                                 material="color: #090b10; side: double; roughness: 0.9"></a-cylinder>
                     <a-cylinder position="0 0 -0.4" radius="0.225" height="0.8" rotation="90 0 0" theta-start="0" theta-length="180" 
                                 material="color: #2977fd; wireframe: true; transparent: true; opacity: 0.5; side: double"></a-cylinder>
                 </a-entity>
 
-                <!-- Landslide Organic Mud Mass (Red Solid + Wireframe, initially hidden) -->
+                <!-- Landslide Organic Mud Mass -->
                 <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
 
-                <!-- Structural Anchor Bolts (Solid Cylinders with glowing heads) -->
+                <!-- Structural Anchor Bolts -->
                 <a-entity id="anchors-group" visible="false">
-                    <!-- Left Bolt -->
                     <a-cylinder position="-0.25 0.45 -0.15" radius="0.01" height="0.45" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
                     <a-sphere position="-0.12 0.35 -0.05" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
 
-                    <!-- Center Bolt -->
                     <a-cylinder position="0 0.5 -0.2" radius="0.01" height="0.45" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
                     <a-sphere position="0 0.42 -0.08" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
 
-                    <!-- Right Bolt -->
                     <a-cylinder position="0.25 0.45 -0.15" radius="0.01" height="0.45" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
                     <a-sphere position="0.12 0.35 -0.05" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
                 </a-entity>
 
-                <!-- Floating AI Agent Nodes (Semi-transparent glowing spheres) -->
-                <!-- Node A: Geology Unit -->
+                <!-- Floating AI Agent Nodes -->
                 <a-sphere id="node-geology" position="-1.0 0.7 -0.6" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
                     <a-text value="GEOLOGY A" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
-                <!-- Node B: Structural AI -->
                 <a-sphere id="node-structural" position="1.0 0.7 -0.6" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
                     <a-text value="STRUCTURAL B" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
-                <!-- Node C: Geotech Agent -->
                 <a-sphere id="node-geotech" position="1.0 0.4 0.4" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
                     <a-text value="GEOTECH C" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
-                <!-- Node D: Safety Monitor -->
                 <a-sphere id="node-safety" position="-1.0 0.4 0.4" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
                     <a-text value="SAFETY D" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
-                <!-- Connection Laser lines (dynamic rendering) -->
+                <!-- Connection Laser lines -->
                 <a-entity id="laser-lines" visible="false">
                     <a-entity line="start: -1.0 0.7 -0.6; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
                     <a-entity line="start: 1.0 0.7 -0.6; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
@@ -536,8 +645,27 @@
 
     <!-- Logic Controller script -->
     <script>
-        const marker = document.getElementById('acumenMarker');
+        // Check if device is mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        const onboardingDiv = document.getElementById('desktop-onboarding');
+        const arScene = document.getElementById('ar-scene');
+        const hudContainer = document.getElementById('hud-container');
         const markerAlert = document.getElementById('marker-alert');
+
+        if (!isMobileDevice()) {
+            // If desktop, show onboarding screen (QR + Marker) and stop AR scene loading
+            onboardingDiv.classList.remove('hidden');
+            arScene.classList.add('hidden');
+            hudContainer.classList.add('hidden');
+            markerAlert.classList.add('hidden');
+            // Remove camera access by removing scene nodes
+            arScene.parentNode.removeChild(arScene);
+        }
+
+        const marker = document.getElementById('acumenMarker');
         const statusVal = document.getElementById('statusVal');
         const fosVal = document.getElementById('fosVal');
         const consoleLog = document.getElementById('consoleLog');
@@ -555,7 +683,6 @@
         const nodeStructural = document.getElementById('node-structural');
         const nodeSafety = document.getElementById('node-safety');
         const mountain = document.getElementById('mountain');
-        const tunnelPortal = document.getElementById('tunnel-entrance-solid');
 
         let isOptimized = false;
         let isOptimizing = false;
@@ -571,26 +698,28 @@
         }
 
         // Marker Found Listener
-        marker.addEventListener('markerFound', () => {
-            isMarkerVisible = true;
-            markerAlert.style.display = 'none';
-            statusVal.innerText = isOptimized ? "OPTIMIZADO" : "CONEXIÓN ACTIVA";
-            statusVal.style.color = "var(--acumen-emerald)";
-            rainSlider.disabled = false;
-            
-            log(`[SYSTEM]: Anclaje digital sincronizado.`, 'green');
-            log(`[SAFETY_MONITOR]: Evaluando estado de estabilidad estructural...`);
-        });
+        if (marker) {
+            marker.addEventListener('markerFound', () => {
+                isMarkerVisible = true;
+                markerAlert.style.display = 'none';
+                statusVal.innerText = isOptimized ? "OPTIMIZADO" : "CONEXIÓN ACTIVA";
+                statusVal.style.color = "var(--acumen-emerald)";
+                rainSlider.disabled = false;
+                
+                log(`[SYSTEM]: Anclaje digital sincronizado.`, 'green');
+                log(`[SAFETY_MONITOR]: Evaluando estado de estabilidad estructural...`);
+            });
 
-        // Marker Lost Listener
-        marker.addEventListener('markerLost', () => {
-            isMarkerVisible = false;
-            markerAlert.style.display = 'block';
-            statusVal.innerText = "ESPERANDO ANCLAJE";
-            statusVal.style.color = "var(--acumen-gold)";
-            rainSlider.disabled = true;
-            log(`[SYSTEM]: Señal perdida. Buscando anclaje...`, 'gold');
-        });
+            // Marker Lost Listener
+            marker.addEventListener('markerLost', () => {
+                isMarkerVisible = false;
+                markerAlert.style.display = 'block';
+                statusVal.innerText = "ESPERANDO ANCLAJE";
+                statusVal.style.color = "var(--acumen-gold)";
+                rainSlider.disabled = true;
+                log(`[SYSTEM]: Señal perdida. Buscando anclaje...`, 'gold');
+            });
+        }
 
         // Slider Event
         rainSlider.addEventListener('input', (e) => {
@@ -600,7 +729,6 @@
 
             if (!isOptimized) {
                 if (val > 60) {
-                    // Risk state triggers
                     statusVal.innerText = "SISTEMA CRÍTICO";
                     statusVal.style.color = "var(--acumen-red)";
                     
@@ -608,18 +736,15 @@
                     fosVal.innerText = calculatedFoS;
                     fosVal.style.color = "var(--acumen-red)";
 
-                    // Show landslide, scale it to simulate volume slide
+                    // Show landslide
                     landslide.setAttribute('visible', 'true');
                     let scaleVal = 0.5 + ((val - 60) * 0.008);
                     landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
-                    // Shift position slightly down the slope
                     let posY = 0.65 - ((val - 60) * 0.005);
                     let posZ = -0.6 + ((val - 60) * 0.007);
                     landslide.setAttribute('position', `0.15 ${posY} ${posZ}`);
                     
-                    // Stress coloration of the mountain grid (Turns red)
                     mountain.setAttribute('mountain-terrain', 'colorWire', '#ef4444');
-                    
                     btnOptimize.disabled = false;
 
                     if (!window.alertLogged) {
@@ -629,7 +754,6 @@
                         window.alertLogged = true;
                     }
                 } else {
-                    // Normal state
                     statusVal.innerText = "CONEXIÓN ACTIVA";
                     statusVal.style.color = "var(--acumen-emerald)";
                     
@@ -637,23 +761,18 @@
                     fosVal.innerText = calculatedFoS;
                     fosVal.style.color = "var(--acumen-emerald)";
 
-                    // Hide landslide
                     landslide.setAttribute('visible', 'false');
-                    
-                    // Reset mesh colors
                     mountain.setAttribute('mountain-terrain', 'colorWire', '#2977fd');
-                    
                     btnOptimize.disabled = true;
                     window.alertLogged = false;
                 }
             } else {
-                // Stabilized state under rain
                 const stabilizedFoS = (1.68 - (val / 200)).toFixed(2);
                 fosVal.innerText = stabilizedFoS;
             }
         });
 
-        // Optimization Action click (collaboration simulation)
+        // Optimization Action click
         btnOptimize.addEventListener('click', () => {
             if (isOptimized || isOptimizing) return;
 
@@ -662,7 +781,6 @@
             
             log(`[SYSTEM]: Solicitando protocolo de estabilización Multi-Agente...`);
             
-            // Turn nodes glowing green during execution
             nodeGeology.setAttribute('material', 'color', '#10b981');
             nodeGeotech.setAttribute('material', 'color', '#10b981');
             nodeStructural.setAttribute('material', 'color', '#10b981');
@@ -672,10 +790,8 @@
             nodeStructural.setAttribute('material', 'emissive', '#10b981');
             nodeSafety.setAttribute('material', 'emissive', '#10b981');
 
-            // Visualise lasers
             laserLines.setAttribute('visible', 'true');
 
-            // Timeline of Agent interactions
             setTimeout(() => {
                 log(`[GEOLOGY_UNIT_A]: Imputando serie histórica climatológica... Hecho.`, 'green');
             }, 800);
@@ -687,11 +803,8 @@
             setTimeout(() => {
                 log(`[STRUCTURAL_AI_B]: Desplegando anclajes y pernos de roca de 30ton.`, 'green');
                 
-                // Stabilization visual trigger in 3D
                 anchorsGroup.setAttribute('visible', 'true');
-                landslide.setAttribute('visible', 'false'); // Landslide retreats
-                
-                // Reset wireframe colors to emerald to show stability
+                landslide.setAttribute('visible', 'false');
                 mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
 
                 isOptimized = true;
@@ -709,8 +822,6 @@
 
             setTimeout(() => {
                 log(`[SAFETY_MONITOR_D]: Estructura consolidada. Alerta resuelta.`, 'green');
-                
-                // Dim lasers back to standard
                 laserLines.setAttribute('visible', 'false');
             }, 3200);
         });
