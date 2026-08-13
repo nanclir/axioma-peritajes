@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACUMEN OS 1.0 - Visor WebAR</title>
+    <title>ACUMEN OS 1.0 - Visor WebAR PRO</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
@@ -38,14 +38,13 @@
             position: absolute;
             inset: 0;
             z-index: 99;
-            pointer-events: none; /* Allows interacting with the camera/3D canvas behind */
+            pointer-events: none;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
         }
 
-        /* Elements that need interaction must re-enable pointer-events */
         .interactive {
             pointer-events: auto;
         }
@@ -256,7 +255,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-            display: none; /* Shown only after optimization */
+            display: none;
         }
 
         /* Marker Detection Indicator */
@@ -293,8 +292,8 @@
 
     <!-- Camera scanning warning alert -->
     <div id="marker-alert">
-        <h4>[ AWAITING TELEMETRY ]</h4>
-        <p>Apunta la cámara de tu celular hacia el **marcador Hiro** impreso o la pantalla de prueba para proyectar el Gemelo Digital.</p>
+        <h4>[ ESPERANDO TELEMETRÍA ]</h4>
+        <p>Apunta la cámara de tu celular hacia el **marcador Hiro** para proyectar el Gemelo Digital interactivo de la montaña.</p>
     </div>
 
     <!-- HUD Overlay -->
@@ -345,68 +344,189 @@
         <!-- Camera asset -->
         <a-entity camera></a-entity>
 
-        <!-- Hiro Marker Anchor (Standard marker for free AR.js testing) -->
+        <!-- Script containing custom procedural high-tech mountain model generation -->
+        <script>
+            AFRAME.registerComponent('mountain-terrain', {
+                schema: {
+                    colorSolid: { type: 'color', default: '#0d131f' },
+                    colorWire: { type: 'color', default: '#2977fd' }
+                },
+                init: function () {
+                    const el = this.el;
+                    const data = this.data;
+                    
+                    // Create Plane Geometry (3x3 meters, 40x40 segments for organic detail)
+                    const geom = new THREE.PlaneGeometry(2.5, 2.5, 36, 36);
+                    const pos = geom.attributes.position;
+                    
+                    // Displace vertices to sculpt the mountain + road cut
+                    for (let i = 0; i < pos.count; i++) {
+                        let x = pos.getX(i);
+                        let y = pos.getY(i);
+                        
+                        let z = 0;
+                        
+                        // If outside the roadway/tunnel canal (road width is ~0.4m)
+                        if (Math.abs(x) > 0.25) {
+                            // Rise the mountain sides
+                            let factorX = Math.abs(x) - 0.25;
+                            // Higher slope towards the back (Y < 0)
+                            let factorY = (1.25 - y) * 0.4;
+                            
+                            z = factorX * 1.8 + factorY;
+                            
+                            // Add fractal noise for organic rocky ridges
+                            z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
+                            z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
+                        } else {
+                            // In the tunnel canal
+                            // Flat road at the front (Y > -0.2), tunnel mountain roof at the back (Y < -0.2)
+                            if (y < -0.25) {
+                                // Create the mountain cover above the tunnel portal
+                                let tunnelProgress = -0.25 - y;
+                                z = Math.min(0.65, tunnelProgress * 1.5);
+                                // Bumpy noise on top of tunnel
+                                z += Math.sin(x * 12) * Math.cos(y * 12) * 0.05;
+                            }
+                        }
+                        
+                        // Prevent negative elevation
+                        z = Math.max(0, z);
+                        pos.setZ(i, z);
+                    }
+                    
+                    geom.computeVertexNormals();
+                    
+                    // Create two layers for CGI style: Solid dark base + Bright cyan wireframe overlay
+                    const solidMaterial = new THREE.MeshStandardMaterial({
+                        color: data.colorSolid,
+                        roughness: 0.9,
+                        metalness: 0.1,
+                        flatShading: true,
+                        transparent: true,
+                        opacity: 0.93
+                    });
+                    
+                    const wireMaterial = new THREE.MeshBasicMaterial({
+                        color: data.colorWire,
+                        wireframe: true,
+                        transparent: true,
+                        opacity: 0.65
+                    });
+                    
+                    // Create meshes
+                    const solidMesh = new THREE.Mesh(geom, solidMaterial);
+                    const wireMesh = new THREE.Mesh(geom, wireMaterial);
+                    
+                    // Parent group
+                    const group = new THREE.Group();
+                    group.add(solidMesh);
+                    group.add(wireMesh);
+                    
+                    // Set object on entity
+                    el.setObject3D('mesh', group);
+                }
+            });
+
+            // Landslide procedural shape
+            AFRAME.registerComponent('landslide-mesh', {
+                init: function () {
+                    const geom = new THREE.SphereGeometry(0.35, 12, 12);
+                    const pos = geom.attributes.position;
+                    // Make it organic and bumpy
+                    for(let i=0; i<pos.count; i++) {
+                        let x = pos.getX(i);
+                        let y = pos.getY(i);
+                        let z = pos.getZ(i);
+                        let offset = Math.sin(x*10) * Math.cos(y*10) * 0.05;
+                        pos.setX(i, x + offset);
+                        pos.setY(i, y + offset);
+                        pos.setZ(i, z + offset);
+                    }
+                    geom.computeVertexNormals();
+                    
+                    const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', flatShading: true });
+                    const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true });
+                    const mesh1 = new THREE.Mesh(geom, solidMat);
+                    const mesh2 = new THREE.Mesh(geom, wireMat);
+                    const group = new THREE.Group();
+                    group.add(mesh1);
+                    group.add(mesh2);
+                    this.el.setObject3D('mesh', group);
+                }
+            });
+        </script>
+
+        <!-- Hiro Marker Anchor -->
         <a-marker id="acumenMarker" preset="hiro">
             
-            <!-- Anchor coordinate root -->
             <a-entity id="hologramRoot" scale="1 1 1" position="0 0 0" rotation="0 0 0">
                 
-                <!-- Stylized "Digital Twin" Terrain (Blue Wireframe Plane) -->
-                <a-plane position="0 0 0" rotation="-90 0 0" width="3" height="3" segments-width="10" segments-height="10"
-                         material="wireframe: true; color: #2977fd; opacity: 0.7; transparent: true"></a-plane>
+                <!-- Main Mountain Landscape (Solid + Wireframe) -->
+                <a-entity id="mountain" mountain-terrain="colorSolid: #0f172a; colorWire: #2977fd" position="0 0 0" rotation="-90 0 0"></a-entity>
 
-                <!-- Mountain Mesh (Cyan styled wireframe cylinder representing slope) -->
-                <a-cylinder id="mountain-mesh" position="0 0.4 -0.5" radius="1.2" height="0.8" segments-radial="8" segments-height="4" open-ended="true"
-                            material="wireframe: true; color: #2977fd; opacity: 0.8; transparent: true" rotation="10 0 0"></a-cylinder>
+                <!-- Solid Roadway -->
+                <a-box position="0 0.005 0.3" width="0.5" height="0.01" depth="1.9" material="color: #090b10; opacity: 0.95; transparent: true"></a-box>
+                <!-- Road markings (glowing cyan line) -->
+                <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.9" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5"></a-box>
 
-                <!-- Roadway under the tunnel -->
-                <a-box position="0 0.01 0.4" width="0.8" height="0.01" depth="2" material="color: #1e293b; opacity: 0.9; transparent: true"></a-box>
-
-                <!-- Tunnel Entrance Portal (Sleek arc wireframe) -->
-                <a-torus id="tunnel-portal" position="0 0.2 0.3" arc="180" radius="0.5" radius-tubular="0.03"
-                         material="wireframe: true; color: #2977fd; opacity: 0.9; transparent: true" rotation="0 90 0"></a-torus>
-
-                <!-- Landslide Soil Layer (Red mesh, initially stable hidden) -->
-                <a-box id="landslide-mesh" position="0.3 0.6 -0.6" width="0.8" height="0.3" depth="0.8"
-                       material="wireframe: true; color: #ef4444; opacity: 0; transparent: true" rotation="10 0 0"></a-box>
-
-                <!-- Structural Anchor Bolts (Green cylinders, hidden until optimization) -->
-                <a-entity id="anchors-group" visible="false">
-                    <a-cylinder position="-0.4 0.6 -0.4" radius="0.01" height="0.5" rotation="45 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
-                    <a-cylinder position="0 0.7 -0.5" radius="0.01" height="0.5" rotation="45 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
-                    <a-cylinder position="0.4 0.6 -0.4" radius="0.01" height="0.5" rotation="45 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
-                    <!-- Stabilized wireframe color overlay -->
-                    <a-torus position="0 0.2 0.3" arc="180" radius="0.51" radius-tubular="0.01" material="color: #10b981" rotation="0 90 0"></a-torus>
+                <!-- Solid Concrete Tunnel Entrance Portal -->
+                <a-entity id="tunnel-entrance-solid" position="0 0.22 -0.22" rotation="0 0 0">
+                    <!-- Solid Wall -->
+                    <a-box position="0 0 -0.02" width="0.6" height="0.45" depth="0.04" material="color: #1e293b; roughness: 0.8; flatShading: true"></a-box>
+                    <a-box position="0 0 -0.02" width="0.61" height="0.46" depth="0.041" material="color: #2977fd; wireframe: true; transparent: true; opacity: 0.6"></a-box>
+                    <!-- Tunnel inner lining (tube) -->
+                    <a-cylinder position="0 0 -0.4" radius="0.22" height="0.8" rotation="90 0 0" theta-start="0" theta-length="180" 
+                                material="color: #090b10; side: double; roughness: 0.9"></a-cylinder>
+                    <a-cylinder position="0 0 -0.4" radius="0.225" height="0.8" rotation="90 0 0" theta-start="0" theta-length="180" 
+                                material="color: #2977fd; wireframe: true; transparent: true; opacity: 0.5; side: double"></a-cylinder>
                 </a-entity>
 
-                <!-- Floating AI Agent Nodes (Emissive Hexagonal Spheres) -->
+                <!-- Landslide Organic Mud Mass (Red Solid + Wireframe, initially hidden) -->
+                <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
+
+                <!-- Structural Anchor Bolts (Solid Cylinders with glowing heads) -->
+                <a-entity id="anchors-group" visible="false">
+                    <!-- Left Bolt -->
+                    <a-cylinder position="-0.25 0.45 -0.15" radius="0.01" height="0.45" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
+                    <a-sphere position="-0.12 0.35 -0.05" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                    <!-- Center Bolt -->
+                    <a-cylinder position="0 0.5 -0.2" radius="0.01" height="0.45" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
+                    <a-sphere position="0 0.42 -0.08" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                    <!-- Right Bolt -->
+                    <a-cylinder position="0.25 0.45 -0.15" radius="0.01" height="0.45" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
+                    <a-sphere position="0.12 0.35 -0.05" radius="0.02" material="color: #10b981; emissive: #10b981"></a-sphere>
+                </a-entity>
+
+                <!-- Floating AI Agent Nodes (Semi-transparent glowing spheres) -->
                 <!-- Node A: Geology Unit -->
-                <a-sphere id="node-geology" position="-1.2 0.8 -0.8" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
-                    <a-text value="GEOLOGY" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                <a-sphere id="node-geology" position="-1.0 0.7 -0.6" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
+                    <a-text value="GEOLOGY A" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
                 <!-- Node B: Structural AI -->
-                <a-sphere id="node-structural" position="1.2 0.8 -0.8" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
-                    <a-text value="STRUCTURAL" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                <a-sphere id="node-structural" position="1.0 0.7 -0.6" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
+                    <a-text value="STRUCTURAL B" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
                 <!-- Node C: Geotech Agent -->
-                <a-sphere id="node-geotech" position="1.2 0.4 0.4" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
-                    <a-text value="GEOTECH" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                <a-sphere id="node-geotech" position="1.0 0.4 0.4" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
+                    <a-text value="GEOTECH C" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
                 <!-- Node D: Safety Monitor -->
-                <a-sphere id="node-safety" position="-1.2 0.4 0.4" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
-                    <a-text value="SAFETY" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                <a-sphere id="node-safety" position="-1.0 0.4 0.4" radius="0.08" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.8; transparent: true">
+                    <a-text value="SAFETY D" align="center" width="1.5" position="0 0.16 0" font="kandoo" color="#f3f4f6"></a-text>
                 </a-sphere>
 
                 <!-- Connection Laser lines (dynamic rendering) -->
                 <a-entity id="laser-lines" visible="false">
-                    <!-- Lines connecting nodes to target center -->
-                    <a-entity line="start: -1.2 0.8 -0.8; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
-                    <a-entity line="start: 1.2 0.8 -0.8; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
-                    <a-entity line="start: 1.2 0.4 0.4; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
-                    <a-entity line="start: -1.2 0.4 0.4; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
+                    <a-entity line="start: -1.0 0.7 -0.6; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: 1.0 0.7 -0.6; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: 1.0 0.4 0.4; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: -1.0 0.4 0.4; end: 0 0.4 -0.2; color: #10b981; opacity: 0.7"></a-entity>
                 </a-entity>
 
             </a-entity>
@@ -427,15 +547,15 @@
         const btnWhatsapp = document.getElementById('btnWhatsapp');
 
         // 3D Objects in Scene
-        const landslideMesh = document.getElementById('landslide-mesh');
+        const landslide = document.getElementById('landslide');
         const anchorsGroup = document.getElementById('anchors-group');
         const laserLines = document.getElementById('laser-lines');
         const nodeGeology = document.getElementById('node-geology');
         const nodeGeotech = document.getElementById('node-geotech');
         const nodeStructural = document.getElementById('node-structural');
         const nodeSafety = document.getElementById('node-safety');
-        const mountainMesh = document.getElementById('mountain-mesh');
-        const tunnelPortal = document.getElementById('tunnel-portal');
+        const mountain = document.getElementById('mountain');
+        const tunnelPortal = document.getElementById('tunnel-entrance-solid');
 
         let isOptimized = false;
         let isOptimizing = false;
@@ -488,13 +608,17 @@
                     fosVal.innerText = calculatedFoS;
                     fosVal.style.color = "var(--acumen-red)";
 
-                    // Animate landslide in 3D (Shift red box down and increase visibility)
-                    landslideMesh.setAttribute('material', 'opacity', 0.6);
-                    landslideMesh.setAttribute('position', '0.2 0.3 -0.4');
+                    // Show landslide, scale it to simulate volume slide
+                    landslide.setAttribute('visible', 'true');
+                    let scaleVal = 0.5 + ((val - 60) * 0.008);
+                    landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
+                    // Shift position slightly down the slope
+                    let posY = 0.65 - ((val - 60) * 0.005);
+                    let posZ = -0.6 + ((val - 60) * 0.007);
+                    landslide.setAttribute('position', `0.15 ${posY} ${posZ}`);
                     
-                    // Highlight wireframe to red to show stress
-                    mountainMesh.setAttribute('material', 'color', '#ef4444');
-                    tunnelPortal.setAttribute('material', 'color', '#ef4444');
+                    // Stress coloration of the mountain grid (Turns red)
+                    mountain.setAttribute('mountain-terrain', 'colorWire', '#ef4444');
                     
                     btnOptimize.disabled = false;
 
@@ -514,18 +638,16 @@
                     fosVal.style.color = "var(--acumen-emerald)";
 
                     // Hide landslide
-                    landslideMesh.setAttribute('material', 'opacity', 0);
-                    landslideMesh.setAttribute('position', '0.3 0.6 -0.6');
+                    landslide.setAttribute('visible', 'false');
                     
                     // Reset mesh colors
-                    mountainMesh.setAttribute('material', 'color', '#2977fd');
-                    tunnelPortal.setAttribute('material', 'color', '#2977fd');
+                    mountain.setAttribute('mountain-terrain', 'colorWire', '#2977fd');
                     
                     btnOptimize.disabled = true;
                     window.alertLogged = false;
                 }
             } else {
-                // Stabilized state
+                // Stabilized state under rain
                 const stabilizedFoS = (1.68 - (val / 200)).toFixed(2);
                 fosVal.innerText = stabilizedFoS;
             }
@@ -545,6 +667,10 @@
             nodeGeotech.setAttribute('material', 'color', '#10b981');
             nodeStructural.setAttribute('material', 'color', '#10b981');
             nodeSafety.setAttribute('material', 'color', '#10b981');
+            nodeGeology.setAttribute('material', 'emissive', '#10b981');
+            nodeGeotech.setAttribute('material', 'emissive', '#10b981');
+            nodeStructural.setAttribute('material', 'emissive', '#10b981');
+            nodeSafety.setAttribute('material', 'emissive', '#10b981');
 
             // Visualise lasers
             laserLines.setAttribute('visible', 'true');
@@ -563,12 +689,10 @@
                 
                 // Stabilization visual trigger in 3D
                 anchorsGroup.setAttribute('visible', 'true');
-                landslideMesh.setAttribute('material', 'opacity', 0); // Landslide retreats
-                landslideMesh.setAttribute('position', '0.3 0.6 -0.6');
+                landslide.setAttribute('visible', 'false'); // Landslide retreats
                 
                 // Reset wireframe colors to emerald to show stability
-                mountainMesh.setAttribute('material', 'color', '#10b981');
-                tunnelPortal.setAttribute('material', 'color', '#10b981');
+                mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
 
                 isOptimized = true;
                 isOptimizing = false;
@@ -588,10 +712,6 @@
                 
                 // Dim lasers back to standard
                 laserLines.setAttribute('visible', 'false');
-                nodeGeology.setAttribute('material', 'emissiveIntensity', 0.2);
-                nodeGeotech.setAttribute('material', 'emissiveIntensity', 0.2);
-                nodeStructural.setAttribute('material', 'emissiveIntensity', 0.2);
-                nodeSafety.setAttribute('material', 'emissiveIntensity', 0.2);
             }, 3200);
         });
     </script>
