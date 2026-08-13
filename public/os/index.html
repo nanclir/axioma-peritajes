@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACUMEN OS 1.0 - Visor WebAR</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- A-Frame (3D WebGL Library) -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- AR.js (WebAR Camera Tracking) -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: rgba(9, 11, 16, 0.9);
+            --zinc-panel: rgba(18, 22, 32, 0.95);
+            --zinc-border: #1e2535;
+            --acumen-blue: #2977fd;
+            --acumen-emerald: #10b981;
+            --acumen-gold: #fbbf24;
+            --acumen-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #8a93a0;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background-color: #000;
+        }
+
+        /* 2D HUD UI Overlay - Placed on top of the camera feed */
+        #hud-container {
+            position: absolute;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none; /* Allows interacting with the camera/3D canvas behind */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        /* Elements that need interaction must re-enable pointer-events */
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Top Bar */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .hud-badge {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .hud-badge span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--acumen-emerald);
+            animation: pulse 1.5s infinite;
+        }
+
+        .hud-status {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .status-lbl {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-val {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--acumen-emerald);
+        }
+
+        /* Middle telemetry (FoS Meter) */
+        .hud-fos-panel {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 10px 20px;
+            border-radius: 12px;
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .fos-lbl {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .fos-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--acumen-emerald);
+            transition: color 0.3s;
+        }
+
+        /* Bottom Controls Box */
+        .hud-bottom-panel {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+        }
+
+        /* Console */
+        .console-box {
+            background-color: rgba(9, 11, 16, 0.95);
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px;
+            height: 90px;
+            overflow-y: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1.4;
+            color: var(--acumen-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .console-line {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .console-line.red { color: var(--acumen-red); }
+        .console-line.green { color: var(--acumen-emerald); }
+        .console-line.gold { color: var(--acumen-gold); }
+
+        /* Controls */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-lbl {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-val {
+            color: var(--text-main);
+        }
+
+        .slider-bar {
+            width: 100%;
+            -webkit-appearance: none;
+            background: #1e293b;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--acumen-blue);
+            cursor: pointer;
+            border: 2px solid var(--bg-dark);
+            box-shadow: 0 0 10px rgba(41, 119, 253, 0.6);
+        }
+
+        /* Buttons */
+        .btn-action {
+            background-color: var(--acumen-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 14px rgba(41, 119, 253, 0.4);
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background-color: #1e63d3;
+            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.6);
+        }
+
+        .btn-action:disabled {
+            background-color: var(--zinc-border);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            display: none; /* Shown only after optimization */
+        }
+
+        /* Marker Detection Indicator */
+        #marker-alert {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(9, 11, 16, 0.95);
+            border: 1px dashed var(--acumen-blue);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 300px;
+            z-index: 98;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        #marker-alert h4 {
+            color: var(--acumen-gold);
+            margin-bottom: 8px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Camera scanning warning alert -->
+    <div id="marker-alert">
+        <h4>[ AWAITING TELEMETRY ]</h4>
+        <p>Apunta la cámara de tu celular hacia el **marcador Hiro** impreso o la pantalla de prueba para proyectar el Gemelo Digital.</p>
+    </div>
+
+    <!-- HUD Overlay -->
+    <div id="hud-container">
+        <!-- Top Telemetry -->
+        <div class="hud-header">
+            <div class="hud-badge">
+                <span></span> ACUMEN OS 1.0
+            </div>
+            <div class="hud-status">
+                <div class="status-lbl">Sistema</div>
+                <div id="statusVal" class="status-val">ESPERANDO ANCLAJE</div>
+            </div>
+        </div>
+
+        <!-- Factor of Safety -->
+        <div class="hud-fos-panel">
+            <div class="fos-lbl">Factor de Seguridad</div>
+            <div id="fosVal" class="fos-val">1.45</div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="hud-bottom-panel interactive">
+            <!-- Console log -->
+            <div id="consoleLog" class="console-box">
+                <div class="console-line">[SYSTEM]: ACUMEN OS WebAR inicializado.</div>
+                <div class="console-line">[SYSTEM]: Buscando anclaje en superficie (Marcador Hiro)...</div>
+            </div>
+
+            <!-- Rain control slider -->
+            <div class="control-group">
+                <div class="control-lbl">
+                    <span>Simular Lluvia Extrema</span>
+                    <span id="rainLabel" class="control-val">10 años</span>
+                </div>
+                <input id="rainSlider" class="slider-bar" type="range" min="10" max="120" value="10" disabled>
+            </div>
+
+            <!-- Active optimize button -->
+            <button id="btnOptimize" class="btn-action" disabled>Activar ACUMEN OS</button>
+            <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+        </div>
+    </div>
+
+    <!-- WebAR A-Frame Scene -->
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;' vr-mode-ui="enabled: false">
+        
+        <!-- Camera asset -->
+        <a-entity camera></a-entity>
+
+        <!-- Hiro Marker Anchor (Standard marker for free AR.js testing) -->
+        <a-marker id="acumenMarker" preset="hiro">
+            
+            <!-- Anchor coordinate root -->
+            <a-entity id="hologramRoot" scale="1 1 1" position="0 0 0" rotation="0 0 0">
+                
+                <!-- Stylized "Digital Twin" Terrain (Blue Wireframe Plane) -->
+                <a-plane position="0 0 0" rotation="-90 0 0" width="3" height="3" segments-width="10" segments-height="10"
+                         material="wireframe: true; color: #2977fd; opacity: 0.7; transparent: true"></a-plane>
+
+                <!-- Mountain Mesh (Cyan styled wireframe cylinder representing slope) -->
+                <a-cylinder id="mountain-mesh" position="0 0.4 -0.5" radius="1.2" height="0.8" segments-radial="8" segments-height="4" open-ended="true"
+                            material="wireframe: true; color: #2977fd; opacity: 0.8; transparent: true" rotation="10 0 0"></a-cylinder>
+
+                <!-- Roadway under the tunnel -->
+                <a-box position="0 0.01 0.4" width="0.8" height="0.01" depth="2" material="color: #1e293b; opacity: 0.9; transparent: true"></a-box>
+
+                <!-- Tunnel Entrance Portal (Sleek arc wireframe) -->
+                <a-torus id="tunnel-portal" position="0 0.2 0.3" arc="180" radius="0.5" radius-tubular="0.03"
+                         material="wireframe: true; color: #2977fd; opacity: 0.9; transparent: true" rotation="0 90 0"></a-torus>
+
+                <!-- Landslide Soil Layer (Red mesh, initially stable hidden) -->
+                <a-box id="landslide-mesh" position="0.3 0.6 -0.6" width="0.8" height="0.3" depth="0.8"
+                       material="wireframe: true; color: #ef4444; opacity: 0; transparent: true" rotation="10 0 0"></a-box>
+
+                <!-- Structural Anchor Bolts (Green cylinders, hidden until optimization) -->
+                <a-entity id="anchors-group" visible="false">
+                    <a-cylinder position="-0.4 0.6 -0.4" radius="0.01" height="0.5" rotation="45 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
+                    <a-cylinder position="0 0.7 -0.5" radius="0.01" height="0.5" rotation="45 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
+                    <a-cylinder position="0.4 0.6 -0.4" radius="0.01" height="0.5" rotation="45 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
+                    <!-- Stabilized wireframe color overlay -->
+                    <a-torus position="0 0.2 0.3" arc="180" radius="0.51" radius-tubular="0.01" material="color: #10b981" rotation="0 90 0"></a-torus>
+                </a-entity>
+
+                <!-- Floating AI Agent Nodes (Emissive Hexagonal Spheres) -->
+                <!-- Node A: Geology Unit -->
+                <a-sphere id="node-geology" position="-1.2 0.8 -0.8" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
+                    <a-text value="GEOLOGY" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                </a-sphere>
+
+                <!-- Node B: Structural AI -->
+                <a-sphere id="node-structural" position="1.2 0.8 -0.8" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
+                    <a-text value="STRUCTURAL" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                </a-sphere>
+
+                <!-- Node C: Geotech Agent -->
+                <a-sphere id="node-geotech" position="1.2 0.4 0.4" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
+                    <a-text value="GEOTECH" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                </a-sphere>
+
+                <!-- Node D: Safety Monitor -->
+                <a-sphere id="node-safety" position="-1.2 0.4 0.4" radius="0.1" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5">
+                    <a-text value="SAFETY" align="center" width="1.5" position="0 0.2 0" font="kandoo"></a-text>
+                </a-sphere>
+
+                <!-- Connection Laser lines (dynamic rendering) -->
+                <a-entity id="laser-lines" visible="false">
+                    <!-- Lines connecting nodes to target center -->
+                    <a-entity line="start: -1.2 0.8 -0.8; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
+                    <a-entity line="start: 1.2 0.8 -0.8; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
+                    <a-entity line="start: 1.2 0.4 0.4; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
+                    <a-entity line="start: -1.2 0.4 0.4; end: 0 0.5 -0.5; color: #10b981; opacity: 0.6"></a-entity>
+                </a-entity>
+
+            </a-entity>
+
+        </a-marker>
+    </a-scene>
+
+    <!-- Logic Controller script -->
+    <script>
+        const marker = document.getElementById('acumenMarker');
+        const markerAlert = document.getElementById('marker-alert');
+        const statusVal = document.getElementById('statusVal');
+        const fosVal = document.getElementById('fosVal');
+        const consoleLog = document.getElementById('consoleLog');
+        const rainSlider = document.getElementById('rainSlider');
+        const rainLabel = document.getElementById('rainLabel');
+        const btnOptimize = document.getElementById('btnOptimize');
+        const btnWhatsapp = document.getElementById('btnWhatsapp');
+
+        // 3D Objects in Scene
+        const landslideMesh = document.getElementById('landslide-mesh');
+        const anchorsGroup = document.getElementById('anchors-group');
+        const laserLines = document.getElementById('laser-lines');
+        const nodeGeology = document.getElementById('node-geology');
+        const nodeGeotech = document.getElementById('node-geotech');
+        const nodeStructural = document.getElementById('node-structural');
+        const nodeSafety = document.getElementById('node-safety');
+        const mountainMesh = document.getElementById('mountain-mesh');
+        const tunnelPortal = document.getElementById('tunnel-portal');
+
+        let isOptimized = false;
+        let isOptimizing = false;
+        let isMarkerVisible = false;
+
+        // Logging helper
+        function log(message, type = '') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.innerText = message;
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        // Marker Found Listener
+        marker.addEventListener('markerFound', () => {
+            isMarkerVisible = true;
+            markerAlert.style.display = 'none';
+            statusVal.innerText = isOptimized ? "OPTIMIZADO" : "CONEXIÓN ACTIVA";
+            statusVal.style.color = "var(--acumen-emerald)";
+            rainSlider.disabled = false;
+            
+            log(`[SYSTEM]: Anclaje digital sincronizado.`, 'green');
+            log(`[SAFETY_MONITOR]: Evaluando estado de estabilidad estructural...`);
+        });
+
+        // Marker Lost Listener
+        marker.addEventListener('markerLost', () => {
+            isMarkerVisible = false;
+            markerAlert.style.display = 'block';
+            statusVal.innerText = "ESPERANDO ANCLAJE";
+            statusVal.style.color = "var(--acumen-gold)";
+            rainSlider.disabled = true;
+            log(`[SYSTEM]: Señal perdida. Buscando anclaje...`, 'gold');
+        });
+
+        // Slider Event
+        rainSlider.addEventListener('input', (e) => {
+            if (isOptimizing) return;
+            const val = parseInt(e.target.value);
+            rainLabel.innerText = `${val} años`;
+
+            if (!isOptimized) {
+                if (val > 60) {
+                    // Risk state triggers
+                    statusVal.innerText = "SISTEMA CRÍTICO";
+                    statusVal.style.color = "var(--acumen-red)";
+                    
+                    const calculatedFoS = (1.45 - (val - 60) * 0.012).toFixed(2);
+                    fosVal.innerText = calculatedFoS;
+                    fosVal.style.color = "var(--acumen-red)";
+
+                    // Animate landslide in 3D (Shift red box down and increase visibility)
+                    landslideMesh.setAttribute('material', 'opacity', 0.6);
+                    landslideMesh.setAttribute('position', '0.2 0.3 -0.4');
+                    
+                    // Highlight wireframe to red to show stress
+                    mountainMesh.setAttribute('material', 'color', '#ef4444');
+                    tunnelPortal.setAttribute('material', 'color', '#ef4444');
+                    
+                    btnOptimize.disabled = false;
+
+                    if (!window.alertLogged) {
+                        log(`[CLIMA_UNIT]: Lluvias exceden límite de diseño (Tr > 60).`, 'gold');
+                        log(`[GEOTECH_AGENT]: Factor de seguridad bajo el límite (FoS < 1.0).`, 'red');
+                        log(`[GEOTECH_AGENT]: Falla detectada en talud norte del túnel.`, 'red');
+                        window.alertLogged = true;
+                    }
+                } else {
+                    // Normal state
+                    statusVal.innerText = "CONEXIÓN ACTIVA";
+                    statusVal.style.color = "var(--acumen-emerald)";
+                    
+                    const calculatedFoS = (1.45 - val * 0.002).toFixed(2);
+                    fosVal.innerText = calculatedFoS;
+                    fosVal.style.color = "var(--acumen-emerald)";
+
+                    // Hide landslide
+                    landslideMesh.setAttribute('material', 'opacity', 0);
+                    landslideMesh.setAttribute('position', '0.3 0.6 -0.6');
+                    
+                    // Reset mesh colors
+                    mountainMesh.setAttribute('material', 'color', '#2977fd');
+                    tunnelPortal.setAttribute('material', 'color', '#2977fd');
+                    
+                    btnOptimize.disabled = true;
+                    window.alertLogged = false;
+                }
+            } else {
+                // Stabilized state
+                const stabilizedFoS = (1.68 - (val / 200)).toFixed(2);
+                fosVal.innerText = stabilizedFoS;
+            }
+        });
+
+        // Optimization Action click (collaboration simulation)
+        btnOptimize.addEventListener('click', () => {
+            if (isOptimized || isOptimizing) return;
+
+            isOptimizing = true;
+            btnOptimize.disabled = true;
+            
+            log(`[SYSTEM]: Solicitando protocolo de estabilización Multi-Agente...`);
+            
+            // Turn nodes glowing green during execution
+            nodeGeology.setAttribute('material', 'color', '#10b981');
+            nodeGeotech.setAttribute('material', 'color', '#10b981');
+            nodeStructural.setAttribute('material', 'color', '#10b981');
+            nodeSafety.setAttribute('material', 'color', '#10b981');
+
+            // Visualise lasers
+            laserLines.setAttribute('visible', 'true');
+
+            // Timeline of Agent interactions
+            setTimeout(() => {
+                log(`[GEOLOGY_UNIT_A]: Imputando serie histórica climatológica... Hecho.`, 'green');
+            }, 800);
+
+            setTimeout(() => {
+                log(`[GEOTECH_AGENT_C]: Calculando plano de falla dinámico... Hecho.`, 'green');
+            }, 1600);
+
+            setTimeout(() => {
+                log(`[STRUCTURAL_AI_B]: Desplegando anclajes y pernos de roca de 30ton.`, 'green');
+                
+                // Stabilization visual trigger in 3D
+                anchorsGroup.setAttribute('visible', 'true');
+                landslideMesh.setAttribute('material', 'opacity', 0); // Landslide retreats
+                landslideMesh.setAttribute('position', '0.3 0.6 -0.6');
+                
+                // Reset wireframe colors to emerald to show stability
+                mountainMesh.setAttribute('material', 'color', '#10b981');
+                tunnelPortal.setAttribute('material', 'color', '#10b981');
+
+                isOptimized = true;
+                isOptimizing = false;
+
+                const val = parseInt(rainSlider.value);
+                fosVal.innerText = (1.68 - (val / 200)).toFixed(2);
+                fosVal.style.color = "var(--acumen-emerald)";
+                statusVal.innerText = "OPTIMIZADO";
+                statusVal.style.color = "var(--acumen-emerald)";
+                
+                btnOptimize.style.display = 'none';
+                btnWhatsapp.style.display = 'block';
+            }, 2400);
+
+            setTimeout(() => {
+                log(`[SAFETY_MONITOR_D]: Estructura consolidada. Alerta resuelta.`, 'green');
+                
+                // Dim lasers back to standard
+                laserLines.setAttribute('visible', 'false');
+                nodeGeology.setAttribute('material', 'emissiveIntensity', 0.2);
+                nodeGeotech.setAttribute('material', 'emissiveIntensity', 0.2);
+                nodeStructural.setAttribute('material', 'emissiveIntensity', 0.2);
+                nodeSafety.setAttribute('material', 'emissiveIntensity', 0.2);
+            }, 3200);
+        });
+    </script>
+</body>
+</html>
