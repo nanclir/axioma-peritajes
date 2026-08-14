@@ -426,30 +426,36 @@ export default function AcumenOSPage() {
         <div className="absolute inset-0 dot-pattern opacity-5 pointer-events-none z-0" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-20">
           
-          {/* SECCIÓN 1: ESTABILIZACIÓN DE TALUDES (GEOTECNIA) */}
+          {/* SECCIÓN 1: ESTABILIZACIÓN DE TALUDES (TÚNELES) */}
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-8 bg-blue-500"></div>
-                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-bold font-semibold">CCI 2026 Cartagena</span>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">CCI 2026 CARTAGENA</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                Demo de Estabilización de Taludes
+                Demo del Gemelo Digital en Vivo
               </h2>
               <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
                 Explore la maqueta digital interactiva diseñada para el Congreso CCI 2026. A través de este visor orbital en 3D, podrá simular fallas en el talud de un túnel debido a lluvias extremas y activar el protocolo de estabilización mediante pernos de roca guiado por el ecosistema de agentes inteligentes de ACUMEN OS.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex flex-wrap gap-4 items-center">
                 <a
                   href="/os/visor_webar_produccion.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30 font-semibold"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-transparent text-base font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30"
                 >
-                  Abrir Visor Geotecnia
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  Abrir Visor Digital Twin &rarr;
                 </a>
-                <span className="text-sm text-zinc-500 font-mono">Compatible con móviles y ordenadores</span>
+                <a
+                  href="/pdf/ficha_tecnica_taludes.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-blue-500 text-base font-bold rounded-md text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                >
+                  Ficha Técnica (PDF) &darr;
+                </a>
               </div>
             </div>
 
@@ -475,7 +481,7 @@ export default function AcumenOSPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-8 bg-blue-500"></div>
-                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-bold font-semibold">FutureProof Decisions®</span>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">FutureProof Decisions®</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
                 Demo de Decisiones Robustas (RDM)
@@ -483,17 +489,23 @@ export default function AcumenOSPage() {
               <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
                 Simule escenarios de cambio climático extremo (hasta el año 2080) sobre la cimentación del viaducto y evalúe la mitigación estocástica de riesgos por socavación local y deslizamiento de ladera mediante el protocolo RDM de ACUMEN OS.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex flex-wrap gap-4 items-center">
                 <a
                   href="/os/visor_futureproof.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30 font-semibold"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-transparent text-base font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30"
                 >
-                  Abrir Visor RDM
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  Abrir Visor RDM &rarr;
                 </a>
-                <span className="text-sm text-zinc-500 font-mono">Compatible con móviles y ordenadores</span>
+                <a
+                  href="/pdf/ficha_tecnica_futureproof.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-blue-500 text-base font-bold rounded-md text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                >
+                  Ficha Técnica (PDF) &darr;
+                </a>
               </div>
             </div>
 
