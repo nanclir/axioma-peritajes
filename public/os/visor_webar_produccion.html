@@ -146,15 +146,16 @@
         // DEFINICIÓN DE DERRUMBE AMPLIADO (MASA MÁS GRANDE Y ORGANICA)
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.38, 1); // Aumentado de 0.24 a 0.38 para exagerar el evento
+                const geom = new THREE.DodecahedronGeometry(0.38, 1); 
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
                     let y = pos.getY(i);
                     let z = pos.getZ(i);
-                    pos.setX(i, x * 1.6 + (Math.sin(y*10)*0.08));
-                    pos.setY(i, y * 0.7 - 0.1); 
-                    pos.setZ(i, z * 1.1);
+                    // Estrechado y moldeado para encajar entre los taludes y no flotar en el aire
+                    pos.setX(i, x * 0.95 + (Math.sin(y*10)*0.05));
+                    pos.setY(i, y * 0.35 - 0.02); 
+                    pos.setZ(i, z * 1.5);
                 }
                 geom.computeVertexNormals();
                 
@@ -1192,7 +1193,7 @@
             </a-entity>
 
             <!-- Landslide Organic Mud Mass (Exagerado y reposicionado justo al frente de la vía para tapar la carretera) -->
-            <a-entity id="landslide" landslide-mesh position="0.0 0.15 0.1" scale="0.01 0.01 0.01" visible="false">
+            <a-entity id="landslide" landslide-mesh position="0.08 0.05 0.1" scale="0.01 0.01 0.01" visible="false">
                 <a-text value="[!] FALLA DE TALUD" align="center" width="1.4" position="0 0.5 0" color="#f87171" font="Roboto-msdf.json"></a-text>
             </a-entity>
 
