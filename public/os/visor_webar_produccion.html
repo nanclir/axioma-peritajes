@@ -59,19 +59,15 @@
             z-index: 0;
         }
 
-        /* A-Frame scene container */
-        #scene-container {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-        }
-
-        /* Force WebGL canvas to overlay on top of video feed */
-        #scene-container canvas.a-canvas {
+        /* WebGL Canvas transparency enforcement */
+        a-scene {
+            position: absolute !important;
+            inset: 0 !important;
             z-index: 5 !important;
+            background: transparent !important;
         }
 
-        /* Desktop Onboarding Landing Page (Exact replica of the website design) */
+        /* Desktop Onboarding Landing Page */
         #desktop-onboarding {
             position: fixed;
             inset: 0;
@@ -529,30 +525,6 @@
             display: none;
         }
 
-        /* Marker Detection Indicator */
-        #marker-alert {
-            position: absolute;
-            top: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(9, 11, 16, 0.95);
-            border: 1px dashed var(--acumen-blue);
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 320px;
-            z-index: 98;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        #marker-alert h4 {
-            color: var(--acumen-gold);
-            margin: 0 0 4px 0;
-            font-size: 0.8rem;
-        }
-
         .hidden {
             display: none !important;
         }
@@ -605,7 +577,7 @@
                 <div class="qr-card-container">
                     <div class="qr-card">
                         <div class="qr-code-box">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://www.acumeningenieria.com/os/visor_webar_produccion.html" alt="QR Code">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://www.acumeningenieria.com/os/" alt="QR Code">
                         </div>
                         <h4>Acceso Móvil</h4>
                         <p>Escanee este código con la cámara de su celular para abrir la maqueta 3D interactiva directamente.</p>
@@ -615,13 +587,7 @@
         </div>
     </div>
 
-    <!-- Camera scanning warning alert -->
-    <div id="marker-alert" class="hidden">
-        <h4>[ ESCENARIO EN ESPERA ]</h4>
-        <p>Enfoque el marcador Hiro impreso o en la pantalla.</p>
-    </div>
-
-    <!-- HUD Overlay UI -->
+    <!-- HUD Overlay UI (Oculto inicialmente hasta dar click en el onboarding) -->
     <div id="hud-container" class="hidden">
         <!-- Top Header -->
         <div class="hud-header">
@@ -666,102 +632,104 @@
         </div>
     </div>
 
-    <!-- Webgl 3D Scene container -->
-    <div id="scene-container" class="hidden">
-        <!-- A-Frame Scene -->
-        <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true;" style="background: transparent;">
+    <!-- WebGL A-Frame Scene (Transparente y siempre activa, colocada debajo del HUD y Onboarding) -->
+    <!-- renderer="alpha: true" fuerza la transparencia de WebGL para poder ver el video o fondo -->
+    <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true; antialias: true;">
+        
+        <!-- Luces Avanzadas para dar Relieve y Sombreado a la Montaña -->
+        <a-entity light="type: ambient; color: #1e293b; intensity: 1.0"></a-entity>
+        <a-entity light="type: directional; color: #fff; intensity: 1.6; castShadow: true;" position="-3 5 2"></a-entity>
+
+        <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
+
+        <!-- Rain Particle System (Efecto de Lluvia Dinámica 3D) -->
+        <a-entity id="rainSystem" rain-particles="intensity: 0" position="0 0 0"></a-entity>
+
+        <!-- Hologram Container Root (Interaction controls rotate this node) -->
+        <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
             
-            <a-entity light="type: ambient; color: #1e293b; intensity: 1.0"></a-entity>
-            <a-entity light="type: directional; color: #fff; intensity: 1.6; castShadow: true;" position="-3 5 2"></a-entity>
+            <!-- Base radar line pattern -->
+            <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
+                     material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
 
-            <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
+            <!-- Main Mountain Landscape (Solid Verde Bosque + Pinos 3D + Rejilla Esmeralda) -->
+            <a-entity id="mountain" mountain-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
 
-            <!-- Hologram Container Root (Interaction controls rotate this node) -->
-            <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
+            <!-- Calzada Vial Sólida Asfalto Oscuro -->
+            <a-box position="0 0.005 0.3" width="0.48" height="0.01" depth="1.8" material="color: #0f172a; opacity: 0.96; transparent: true"></a-box>
+            <!-- Línea de demarcación vial cian -->
+            <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
+
+            <!-- Portal de Entrada del Túnel en 3D Concreto -->
+            <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
+                <a-box position="0 0 -0.02" width="0.56" height="0.4" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
+                <a-box position="0 0 -0.02" width="0.57" height="0.41" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
                 
-                <!-- Base radar line pattern -->
-                <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
-                         material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
-
-                <!-- Main Mountain Landscape (Solid Verde Bosque + Pinos 3D + Rejilla Esmeralda) -->
-                <a-entity id="mountain" mountain-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
-
-                <!-- Calzada Vial Sólida Asfalto Oscuro -->
-                <a-box position="0 0.005 0.3" width="0.48" height="0.01" depth="1.8" material="color: #0f172a; opacity: 0.96; transparent: true"></a-box>
-                <!-- Línea de demarcación vial cian -->
-                <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
-
-                <!-- Portal de Entrada del Túnel en 3D Concreto -->
-                <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
-                    <a-box position="0 0 -0.02" width="0.56" height="0.4" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
-                    <a-box position="0 0 -0.02" width="0.57" height="0.41" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
-                    
-                    <a-box position="-0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 15 0" material="color: #334155; roughness: 0.7"></a-box>
-                    <a-box position="0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 -15 0" material="color: #334155; roughness: 0.7"></a-box>
-                    
-                    <a-cylinder position="0 0 -0.45" radius="0.2" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
-                                material="color: #090b10; side: double; roughness: 0.95"></a-cylinder>
-                    <a-cylinder position="0 0 -0.45" radius="0.205" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
-                                material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
-                </a-entity>
-
-                <!-- Landslide Organic Mud Mass -->
-                <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
-
-                <!-- Pernos e Inyecciones de Estabilización Físicas 3D -->
-                <a-entity id="anchors-group" visible="false">
-                    <a-box position="-0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                    <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                    <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
-
-                    <a-box position="0 0.45 -0.2" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                    <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                    <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
-
-                    <a-box position="0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                    <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                    <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
-                </a-entity>
-
-                <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) -->
-                <!-- Node A: Geology Unit -->
-                <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.6 -0.4" rotation="90 30 0"
-                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                    <a-text value="GEOLOGIA A" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-                </a-cylinder>
-
-                <!-- Node B: Structural AI -->
-                <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.6 -0.4" rotation="90 30 0"
-                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                    <a-text value="ESTRUCTURA B" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-                </a-cylinder>
-
-                <!-- Node C: Geotech Agent -->
-                <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.3 0.3" rotation="90 30 0"
-                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                    <a-text value="GEOTECNIA C" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-                </a-cylinder>
-
-                <!-- Node D: Safety Monitor -->
-                <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.3 0.3" rotation="90 30 0"
-                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                    <a-text value="SEGURIDAD D" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-                </a-cylinder>
-
-                <!-- Connection Laser lines (dynamic rendering) -->
-                <a-entity id="laser-lines" visible="false">
-                    <a-entity line="start: -0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
-                    <a-entity line="start: 0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
-                    <a-entity line="start: 0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
-                    <a-entity line="start: -0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
-                </a-entity>
-
+                <a-box position="-0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 15 0" material="color: #334155; roughness: 0.7"></a-box>
+                <a-box position="0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 -15 0" material="color: #334155; roughness: 0.7"></a-box>
+                
+                <a-cylinder position="0 0 -0.45" radius="0.2" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #090b10; side: double; roughness: 0.95"></a-cylinder>
+                <a-cylinder position="0 0 -0.45" radius="0.205" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
             </a-entity>
 
-        </a-scene>
-    </div>
+            <!-- Landslide Organic Mud Mass -->
+            <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
 
-    <!-- Script containing custom procedural high-tech mountain model generation -->
+            <!-- Pernos e Inyecciones de Estabilización Físicas 3D -->
+            <a-entity id="anchors-group" visible="false">
+                <a-box position="-0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                <a-box position="0 0.45 -0.2" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                <a-box position="0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+            </a-entity>
+
+            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) -->
+            <!-- Node A: Geology Unit -->
+            <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.6 -0.4" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                <a-text value="GEOLOGIA A" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+            </a-cylinder>
+
+            <!-- Node B: Structural AI -->
+            <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.6 -0.4" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                <a-text value="ESTRUCTURA B" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+            </a-cylinder>
+
+            <!-- Node C: Geotech Agent -->
+            <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.3 0.3" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                <a-text value="GEOTECNIA C" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+            </a-cylinder>
+
+            <!-- Node D: Safety Monitor -->
+            <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.3 0.3" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                <a-text value="SEGURIDAD D" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+            </a-cylinder>
+
+            <!-- Connection Laser lines -->
+            <a-entity id="laser-lines" visible="false">
+                <a-entity line="start: -0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                <a-entity line="start: 0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                <a-entity line="start: 0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                <a-entity line="start: -0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+            </a-entity>
+
+        </a-entity>
+
+    </a-scene>
+
+    <!-- Componentes A-Frame de Maqueta y Partículas -->
     <script>
         // Custom 3D mountain landscape generation logic (FACETED GEOMETRY + 3D TREES)
         AFRAME.registerComponent('mountain-terrain', {
@@ -887,6 +855,72 @@
                 this.el.setObject3D('mesh', group);
             }
         });
+
+        // OPTIMIZED DYNAMIC 3D RAIN PARTICLE SYSTEM COMPONENT
+        AFRAME.registerComponent('rain-particles', {
+            schema: {
+                intensity: { type: 'number', default: 0 } // De 0.0 (Sin lluvia) a 1.0 (Lluvia máxima)
+            },
+            init: function () {
+                this.drops = [];
+                const count = 350; // Cantidad de gotas para balancear peso/visual
+                const geom = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                this.velocities = [];
+
+                for (let i = 0; i < count; i++) {
+                    // Distribución espacial alrededor de la maqueta
+                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
+                    positions[i*3+1] = (Math.random() * 2.0);         // Y
+                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;     // Z
+                    
+                    this.velocities.push(0.03 + Math.random() * 0.03); // Velocidad base
+                }
+
+                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                // Gotas de lluvia como pequeños puntos brillantes celestes
+                const mat = new THREE.PointsMaterial({
+                    color: '#60a5fa',
+                    size: 0.012,
+                    transparent: true,
+                    opacity: 0.8
+                });
+
+                this.particleSystem = new THREE.Points(geom, mat);
+                this.el.setObject3D('mesh', this.particleSystem);
+            },
+            tick: function (time, timeDelta) {
+                const intensity = this.data.intensity;
+                if (intensity <= 0) {
+                    this.particleSystem.visible = false;
+                    return;
+                }
+                
+                this.particleSystem.visible = true;
+                const geom = this.particleSystem.geometry;
+                const pos = geom.attributes.position;
+                const count = pos.count;
+
+                // Modificar opacidad según intensidad
+                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+
+                for (let i = 0; i < count; i++) {
+                    let y = pos.getY(i);
+                    // Caída física de las gotas (la velocidad aumenta con la intensidad)
+                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
+                    
+                    // Resetear gota en la parte superior si toca el suelo
+                    if (y < 0) {
+                        y = 2.0; // Altura tope
+                        pos.setX(i, (Math.random() * 2.4) - 1.2);
+                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
+                    }
+                    pos.setY(i, y);
+                }
+                pos.needsUpdate = true;
+            }
+        });
     </script>
 
     <!-- Main Logic & Interactive Controllers -->
@@ -897,9 +931,7 @@
         }
 
         const onboardingDiv = document.getElementById('desktop-onboarding');
-        const arScene = document.getElementById('scene-container');
         const hudContainer = document.getElementById('hud-container');
-        const markerAlert = document.getElementById('marker-alert');
         const btnDesktopEnter = document.getElementById('btn-desktop-enter');
         const video = document.getElementById('camera-video');
         const fallback = document.getElementById('camera-fallback');
@@ -908,7 +940,6 @@
         if (isMobileDevice()) {
             // Hide onboarding directly on mobile
             onboardingDiv.style.display = 'none';
-            arScene.classList.remove('hidden');
             hudContainer.classList.remove('hidden');
             
             // Request rear mobile camera stream
@@ -929,7 +960,6 @@
             // On desktop, wait for user to click "Abrir Visor Digital Twin"
             btnDesktopEnter.addEventListener('click', () => {
                 onboardingDiv.style.display = 'none';
-                arScene.classList.remove('hidden');
                 hudContainer.classList.remove('hidden');
                 fallback.style.display = 'block'; // Always use fallback grid on desktop
             });
@@ -1004,6 +1034,7 @@
         const nodeStructural = document.getElementById('node-structural');
         const nodeSafety = document.getElementById('node-safety');
         const mountain = document.getElementById('mountain');
+        const rainSystem = document.getElementById('rainSystem');
 
         let isOptimized = false;
         let isOptimizing = false;
@@ -1021,6 +1052,10 @@
             if (isOptimizing) return;
             const val = parseInt(e.target.value);
             rainLabel.innerText = `${val} años`;
+
+            // Actualizar intensidad del sistema de partículas de lluvia (escala de 0.0 a 1.0)
+            const rainIntensity = (val - 10) / 110;
+            rainSystem.setAttribute('rain-particles', 'intensity', rainIntensity);
 
             if (!isOptimized) {
                 if (val > 60) {
