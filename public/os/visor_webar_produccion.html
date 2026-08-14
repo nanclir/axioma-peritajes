@@ -1178,29 +1178,54 @@
             <!-- Línea de demarcación vial cian -->
             <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
 
-            <!-- Portal de Entrada del Túnel en 3D Concreto (Hueco y más largo) -->
+            <!-- Portal de Entrada del Túnel (Sucesión de Arcos Estructurales) -->
             <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
-                <!-- Pórtico Hueco (Reemplaza la pared intermedia tapón) -->
-                <!-- Lintel superior -->
-                <a-box position="0 0.16 -0.02" width="0.56" height="0.08" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
-                <a-box position="0 0.16 -0.02" width="0.57" height="0.081" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
-                
-                <!-- Columna Izquierda -->
-                <a-box position="-0.24 -0.04 -0.02" width="0.08" height="0.32" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
-                <a-box position="-0.24 -0.04 -0.02" width="0.081" height="0.321" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
-                
-                <!-- Columna Derecha -->
-                <a-box position="0.24 -0.04 -0.02" width="0.08" height="0.32" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
-                <a-box position="0.24 -0.04 -0.02" width="0.081" height="0.321" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
+                <!-- Arco 1 (Entrada) -->
+                <a-cylinder position="0 0 0" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 0" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4; side: double"></a-cylinder>
 
-                <!-- Aletas Laterales -->
-                <a-box position="-0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 15 0" material="color: #334155; roughness: 0.7"></a-box>
-                <a-box position="0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 -15 0" material="color: #334155; roughness: 0.7"></a-box>
-                
-                <!-- Tubo del Túnel Hueco y Alargado (longitud extendida de 0.9 a 1.5, centro en Z movido a -0.75) -->
-                <a-cylinder position="0 0 -0.75" radius="0.2" height="1.5" rotation="90 0 0" theta-start="0" theta-length="180" 
-                            material="color: #090b10; side: double; roughness: 0.95"></a-cylinder>
-                <a-cylinder position="0 0 -0.75" radius="0.205" height="1.5" rotation="90 0 0" theta-start="0" theta-length="180" 
+                <!-- Arco 2 -->
+                <a-cylinder position="0 0 -0.2" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -0.2" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 3 -->
+                <a-cylinder position="0 0 -0.4" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -0.4" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 4 -->
+                <a-cylinder position="0 0 -0.6" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -0.6" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 5 -->
+                <a-cylinder position="0 0 -0.8" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -0.8" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 6 -->
+                <a-cylinder position="0 0 -1.0" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -1.0" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 7 -->
+                <a-cylinder position="0 0 -1.2" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -1.2" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+
+                <!-- Arco 8 (Salida posterior) -->
+                <a-cylinder position="0 0 -1.4" radius="0.2" height="0.06" rotation="90 0 0" theta-start="0" theta-length="180" 
+                            material="color: #475569; side: double; roughness: 0.7; flatShading: true"></a-cylinder>
+                <a-cylinder position="0 0 -1.4" radius="0.205" height="0.061" rotation="90 0 0" theta-start="0" theta-length="180" 
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
             </a-entity>
 
