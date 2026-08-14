@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ACUMEN OS 1.0 - Visor AR Orbit PRO</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- A-Frame (3D WebGL Library) -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --panel-bg: rgba(18, 22, 32, 0.96);
+            --zinc-border: #1e2535;
+            --acumen-blue: #2977fd;
+            --acumen-emerald: #10b981;
+            --acumen-gold: #fbbf24;
+            --acumen-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #8a93a0;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-dark);
+        }
+
+        /* Real-time Camera Background feed */
+        #camera-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* High-tech grid background fallback */
+        #camera-fallback {
+            position: absolute;
+            inset: 0;
+            background-color: #07090e;
+            background-image: 
+                radial-gradient(rgba(41, 119, 253, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(41, 119, 253, 0.03) 1px, transparent 0);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: 0;
+        }
+
+        /* A-Frame scene container */
+        #scene-container {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+        }
+
+        /* Desktop Onboarding Landing Page (Exact replica of the website design) */
+        #desktop-onboarding {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Corporate Navbar */
+        .navbar {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 3.5;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-item {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--acumen-blue);
+        }
+
+        .nav-item.active {
+            border: 1px solid var(--acumen-gold);
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: var(--acumen-gold);
+        }
+
+        .btn-contact {
+            background-color: #121620;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-contact:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Main Hero Section */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-left-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .tagline {
+            color: var(--acumen-blue);
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tagline::before {
+            content: "";
+            display: inline-block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--acumen-blue);
+        }
+
+        .hero-left-content h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .hero-left-content p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            max-width: 550px;
+        }
+
+        .btn-open-twin {
+            background-color: var(--acumen-blue);
+            color: #fff;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(41, 119, 253, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-open-twin:hover {
+            background-color: #1e63d3;
+            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.6);
+            transform: translateY(-1px);
+        }
+
+        /* Right QR Card */
+        .qr-card-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-card {
+            background-color: rgba(18, 22, 32, 0.4);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .qr-code-box {
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code-box img {
+            width: 160px;
+            height: 160px;
+            display: block;
+        }
+
+        .qr-card h4 {
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .qr-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 0;
+        }
+
+        /* 2D HUD UI Overlay */
+        #hud-container {
+            position: absolute;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Top Bar */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .hud-badge {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .hud-badge span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--acumen-emerald);
+            animation: pulse 1.5s infinite;
+        }
+
+        .hud-telemetry-right {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .hud-status {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .hud-fos-badge {
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-lbl {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-val {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--acumen-emerald);
+        }
+
+        .fos-val-txt {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--acumen-emerald);
+            transition: color 0.3s;
+        }
+
+        /* Swipe Instruction Tip */
+        .swipe-tip {
+            position: absolute;
+            top: 130px;
+            align-self: center;
+            background-color: rgba(9, 11, 16, 0.7);
+            border: 1px solid var(--zinc-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--acumen-blue);
+            animation: pulse 2s infinite;
+        }
+
+        /* Bottom Controls Box */
+        .hud-bottom-panel {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: var(--zinc-panel);
+            border: 1px solid var(--zinc-border);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+        }
+
+        /* Console */
+        .console-box {
+            background-color: rgba(9, 11, 16, 0.95);
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px;
+            height: 90px;
+            overflow-y: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1.4;
+            color: var(--acumen-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .console-line {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .console-line.red { color: var(--acumen-red); }
+        .console-line.green { color: var(--acumen-emerald); }
+        .console-line.gold { color: var(--acumen-gold); }
+
+        /* Controls */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-lbl {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-val {
+            color: var(--text-main);
+        }
+
+        .slider-bar {
+            width: 100%;
+            -webkit-appearance: none;
+            background: #1e293b;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--acumen-blue);
+            cursor: pointer;
+            border: 2px solid var(--bg-dark);
+            box-shadow: 0 0 10px rgba(41, 119, 253, 0.6);
+        }
+
+        /* Buttons */
+        .btn-action {
+            background-color: var(--acumen-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 14px rgba(41, 119, 253, 0.4);
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background-color: #1e63d3;
+            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.6);
+        }
+
+        .btn-action:disabled {
+            background-color: var(--zinc-border);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            display: none;
+        }
+
+        /* Marker Detection Indicator */
+        #marker-alert {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(9, 11, 16, 0.95);
+            border: 1px dashed var(--acumen-blue);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 320px;
+            z-index: 98;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        #marker-alert h4 {
+            color: var(--acumen-gold);
+            margin: 0 0 4px 0;
+            font-size: 0.8rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Camera Video Feed Element -->
+    <video id="camera-video" autoplay playsinline muted></video>
+    
+    <!-- High-tech Grid Background Fallback -->
+    <div id="camera-fallback"></div>
+
+    <!-- Onboarding Desktop (100% styled to match Acumen web page) -->
+    <div id="desktop-onboarding">
+        <!-- Corporate Header -->
+        <div class="navbar">
+            <div class="nav-logo">
+                <svg viewBox="0 0 100 100">
+                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35" stroke="#fff" stroke-width="6" fill="none"/>
+                    <polygon points="50,25 75,40 75,60 50,75 25,60 25,40" stroke="#fff" stroke-width="3" fill="none"/>
+                </svg>
+                ACUMEN
+            </div>
+            <div class="nav-items">
+                <a href="#" class="nav-item">Firma</a>
+                <a href="#" class="nav-item">Servicios</a>
+                <a href="#" class="nav-item">Proyectos</a>
+                <a href="#" class="nav-item">Insights</a>
+                <a href="#" class="nav-item active">ACUMEN OS</a>
+                <button class="btn-contact">Contacto</button>
+            </div>
+        </div>
+
+        <!-- Main Hero Section -->
+        <div class="hero-section">
+            <div class="hero-grid">
+                <!-- Left Details -->
+                <div class="hero-left-content">
+                    <div class="tagline">CCI 2026 Cartagena</div>
+                    <h1>Demo del Gemelo Digital en Vivo</h1>
+                    <p>Explore la maqueta digital interactiva diseñada para el Congreso CCI 2026. A través de este visor orbital en 3D, podrá simular fallas en el talud de un túnel debido a lluvias extremas y activar el protocolo de estabilización mediante pernos de roca guiado por el ecosistema de agentes inteligentes de ACUMEN OS.</p>
+                    
+                    <button id="btn-desktop-enter" class="btn-open-twin interactive">
+                        Abrir Visor Digital Twin &rarr;
+                    </button>
+                </div>
+                
+                <!-- Right QR Box -->
+                <div class="qr-card-container">
+                    <div class="qr-card">
+                        <div class="qr-code-box">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://www.acumeningenieria.com/os/visor_webar_produccion.html" alt="QR Code">
+                        </div>
+                        <h4>Acceso Móvil</h4>
+                        <p>Escanee este código con la cámara de su celular para abrir la maqueta 3D interactiva directamente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera scanning warning alert -->
+    <div id="marker-alert" class="hidden">
+        <h4>[ ESCENARIO EN ESPERA ]</h4>
+        <p>Enfoque el marcador Hiro impreso o en la pantalla.</p>
+    </div>
+
+    <!-- HUD Overlay UI -->
+    <div id="hud-container" class="hidden">
+        <!-- Top Header -->
+        <div class="hud-header">
+            <div class="hud-badge">
+                <span></span> ACUMEN OS 1.0
+            </div>
+            <div class="hud-telemetry-right">
+                <div class="hud-status">
+                    <div class="status-lbl">Sistema</div>
+                    <div id="statusVal" class="status-val">CONEXIÓN ACTIVA</div>
+                </div>
+                <div class="hud-fos-badge">
+                    <div class="status-lbl">FoS</div>
+                    <div id="fosVal" class="fos-val-txt">1.45</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="swipe-tip">Desliza en la pantalla para rotar la maqueta</div>
+
+        <!-- Bottom Controls Panel -->
+        <div class="hud-bottom-panel interactive">
+            <!-- Console log -->
+            <div id="consoleLog" class="console-box">
+                <div class="console-line">[SYSTEM]: ACUMEN OS inicializado correctamente.</div>
+                <div class="console-line">[SYSTEM]: Giroscopio de cámara enlazado.</div>
+                <div class="console-line">[SAFETY_MONITOR]: Evaluando estabilidad de taludes...</div>
+            </div>
+
+            <!-- Rain control slider -->
+            <div class="control-group">
+                <div class="control-lbl">
+                    <span>Simular Lluvia Extrema</span>
+                    <span id="rainLabel" class="control-val">10 años</span>
+                </div>
+                <input id="rainSlider" class="slider-bar" type="range" min="10" max="120" value="10">
+            </div>
+
+            <!-- Active optimize button -->
+            <button id="btnOptimize" class="btn-action" disabled>Activar ACUMEN OS</button>
+            <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+        </div>
+    </div>
+
+    <!-- Webgl 3D Scene container -->
+    <div id="scene-container" class="hidden">
+        <!-- A-Frame Scene -->
+        <a-scene embedded vr-mode-ui="enabled: false" style="background: transparent;">
+            
+            <a-entity light="type: ambient; color: #1e293b; intensity: 1.0"></a-entity>
+            <a-entity light="type: directional; color: #fff; intensity: 1.6; castShadow: true;" position="-3 5 2"></a-entity>
+
+            <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
+
+            <!-- Hologram Container Root (Interaction controls rotate this node) -->
+            <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
+                
+                <!-- Base radar line pattern -->
+                <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
+                         material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
+
+                <!-- Main Mountain Landscape (Solid Verde Bosque + Pinos 3D + Rejilla Esmeralda) -->
+                <a-entity id="mountain" mountain-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+                <!-- Calzada Vial Sólida Asfalto Oscuro -->
+                <a-box position="0 0.005 0.3" width="0.48" height="0.01" depth="1.8" material="color: #0f172a; opacity: 0.96; transparent: true"></a-box>
+                <!-- Línea de demarcación vial cian -->
+                <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
+
+                <!-- Portal de Entrada del Túnel en 3D Concreto -->
+                <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
+                    <a-box position="0 0 -0.02" width="0.56" height="0.4" depth="0.04" material="color: #475569; roughness: 0.7; flatShading: true"></a-box>
+                    <a-box position="0 0 -0.02" width="0.57" height="0.41" depth="0.041" material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4"></a-box>
+                    
+                    <a-box position="-0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 15 0" material="color: #334155; roughness: 0.7"></a-box>
+                    <a-box position="0.29 -0.05 0.15" width="0.03" height="0.3" depth="0.3" rotation="0 -15 0" material="color: #334155; roughness: 0.7"></a-box>
+                    
+                    <a-cylinder position="0 0 -0.45" radius="0.2" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
+                                material="color: #090b10; side: double; roughness: 0.95"></a-cylinder>
+                    <a-cylinder position="0 0 -0.45" radius="0.205" height="0.9" rotation="90 0 0" theta-start="0" theta-length="180" 
+                                material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
+                </a-entity>
+
+                <!-- Landslide Organic Mud Mass -->
+                <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
+
+                <!-- Pernos e Inyecciones de Estabilización Físicas 3D -->
+                <a-entity id="anchors-group" visible="false">
+                    <a-box position="-0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                    <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                    <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                    <a-box position="0 0.45 -0.2" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                    <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                    <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+
+                    <a-box position="0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                    <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
+                    <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+                </a-entity>
+
+                <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) -->
+                <!-- Node A: Geology Unit -->
+                <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.6 -0.4" rotation="90 30 0"
+                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                    <a-text value="GEOLOGIA A" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+                </a-cylinder>
+
+                <!-- Node B: Structural AI -->
+                <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.6 -0.4" rotation="90 30 0"
+                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                    <a-text value="ESTRUCTURA B" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+                </a-cylinder>
+
+                <!-- Node C: Geotech Agent -->
+                <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.3 0.3" rotation="90 30 0"
+                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                    <a-text value="GEOTECNIA C" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+                </a-cylinder>
+
+                <!-- Node D: Safety Monitor -->
+                <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.3 0.3" rotation="90 30 0"
+                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
+                    <a-text value="SEGURIDAD D" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
+                </a-cylinder>
+
+                <!-- Connection Laser lines (dynamic rendering) -->
+                <a-entity id="laser-lines" visible="false">
+                    <a-entity line="start: -0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: 0.8 0.6 -0.4; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: 0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                    <a-entity line="start: -0.8 0.3 0.3; end: 0 0.35 -0.2; color: #10b981; opacity: 0.7"></a-entity>
+                </a-entity>
+
+            </a-entity>
+
+        </a-scene>
+    </div>
+
+    <!-- Script containing custom procedural high-tech mountain model generation -->
+    <script>
+        // Custom 3D mountain landscape generation logic (FACETED GEOMETRY + 3D TREES)
+        AFRAME.registerComponent('mountain-terrain', {
+            schema: {
+                colorSolid: { type: 'color', default: '#0c2310' },
+                colorWire: { type: 'color', default: '#10b981' }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+                
+                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
+                const pos = geom.attributes.position;
+                
+                for (let i = 0; i < pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = 0;
+                    
+                    if (Math.abs(x) > 0.24) {
+                        let factorX = Math.abs(x) - 0.24;
+                        let factorY = (1.2 - y) * 0.45;
+                        z = factorX * 1.5 + factorY;
+                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
+                        z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
+                    } else {
+                        if (y < -0.2) {
+                            let tunnelProgress = -0.2 - y;
+                            z = Math.min(0.55, tunnelProgress * 1.4);
+                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
+                        }
+                    }
+                    z = Math.max(0, z);
+                    pos.setZ(i, z);
+                }
+                
+                geom.computeVertexNormals();
+                
+                const solidMaterial = new THREE.MeshStandardMaterial({
+                    color: data.colorSolid,
+                    roughness: 0.8,
+                    metalness: 0.15,
+                    flatShading: true,
+                    transparent: true,
+                    opacity: 0.95
+                });
+                
+                const wireMaterial = new THREE.MeshBasicMaterial({
+                    color: data.colorWire,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                const solidMesh = new THREE.Mesh(geom, solidMaterial);
+                const wireMesh = new THREE.Mesh(geom, wireMaterial);
+                const group = new THREE.Group();
+                group.add(solidMesh);
+                group.add(wireMesh);
+                
+                // DYNAMIC 3D PINE FOREST (Generates 60 detailed trees on the mountain slopes)
+                const trunkGeom = new THREE.CylinderGeometry(0.012, 0.012, 0.09, 5);
+                const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a2c11', roughness: 0.9 });
+                const leavesGeom = new THREE.ConeGeometry(0.045, 0.16, 5);
+                const leavesMat = new THREE.MeshStandardMaterial({ color: '#133519', flatShading: true, roughness: 0.8 });
+
+                for (let k = 0; k < 60; k++) {
+                    let px = (Math.random() * 2.0) - 1.0;
+                    let py = (Math.random() * 2.0) - 1.0;
+
+                    if (Math.abs(px) > 0.28) {
+                        let factorX = Math.abs(px) - 0.24;
+                        let factorY = (1.2 - py) * 0.45;
+                        let pz = factorX * 1.5 + factorY;
+                        pz += Math.sin(px * 9) * Math.cos(py * 9) * 0.12;
+                        pz = Math.max(0, pz);
+
+                        const pino = new THREE.Group();
+                        
+                        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
+                        trunk.position.y = 0.045;
+                        trunk.rotation.x = Math.PI / 2;
+                        
+                        const leaves = new THREE.Mesh(leavesGeom, leavesMat);
+                        leaves.position.y = 0.125;
+                        leaves.rotation.x = Math.PI / 2;
+
+                        pino.add(trunk);
+                        pino.add(leaves);
+                        pino.position.set(px, py, pz);
+                        
+                        group.add(pino);
+                    }
+                }
+                
+                el.setObject3D('mesh', group);
+            }
+        });
+
+        // Landslide mass component
+        AFRAME.registerComponent('landslide-mesh', {
+            init: function () {
+                const geom = new THREE.SphereGeometry(0.28, 10, 10);
+                const pos = geom.attributes.position;
+                for(let i=0; i<pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = pos.getZ(i);
+                    let offset = Math.sin(x*12) * Math.cos(y*12) * 0.04;
+                    pos.setX(i, x + offset);
+                    pos.setY(i, y + offset);
+                    pos.setZ(i, z + offset);
+                }
+                geom.computeVertexNormals();
+                
+                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true });
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true });
+                const mesh1 = new THREE.Mesh(geom, solidMat);
+                const mesh2 = new THREE.Mesh(geom, wireMat);
+                const group = new THREE.Group();
+                group.add(mesh1);
+                group.add(mesh2);
+                this.el.setObject3D('mesh', group);
+            }
+        });
+    </script>
+
+    <!-- Main Logic & Interactive Controllers -->
+    <script>
+        // Check if device is mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        const onboardingDiv = document.getElementById('desktop-onboarding');
+        const arScene = document.getElementById('scene-container');
+        const hudContainer = document.getElementById('hud-container');
+        const markerAlert = document.getElementById('marker-alert');
+        const btnDesktopEnter = document.getElementById('btn-desktop-enter');
+        const video = document.getElementById('camera-video');
+        const fallback = document.getElementById('camera-fallback');
+
+        // Initial setup based on device
+        if (isMobileDevice()) {
+            // Hide onboarding directly on mobile
+            onboardingDiv.style.display = 'none';
+            arScene.classList.remove('hidden');
+            hudContainer.classList.remove('hidden');
+            
+            // Request rear mobile camera stream
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { exact: "environment" } },
+                    audio: false
+                })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    fallback.style.display = 'none';
+                })
+                .catch(function(err) {
+                    fallback.style.display = 'block';
+                });
+            }
+        } else {
+            // On desktop, wait for user to click "Abrir Visor Digital Twin"
+            btnDesktopEnter.addEventListener('click', () => {
+                onboardingDiv.style.display = 'none';
+                arScene.classList.remove('hidden');
+                hudContainer.classList.remove('hidden');
+                fallback.style.display = 'block'; // Always use fallback grid on desktop
+            });
+        }
+
+        // Screen Touch Drag-to-Rotate 3D Model logic
+        const hologramRoot = document.getElementById('hologramRoot');
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+
+        window.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            let deltaMove = {
+                x: e.clientX - previousMousePosition.x,
+                y: e.clientY - previousMousePosition.y
+            };
+            
+            currentRotation.y += deltaMove.x * 0.4;
+            hologramRoot.setAttribute('rotation', `0 ${currentRotation.y} 0`);
+            
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Mobile Touch Listeners for drag rotation
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            
+            let deltaMove = {
+                x: e.touches[0].clientX - previousMousePosition.x,
+                y: e.touches[0].clientY - previousMousePosition.y
+            };
+            
+            currentRotation.y += deltaMove.x * 0.5;
+            hologramRoot.setAttribute('rotation', `0 ${currentRotation.y} 0`);
+            
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        // HUD Interface Logic
+        const statusVal = document.getElementById('statusVal');
+        const fosVal = document.getElementById('fosVal');
+        const consoleLog = document.getElementById('consoleLog');
+        const rainSlider = document.getElementById('rainSlider');
+        const rainLabel = document.getElementById('rainLabel');
+        const btnOptimize = document.getElementById('btnOptimize');
+        const btnWhatsapp = document.getElementById('btnWhatsapp');
+
+        // 3D Objects
+        const landslide = document.getElementById('landslide');
+        const anchorsGroup = document.getElementById('anchors-group');
+        const laserLines = document.getElementById('laser-lines');
+        const nodeGeology = document.getElementById('node-geology');
+        const nodeGeotech = document.getElementById('node-geotech');
+        const nodeStructural = document.getElementById('node-structural');
+        const nodeSafety = document.getElementById('node-safety');
+        const mountain = document.getElementById('mountain');
+
+        let isOptimized = false;
+        let isOptimizing = false;
+
+        function log(message, type = '') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.innerText = message;
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        // Slider Interaction
+        rainSlider.addEventListener('input', (e) => {
+            if (isOptimizing) return;
+            const val = parseInt(e.target.value);
+            rainLabel.innerText = `${val} años`;
+
+            if (!isOptimized) {
+                if (val > 60) {
+                    statusVal.innerText = "SISTEMA CRÍTICO";
+                    statusVal.style.color = "var(--acumen-red)";
+                    
+                    const calculatedFoS = (1.45 - (val - 60) * 0.012).toFixed(2);
+                    fosVal.innerText = calculatedFoS;
+                    fosVal.style.color = "var(--acumen-red)";
+
+                    // Show landslide 3D
+                    landslide.setAttribute('visible', 'true');
+                    let scaleVal = 0.5 + ((val - 60) * 0.008);
+                    landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
+                    let posY = 0.65 - ((val - 60) * 0.005);
+                    let posZ = -0.6 + ((val - 60) * 0.007);
+                    landslide.setAttribute('position', `0.15 ${posY} ${posZ}`);
+                    
+                    // Stress mesh color to red
+                    mountain.setAttribute('mountain-terrain', 'colorWire', '#ef4444');
+                    btnOptimize.disabled = false;
+
+                    if (!window.alertLogged) {
+                        log(`[CLIMA_UNIT]: Lluvias exceden límite de diseño (Tr > 60).`, 'gold');
+                        log(`[GEOTECH_AGENT]: Factor de seguridad bajo el límite (FoS < 1.0).`, 'red');
+                        log(`[GEOTECH_AGENT]: Falla detectada en talud norte del túnel.`, 'red');
+                        window.alertLogged = true;
+                    }
+                } else {
+                    statusVal.innerText = "CONEXIÓN ACTIVA";
+                    statusVal.style.color = "var(--acumen-emerald)";
+                    
+                    const calculatedFoS = (1.45 - val * 0.002).toFixed(2);
+                    fosVal.innerText = calculatedFoS;
+                    fosVal.style.color = "var(--acumen-emerald)";
+
+                    landslide.setAttribute('visible', 'false');
+                    mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
+                    btnOptimize.disabled = true;
+                    window.alertLogged = false;
+                }
+            } else {
+                const stabilizedFoS = (1.68 - (val / 200)).toFixed(2);
+                fosVal.innerText = stabilizedFoS;
+            }
+        });
+
+        // Optimization Click Event
+        btnOptimize.addEventListener('click', () => {
+            if (isOptimized || isOptimizing) return;
+
+            isOptimizing = true;
+            btnOptimize.disabled = true;
+            
+            log(`[SYSTEM]: Solicitando protocolo de estabilización Multi-Agente...`);
+            
+            nodeGeology.setAttribute('material', 'color', '#10b981');
+            nodeGeotech.setAttribute('material', 'color', '#10b981');
+            nodeStructural.setAttribute('material', 'color', '#10b981');
+            nodeSafety.setAttribute('material', 'color', '#10b981');
+            nodeGeology.setAttribute('material', 'emissive', '#10b981');
+            nodeGeotech.setAttribute('material', 'emissive', '#10b981');
+            nodeStructural.setAttribute('material', 'emissive', '#10b981');
+            nodeSafety.setAttribute('material', 'emissive', '#10b981');
+
+            laserLines.setAttribute('visible', 'true');
+
+            setTimeout(() => {
+                log(`[GEOLOGY_UNIT_A]: Imputando serie histórica climatológica... Hecho.`, 'green');
+            }, 800);
+
+            setTimeout(() => {
+                log(`[GEOTECH_AGENT_C]: Calculando plano de falla dinámico... Hecho.`, 'green');
+            }, 1600);
+
+            setTimeout(() => {
+                log(`[STRUCTURAL_AI_B]: Desplegando anclajes y pernos de roca de 30ton.`, 'green');
+                
+                anchorsGroup.setAttribute('visible', 'true');
+                landslide.setAttribute('visible', 'false');
+                mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
+
+                isOptimized = true;
+                isOptimizing = false;
+
+                const val = parseInt(rainSlider.value);
+                fosVal.innerText = (1.68 - (val / 200)).toFixed(2);
+                fosVal.style.color = "var(--acumen-emerald)";
+                statusVal.innerText = "OPTIMIZADO";
+                statusVal.style.color = "var(--acumen-emerald)";
+                
+                btnOptimize.style.display = 'none';
+                btnWhatsapp.style.display = 'block';
+            }, 2400);
+
+            setTimeout(() => {
+                log(`[SAFETY_MONITOR_D]: Estructura consolidada. Alerta resuelta.`, 'green');
+                laserLines.setAttribute('visible', 'false');
+            }, 3200);
+        });
+    </script>
+</body>
+</html>
