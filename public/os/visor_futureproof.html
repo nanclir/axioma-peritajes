@@ -34,8 +34,20 @@
             background-color: var(--bg-dark);
         }
 
+        /* Real-time Camera Background feed (Universal) */
+        #camera-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            pointer-events: none;
+        }
+
         /* High-tech grid background fallback */
-        #radar-grid {
+        #camera-fallback {
             position: absolute;
             inset: 0;
             background-color: #07090e;
@@ -48,7 +60,7 @@
             pointer-events: none;
         }
 
-        /* WebGL Canvas transparency enforcement */
+        /* WebGL Canvas transparency */
         a-scene {
             position: absolute !important;
             inset: 0 !important;
@@ -275,7 +287,7 @@
             margin-bottom: 0;
         }
 
-        /* 2D HUD UI Overlay */
+        /* 2D HUD UI Overlay (Split Lateral Layout) */
         #hud-container {
             position: absolute;
             inset: 0;
@@ -375,20 +387,36 @@
             transition: color 0.3s;
         }
 
-        /* Monte Carlo Matrix Overlay Panel */
+        /* Split Lateral Panels (Left and Right Columns) */
+        .hud-lateral-panels {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        /* Left Column (Stacking Monte Carlo Matrix above Console) */
+        .hud-left-col {
+            width: 290px;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Monte Carlo Matrix Overlay Panel (Nested inside left column) */
         #monte-carlo-panel {
-            position: absolute;
-            top: 140px;
-            left: 20px;
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding: 12px 15px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            width: 140px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .matrix-title {
@@ -403,8 +431,10 @@
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 4px;
-            width: 110px;
+            width: 100%;
+            max-width: 110px;
             height: 110px;
+            margin: 0 auto;
         }
 
         .matrix-dot {
@@ -415,27 +445,10 @@
             transition: background-color 0.2s;
         }
 
-        /* Swipe Tip */
-        .swipe-tip {
-            position: absolute;
-            top: 130px;
-            align-self: center;
-            background-color: rgba(9, 11, 16, 0.7);
-            border: 1px solid var(--zinc-border);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--acumen-blue);
-            animation: pulse 2.5s infinite;
-        }
-
-        /* Bottom Control Panel */
-        .hud-bottom-panel {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
+        /* Right Column (Controls/Sliders) */
+        .hud-right-col {
+            width: 290px;
+            pointer-events: auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -446,35 +459,35 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console (Optimizada para legibilidad RDM) */
+        /* Console vertical layout */
         .console-box {
-            background-color: rgba(6, 8, 12, 0.98);
+            background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            border-radius: 8px;
-            padding: 12px;
-            height: 105px;
+            border-radius: 16px;
+            padding: 15px;
+            height: 160px;
             overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             line-height: 1.5;
             color: #93c5fd;
             display: flex;
             flex-direction: column;
             gap: 6px;
             box-sizing: border-box;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
         .console-line {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-all;
         }
 
         .console-line.red { color: #f87171; font-weight: bold; }
         .console-line.green { color: #4ade80; font-weight: bold; }
         .console-line.gold { color: #fcd34d; font-weight: bold; }
 
-        /* Controls */
+        /* Sliders */
         .sliders-container {
             display: flex;
             flex-direction: column;
@@ -530,7 +543,7 @@
             border-radius: 8px;
             font-family: 'Outfit', sans-serif;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
@@ -565,6 +578,38 @@
             display: none;
         }
 
+        /* Swipe Instruction Tip */
+        .swipe-tip {
+            position: absolute;
+            top: 130px;
+            align-self: center;
+            background-color: rgba(9, 11, 16, 0.7);
+            border: 1px solid var(--zinc-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--acumen-blue);
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Mobile Layout adjustment */
+        @media (max-width: 680px) {
+            .hud-lateral-panels {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            .hud-left-col, .hud-right-col {
+                width: 100%;
+                max-width: 340px;
+            }
+            .console-box {
+                height: 110px;
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -572,7 +617,7 @@
 </head>
 <body>
 
-    <!-- Camera Video Feed Element -->
+    <!-- Camera Video Feed Element (Universal for PC, Tablet & Mobile) -->
     <video id="camera-video" autoplay playsinline muted></video>
     
     <!-- High-tech Grid Background Fallback -->
@@ -652,47 +697,52 @@
             </div>
         </div>
 
-        <!-- Monte Carlo Path Simulation Matrix Panel -->
-        <div id="monte-carlo-panel" class="interactive">
-            <div class="matrix-title">Monte Carlo (100 Futuros)</div>
-            <div id="matrixGrid" class="matrix-grid"></div>
-        </div>
-
         <div class="swipe-tip">Desliza en la pantalla para rotar la maqueta</div>
 
-        <!-- Bottom Control Panel -->
-        <div class="hud-bottom-panel interactive">
-            <!-- Console log -->
-            <div id="consoleLog" class="console-box">
-                <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
-                <div class="console-line">[CLIMA_AGENT]: Importando modelos de circulación global (CMIP6)...</div>
-                <div class="console-line">[DECISION_AI]: Ejecutando optimización robusta (RDM) de diseño...</div>
-            </div>
-
-            <!-- Sliders -->
-            <div class="sliders-container">
-                <!-- Horizon Slider -->
-                <div class="control-group">
-                    <div class="control-lbl">
-                        <span>Horizonte de Diseño</span>
-                        <span id="horizonLabel" class="control-val">2026</span>
-                    </div>
-                    <input id="horizonSlider" class="slider-bar" type="range" min="2026" max="2080" step="27" value="2026">
+        <!-- Split Lateral Layout (Demos layout with maximum 3D visibility) -->
+        <div class="hud-lateral-panels">
+            <!-- Left Console & Monte Carlo Column -->
+            <div class="hud-left-col">
+                <!-- Monte Carlo Matrix Overlay Panel -->
+                <div id="monte-carlo-panel">
+                    <div class="matrix-title">Monte Carlo (100 Futuros)</div>
+                    <div id="matrixGrid" class="matrix-grid"></div>
                 </div>
-
-                <!-- Climate Scenario RCP Slider -->
-                <div class="control-group">
-                    <div class="control-lbl">
-                        <span>Escenario de Lluvias (Cambio Climático)</span>
-                        <span id="rcpLabel" class="control-val">Base</span>
-                    </div>
-                    <input id="rcpSlider" class="slider-bar" type="range" min="1" max="3" value="1">
+                <!-- Console log box -->
+                <div id="consoleLog" class="console-box">
+                    <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
+                    <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
+                    <div class="console-line">[DECISION_AI]: Listo para desplegar RDM.</div>
                 </div>
             </div>
 
-            <!-- Active optimize button -->
-            <button id="btnOptimize" class="btn-action" disabled>Desplegar Estrategia RDM</button>
-            <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+            <!-- Right Controls/Sliders Column -->
+            <div class="hud-right-col">
+                <!-- Sliders -->
+                <div class="sliders-container">
+                    <!-- Horizon Slider -->
+                    <div class="control-group">
+                        <div class="control-lbl">
+                            <span>Horizonte de Diseño</span>
+                            <span id="horizonLabel" class="control-val">2026</span>
+                        </div>
+                        <input id="horizonSlider" class="slider-bar" type="range" min="2026" max="2080" step="27" value="2026">
+                    </div>
+
+                    <!-- Climate Scenario RCP Slider -->
+                    <div class="control-group">
+                        <div class="control-lbl">
+                            <span>Escenario de Lluvias (Cambio Climático)</span>
+                            <span id="rcpLabel" class="control-val">Base</span>
+                        </div>
+                        <input id="rcpSlider" class="slider-bar" type="range" min="1" max="3" value="1">
+                    </div>
+                </div>
+
+                <!-- Active optimize button -->
+                <button id="btnOptimize" class="btn-action" disabled>Desplegar Estrategia RDM</button>
+                <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+            </div>
         </div>
     </div>
 
@@ -704,17 +754,17 @@
 
         <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
 
-        <!-- Rain Particle System (Efecto de Lluvia Dinámica 3D) -->
+        <!-- Rain Particle System -->
         <a-entity id="rainSystem" rain-particles="intensity: 0" position="0 0 0"></a-entity>
 
-        <!-- Hologram Container Root (Interaction controls rotate this node) -->
+        <!-- Hologram Container Root -->
         <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
             
             <!-- Base grid line pattern -->
             <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
                      material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
 
-            <!-- Canyon Landscape (Procedural Solid + Rejilla Esmeralda) -->
+            <!-- Canyon Landscape -->
             <a-entity id="canyon" canyon-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
 
             <!-- River water (Dynamic Plane) -->
@@ -738,24 +788,30 @@
             <a-cylinder id="pier-right" position="0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
             <a-box id="foundation-right" position="0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
 
-            <!-- Active Countermeasures -->
+            <!-- Active Countermeasures (Glowing + Rótulos del Refuerzo RDM) -->
             <a-entity id="rdm-reinforcements" visible="false">
-                <a-sphere position="-0.45 0.02 0.05" radius="0.04" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
-                <a-sphere position="-0.41 0.02 -0.05" radius="0.038" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
-                <a-sphere position="-0.49 0.02 -0.04" radius="0.042" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
+                <!-- Riprap Left Pile base -->
+                <a-sphere position="-0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="-0.41 0.02 -0.05" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="-0.49 0.02 -0.04" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <a-sphere position="0.45 0.02 0.05" radius="0.04" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
-                <a-sphere position="0.49 0.02 -0.04" radius="0.038" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
-                <a-sphere position="0.41 0.02 -0.05" radius="0.042" material="color: #64748b; roughness: 0.9; flatShading: true"></a-sphere>
+                <!-- Riprap Right Pile base -->
+                <a-sphere position="0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="0.49 0.02 -0.04" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="0.41 0.02 -0.05" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <a-cylinder position="-1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 70" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
-                <a-cylinder position="1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 -70" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.3"></a-cylinder>
+                <!-- Slope drainage tubes at abutments (Drenes de talud) -->
+                <a-cylinder position="-1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-cylinder position="1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 -70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                
+                <!-- Rótulo RDM 3D para el cliente -->
+                <a-text value="REFUERZO RDM DESPLEGADO" align="center" width="1.2" position="0 0.54 0" color="#00ffcc" font="kandoo"></a-text>
             </a-entity>
 
-            <!-- Landslide Mudmass -->
-            <a-entity id="landslide" landslide-mesh position="-0.95 0.22 0" scale="0.01 0.01 0.01" visible="false"></a-entity>
+            <!-- Landslide Mudmass near Left Abutment (Grande y volumétrica de lodo/roca roja) -->
+            <a-entity id="landslide" landslide-mesh position="-0.95 0.28 0" scale="0.01 0.01 0.01" visible="false"></a-entity>
 
-            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
+            <!-- Floating AI Agent Nodes con Etiquetas Legibles -->
             <!-- Node A: Climate Unit -->
             <a-cylinder id="node-climate" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.65 -0.4" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
@@ -877,22 +933,23 @@
             }
         });
 
+        // Landslide mass component (Asimétrica y colapsada sobre el estribo)
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.SphereGeometry(0.18, 8, 8);
+                const geom = new THREE.DodecahedronGeometry(0.25, 1);
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
                     let y = pos.getY(i);
                     let z = pos.getZ(i);
-                    let offset = Math.sin(x*15) * Math.cos(y*15) * 0.03;
-                    pos.setX(i, x + offset);
-                    pos.setY(i, y + offset);
-                    pos.setZ(i, z + offset);
+                    // Caída volumétrica hacia la pila del puente
+                    pos.setX(i, x * 1.5 + (Math.sin(y*8)*0.06));
+                    pos.setY(i, y * 0.7 - 0.05);
+                    pos.setZ(i, z * 1.2);
                 }
                 geom.computeVertexNormals();
                 const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true });
-                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true });
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
                 const group = new THREE.Group();
                 group.add(new THREE.Mesh(geom, solidMat));
                 group.add(new THREE.Mesh(geom, wireMat));
@@ -900,6 +957,7 @@
             }
         });
 
+        // OPTIMIZED DYNAMIC 3D RAIN PARTICLE SYSTEM COMPONENT (SHARED)
         AFRAME.registerComponent('rain-particles', {
             schema: {
                 intensity: { type: 'number', default: 0 }
@@ -971,29 +1029,44 @@
         const video = document.getElementById('camera-video');
         const fallback = document.getElementById('camera-fallback');
 
-        // Handle desktop / mobile startup
-        if (isMobileDevice()) {
-            onboardingDiv.style.display = 'none';
-            hudContainer.classList.remove('hidden');
-            
+        // UNIVERSAL VIDEO ACQUISITION (PC, Tablet & Mobile)
+        function initUniversalCamera() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: { exact: "environment" } },
+                    video: { facingMode: "environment" },
                     audio: false
                 })
                 .then(function(stream) {
                     video.srcObject = stream;
                     fallback.style.display = 'none';
                 })
-                .catch(function(e) {
-                    fallback.style.display = 'block';
+                .catch(function(err) {
+                    console.log("Cámara trasera no disponible, reintentando con webcam genérica...", err);
+                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                        fallback.style.display = 'none';
+                    })
+                    .catch(function(e) {
+                        console.log("Cámara no disponible, usando malla técnica de fondo:", e);
+                        fallback.style.display = 'block';
+                    });
                 });
+            } else {
+                fallback.style.display = 'block';
             }
+        }
+
+        // Handle desktop / mobile startup
+        if (isMobileDevice()) {
+            onboardingDiv.style.display = 'none';
+            hudContainer.classList.remove('hidden');
+            initUniversalCamera();
         } else {
+            initUniversalCamera();
             btnDesktopEnter.addEventListener('click', () => {
                 onboardingDiv.style.display = 'none';
                 hudContainer.classList.remove('hidden');
-                fallback.style.display = 'block';
             });
         }
 
@@ -1154,8 +1227,9 @@
                     robustnessVal.style.color = "var(--acumen-red)";
                     npvVal.style.color = "var(--acumen-red)";
                     
+                    // Show landslide (Volumétrico y visible en estribo)
                     landslide.setAttribute('visible', 'true');
-                    let scaleFactor = 0.4 + (rcp - 1) * 0.3;
+                    let scaleFactor = 0.8 + (rcp - 1) * 0.25;
                     landslide.setAttribute('scale', `${scaleFactor} ${scaleFactor} ${scaleFactor}`);
 
                     btnOptimize.disabled = false;

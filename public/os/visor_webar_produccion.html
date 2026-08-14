@@ -13,7 +13,7 @@
     <style>
         :root {
             --bg-dark: #07090e;
-            --panel-bg: rgba(18, 22, 32, 0.96);
+            --panel-bg: rgba(18, 22, 32, 0.95);
             --zinc-border: #1e2535;
             --acumen-blue: #2977fd;
             --acumen-emerald: #10b981;
@@ -34,7 +34,7 @@
             background-color: var(--bg-dark);
         }
 
-        /* Real-time Camera Background feed */
+        /* Real-time Camera Background feed (Universal) */
         #camera-video {
             position: absolute;
             top: 0;
@@ -59,7 +59,7 @@
             z-index: 0;
         }
 
-        /* WebGL Canvas transparency enforcement */
+        /* WebGL Canvas transparency */
         a-scene {
             position: absolute !important;
             inset: 0 !important;
@@ -286,7 +286,7 @@
             margin-bottom: 0;
         }
 
-        /* 2D HUD UI Overlay */
+        /* 2D HUD UI Overlay (Split Lateral Layout) */
         #hud-container {
             position: absolute;
             inset: 0;
@@ -302,7 +302,7 @@
             pointer-events: auto;
         }
 
-        /* Top Bar */
+        /* Top HUD Bar */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -397,14 +397,28 @@
             animation: pulse 2s infinite;
         }
 
-        /* Bottom Controls Box */
-        .hud-bottom-panel {
+        /* Split Lateral Panels (Left and Right Columns) */
+        .hud-lateral-panels {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
+            pointer-events: none;
+        }
+
+        /* Left Console Column */
+        .hud-left-col {
+            width: 290px;
+            pointer-events: auto;
+        }
+
+        /* Right Control Panel Column */
+        .hud-right-col {
+            width: 290px;
+            pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             background-color: var(--zinc-panel);
             border: 1px solid var(--zinc-border);
             padding: 20px;
@@ -412,34 +426,33 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console (Optimizada para máxima legibilidad de resultados) */
+        /* Console styling (vertical layout on the left) */
         .console-box {
-            background-color: rgba(6, 8, 12, 0.98);
+            background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            border-radius: 8px;
-            padding: 12px;
-            height: 105px; /* Aumentado para mayor confort de lectura */
+            border-radius: 16px;
+            padding: 15px;
+            height: 184px; /* Aumentado verticalmente */
             overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem; /* Aumentado para mejor legibilidad */
-            line-height: 1.5; /* Mayor interlineado */
-            color: #93c5fd; /* Azul brillante de alta legibilidad */
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: #93c5fd;
             display: flex;
             flex-direction: column;
             gap: 6px;
             box-sizing: border-box;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
         .console-line {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal; /* Permite salto de línea en terminal estrecha */
+            word-break: break-all;
         }
 
-        /* Colores fósforo neón en alto contraste */
-        .console-line.red { color: #f87171; font-weight: bold; }   /* Coral Red */
-        .console-line.green { color: #4ade80; font-weight: bold; } /* Mint Green */
-        .console-line.gold { color: #fcd34d; font-weight: bold; }  /* Amber Gold */
+        .console-line.red { color: #f87171; font-weight: bold; }
+        .console-line.green { color: #4ade80; font-weight: bold; }
+        .console-line.gold { color: #fcd34d; font-weight: bold; }
 
         /* Controls */
         .control-group {
@@ -451,7 +464,7 @@
         .control-lbl {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -466,21 +479,20 @@
             width: 100%;
             -webkit-appearance: none;
             background: #1e293b;
-            height: 8px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 3px;
             outline: none;
         }
 
         .slider-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--acumen-blue);
             cursor: pointer;
             border: 2px solid var(--bg-dark);
-            box-shadow: 0 0 10px rgba(41, 119, 253, 0.6);
         }
 
         /* Buttons */
@@ -492,7 +504,7 @@
             border-radius: 8px;
             font-family: 'Outfit', sans-serif;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
@@ -527,6 +539,22 @@
             display: none;
         }
 
+        /* Responsive Mobile Layout adjustment */
+        @media (max-width: 680px) {
+            .hud-lateral-panels {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            .hud-left-col, .hud-right-col {
+                width: 100%;
+                max-width: 340px;
+            }
+            .console-box {
+                height: 110px;
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -534,7 +562,7 @@
 </head>
 <body>
 
-    <!-- Camera Video Feed Element -->
+    <!-- Camera Video Feed Element (Universal for PC, Tablet & Mobile) -->
     <video id="camera-video" autoplay playsinline muted></video>
     
     <!-- High-tech Grid Background Fallback -->
@@ -610,27 +638,32 @@
 
         <div class="swipe-tip">Desliza en la pantalla para rotar la maqueta</div>
 
-        <!-- Bottom Controls Panel -->
-        <div class="hud-bottom-panel interactive">
-            <!-- Console log -->
-            <div id="consoleLog" class="console-box">
-                <div class="console-line">[SYSTEM]: ACUMEN OS inicializado correctamente.</div>
-                <div class="console-line">[SYSTEM]: Giroscopio de cámara enlazado.</div>
-                <div class="console-line">[SAFETY_MONITOR]: Evaluando estabilidad de taludes...</div>
-            </div>
-
-            <!-- Rain control slider -->
-            <div class="control-group">
-                <div class="control-lbl">
-                    <span>Simular Lluvia Extrema</span>
-                    <span id="rainLabel" class="control-val">10 años</span>
+        <!-- Split Lateral Layout (Demos layout with maximum 3D visibility) -->
+        <div class="hud-lateral-panels">
+            <!-- Left Console terminal Column -->
+            <div class="hud-left-col">
+                <div id="consoleLog" class="console-box">
+                    <div class="console-line">[SYSTEM]: ACUMEN OS inicializado.</div>
+                    <div class="console-line">[SYSTEM]: Telemetría de vídeo universal enlazada.</div>
+                    <div class="console-line">[SAFETY_MONITOR]: Evaluando taludes...</div>
                 </div>
-                <input id="rainSlider" class="slider-bar" type="range" min="10" max="120" value="10">
             </div>
 
-            <!-- Active optimize button -->
-            <button id="btnOptimize" class="btn-action" disabled>Activar ACUMEN OS</button>
-            <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+            <!-- Right Controls/Sliders Column -->
+            <div class="hud-right-col">
+                <!-- Rain control slider -->
+                <div class="control-group">
+                    <div class="control-lbl">
+                        <span>Simular Lluvia Extrema</span>
+                        <span id="rainLabel" class="control-val">10 años</span>
+                    </div>
+                    <input id="rainSlider" class="slider-bar" type="range" min="10" max="120" value="10">
+                </div>
+
+                <!-- Active optimize button -->
+                <button id="btnOptimize" class="btn-action" disabled>Activar ACUMEN OS</button>
+                <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+            </div>
         </div>
     </div>
 
@@ -640,12 +673,13 @@
         <a-entity light="type: ambient; color: #1e293b; intensity: 1.0"></a-entity>
         <a-entity light="type: directional; color: #fff; intensity: 1.6; castShadow: true;" position="-3 5 2"></a-entity>
 
+        <!-- Camera offset looking down slightly at the center model -->
         <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
 
-        <!-- Rain Particle System (Efecto de Lluvia Dinámica 3D) -->
+        <!-- Rain Particle System -->
         <a-entity id="rainSystem" rain-particles="intensity: 0" position="0 0 0"></a-entity>
 
-        <!-- Hologram Container Root (Interaction controls rotate this node) -->
+        <!-- Hologram Container Root -->
         <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
             
             <!-- Base radar line pattern -->
@@ -674,25 +708,34 @@
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
             </a-entity>
 
-            <!-- Landslide Organic Mud Mass -->
-            <a-entity id="landslide" landslide-mesh position="0.35 0.65 -0.6" scale="0.01 0.01 0.01" visible="false"></a-entity>
+            <!-- Landslide Organic Mud Mass (Grande y volumétrica de lodo/roca roja) -->
+            <a-entity id="landslide" landslide-mesh position="0.1 0.38 -0.32" scale="0.01 0.01 0.01" visible="false"></a-entity>
 
-            <!-- Pernos e Inyecciones de Estabilización Físicas 3D -->
+            <!-- Pernos e Inyecciones de Estabilización Físicas 3D (Glowing Neon + Rótulos del Tensor) -->
             <a-entity id="anchors-group" visible="false">
+                <!-- Perno 1: Placa de Concreto Gris Claro + Tensor Neón Esmeralda -->
                 <a-box position="-0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+                <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" 
+                            material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
 
+                <!-- Perno 2: Central con etiqueta flotante -->
                 <a-box position="0 0.45 -0.2" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+                <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" 
+                            material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
+                
+                <!-- Rótulo de identificación en 3D para el cliente -->
+                <a-text value="TENSOR ACTIVO 30T" align="center" width="1.2" position="0 0.54 -0.05" color="#00ffcc" font="kandoo"></a-text>
 
+                <!-- Perno 3: Derecho -->
                 <a-box position="0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.4"></a-cylinder>
-                <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #10b981; emissive: #10b981"></a-sphere>
+                <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" 
+                            material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
             </a-entity>
 
-            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Verticales Legibles -->
+            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
             <!-- Node A: Geology Unit -->
             <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.6 -0.4" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
@@ -727,6 +770,7 @@
 
     <!-- Componentes A-Frame de Maqueta y Partículas -->
     <script>
+        // Custom 3D mountain landscape generation logic (FACETED GEOMETRY + 3D TREES)
         AFRAME.registerComponent('mountain-terrain', {
             schema: {
                 colorSolid: { type: 'color', default: '#0c2310' },
@@ -785,6 +829,7 @@
                 group.add(solidMesh);
                 group.add(wireMesh);
                 
+                // DYNAMIC 3D PINE FOREST (Generates 60 detailed trees on the mountain slopes)
                 const trunkGeom = new THREE.CylinderGeometry(0.012, 0.012, 0.09, 5);
                 const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a2c11', roughness: 0.9 });
                 const leavesGeom = new THREE.ConeGeometry(0.045, 0.16, 5);
@@ -823,23 +868,24 @@
             }
         });
 
+        // Landslide mass component (Grande, volcánica y asimétrica que obstruye el túnel)
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.SphereGeometry(0.28, 10, 10);
+                const geom = new THREE.DodecahedronGeometry(0.35, 1); // Más volumen de rocas
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
                     let y = pos.getY(i);
                     let z = pos.getZ(i);
-                    let offset = Math.sin(x*12) * Math.cos(y*12) * 0.04;
-                    pos.setX(i, x + offset);
-                    pos.setY(i, y + offset);
-                    pos.setZ(i, z + offset);
+                    // Asimetría para simular deslizamiento de ladera hacia la vía
+                    pos.setX(i, x * 1.6 + (Math.sin(y*10)*0.08));
+                    pos.setY(i, y * 0.7 - 0.1); 
+                    pos.setZ(i, z * 1.1);
                 }
                 geom.computeVertexNormals();
                 
-                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true });
-                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true });
+                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true }); // Barro arcilloso
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
                 const mesh1 = new THREE.Mesh(geom, solidMat);
                 const mesh2 = new THREE.Mesh(geom, wireMat);
                 const group = new THREE.Group();
@@ -922,29 +968,48 @@
         const video = document.getElementById('camera-video');
         const fallback = document.getElementById('camera-fallback');
 
-        // Initial setup based on device
-        if (isMobileDevice()) {
-            onboardingDiv.style.display = 'none';
-            hudContainer.classList.remove('hidden');
-            
+        // UNIVERSAL VIDEO ACQUISITION (PC, Tablet & Mobile)
+        function initUniversalCamera() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Configuración preferente para cámara trasera (si es móvil) o webcam por defecto
                 navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: { exact: "environment" } },
+                    video: { facingMode: "environment" },
                     audio: false
                 })
                 .then(function(stream) {
                     video.srcObject = stream;
-                    fallback.style.display = 'none';
+                    fallback.style.display = 'none'; // Desactivar rejilla de fallback si la cámara se activa
                 })
                 .catch(function(err) {
-                    fallback.style.display = 'block';
+                    console.log("Cámara trasera no disponible, reintentando con cualquier dispositivo de vídeo...", err);
+                    // Reintento genérico (webcam de laptop o cámara frontal)
+                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                        fallback.style.display = 'none';
+                    })
+                    .catch(function(e) {
+                        console.log("Sin dispositivos de cámara. Usando rejilla digital 3D de fondo:", e);
+                        fallback.style.display = 'block';
+                    });
                 });
+            } else {
+                fallback.style.display = 'block';
             }
+        }
+
+        // Handle desktop / mobile startup
+        if (isMobileDevice()) {
+            onboardingDiv.style.display = 'none';
+            hudContainer.classList.remove('hidden');
+            initUniversalCamera();
         } else {
+            // En ordenadores también inicializa la cámara en background desde el inicio
+            initUniversalCamera();
+            
             btnDesktopEnter.addEventListener('click', () => {
                 onboardingDiv.style.display = 'none';
                 hudContainer.classList.remove('hidden');
-                fallback.style.display = 'block';
             });
         }
 
@@ -1049,13 +1114,10 @@
                     fosVal.innerText = calculatedFoS;
                     fosVal.style.color = "var(--acumen-red)";
 
-                    // Show landslide 3D
+                    // Show landslide 3D (Deslizamiento volumétrico que tapa la vía)
                     landslide.setAttribute('visible', 'true');
-                    let scaleVal = 0.5 + ((val - 60) * 0.008);
+                    let scaleVal = 0.8 + ((val - 60) * 0.007);
                     landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
-                    let posY = 0.65 - ((val - 60) * 0.005);
-                    let posZ = -0.6 + ((val - 60) * 0.007);
-                    landslide.setAttribute('position', `0.15 ${posY} ${posZ}`);
                     
                     // Stress mesh color to red
                     mountain.setAttribute('mountain-terrain', 'colorWire', '#ef4444');
