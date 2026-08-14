@@ -1153,18 +1153,18 @@
             <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
                      material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
 
-            <!-- Ejes Cartesianos XYZ (Origen CAD) -->
-            <a-entity id="cad-axes" position="0 0.01 0">
+            <!-- Ejes Cartesianos XYZ (Origen CAD) - Elevado a y=0.03 para evitar Z-fighting con la calzada -->
+            <a-entity id="cad-axes" position="0 0.03 0">
                 <!-- Eje X - Rojo (Horizontal) -->
-                <a-cylinder position="0.15 0 0" rotation="0 0 -90" radius="0.005" height="0.3" color="#ef4444" material="unlit: true; transparent: true; opacity: 0.8"></a-cylinder>
+                <a-cylinder position="0.15 0 0" rotation="0 0 -90" radius="0.008" height="0.3" material="shader: flat; color: #ef4444; transparent: true; opacity: 0.8"></a-cylinder>
                 <a-text value="X" position="0.33 0 0" color="#ef4444" width="0.8" align="center" font="kandoo"></a-text>
 
                 <!-- Eje Y - Verde (Vertical) -->
-                <a-cylinder position="0 0.15 0" rotation="0 0 0" radius="0.005" height="0.3" color="#10b981" material="unlit: true; transparent: true; opacity: 0.8"></a-cylinder>
+                <a-cylinder position="0 0.15 0" rotation="0 0 0" radius="0.008" height="0.3" material="shader: flat; color: #10b981; transparent: true; opacity: 0.8"></a-cylinder>
                 <a-text value="Y" position="0 0.33 0" color="#10b981" width="0.8" align="center" font="kandoo"></a-text>
 
                 <!-- Eje Z - Azul (Profundidad) -->
-                <a-cylinder position="0 0 0.15" rotation="90 0 0" radius="0.005" height="0.3" color="#2977fd" material="unlit: true; transparent: true; opacity: 0.8"></a-cylinder>
+                <a-cylinder position="0 0 0.15" rotation="90 0 0" radius="0.008" height="0.3" material="shader: flat; color: #2977fd; transparent: true; opacity: 0.8"></a-cylinder>
                 <a-text value="Z" position="0 0 0.33" color="#2977fd" width="0.8" align="center" font="kandoo"></a-text>
             </a-entity>
 
@@ -1222,25 +1222,25 @@
             <!-- Node A: Geology Unit -->
             <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.6 -0.4" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
-            <a-text value="G.A" align="center" width="1.1" position="-0.8 0.6 -0.35" color="#fff" font="kandoo"></a-text>
+            <a-text value="G.A" align="center" width="1.1" position="-0.8 0.6 -0.28" color="#fff" font="kandoo"></a-text>
             <a-text value="[G] GEOLOGIA" align="center" width="1.8" position="-0.8 0.73 -0.4" color="#fff" font="kandoo"></a-text>
 
             <!-- Node B: Structural AI -->
             <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.6 -0.4" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
-            <a-text value="S.A" align="center" width="1.1" position="0.8 0.6 -0.35" color="#fff" font="kandoo"></a-text>
+            <a-text value="S.A" align="center" width="1.1" position="0.8 0.6 -0.28" color="#fff" font="kandoo"></a-text>
             <a-text value="[E] ESTRUCTURA" align="center" width="1.8" position="0.8 0.73 -0.4" color="#fff" font="kandoo"></a-text>
 
             <!-- Node C: Geotech Agent -->
             <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.3 0.3" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
-            <a-text value="GT" align="center" width="1.1" position="0.8 0.3 0.35" color="#fff" font="kandoo"></a-text>
+            <a-text value="GT" align="center" width="1.1" position="0.8 0.3 0.42" color="#fff" font="kandoo"></a-text>
             <a-text value="[GT] GEOTECNIA" align="center" width="1.8" position="0.8 0.43 0.3" color="#fff" font="kandoo"></a-text>
 
             <!-- Node D: Safety Monitor -->
             <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.3 0.3" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
-            <a-text value="S.M" align="center" width="1.1" position="-0.8 0.3 0.35" color="#fff" font="kandoo"></a-text>
+            <a-text value="S.M" align="center" width="1.1" position="-0.8 0.3 0.42" color="#fff" font="kandoo"></a-text>
             <a-text value="[S] SEGURIDAD" align="center" width="1.8" position="-0.8 0.43 0.3" color="#fff" font="kandoo"></a-text>
 
             <!-- Connection Laser lines (Láseres 3D gruesos y emisivos) -->
