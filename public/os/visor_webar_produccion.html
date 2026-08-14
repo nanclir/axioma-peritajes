@@ -66,15 +66,16 @@
                     
                     if (Math.abs(x) > 0.24) {
                         let factorX = Math.abs(x) - 0.24;
-                        let factorY = (1.2 - y) * 0.45;
-                        z = factorX * 1.5 + factorY;
-                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
-                        z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
+                        let profileY = Math.max(0, 1.0 - Math.abs(y - (-0.3)) * 1.67);
+                        z = factorX * 1.8 * profileY + profileY * 0.65;
+                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12 * profileY;
+                        z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04 * profileY;
                     } else {
-                        if (y < -0.2) {
-                            let tunnelProgress = -0.2 - y;
-                            z = Math.min(0.55, tunnelProgress * 1.4);
-                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
+                        let profileY = Math.max(0, 1.0 - Math.abs(y - (-0.3)) * 1.67);
+                        if (profileY > 0.05) {
+                            let tunnelCover = Math.min(0.55, (profileY - 0.05) * 1.3);
+                            z = tunnelCover;
+                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.03 * profileY;
                         }
                     }
                     z = Math.max(0, z);
@@ -1178,40 +1179,40 @@
             <!-- Línea de demarcación vial cian -->
             <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
 
-            <!-- Portal de Entrada del Túnel (Tubo Continuo al Fondo de la Montaña) -->
-            <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
-                <a-cylinder position="0 0 -0.5" radius="0.2" height="1.0" rotation="90 0 0" theta-start="0" theta-length="180" 
+            <!-- Portal de Entrada del Túnel (Tubo Continuo Centrado en la Montaña) -->
+            <a-entity id="tunnel-entrance-solid" position="0 0.2 0.3" rotation="0 0 0">
+                <a-cylinder position="0 0 0" radius="0.2" height="1.2" rotation="90 0 0" theta-start="0" theta-length="180" 
                             material="color: #475569; side: double; roughness: 0.7; flatShading: true; transparent: true; opacity: 0.9"></a-cylinder>
-                <a-cylinder position="0 0 -0.5" radius="0.205" height="1.0" rotation="90 0 0" theta-start="0" theta-length="180" 
+                <a-cylinder position="0 0 0" radius="0.205" height="1.2" rotation="90 0 0" theta-start="0" theta-length="180" 
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4; side: double"></a-cylinder>
             </a-entity>
 
             <!-- Landslide Organic Mud Mass (Exagerado y reposicionado justo al frente de la vía para tapar la carretera) -->
-            <a-entity id="landslide" landslide-mesh position="0.08 0.05 0.1" scale="0.01 0.01 0.01" visible="false">
+            <a-entity id="landslide" landslide-mesh position="0.08 0.05 0.9" scale="0.01 0.01 0.01" visible="false">
                 <a-text value="[!] FALLA DE TALUD" align="center" width="1.4" position="0 0.5 0" color="#f87171" font="Roboto-msdf.json"></a-text>
             </a-entity>
 
             <!-- Pernos e Inyecciones de Estabilización Físicas 3D (Glowing Neon + Rótulos del Tensor) -->
             <a-entity id="anchors-group" visible="false">
                 <!-- Perno 1 -->
-                <a-box position="-0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="-0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 45 0" 
+                <a-box position="-0.22 0.38 0.85" width="0.04" height="0.04" depth="0.02" rotation="55 45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="-0.22 0.38 0.85" radius="0.008" height="0.4" rotation="55 45 0" 
                             material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
-                <a-sphere position="-0.1 0.28 -0.06" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
+                <a-sphere position="-0.1 0.28 0.94" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
 
                 <!-- Perno 2 -->
-                <a-box position="0 0.45 -0.2" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="0 0.45 -0.2" radius="0.008" height="0.4" rotation="55 0 0" 
+                <a-box position="0 0.45 0.8" width="0.04" height="0.04" depth="0.02" rotation="55 0 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="0 0.45 0.8" radius="0.008" height="0.4" rotation="55 0 0" 
                             material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
-                <a-sphere position="0 0.36 -0.09" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
+                <a-sphere position="0 0.36 0.91" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
                 
-                <a-text value="TENSOR ACTIVO 30T" align="center" width="1.2" position="0 0.54 -0.05" color="#00ffcc" font="Roboto-msdf.json"></a-text>
+                <a-text value="TENSOR ACTIVO 30T" align="center" width="1.2" position="0 0.54 0.95" color="#00ffcc" font="Roboto-msdf.json"></a-text>
 
                 <!-- Perno 3 -->
-                <a-box position="0.22 0.38 -0.15" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
-                <a-cylinder position="0.22 0.38 -0.15" radius="0.008" height="0.4" rotation="55 -45 0" 
+                <a-box position="0.22 0.38 0.85" width="0.04" height="0.04" depth="0.02" rotation="55 -45 0" material="color: #94a3b8; roughness: 0.8"></a-box>
+                <a-cylinder position="0.22 0.38 0.85" radius="0.008" height="0.4" rotation="55 -45 0" 
                             material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
-                <a-sphere position="0.1 0.28 -0.06" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
+                <a-sphere position="0.1 0.28 0.94" radius="0.012" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-sphere>
             </a-entity>
 
             <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
@@ -1241,10 +1242,10 @@
 
             <!-- Connection Laser lines (Láseres 3D gruesos y emisivos) -->
             <a-entity id="laser-lines" visible="false">
-                <a-entity thick-laser="from: -0.8 0.6 -0.4; to: 0 0.35 -0.2; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: 0.8 0.6 -0.4; to: 0 0.35 -0.2; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: 0.8 0.3 0.3; to: 0 0.35 -0.2; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: -0.8 0.3 0.3; to: 0 0.35 -0.2; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.8 0.6 -0.4; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.8 0.6 -0.4; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.8 0.3 0.3; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.8 0.3 0.3; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
             </a-entity>
 
         </a-entity>
