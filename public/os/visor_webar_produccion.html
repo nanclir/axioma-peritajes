@@ -10,6 +10,226 @@
     <!-- A-Frame (3D WebGL Library) -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 
+    <!-- Componentes A-Frame de Maqueta y Partículas (Registrados en HEAD antes de la Scene) -->
+    <script>
+        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
+        AFRAME.registerComponent('thick-laser', {
+            schema: {
+                from: { type: 'vec3' },
+                to: { type: 'vec3' },
+                color: { type: 'color', default: '#10b981' },
+                radius: { type: 'number', default: 0.015 }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+
+                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
+                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
+                const distance = fromVec.distanceTo(toVec);
+
+                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
+                
+                geom.rotateX(Math.PI / 2);
+                geom.translate(0, 0, distance / 2);
+
+                const mat = new THREE.MeshBasicMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.85
+                });
+
+                const mesh = new THREE.Mesh(geom, mat);
+                el.setObject3D('mesh', mesh);
+                
+                el.setAttribute('position', data.from);
+                el.object3D.lookAt(toVec);
+            }
+        });
+
+        AFRAME.registerComponent('mountain-terrain', {
+            schema: {
+                colorSolid: { type: 'color', default: '#0c2310' },
+                colorWire: { type: 'color', default: '#10b981' }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+                
+                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
+                const pos = geom.attributes.position;
+                
+                for (let i = 0; i < pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = 0;
+                    
+                    if (Math.abs(x) > 0.24) {
+                        let factorX = Math.abs(x) - 0.24;
+                        let factorY = (1.2 - y) * 0.45;
+                        z = factorX * 1.5 + factorY;
+                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
+                        z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
+                    } else {
+                        if (y < -0.2) {
+                            let tunnelProgress = -0.2 - y;
+                            z = Math.min(0.55, tunnelProgress * 1.4);
+                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
+                        }
+                    }
+                    z = Math.max(0, z);
+                    pos.setZ(i, z);
+                }
+                
+                geom.computeVertexNormals();
+                
+                const solidMaterial = new THREE.MeshStandardMaterial({
+                    color: data.colorSolid,
+                    roughness: 0.8,
+                    metalness: 0.15,
+                    flatShading: true,
+                    transparent: true,
+                    opacity: 0.95
+                });
+                
+                const wireMaterial = new THREE.MeshBasicMaterial({
+                    color: data.colorWire,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                const solidMesh = new THREE.Mesh(geom, solidMaterial);
+                const wireMesh = new THREE.Mesh(geom, wireMaterial);
+                const group = new THREE.Group();
+                group.add(solidMesh);
+                group.add(wireMesh);
+                
+                const trunkGeom = new THREE.CylinderGeometry(0.012, 0.012, 0.09, 5);
+                const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a2c11', roughness: 0.9 });
+                const leavesGeom = new THREE.ConeGeometry(0.045, 0.16, 5);
+                const leavesMat = new THREE.MeshStandardMaterial({ color: '#133519', flatShading: true, roughness: 0.8 });
+
+                for (let k = 0; k < 60; k++) {
+                    let px = (Math.random() * 2.0) - 1.0;
+                    let py = (Math.random() * 2.0) - 1.0;
+
+                    if (Math.abs(px) > 0.28) {
+                        let factorX = Math.abs(px) - 0.24;
+                        let factorY = (1.2 - py) * 0.45;
+                        let pz = factorX * 1.5 + factorY;
+                        pz += Math.sin(px * 9) * Math.cos(py * 9) * 0.12;
+                        pz = Math.max(0, pz);
+
+                        const pino = new THREE.Group();
+                        
+                        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
+                        trunk.position.y = 0.045;
+                        trunk.rotation.x = Math.PI / 2;
+                        
+                        const leaves = new THREE.Mesh(leavesGeom, leavesMat);
+                        leaves.position.y = 0.125;
+                        leaves.rotation.x = Math.PI / 2;
+
+                        pino.add(trunk);
+                        pino.add(leaves);
+                        pino.position.set(px, py, pz);
+                        
+                        group.add(pino);
+                    }
+                }
+                
+                el.setObject3D('mesh', group);
+            }
+        });
+
+        // DEFINICIÓN DE DERRUMBE AMPLIADO (MASA MÁS GRANDE Y ORGANICA)
+        AFRAME.registerComponent('landslide-mesh', {
+            init: function () {
+                const geom = new THREE.DodecahedronGeometry(0.38, 1); // Aumentado de 0.24 a 0.38 para exagerar el evento
+                const pos = geom.attributes.position;
+                for(let i=0; i<pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = pos.getZ(i);
+                    pos.setX(i, x * 1.6 + (Math.sin(y*10)*0.08));
+                    pos.setY(i, y * 0.7 - 0.1); 
+                    pos.setZ(i, z * 1.1);
+                }
+                geom.computeVertexNormals();
+                
+                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true }); 
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
+                const mesh1 = new THREE.Mesh(geom, solidMat);
+                const mesh2 = new THREE.Mesh(geom, wireMat);
+                const group = new THREE.Group();
+                group.add(mesh1);
+                group.add(mesh2);
+                this.el.setObject3D('mesh', group);
+            }
+        });
+
+        AFRAME.registerComponent('rain-particles', {
+            schema: {
+                intensity: { type: 'number', default: 0 }
+            },
+            init: function () {
+                this.drops = [];
+                const count = 350;
+                const geom = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                this.velocities = [];
+
+                for (let i = 0; i < count; i++) {
+                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
+                    positions[i*3+1] = (Math.random() * 2.0);         // Y
+                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;     // Z
+                    
+                    this.velocities.push(0.03 + Math.random() * 0.03);
+                }
+
+                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const mat = new THREE.PointsMaterial({
+                    color: '#60a5fa',
+                    size: 0.012,
+                    transparent: true,
+                    opacity: 0.8
+                });
+
+                this.particleSystem = new THREE.Points(geom, mat);
+                this.el.setObject3D('mesh', this.particleSystem);
+            },
+            tick: function (time, timeDelta) {
+                const intensity = this.data.intensity;
+                if (intensity <= 0) {
+                    this.particleSystem.visible = false;
+                    return;
+                }
+                
+                this.particleSystem.visible = true;
+                const geom = this.particleSystem.geometry;
+                const pos = geom.attributes.position;
+                const count = pos.count;
+
+                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+
+                for (let i = 0; i < count; i++) {
+                    let y = pos.getY(i);
+                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
+                    
+                    if (y < 0) {
+                        y = 2.0;
+                        pos.setX(i, (Math.random() * 2.4) - 1.2);
+                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
+                    }
+                    pos.setY(i, y);
+                }
+                pos.needsUpdate = true;
+            }
+        });
+    </script>
+
     <style>
         :root {
             --bg-dark: #07090e;
@@ -412,7 +632,7 @@
             pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px; /* Reducido de 12px a 8px */
         }
 
         /* Toggle Button for Mobile Info Box */
@@ -441,12 +661,33 @@
             border-color: var(--acumen-blue);
         }
 
+        /* Header de la Leyenda exclusivo para móvil */
+        .legend-header-mobile {
+            display: none; /* Oculto en PC */
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-close-legend-inner {
+            background: transparent;
+            border: none;
+            color: var(--acumen-red);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            padding: 2px 8px;
+        }
+
         /* Legend Panel */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
             border-radius: 16px;
-            padding: 15px;
+            padding: 12px; /* Reducido de 15px a 12px */
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
@@ -532,22 +773,22 @@
             gap: 12px;
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            padding: 20px;
+            padding: 15px; /* Reducido de 20px a 15px */
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console styling */
+        /* Console styling (Compactada para PC a 115px para evitar desbordar pantallas pequeñas) */
         .console-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
             border-radius: 16px;
-            padding: 15px;
-            height: 160px;
+            padding: 10px; /* Reducido de 15px a 10px */
+            height: 115px; /* Reducido de 160px a 115px */
             overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
             font-size: 0.75rem;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #93c5fd;
             display: flex;
             flex-direction: column;
@@ -671,9 +912,13 @@
             background-color: rgba(41, 119, 253, 0.1);
         }
 
-        /* Responsive Mobile Layout adjustment (FREE UP 3D Protagonism) */
+        /* Responsive Mobile Layout adjustment */
         @media (max-width: 680px) {
             .btn-toggle-info {
+                display: flex !important;
+            }
+
+            .legend-header-mobile {
                 display: flex !important;
             }
             
@@ -710,11 +955,11 @@
                 box-shadow: 0 10px 40px rgba(0,0,0,0.9);
             }
 
-            /* Consola compacta multi-línea con scroll para celular */
+            /* Consola compacta con scroll para celular */
             .console-box {
                 display: flex !important;
                 width: 100%;
-                height: 75px !important; /* Altura compacta para evitar tapar el 3D */
+                height: 75px !important;
                 font-size: 0.68rem !important;
                 padding: 10px !important;
                 border-radius: 12px !important;
@@ -822,6 +1067,12 @@
 
                 <!-- Leyenda del Gemelo Digital (Colapsada en móvil por defecto) -->
                 <div id="legendBox" class="legend-box collapsed-mobile">
+                    <!-- Botón de cierre interno para celulares (con z-index y fácil interacción) -->
+                    <div class="legend-header-mobile">
+                        <span class="project-title" style="font-size: 0.7rem; color: var(--acumen-blue);">Ficha Técnica / Leyenda</span>
+                        <button class="btn-close-legend-inner interactive" id="btnCloseLegendInner">❌</button>
+                    </div>
+
                     <div class="project-desc-block">
                         <div class="project-title">Proyecto: Túnel Alta Montaña</div>
                         <p class="project-desc">Evaluación geomecánica de la estabilidad del talud de acceso y el portal de entrada ante amenazas de remoción en masa inducidas por infiltración pluvial acelerada.</p>
@@ -853,7 +1104,7 @@
                     </div>
                 </div>
 
-                <!-- Terminal (Visible en PC con 160px, y en móvil compacta a 75px) -->
+                <!-- Terminal (Visible en PC con 115px, y en móvil compacta a 75px) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: ACUMEN OS inicializado.</div>
                     <div class="console-line">[SYSTEM]: Telemetría de vídeo universal enlazada.</div>
@@ -981,226 +1232,6 @@
 
     </a-scene>
 
-    <!-- Componentes A-Frame de Maqueta y Partículas -->
-    <script>
-        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
-        AFRAME.registerComponent('thick-laser', {
-            schema: {
-                from: { type: 'vec3' },
-                to: { type: 'vec3' },
-                color: { type: 'color', default: '#10b981' },
-                radius: { type: 'number', default: 0.015 }
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-
-                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
-                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
-                const distance = fromVec.distanceTo(toVec);
-
-                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
-                
-                geom.rotateX(Math.PI / 2);
-                geom.translate(0, 0, distance / 2);
-
-                const mat = new THREE.MeshBasicMaterial({
-                    color: data.color,
-                    transparent: true,
-                    opacity: 0.85
-                });
-
-                const mesh = new THREE.Mesh(geom, mat);
-                el.setObject3D('mesh', mesh);
-                
-                el.setAttribute('position', data.from);
-                el.object3D.lookAt(toVec);
-            }
-        });
-
-        AFRAME.registerComponent('mountain-terrain', {
-            schema: {
-                colorSolid: { type: 'color', default: '#0c2310' },
-                colorWire: { type: 'color', default: '#10b981' }
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-                
-                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
-                const pos = geom.attributes.position;
-                
-                for (let i = 0; i < pos.count; i++) {
-                    let x = pos.getX(i);
-                    let y = pos.getY(i);
-                    let z = 0;
-                    
-                    if (Math.abs(x) > 0.24) {
-                        let factorX = Math.abs(x) - 0.24;
-                        let factorY = (1.2 - y) * 0.45;
-                        z = factorX * 1.5 + factorY;
-                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
-                        z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
-                    } else {
-                        if (y < -0.2) {
-                            let tunnelProgress = -0.2 - y;
-                            z = Math.min(0.55, tunnelProgress * 1.4);
-                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
-                        }
-                    }
-                    z = Math.max(0, z);
-                    pos.setZ(i, z);
-                }
-                
-                geom.computeVertexNormals();
-                
-                const solidMaterial = new THREE.MeshStandardMaterial({
-                    color: data.colorSolid,
-                    roughness: 0.8,
-                    metalness: 0.15,
-                    flatShading: true,
-                    transparent: true,
-                    opacity: 0.95
-                });
-                
-                const wireMaterial = new THREE.MeshBasicMaterial({
-                    color: data.colorWire,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.6
-                });
-                
-                const solidMesh = new THREE.Mesh(geom, solidMaterial);
-                const wireMesh = new THREE.Mesh(geom, wireMaterial);
-                const group = new THREE.Group();
-                group.add(solidMesh);
-                group.add(wireMesh);
-                
-                const trunkGeom = new THREE.CylinderGeometry(0.012, 0.012, 0.09, 5);
-                const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a2c11', roughness: 0.9 });
-                const leavesGeom = new THREE.ConeGeometry(0.045, 0.16, 5);
-                const leavesMat = new THREE.MeshStandardMaterial({ color: '#133519', flatShading: true, roughness: 0.8 });
-
-                for (let k = 0; k < 60; k++) {
-                    let px = (Math.random() * 2.0) - 1.0;
-                    let py = (Math.random() * 2.0) - 1.0;
-
-                    if (Math.abs(px) > 0.28) {
-                        let factorX = Math.abs(px) - 0.24;
-                        let factorY = (1.2 - py) * 0.45;
-                        let pz = factorX * 1.5 + factorY;
-                        pz += Math.sin(px * 9) * Math.cos(py * 9) * 0.12;
-                        pz = Math.max(0, pz);
-
-                        const pino = new THREE.Group();
-                        
-                        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
-                        trunk.position.y = 0.045;
-                        trunk.rotation.x = Math.PI / 2;
-                        
-                        const leaves = new THREE.Mesh(leavesGeom, leavesMat);
-                        leaves.position.y = 0.125;
-                        leaves.rotation.x = Math.PI / 2;
-
-                        pino.add(trunk);
-                        pino.add(leaves);
-                        pino.position.set(px, py, pz);
-                        
-                        group.add(pino);
-                    }
-                }
-                
-                el.setObject3D('mesh', group);
-            }
-        });
-
-        // DEFINICIÓN DE DERRUMBE AMPLIADO
-        AFRAME.registerComponent('landslide-mesh', {
-            init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.38, 1);
-                const pos = geom.attributes.position;
-                for(let i=0; i<pos.count; i++) {
-                    let x = pos.getX(i);
-                    let y = pos.getY(i);
-                    let z = pos.getZ(i);
-                    pos.setX(i, x * 1.6 + (Math.sin(y*10)*0.08));
-                    pos.setY(i, y * 0.7 - 0.1); 
-                    pos.setZ(i, z * 1.1);
-                }
-                geom.computeVertexNormals();
-                
-                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true }); 
-                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
-                const mesh1 = new THREE.Mesh(geom, solidMat);
-                const mesh2 = new THREE.Mesh(geom, wireMat);
-                const group = new THREE.Group();
-                group.add(mesh1);
-                group.add(mesh2);
-                this.el.setObject3D('mesh', group);
-            }
-        });
-
-        AFRAME.registerComponent('rain-particles', {
-            schema: {
-                intensity: { type: 'number', default: 0 }
-            },
-            init: function () {
-                this.drops = [];
-                const count = 350;
-                const geom = new THREE.BufferGeometry();
-                const positions = new Float32Array(count * 3);
-                this.velocities = [];
-
-                for (let i = 0; i < count; i++) {
-                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
-                    positions[i*3+1] = (Math.random() * 2.0);         // Y
-                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;     // Z
-                    
-                    this.velocities.push(0.03 + Math.random() * 0.03);
-                }
-
-                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                
-                const mat = new THREE.PointsMaterial({
-                    color: '#60a5fa',
-                    size: 0.012,
-                    transparent: true,
-                    opacity: 0.8
-                });
-
-                this.particleSystem = new THREE.Points(geom, mat);
-                this.el.setObject3D('mesh', this.particleSystem);
-            },
-            tick: function (time, timeDelta) {
-                const intensity = this.data.intensity;
-                if (intensity <= 0) {
-                    this.particleSystem.visible = false;
-                    return;
-                }
-                
-                this.particleSystem.visible = true;
-                const geom = this.particleSystem.geometry;
-                const pos = geom.attributes.position;
-                const count = pos.count;
-
-                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
-
-                for (let i = 0; i < count; i++) {
-                    let y = pos.getY(i);
-                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
-                    
-                    if (y < 0) {
-                        y = 2.0;
-                        pos.setX(i, (Math.random() * 2.4) - 1.2);
-                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
-                    }
-                    pos.setY(i, y);
-                }
-                pos.needsUpdate = true;
-            }
-        });
-    </script>
-
     <!-- Main Logic & Interactive Controllers -->
     <script>
         function isMobileDevice() {
@@ -1258,6 +1289,10 @@
             btnDesktopEnter.addEventListener('click', () => {
                 onboardingDiv.style.display = 'none';
                 hudContainer.classList.remove('hidden');
+                // Force resize on onboarding exit to allow canvas mapping recalculation
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
             });
         }
 
@@ -1322,25 +1357,38 @@
         const btnWhatsapp = document.getElementById('btnWhatsapp');
         const btnReset = document.getElementById('btnReset');
         const btnToggleInfo = document.getElementById('btnToggleInfo');
+        const btnCloseLegendInner = document.getElementById('btnCloseLegendInner');
         const legendBox = document.getElementById('legendBox');
 
         let isOptimized = false;
         let isOptimizing = false;
 
         // Toggle Drawer logic for mobile
+        function openMobileLegend() {
+            legendBox.classList.remove('collapsed-mobile');
+            legendBox.classList.add('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
+            btnToggleInfo.style.borderColor = "var(--acumen-red)";
+        }
+
+        function closeMobileLegend() {
+            legendBox.classList.add('collapsed-mobile');
+            legendBox.classList.remove('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+            btnToggleInfo.style.borderColor = "var(--zinc-border)";
+        }
+
         btnToggleInfo.addEventListener('click', () => {
             if (legendBox.classList.contains('collapsed-mobile')) {
-                legendBox.classList.remove('collapsed-mobile');
-                legendBox.classList.add('expanded-mobile');
-                btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
-                btnToggleInfo.style.borderColor = "var(--acumen-red)";
+                openMobileLegend();
             } else {
-                legendBox.classList.add('collapsed-mobile');
-                legendBox.classList.remove('expanded-mobile');
-                btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
-                btnToggleInfo.style.borderColor = "var(--zinc-border)";
+                closeMobileLegend();
             }
         });
+
+        if (btnCloseLegendInner) {
+            btnCloseLegendInner.addEventListener('click', closeMobileLegend);
+        }
 
         // 3D Objects
         const landslide = document.getElementById('landslide');
@@ -1516,10 +1564,7 @@
             btnReset.style.display = 'none';
 
             // Collapse legend drawer if open
-            legendBox.classList.add('collapsed-mobile');
-            legendBox.classList.remove('expanded-mobile');
-            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
-            btnToggleInfo.style.borderColor = "var(--zinc-border)";
+            closeMobileLegend();
             
             // Force redraw
             window.dispatchEvent(new Event('resize'));
