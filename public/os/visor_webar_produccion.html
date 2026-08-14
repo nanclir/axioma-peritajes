@@ -71,11 +71,11 @@
                         z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
                         z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
                     } else {
-                        if (y < -0.2) {
-                            let tunnelProgress = -0.2 - y;
-                            z = Math.min(0.55, tunnelProgress * 1.4);
-                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
-                        }
+                        // Terreno sobre la extensión completa del túnel (de y = -0.6 a y = 1.2)
+                        let distBack = y - (-0.6); // Distancia desde el portal posterior
+                        let distFront = 1.2 - y;   // Distancia desde el portal frontal
+                        z = Math.min(0.55, distBack * 2.5, distFront * 2.5);
+                        z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
                     }
                     z = Math.max(0, z);
                     pos.setZ(i, z);
