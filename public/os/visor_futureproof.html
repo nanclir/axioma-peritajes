@@ -405,7 +405,7 @@
             gap: 12px;
         }
 
-        /* Legend Panel (Integrated with Project Description) */
+        /* Legend Panel (Integrated with Project Description and Specs) */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -421,6 +421,9 @@
             border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
             padding-bottom: 8px;
             margin-bottom: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .project-title {
@@ -429,14 +432,26 @@
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            margin-bottom: 4px;
         }
 
         .project-desc {
             font-size: 0.65rem;
             color: var(--text-muted);
             line-height: 1.45;
+            margin: 0 0 4px 0;
+        }
+
+        .project-specs {
             margin: 0;
+            padding: 0 0 0 12px;
+            list-style-type: square;
+            font-size: 0.62rem;
+            color: var(--acumen-gold);
+            line-height: 1.4;
+        }
+
+        .project-specs li span {
+            color: var(--text-main);
         }
 
         .legend-title {
@@ -445,7 +460,6 @@
             color: var(--acumen-blue);
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding-bottom: 2px;
         }
 
         .legend-items {
@@ -791,11 +805,17 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda del Gemelo Digital (Con descripción del proyecto del viaducto) -->
+                <!-- Leyenda del Gemelo Digital (Con descripción y especificaciones técnicas del viaducto) -->
                 <div class="legend-box">
                     <div class="project-desc-block">
                         <div class="project-title">Proyecto: Viaducto CCI 2026</div>
                         <p class="project-desc">Mitigación estocástica de riesgos de falla por socavación local en pilas y deslizamiento lateral del estribo bajo incertidumbre profunda de cambio climático (RCP).</p>
+                        <ul class="project-specs">
+                            <li><span>Longitud total:</span> 320 m</li>
+                            <li><span>Altura máxima pilas:</span> 42 m</li>
+                            <li><span>Cimentación:</span> Pilotes excavados Ø1.8m (H: 24m)</li>
+                            <li><span>Caudal Máximo Q100:</span> 1,450 m³/s</li>
+                        </ul>
                     </div>
                     <div class="legend-title">Leyenda del Visor</div>
                     <div class="legend-items">
@@ -805,7 +825,7 @@
                         </div>
                         <div class="legend-item">
                             <div class="legend-dot red"></div>
-                            <span>🔴 Falla de Abutment (Derrumbe Activo)</span>
+                            <span>🔴 Falla / Socavación (Alerta Activa)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-dot cyan"></div>
@@ -904,12 +924,24 @@
             <a-box position="-1.15 0.3 0" width="0.12" height="0.2" depth="0.24" material="color: #334155; roughness: 0.8"></a-box>
             <a-box position="1.15 0.3 0" width="0.12" height="0.2" depth="0.24" material="color: #334155; roughness: 0.8"></a-box>
 
-            <!-- Bridge Piers -->
+            <!-- Bridge Piers & Foundations -->
             <a-cylinder id="pier-left" position="-0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
             <a-box id="foundation-left" position="-0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
             
             <a-cylinder id="pier-right" position="0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
             <a-box id="foundation-right" position="0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
+
+            <!-- Scour Holes (Conos de socavación rojos 3D exagerados y didácticos) -->
+            <a-entity id="scour-hole-left" position="-0.45 0.015 0" scale="0.01 0.01 0.01" visible="false">
+                <a-cone radius-bottom="0.22" radius-top="0.08" height="0.12" open-ended="true"
+                        material="color: #ef4444; wireframe: true; opacity: 0.85; transparent: true"></a-cone>
+                <a-text value="SOCAVACION: 2.8m" align="center" width="1.1" position="0 0.12 0.05" color="#ef4444" font="kandoo"></a-text>
+            </a-entity>
+
+            <a-entity id="scour-hole-right" position="0.45 0.015 0" scale="0.01 0.01 0.01" visible="false">
+                <a-cone radius-bottom="0.18" radius-top="0.08" height="0.09" open-ended="true"
+                        material="color: #ef4444; wireframe: true; opacity: 0.85; transparent: true"></a-cone>
+            </a-entity>
 
             <!-- Active Countermeasures -->
             <a-entity id="rdm-reinforcements" visible="false">
@@ -927,9 +959,9 @@
                 <a-text value="REFUERZO RDM DESPLEGADO" align="center" width="1.2" position="0 0.54 0" color="#00ffcc" font="kandoo"></a-text>
             </a-entity>
 
-            <!-- Landslide Mudmass near Left Abutment -->
-            <a-entity id="landslide" landslide-mesh position="-0.85 0.22 0" scale="0.01 0.01 0.01" visible="false">
-                <a-text value="[!] DESLIZAMIENTO" align="center" width="1.4" position="0.1 0.35 0" color="#f87171" font="kandoo"></a-text>
+            <!-- Landslide Mudmass near Left Abutment (Reposicionado para que caiga encima de la vía, exagerado y visible) -->
+            <a-entity id="landslide" landslide-mesh position="-0.95 0.46 0.02" scale="0.01 0.01 0.01" visible="false">
+                <a-text value="[!] DESLIZAMIENTO" align="center" width="1.4" position="0.1 0.45 0" color="#f87171" font="kandoo"></a-text>
             </a-entity>
 
             <!-- Floating AI Agent Nodes con Etiquetas Legibles -->
@@ -1103,9 +1135,10 @@
             }
         });
 
+        // MASAS DE DERRUMBE AMPLIADAS A 0.38 DE RADIO PARA EXAGERAR VISUALMENTE
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.24, 1);
+                const geom = new THREE.DodecahedronGeometry(0.38, 1);
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
@@ -1339,6 +1372,10 @@
         const nodeStruct = document.getElementById('node-struct');
         const nodeRdm = document.getElementById('node-rdm');
         const rainSystem = document.getElementById('rainSystem');
+        
+        // Conos de Socavación
+        const scourHoleLeft = document.getElementById('scour-hole-left');
+        const scourHoleRight = document.getElementById('scour-hole-right');
 
         let isOptimized = false;
         let isOptimizing = false;
@@ -1391,10 +1428,17 @@
                     robustnessVal.style.color = "var(--acumen-red)";
                     npvVal.style.color = "var(--acumen-red)";
                     
-                    // Show landslide (Volumétrico y visible en estribo)
+                    // Show landslide (Volumétrico, muy visible y posicionado sobre el estribo izquierdo)
                     landslide.setAttribute('visible', 'true');
-                    let scaleFactor = 1.0 + (rcp - 1) * 0.3;
+                    let scaleFactor = 1.8 + (rcp - 1) * 0.45;
                     landslide.setAttribute('scale', `${scaleFactor} ${scaleFactor} ${scaleFactor}`);
+
+                    // Mostrar conos de socavación en las bases
+                    scourHoleLeft.setAttribute('visible', 'true');
+                    scourHoleRight.setAttribute('visible', 'true');
+                    let scourScale = 1.0 + (rcp - 1) * 0.4;
+                    scourHoleLeft.setAttribute('scale', `${scourScale} ${scourScale} ${scourScale}`);
+                    scourHoleRight.setAttribute('scale', `${scourScale} ${scourScale} ${scourScale}`);
 
                     btnOptimize.disabled = false;
 
@@ -1411,6 +1455,8 @@
                     npvVal.style.color = "var(--acumen-emerald)";
                     
                     landslide.setAttribute('visible', 'false');
+                    scourHoleLeft.setAttribute('visible', 'false');
+                    scourHoleRight.setAttribute('visible', 'false');
                     btnOptimize.disabled = true;
                     window.alertLogged = false;
                 }
@@ -1460,6 +1506,8 @@
                 
                 rdmReinforcements.setAttribute('visible', 'true');
                 landslide.setAttribute('visible', 'false');
+                scourHoleLeft.setAttribute('visible', 'false');
+                scourHoleRight.setAttribute('visible', 'false');
 
                 isOptimized = true;
                 isOptimizing = false;
@@ -1513,6 +1561,8 @@
             // Reset 3D Assets visibility
             rdmReinforcements.setAttribute('visible', 'false');
             landslide.setAttribute('visible', 'false');
+            scourHoleLeft.setAttribute('visible', 'false');
+            scourHoleRight.setAttribute('visible', 'false');
             laserLines.setAttribute('visible', 'false');
             rainSystem.setAttribute('rain-particles', 'intensity', 0);
             river.setAttribute('position', '0 0.01 0');

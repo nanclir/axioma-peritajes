@@ -415,7 +415,7 @@
             gap: 12px;
         }
 
-        /* Legend Panel */
+        /* Legend Panel (Integrated with Project Description and Specs) */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -424,7 +424,44 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .project-desc-block {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .project-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin: 0 0 4px 0;
+        }
+
+        .project-specs {
+            margin: 0;
+            padding: 0 0 0 12px;
+            list-style-type: square;
+            font-size: 0.62rem;
+            color: var(--acumen-gold);
+            line-height: 1.4;
+        }
+
+        .project-specs li span {
+            color: var(--text-main);
         }
 
         .legend-title {
@@ -433,8 +470,6 @@
             color: var(--acumen-blue);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid rgba(41, 119, 253, 0.2);
-            padding-bottom: 4px;
         }
 
         .legend-items {
@@ -712,9 +747,19 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda de Componentes -->
+                <!-- Leyenda del Gemelo Digital (Con descripción del proyecto y ficha técnica) -->
                 <div class="legend-box">
-                    <div class="legend-title">Leyenda del Gemelo Digital</div>
+                    <div class="project-desc-block">
+                        <div class="project-title">Proyecto: Túnel Alta Montaña</div>
+                        <p class="project-desc">Evaluación geomecánica de la estabilidad del talud de acceso y el portal de entrada ante amenazas de remoción en masa inducidas por infiltración pluvial acelerada.</p>
+                        <ul class="project-specs">
+                            <li><span>Longitud total:</span> 1.20 km</li>
+                            <li><span>Sección excavación:</span> Herradura (9.5m x 7.2m)</li>
+                            <li><span>Calidad del Macizo:</span> Filita cizallada (RMR: 32)</li>
+                            <li><span>Soporte Estructural:</span> Concreto Lanzado + Pernos 3.5m</li>
+                        </ul>
+                    </div>
+                    <div class="legend-title">Leyenda del Visor</div>
                     <div class="legend-items">
                         <div class="legend-item">
                             <div class="legend-dot blue"></div>
@@ -802,9 +847,9 @@
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
             </a-entity>
 
-            <!-- Landslide Organic Mud Mass -->
-            <a-entity id="landslide" landslide-mesh position="0.08 0.32 -0.15" scale="0.01 0.01 0.01" visible="false">
-                <a-text value="[!] FALLA DE TALUD" align="center" width="1.4" position="0 0.35 0" color="#f87171" font="kandoo"></a-text>
+            <!-- Landslide Organic Mud Mass (Exagerado y reposicionado justo al frente de la vía para tapar la carretera) -->
+            <a-entity id="landslide" landslide-mesh position="0.0 0.15 0.1" scale="0.01 0.01 0.01" visible="false">
+                <a-text value="[!] FALLA DE TALUD" align="center" width="1.4" position="0 0.5 0" color="#f87171" font="kandoo"></a-text>
             </a-entity>
 
             <!-- Pernos e Inyecciones de Estabilización Físicas 3D (Glowing Neon + Rótulos del Tensor) -->
@@ -996,9 +1041,10 @@
             }
         });
 
+        // DEFINICIÓN DE DERRUMBE AMPLIADO (MASA MÁS GRANDE Y ORGANICA)
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.24, 1);
+                const geom = new THREE.DodecahedronGeometry(0.38, 1); // Aumentado de 0.24 a 0.38 para exagerar el evento
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
@@ -1244,9 +1290,9 @@
                     fosVal.innerText = calculatedFoS;
                     fosVal.style.color = "var(--acumen-red)";
 
-                    // Show landslide 3D (Gran volumen encima del túnel)
+                    // Show landslide 3D (Exagerado y escalado para bloquear completamente la vía)
                     landslide.setAttribute('visible', 'true');
-                    let scaleVal = 1.1 + ((val - 60) * 0.008);
+                    let scaleVal = 1.6 + ((val - 60) * 0.015);
                     landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
                     
                     // Stress mesh color to red
