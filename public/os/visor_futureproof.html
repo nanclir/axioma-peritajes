@@ -10,6 +10,215 @@
     <!-- A-Frame (3D WebGL Library) -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 
+    <!-- Componentes A-Frame de Maqueta y Partículas (Registrados en HEAD antes de la Scene) -->
+    <script>
+        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
+        AFRAME.registerComponent('thick-laser', {
+            schema: {
+                from: { type: 'vec3' },
+                to: { type: 'vec3' },
+                color: { type: 'color', default: '#10b981' },
+                radius: { type: 'number', default: 0.015 }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+
+                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
+                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
+                const distance = fromVec.distanceTo(toVec);
+
+                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
+                
+                geom.rotateX(Math.PI / 2);
+                geom.translate(0, 0, distance / 2);
+
+                const mat = new THREE.MeshBasicMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.85
+                });
+
+                const mesh = new THREE.Mesh(geom, mat);
+                el.setObject3D('mesh', mesh);
+                
+                el.setAttribute('position', data.from);
+                el.object3D.lookAt(toVec);
+            }
+        });
+
+        // GEOMETRÍA CON CAUCE CÓNCAVO PARA EL RÍO Y LADERAS DEFINIDAS
+        AFRAME.registerComponent('canyon-terrain', {
+            schema: {
+                colorSolid: { type: 'color', default: '#0c2310' },
+                colorWire: { type: 'color', default: '#10b981' }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+                
+                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
+                const pos = geom.attributes.position;
+                
+                for (let i = 0; i < pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = 0;
+                    
+                    let distToCenter = Math.abs(x);
+                    if (distToCenter > 0.24) {
+                        // Laderas a ambos lados elevadas
+                        z = (distToCenter - 0.24) * 0.85;
+                        z += Math.sin(x * 10) * Math.cos(y * 10) * 0.08;
+                    } else {
+                        // Lecho del río cóncavo (se deprime hacia el centro)
+                        z = -0.06 * (1.0 - (distToCenter / 0.24));
+                    }
+                    
+                    pos.setZ(i, z);
+                }
+                
+                geom.computeVertexNormals();
+                
+                const solidMaterial = new THREE.MeshStandardMaterial({
+                    color: data.colorSolid,
+                    roughness: 0.85,
+                    metalness: 0.1,
+                    flatShading: true,
+                    transparent: true,
+                    opacity: 0.94
+                });
+                
+                const wireMaterial = new THREE.MeshBasicMaterial({
+                    color: data.colorWire,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                
+                const solidMesh = new THREE.Mesh(geom, solidMaterial);
+                const wireMesh = new THREE.Mesh(geom, wireMaterial);
+                const group = new THREE.Group();
+                group.add(solidMesh);
+                group.add(wireMesh);
+                
+                const trunkGeom = new THREE.CylinderGeometry(0.01, 0.01, 0.07, 4);
+                const trunkMat = new THREE.MeshStandardMaterial({ color: '#553311' });
+                const leavesGeom = new THREE.ConeGeometry(0.035, 0.14, 4);
+                const leavesMat = new THREE.MeshStandardMaterial({ color: '#14301a', flatShading: true });
+
+                for (let k = 0; k < 50; k++) {
+                    let px = (Math.random() * 2.2) - 1.1;
+                    let py = (Math.random() * 2.2) - 1.1;
+
+                    if (Math.abs(px) > 0.28) {
+                        let distToCenter = Math.abs(px);
+                        let z = (distToCenter - 0.24) * 0.85;
+                        z += Math.sin(px * 10) * Math.cos(py * 10) * 0.08;
+                        z = Math.max(0, z);
+
+                        const tree = new THREE.Group();
+                        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
+                        trunk.position.y = 0.035;
+                        trunk.rotation.x = Math.PI / 2;
+                        
+                        const leaves = new THREE.Mesh(leavesGeom, leavesMat);
+                        leaves.position.y = 0.1;
+                        leaves.rotation.x = Math.PI / 2;
+
+                        tree.add(trunk);
+                        tree.add(leaves);
+                        tree.position.set(px, py, z);
+                        group.add(tree);
+                    }
+                }
+                
+                el.setObject3D('mesh', group);
+            }
+        });
+
+        // MASAS DE DERRUMBE AMPLIADAS
+        AFRAME.registerComponent('landslide-mesh', {
+            init: function () {
+                const geom = new THREE.DodecahedronGeometry(0.38, 1);
+                const pos = geom.attributes.position;
+                for(let i=0; i<pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = pos.getZ(i);
+                    pos.setX(i, x * 1.5 + (Math.sin(y*8)*0.06));
+                    pos.setY(i, y * 0.7 - 0.05);
+                    pos.setZ(i, z * 1.2);
+                }
+                geom.computeVertexNormals();
+                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true });
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
+                const group = new THREE.Group();
+                group.add(new THREE.Mesh(geom, solidMat));
+                group.add(new THREE.Mesh(geom, wireMat));
+                this.el.setObject3D('mesh', group);
+            }
+        });
+
+        AFRAME.registerComponent('rain-particles', {
+            schema: {
+                intensity: { type: 'number', default: 0 }
+            },
+            init: function () {
+                const count = 350;
+                const geom = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                this.velocities = [];
+
+                for (let i = 0; i < count; i++) {
+                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
+                    positions[i*3+1] = (Math.random() * 2.0);         // Y
+                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;     // Z
+                    this.velocities.push(0.03 + Math.random() * 0.03);
+                }
+
+                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const mat = new THREE.PointsMaterial({
+                    color: '#60a5fa',
+                    size: 0.012,
+                    transparent: true,
+                    opacity: 0.8
+                });
+
+                this.particleSystem = new THREE.Points(geom, mat);
+                this.el.setObject3D('mesh', this.particleSystem);
+            },
+            tick: function (time, timeDelta) {
+                const intensity = this.data.intensity;
+                if (intensity <= 0) {
+                    this.particleSystem.visible = false;
+                    return;
+                }
+                
+                this.particleSystem.visible = true;
+                const geom = this.particleSystem.geometry;
+                const pos = geom.attributes.position;
+                const count = pos.count;
+
+                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+
+                for (let i = 0; i < count; i++) {
+                    let y = pos.getY(i);
+                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
+                    
+                    if (y < 0) {
+                        y = 2.0;
+                        pos.setX(i, (Math.random() * 2.4) - 1.2);
+                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
+                    }
+                    pos.setY(i, y);
+                }
+                pos.needsUpdate = true;
+            }
+        });
+    </script>
+
     <style>
         :root {
             --bg-dark: #07090e;
@@ -421,6 +630,7 @@
             letter-spacing: 0.5px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
             align-items: center;
             gap: 6px;
             width: fit-content;
@@ -585,34 +795,10 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Single Line Ticker for Mobile UI */
-        .console-ticker {
-            display: none; /* Oculto en desktop */
-            pointer-events: auto;
-            background-color: rgba(9, 11, 16, 0.85);
-            border: 1px solid var(--zinc-border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.7rem;
-            color: #93c5fd;
-            text-align: center;
-            width: 100%;
-            max-width: 340px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-        }
-
-        .console-ticker.red { color: #f87171; font-weight: bold; border-color: var(--acumen-red); }
-        .console-ticker.green { color: #4ade80; font-weight: bold; border-color: var(--acumen-emerald); }
-        .console-ticker.gold { color: #fcd34d; font-weight: bold; border-color: var(--acumen-gold); }
-
         .console-line {
             white-space: normal;
-            word-break: break-all;
+            word-wrap: break-word;
+            word-break: keep-all;
         }
 
         .console-line.red { color: #f87171; font-weight: bold; }
@@ -751,10 +937,6 @@
             .btn-toggle-info {
                 display: flex !important;
             }
-            .console-ticker {
-                display: block !important;
-                margin: 0 auto;
-            }
             
             .hud-lateral-panels {
                 flex-direction: column;
@@ -768,6 +950,7 @@
                 width: 100%;
                 max-width: 340px;
                 align-items: flex-start;
+                gap: 6px;
             }
 
             /* Ocultar Leyenda y Monte Carlo por defecto */
@@ -788,13 +971,23 @@
                 box-shadow: 0 10px 40px rgba(0,0,0,0.9);
             }
 
+            /* Consola compacta con scroll en móvil */
             .console-box {
-                display: none !important; /* Ocultar caja grande de consola en móvil */
+                display: flex !important;
+                width: 100%;
+                height: 75px !important;
+                font-size: 0.68rem !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
+                background-color: rgba(18, 22, 32, 0.85) !important;
+                box-sizing: border-box;
+                margin-bottom: 4px;
             }
             
             .hud-right-col {
                 width: 100%;
                 max-width: 340px;
+                padding: 15px !important;
             }
         }
 
@@ -933,7 +1126,7 @@
                     </div>
                 </div>
 
-                <!-- Console log box (Visible solo en PC) -->
+                <!-- Console log box (Visible en PC con 160px, y en móvil compacta a 75px) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
                     <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
@@ -943,9 +1136,6 @@
 
             <!-- Right Controls/Sliders Column -->
             <div class="hud-right-col">
-                <!-- Ticker de línea única para móviles -->
-                <div id="consoleLogTicker" class="console-ticker">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
-
                 <!-- Sliders -->
                 <div class="sliders-container">
                     <!-- Horizon Slider -->
@@ -1002,8 +1192,8 @@
             <a-plane position="0.15 0.01 0" rotation="-90 0 0" width="0.08" height="2.4"
                      material="color: #d1b894; opacity: 0.85; transparent: true; roughness: 0.9"></a-plane>
 
-            <!-- River water (Sit inside the concave channel) -->
-            <a-plane id="river" position="0 0.01 0" rotation="-90 0 0" width="2.4" height="0.22"
+            <!-- River water (Orientado a lo largo del cauce de fondo a frente) -->
+            <a-plane id="river" position="0 0.01 0" rotation="-90 0 0" width="0.22" height="2.4"
                      material="color: #2977fd; opacity: 0.72; transparent: true; roughness: 0.2; metalness: 0.8"></a-plane>
             
             <!-- Viaduct Bridge Deck -->
@@ -1016,37 +1206,37 @@
             <a-box position="-1.15 0.3 0" width="0.12" height="0.2" depth="0.24" material="color: #334155; roughness: 0.8"></a-box>
             <a-box position="1.15 0.3 0" width="0.12" height="0.2" depth="0.24" material="color: #334155; roughness: 0.8"></a-box>
 
-            <!-- Bridge Piers & Foundations -->
-            <a-cylinder id="pier-left" position="-0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
-            <a-box id="foundation-left" position="-0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
+            <!-- Bridge Piers & Foundations (Elevados a y=0.16 para sentarse en la superficie del terreno) -->
+            <a-cylinder id="pier-left" position="-0.45 0.28 0" radius="0.035" height="0.24" material="color: #475569; roughness: 0.8"></a-cylinder>
+            <a-box id="foundation-left" position="-0.45 0.16 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
             
-            <a-cylinder id="pier-right" position="0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
-            <a-box id="foundation-right" position="0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
+            <a-cylinder id="pier-right" position="0.45 0.28 0" radius="0.035" height="0.24" material="color: #475569; roughness: 0.8"></a-cylinder>
+            <a-box id="foundation-right" position="0.45 0.16 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
 
-            <!-- Scour Holes (Conos de socavación rojos 3D exagerados y didácticos) -->
-            <a-entity id="scour-hole-left" position="-0.45 0.015 0" scale="0.01 0.01 0.01" visible="false">
+            <!-- Scour Holes (Conos de socavación rojos 3D levantados a la altura del terreno) -->
+            <a-entity id="scour-hole-left" position="-0.45 0.16 0" scale="0.01 0.01 0.01" visible="false">
                 <a-cone radius-bottom="0.22" radius-top="0.08" height="0.12" open-ended="true"
                         material="color: #ef4444; wireframe: true; opacity: 0.85; transparent: true"></a-cone>
                 <a-text value="SOCAVACION: 2.8m" align="center" width="1.1" position="0 0.12 0.05" color="#ef4444" font="kandoo"></a-text>
             </a-entity>
 
-            <a-entity id="scour-hole-right" position="0.45 0.015 0" scale="0.01 0.01 0.01" visible="false">
+            <a-entity id="scour-hole-right" position="0.45 0.16 0" scale="0.01 0.01 0.01" visible="false">
                 <a-cone radius-bottom="0.18" radius-top="0.08" height="0.09" open-ended="true"
                         material="color: #ef4444; wireframe: true; opacity: 0.85; transparent: true"></a-cone>
             </a-entity>
 
-            <!-- Active Countermeasures -->
+            <!-- Active Countermeasures (Elevados a y=0.16 para quedar sobre la superficie) -->
             <a-entity id="rdm-reinforcements" visible="false">
-                <a-sphere position="-0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
-                <a-sphere position="-0.41 0.02 -0.05" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
-                <a-sphere position="-0.49 0.02 -0.04" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="-0.45 0.16 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="-0.41 0.16 -0.05" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="-0.49 0.16 -0.04" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <a-sphere position="0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
-                <a-sphere position="0.49 0.02 -0.04" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
-                <a-sphere position="0.41 0.02 -0.05" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="0.45 0.16 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="0.49 0.16 -0.04" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
+                <a-sphere position="0.41 0.16 -0.05" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <a-cylinder position="-1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
-                <a-cylinder position="1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 -70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-cylinder position="-1.0 0.28 0" radius="0.005" height="0.15" rotation="0 0 70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
+                <a-cylinder position="1.0 0.28 0" radius="0.005" height="0.15" rotation="0 0 -70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
                 
                 <a-text value="REFUERZO RDM DESPLEGADO" align="center" width="1.2" position="0 0.54 0" color="#00ffcc" font="kandoo"></a-text>
             </a-entity>
@@ -1089,220 +1279,18 @@
 
     </a-scene>
 
-    <!-- Componentes A-Frame de Maqueta y Partículas -->
-    <script>
-        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
-        AFRAME.registerComponent('thick-laser', {
-            schema: {
-                from: { type: 'vec3' },
-                to: { type: 'vec3' },
-                color: { type: 'color', default: '#10b981' },
-                radius: { type: 'number', default: 0.015 }
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-
-                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
-                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
-                const distance = fromVec.distanceTo(toVec);
-
-                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
-                
-                geom.rotateX(Math.PI / 2);
-                geom.translate(0, 0, distance / 2);
-
-                const mat = new THREE.MeshBasicMaterial({
-                    color: data.color,
-                    transparent: true,
-                    opacity: 0.85
-                });
-
-                const mesh = new THREE.Mesh(geom, mat);
-                el.setObject3D('mesh', mesh);
-                
-                el.setAttribute('position', data.from);
-                el.object3D.lookAt(toVec);
-            }
-        });
-
-        // GEOMETRÍA CON CAUCE CÓNCAVO PARA EL RÍO Y LADERAS DEFINIDAS
-        AFRAME.registerComponent('canyon-terrain', {
-            schema: {
-                colorSolid: { type: 'color', default: '#0c2310' },
-                colorWire: { type: 'color', default: '#10b981' }
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-                
-                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
-                const pos = geom.attributes.position;
-                
-                for (let i = 0; i < pos.count; i++) {
-                    let x = pos.getX(i);
-                    let y = pos.getY(i);
-                    let z = 0;
-                    
-                    let distToCenter = Math.abs(x);
-                    if (distToCenter > 0.24) {
-                        // Laderas a ambos lados elevadas
-                        z = (distToCenter - 0.24) * 0.85;
-                        z += Math.sin(x * 10) * Math.cos(y * 10) * 0.08;
-                    } else {
-                        // Lecho del río cóncavo (se deprime hacia el centro)
-                        z = -0.06 * (1.0 - (distToCenter / 0.24));
-                    }
-                    
-                    pos.setZ(i, z);
-                }
-                
-                geom.computeVertexNormals();
-                
-                const solidMaterial = new THREE.MeshStandardMaterial({
-                    color: data.colorSolid,
-                    roughness: 0.85,
-                    metalness: 0.1,
-                    flatShading: true,
-                    transparent: true,
-                    opacity: 0.94
-                });
-                
-                const wireMaterial = new THREE.MeshBasicMaterial({
-                    color: data.colorWire,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.5
-                });
-                
-                const solidMesh = new THREE.Mesh(geom, solidMaterial);
-                const wireMesh = new THREE.Mesh(geom, wireMaterial);
-                const group = new THREE.Group();
-                group.add(solidMesh);
-                group.add(wireMesh);
-                
-                const trunkGeom = new THREE.CylinderGeometry(0.01, 0.01, 0.07, 4);
-                const trunkMat = new THREE.MeshStandardMaterial({ color: '#553311' });
-                const leavesGeom = new THREE.ConeGeometry(0.035, 0.14, 4);
-                const leavesMat = new THREE.MeshStandardMaterial({ color: '#14301a', flatShading: true });
-
-                for (let k = 0; k < 50; k++) {
-                    let px = (Math.random() * 2.2) - 1.1;
-                    let py = (Math.random() * 2.2) - 1.1;
-
-                    if (Math.abs(px) > 0.28) {
-                        let distToCenter = Math.abs(px);
-                        let z = (distToCenter - 0.24) * 0.85;
-                        z += Math.sin(px * 10) * Math.cos(py * 10) * 0.08;
-                        z = Math.max(0, z);
-
-                        const tree = new THREE.Group();
-                        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
-                        trunk.position.y = 0.035;
-                        trunk.rotation.x = Math.PI / 2;
-                        
-                        const leaves = new THREE.Mesh(leavesGeom, leavesMat);
-                        leaves.position.y = 0.1;
-                        leaves.rotation.x = Math.PI / 2;
-
-                        tree.add(trunk);
-                        tree.add(leaves);
-                        tree.position.set(px, py, z);
-                        group.add(tree);
-                    }
-                }
-                
-                el.setObject3D('mesh', group);
-            }
-        });
-
-        // MASAS DE DERRUMBE AMPLIADAS A 0.38 DE RADIO PARA EXAGERAR VISUALMENTE
-        AFRAME.registerComponent('landslide-mesh', {
-            init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.38, 1);
-                const pos = geom.attributes.position;
-                for(let i=0; i<pos.count; i++) {
-                    let x = pos.getX(i);
-                    let y = pos.getY(i);
-                    let z = pos.getZ(i);
-                    pos.setX(i, x * 1.5 + (Math.sin(y*8)*0.06));
-                    pos.setY(i, y * 0.7 - 0.05);
-                    pos.setZ(i, z * 1.2);
-                }
-                geom.computeVertexNormals();
-                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true });
-                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
-                const group = new THREE.Group();
-                group.add(new THREE.Mesh(geom, solidMat));
-                group.add(new THREE.Mesh(geom, wireMat));
-                this.el.setObject3D('mesh', group);
-            }
-        });
-
-        AFRAME.registerComponent('rain-particles', {
-            schema: {
-                intensity: { type: 'number', default: 0 }
-            },
-            init: function () {
-                const count = 350;
-                const geom = new THREE.BufferGeometry();
-                const positions = new Float32Array(count * 3);
-                this.velocities = [];
-
-                for (let i = 0; i < count; i++) {
-                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
-                    positions[i*3+1] = (Math.random() * 2.0);         // Y
-                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;     // Z
-                    this.velocities.push(0.03 + Math.random() * 0.03);
-                }
-
-                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                
-                const mat = new THREE.PointsMaterial({
-                    color: '#60a5fa',
-                    size: 0.012,
-                    transparent: true,
-                    opacity: 0.8
-                });
-
-                this.particleSystem = new THREE.Points(geom, mat);
-                this.el.setObject3D('mesh', this.particleSystem);
-            },
-            tick: function (time, timeDelta) {
-                const intensity = this.data.intensity;
-                if (intensity <= 0) {
-                    this.particleSystem.visible = false;
-                    return;
-                }
-                
-                this.particleSystem.visible = true;
-                const geom = this.particleSystem.geometry;
-                const pos = geom.attributes.position;
-                const count = pos.count;
-
-                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
-
-                for (let i = 0; i < count; i++) {
-                    let y = pos.getY(i);
-                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
-                    
-                    if (y < 0) {
-                        y = 2.0;
-                        pos.setX(i, (Math.random() * 2.4) - 1.2);
-                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
-                    }
-                    pos.setY(i, y);
-                }
-                pos.needsUpdate = true;
-            }
-        });
-    </script>
-
     <!-- Main Logic & Interactive Controllers -->
     <script>
         function isMobileDevice() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
+
+        // FORCE GRAPHICS INITIALIZATION ON PAGE LOAD (FIXES HIDDEN CANYON BUG)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
+        });
 
         const onboardingDiv = document.getElementById('desktop-onboarding');
         const hudContainer = document.getElementById('hud-container');
@@ -1348,6 +1336,10 @@
             btnDesktopEnter.addEventListener('click', () => {
                 onboardingDiv.style.display = 'none';
                 hudContainer.classList.remove('hidden');
+                // Force resize on onboarding exit to allow canvas mapping recalculation
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
             });
         }
 
@@ -1411,7 +1403,6 @@
         const robustnessVal = document.getElementById('robustnessVal');
         const npvVal = document.getElementById('npvVal');
         const consoleLog = document.getElementById('consoleLog');
-        const consoleLogTicker = document.getElementById('consoleLogTicker');
         const horizonSlider = document.getElementById('horizonSlider');
         const horizonLabel = document.getElementById('horizonLabel');
         const rcpSlider = document.getElementById('rcpSlider');
@@ -1456,18 +1447,12 @@
         let isOptimizing = false;
 
         function log(message, type = '') {
-            // Update PC console box
+            // Update PC & Mobile Console box
             const line = document.createElement('div');
             line.className = `console-line ${type}`;
             line.innerText = message;
             consoleLog.appendChild(line);
             consoleLog.scrollTop = consoleLog.scrollHeight;
-
-            // Update mobile single line ticker
-            if (consoleLogTicker) {
-                consoleLogTicker.innerText = message;
-                consoleLogTicker.className = `console-ticker ${type}`;
-            }
         }
 
         setInterval(() => {
@@ -1696,10 +1681,6 @@
                 <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
                 <div class="console-line">[DECISION_AI]: Listo para desplegar RDM.</div>
             `;
-            if (consoleLogTicker) {
-                consoleLogTicker.innerText = "[SYSTEM]: Simulación RDM reiniciada.";
-                consoleLogTicker.className = "console-ticker";
-            }
 
             // Reset Buttons State
             btnOptimize.style.display = 'block';
