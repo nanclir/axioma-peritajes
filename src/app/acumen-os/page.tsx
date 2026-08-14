@@ -424,27 +424,29 @@ export default function AcumenOSPage() {
       {/* Interactive 3D Pilot Section */}
       <section className="py-24 bg-zinc-900 text-white relative overflow-hidden border-t border-zinc-800">
         <div className="absolute inset-0 dot-pattern opacity-5 pointer-events-none z-0" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-20">
+          
+          {/* SECCIÓN 1: ESTABILIZACIÓN DE TALUDES (GEOTECNIA) */}
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-8 bg-blue-500"></div>
-                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-bold">CCI 2026 Cartagena</span>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-bold font-semibold">CCI 2026 Cartagena</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                Demo del Gemelo Digital en Vivo
+                Demo de Estabilización de Taludes
               </h2>
               <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
                 Explore la maqueta digital interactiva diseñada para el Congreso CCI 2026. A través de este visor orbital en 3D, podrá simular fallas en el talud de un túnel debido a lluvias extremas y activar el protocolo de estabilización mediante pernos de roca guiado por el ecosistema de agentes inteligentes de ACUMEN OS.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <a
-                  href="/os/"
+                  href="/os/visor_webar_produccion.html"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30 font-semibold"
                 >
-                  Abrir Visor Digital Twin
+                  Abrir Visor Geotecnia
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
                 <span className="text-sm text-zinc-500 font-mono">Compatible con móviles y ordenadores</span>
@@ -455,8 +457,8 @@ export default function AcumenOSPage() {
               <div className="bg-zinc-850 border border-zinc-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full">
                 <div className="bg-white p-3 rounded-lg shadow-inner">
                   <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.acumeningenieria.com/os/"
-                    alt="Código QR del visor 3D"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.acumeningenieria.com/os/visor_webar_produccion.html"
+                    alt="Código QR del visor Geotecnia"
                     className="w-[180px] h-[180px] block"
                   />
                 </div>
@@ -467,6 +469,51 @@ export default function AcumenOSPage() {
               </div>
             </div>
           </div>
+
+          {/* SECCIÓN 2: FUTUREPROOF DECISIONS (RDM) */}
+          <div className="grid md:grid-cols-2 gap-16 items-center pt-20 border-t border-zinc-800">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 bg-blue-500"></div>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-bold font-semibold">FutureProof Decisions®</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
+                Demo de Decisiones Robustas (RDM)
+              </h2>
+              <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
+                Simule escenarios de cambio climático extremo (hasta el año 2080) sobre la cimentación del viaducto y evalúe la mitigación estocástica de riesgos por socavación local y deslizamiento de ladera mediante el protocolo RDM de ACUMEN OS.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <a
+                  href="/os/visor_futureproof.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30 font-semibold"
+                >
+                  Abrir Visor RDM
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </a>
+                <span className="text-sm text-zinc-500 font-mono">Compatible con móviles y ordenadores</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center">
+              <div className="bg-zinc-850 border border-zinc-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full">
+                <div className="bg-white p-3 rounded-lg shadow-inner">
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.acumeningenieria.com/os/visor_futureproof.html"
+                    alt="Código QR del visor RDM"
+                    className="w-[180px] h-[180px] block"
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-bold text-sm text-white font-mono uppercase tracking-wider mb-1">Acceso Móvil</h4>
+                  <p className="text-xs text-zinc-400 leading-tight">Escanee este código con la cámara de su celular para abrir la maqueta 3D interactiva directamente.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
