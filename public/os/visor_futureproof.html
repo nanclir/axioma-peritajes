@@ -137,7 +137,7 @@
             }
         });
 
-        // MASAS DE DERRUMBE AMPLIADAS
+        // MASAS DE DERRUMBE AMPLIADAS A 0.38 DE RADIO PARA EXAGERAR VISUALMENTE
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
                 const geom = new THREE.DodecahedronGeometry(0.38, 1);
@@ -611,7 +611,7 @@
             pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px; /* Reducido de 12px a 8px */
         }
 
         /* Toggle Button for Mobile Info Box */
@@ -640,29 +640,50 @@
             border-color: var(--acumen-blue);
         }
 
-        /* Legend Panel */
+        /* Header de la Leyenda exclusivo para móvil */
+        .legend-header-mobile {
+            display: none; /* Oculto en PC */
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-close-legend-inner {
+            background: transparent;
+            border: none;
+            color: var(--acumen-red);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            padding: 2px 8px;
+        }
+
+        /* Legend Panel (Altamente compactado para PC) */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
             border-radius: 16px;
-            padding: 15px;
+            padding: 10px; /* Reducido a 10px */
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px; /* Reducido a 6px */
         }
 
         .project-desc-block {
             border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             margin-bottom: 2px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px; /* Reducido a 2px */
         }
 
         .project-title {
-            font-size: 0.75rem;
+            font-size: 0.72rem; /* Reducido a 0.72rem */
             font-weight: 800;
             color: #fff;
             text-transform: uppercase;
@@ -670,9 +691,9 @@
         }
 
         .project-desc {
-            font-size: 0.65rem;
+            font-size: 0.6rem; /* Reducido a 0.6rem */
             color: var(--text-muted);
-            line-height: 1.45;
+            line-height: 1.35; /* Reducido a 1.35 */
             margin: 0 0 4px 0;
         }
 
@@ -680,9 +701,9 @@
             margin: 0;
             padding: 0 0 0 12px;
             list-style-type: square;
-            font-size: 0.62rem;
+            font-size: 0.58rem; /* Reducido a 0.58rem */
             color: var(--acumen-gold);
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         .project-specs li span {
@@ -690,24 +711,25 @@
         }
 
         .legend-title {
-            font-size: 0.65rem;
+            font-size: 0.6rem; /* Reducido a 0.6rem */
             font-weight: bold;
             color: var(--acumen-blue);
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 2px;
         }
 
         .legend-items {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px; /* Reducido a 4px */
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.65rem;
+            gap: 6px; /* Reducido a 6px */
+            font-size: 0.6rem; /* Reducido a 0.6rem */
             color: var(--text-main);
         }
 
@@ -722,22 +744,20 @@
         .legend-dot.cyan { background-color: #00ffcc; }
         .legend-dot.emerald { background-color: var(--acumen-emerald); }
 
-        /* Monte Carlo Matrix Panel */
+        /* Monte Carlo Matrix Panel (Compactado) */
         #monte-carlo-panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--zinc-border);
-            padding: 12px 15px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            background-color: transparent;
+            border: none;
+            padding: 6px 0 0 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             width: 100%;
             box-sizing: border-box;
         }
 
         .matrix-title {
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -747,50 +767,49 @@
         .matrix-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-            width: 100%;
-            max-width: 110px;
-            height: 110px;
+            gap: 3px; /* Reducido de 4px a 3px */
+            width: 90px; /* Reducido de 110px a 90px */
+            height: 90px; /* Reducido de 110px a 90px */
             margin: 0 auto;
         }
 
         .matrix-dot {
-            width: 7px;
-            height: 7px;
+            width: 5px; /* Reducido de 7px a 5px */
+            height: 5px; /* Reducido de 7px a 5px */
             background-color: var(--acumen-emerald);
             border-radius: 50%;
             transition: background-color 0.2s;
         }
 
-        /* Right Column (Controls/Sliders) */
+        /* Right Column (Controls/Sliders) - Compactado */
         .hud-right-col {
             width: 290px;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px; /* Reducido de 12px a 8px */
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            padding: 20px;
+            padding: 12px 15px; /* Reducido a 12px 15px */
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console styling */
+        /* Console styling (Compactada para PC a 100px para evitar desbordar pantallas pequeñas) */
         .console-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
             border-radius: 16px;
-            padding: 15px;
-            height: 160px;
+            padding: 8px 10px; /* Reducido a 8px 10px */
+            height: 100px; /* Reducido de 160px a 100px */
             overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
-            line-height: 1.5;
+            font-size: 0.7rem; /* Reducido a 0.7rem */
+            line-height: 1.4;
             color: #93c5fd;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             box-sizing: border-box;
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
@@ -809,19 +828,19 @@
         .sliders-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px; /* Reducido a 6px */
         }
 
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px; /* Reducido a 2px */
         }
 
         .control-lbl {
             display: flex;
             justify-content: space-between;
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* Reducido a 0.65rem */
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -857,11 +876,11 @@
             background-color: var(--acumen-blue);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 10px; /* Reducido de 14px a 10px */
             border-radius: 8px;
             font-family: 'Outfit', sans-serif;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem; /* Reducido de 0.85rem a 0.8rem */
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
@@ -885,10 +904,10 @@
             background-color: #25D366;
             color: white;
             text-decoration: none;
-            padding: 12px;
+            padding: 10px; /* Reducido de 12px a 10px */
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -900,10 +919,10 @@
             background-color: transparent;
             border: 1px solid var(--acumen-blue);
             color: var(--acumen-blue);
-            padding: 12px;
+            padding: 10px; /* Reducido de 12px a 10px */
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -935,6 +954,10 @@
         /* Responsive Mobile Layout adjustment (FREE UP 3D Viewport) */
         @media (max-width: 680px) {
             .btn-toggle-info {
+                display: flex !important;
+            }
+
+            .legend-header-mobile {
                 display: flex !important;
             }
             
@@ -1089,6 +1112,12 @@
 
                 <!-- Leyenda del Gemelo Digital (Colapsada en móvil por defecto, incluye Monte Carlo) -->
                 <div id="legendBox" class="legend-box collapsed-mobile">
+                    <!-- Botón de cierre interno para celulares (con z-index y fácil interacción) -->
+                    <div class="legend-header-mobile">
+                        <span class="project-title" style="font-size: 0.7rem; color: var(--acumen-blue);">Ficha Técnica / Leyenda</span>
+                        <button class="btn-close-legend-inner interactive" id="btnCloseLegendInner">❌</button>
+                    </div>
+
                     <div class="project-desc-block">
                         <div class="project-title">Proyecto: Viaducto CCI 2026</div>
                         <p class="project-desc">Mitigación estocástica de riesgos de falla por socavación local en pilas y deslizamiento lateral del estribo bajo incertidumbre profunda de cambio climático (RCP).</p>
@@ -1120,13 +1149,13 @@
                     </div>
 
                     <!-- Monte Carlo Matrix Panel (Movido dentro del drawer en móvil) -->
-                    <div id="monte-carlo-panel" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 10px;">
+                    <div id="monte-carlo-panel">
                         <div class="matrix-title">Monte Carlo (100 Futuros)</div>
                         <div id="matrixGrid" class="matrix-grid"></div>
                     </div>
                 </div>
 
-                <!-- Console log box (Visible en PC con 160px, y en móvil compacta a 75px) -->
+                <!-- Console log box (Visible en PC con 100px, y en móvil compacta a 75px) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
                     <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
@@ -1411,22 +1440,35 @@
         const btnWhatsapp = document.getElementById('btnWhatsapp');
         const btnReset = document.getElementById('btnReset');
         const btnToggleInfo = document.getElementById('btnToggleInfo');
+        const btnCloseLegendInner = document.getElementById('btnCloseLegendInner');
         const legendBox = document.getElementById('legendBox');
 
         // Toggle Drawer logic for mobile
+        function openMobileLegend() {
+            legendBox.classList.remove('collapsed-mobile');
+            legendBox.classList.add('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
+            btnToggleInfo.style.borderColor = "var(--acumen-red)";
+        }
+
+        function closeMobileLegend() {
+            legendBox.classList.add('collapsed-mobile');
+            legendBox.classList.remove('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+            btnToggleInfo.style.borderColor = "var(--zinc-border)";
+        }
+
         btnToggleInfo.addEventListener('click', () => {
             if (legendBox.classList.contains('collapsed-mobile')) {
-                legendBox.classList.remove('collapsed-mobile');
-                legendBox.classList.add('expanded-mobile');
-                btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
-                btnToggleInfo.style.borderColor = "var(--acumen-red)";
+                openMobileLegend();
             } else {
-                legendBox.classList.add('collapsed-mobile');
-                legendBox.classList.remove('expanded-mobile');
-                btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
-                btnToggleInfo.style.borderColor = "var(--zinc-border)";
+                closeMobileLegend();
             }
         });
+
+        if (btnCloseLegendInner) {
+            btnCloseLegendInner.addEventListener('click', closeMobileLegend);
+        }
 
         // 3D Objects
         const river = document.getElementById('river');
@@ -1689,10 +1731,7 @@
             btnReset.style.display = 'none';
 
             // Collapse legend drawer if open
-            legendBox.classList.add('collapsed-mobile');
-            legendBox.classList.remove('expanded-mobile');
-            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
-            btnToggleInfo.style.borderColor = "var(--zinc-border)";
+            closeMobileLegend();
 
             // Force rendering recalculation
             window.dispatchEvent(new Event('resize'));
