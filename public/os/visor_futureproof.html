@@ -181,7 +181,7 @@
                 
                 const mat = new THREE.PointsMaterial({
                     color: '#60a5fa',
-                    size: 0.012,
+                    size: 0.038,
                     transparent: true,
                     opacity: 0.8
                 });
@@ -202,6 +202,7 @@
                 const count = pos.count;
 
                 this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+                this.particleSystem.material.size = 0.02 + intensity * 0.028;
 
                 for (let i = 0; i < count; i++) {
                     let y = pos.getY(i);

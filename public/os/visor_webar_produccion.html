@@ -158,8 +158,8 @@
                 }
                 geom.computeVertexNormals();
                 
-                const solidMat = new THREE.MeshStandardMaterial({ color: '#7f1d1d', roughness: 0.9, flatShading: true }); 
-                const wireMat = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
+                const solidMat = new THREE.MeshStandardMaterial({ color: '#3e2723', roughness: 0.95, flatShading: true }); 
+                const wireMat = new THREE.MeshBasicMaterial({ color: '#8d6e63', wireframe: true, transparent: true, opacity: 0.25 });
                 const mesh1 = new THREE.Mesh(geom, solidMat);
                 const mesh2 = new THREE.Mesh(geom, wireMat);
                 const group = new THREE.Group();
@@ -192,7 +192,7 @@
                 
                 const mat = new THREE.PointsMaterial({
                     color: '#60a5fa',
-                    size: 0.012,
+                    size: 0.038,
                     transparent: true,
                     opacity: 0.8
                 });
@@ -213,6 +213,7 @@
                 const count = pos.count;
 
                 this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+                this.particleSystem.material.size = 0.02 + intensity * 0.028;
 
                 for (let i = 0; i < count; i++) {
                     let y = pos.getY(i);
@@ -1463,7 +1464,7 @@
                     landslide.setAttribute('scale', `${scaleVal} ${scaleVal} ${scaleVal}`);
                     
                     // Stress mesh color to red
-                    mountain.setAttribute('mountain-terrain', 'colorWire', '#ef4444');
+                    mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
                     btnOptimize.disabled = false;
 
                     if (!window.alertLogged) {
