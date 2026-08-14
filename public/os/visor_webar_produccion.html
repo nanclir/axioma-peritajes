@@ -71,11 +71,11 @@
                         z += Math.sin(x * 9) * Math.cos(y * 9) * 0.12;
                         z += Math.sin(x * 18) * Math.cos(y * 18) * 0.04;
                     } else {
-                        // Terreno sobre la extensión completa del túnel (de y = -0.6 a y = 1.2)
-                        let distBack = y - (-0.6); // Distancia desde el portal posterior
-                        let distFront = 1.2 - y;   // Distancia desde el portal frontal
-                        z = Math.min(0.55, distBack * 2.5, distFront * 2.5);
-                        z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
+                        if (y < -0.2) {
+                            let tunnelProgress = -0.2 - y;
+                            z = Math.min(0.55, tunnelProgress * 1.4);
+                            z += Math.sin(x * 12) * Math.cos(y * 12) * 0.04;
+                        }
                     }
                     z = Math.max(0, z);
                     pos.setZ(i, z);
@@ -1178,11 +1178,11 @@
             <!-- Línea de demarcación vial cian -->
             <a-box position="0 0.008 0.3" width="0.01" height="0.01" depth="1.8" material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4"></a-box>
 
-            <!-- Portal de Entrada del Túnel (Tubo Continuo de Lado a Lado de la Maqueta) -->
-            <a-entity id="tunnel-entrance-solid" position="0 0.2 0.3" rotation="0 0 0">
-                <a-cylinder position="0 0 0" radius="0.2" height="1.8" rotation="90 0 0" theta-start="0" theta-length="180" 
+            <!-- Portal de Entrada del Túnel (Tubo Continuo al Fondo de la Montaña) -->
+            <a-entity id="tunnel-entrance-solid" position="0 0.2 -0.2" rotation="0 0 0">
+                <a-cylinder position="0 0 -0.5" radius="0.2" height="1.0" rotation="90 0 0" theta-start="0" theta-length="180" 
                             material="color: #475569; side: double; roughness: 0.7; flatShading: true; transparent: true; opacity: 0.9"></a-cylinder>
-                <a-cylinder position="0 0 0" radius="0.205" height="1.8" rotation="90 0 0" theta-start="0" theta-length="180" 
+                <a-cylinder position="0 0 -0.5" radius="0.205" height="1.0" rotation="90 0 0" theta-start="0" theta-length="180" 
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.4; side: double"></a-cylinder>
             </a-entity>
 
