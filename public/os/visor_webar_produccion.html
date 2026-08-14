@@ -589,6 +589,26 @@
             display: none;
         }
 
+        .btn-reset {
+            background-color: transparent;
+            border: 1px solid var(--acumen-blue);
+            color: var(--acumen-blue);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .btn-reset:hover {
+            background-color: rgba(41, 119, 253, 0.1);
+        }
+
         /* Responsive Mobile Layout adjustment */
         @media (max-width: 680px) {
             .hud-lateral-panels {
@@ -612,7 +632,7 @@
 </head>
 <body>
 
-    <!-- Camera Video Feed Element (Universal for PC, Tablet & Mobile) -->
+    <!-- Camera Video Feed Element -->
     <video id="camera-video" autoplay playsinline muted></video>
     
     <!-- High-tech Grid Background Fallback -->
@@ -737,6 +757,7 @@
                 <!-- Active optimize button -->
                 <button id="btnOptimize" class="btn-action" disabled>Activar ACUMEN OS</button>
                 <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+                <button id="btnReset" class="btn-reset">Simular de Nuevo</button>
             </div>
         </div>
     </div>
@@ -781,7 +802,7 @@
                             material="color: #10b981; wireframe: true; transparent: true; opacity: 0.3; side: double"></a-cylinder>
             </a-entity>
 
-            <!-- Landslide Organic Mud Mass (Grande, volumétrica y reposicionada justo encima de la vía) -->
+            <!-- Landslide Organic Mud Mass -->
             <a-entity id="landslide" landslide-mesh position="0.08 0.32 -0.15" scale="0.01 0.01 0.01" visible="false">
                 <a-text value="[!] FALLA DE TALUD" align="center" width="1.4" position="0 0.35 0" color="#f87171" font="kandoo"></a-text>
             </a-entity>
@@ -860,10 +881,8 @@
                 const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
                 const distance = fromVec.distanceTo(toVec);
 
-                // Crear cilindro
                 const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
                 
-                // Rotar y trasladar geometría para colocar pivote en la base
                 geom.rotateX(Math.PI / 2);
                 geom.translate(0, 0, distance / 2);
 
@@ -876,10 +895,7 @@
                 const mesh = new THREE.Mesh(geom, mat);
                 el.setObject3D('mesh', mesh);
                 
-                // Posicionar origen del cilindro
                 el.setAttribute('position', data.from);
-                
-                // Orientar hacia el destino
                 el.object3D.lookAt(toVec);
             }
         });
@@ -1072,6 +1088,13 @@
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
 
+        // FORCE GRAPHICS INITIALIZATION ON PAGE LOAD (FIXES HIDDEN MOUNTAIN BUG)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
+        });
+
         const onboardingDiv = document.getElementById('desktop-onboarding');
         const hudContainer = document.getElementById('hud-container');
         const btnDesktopEnter = document.getElementById('btn-desktop-enter');
@@ -1178,6 +1201,7 @@
         const rainLabel = document.getElementById('rainLabel');
         const btnOptimize = document.getElementById('btnOptimize');
         const btnWhatsapp = document.getElementById('btnWhatsapp');
+        const btnReset = document.getElementById('btnReset');
 
         // 3D Objects
         const landslide = document.getElementById('landslide');
@@ -1300,12 +1324,62 @@
                 
                 btnOptimize.style.display = 'none';
                 btnWhatsapp.style.display = 'block';
+                btnReset.style.display = 'block'; // Show simulation reset button
             }, 2400);
 
             setTimeout(() => {
                 log(`[SAFETY_MONITOR_D]: Estructura consolidada. Alerta resuelta.`, 'green');
                 laserLines.setAttribute('visible', 'false');
             }, 3200);
+        });
+
+        // SIMULATION RESET IN CALIENTE
+        btnReset.addEventListener('click', () => {
+            isOptimized = false;
+            isOptimizing = false;
+            window.alertLogged = false;
+            
+            // Reset Sliders
+            rainSlider.value = 10;
+            rainSlider.disabled = false;
+            rainLabel.innerText = "10 años";
+
+            // Reset A-Frame Nodes
+            const nodes = [nodeGeology, nodeGeotech, nodeStructural, nodeSafety];
+            nodes.forEach(node => {
+                node.setAttribute('material', 'color', '#2977fd');
+                node.setAttribute('material', 'emissive', '#2977fd');
+                node.setAttribute('material', 'emissiveIntensity', '0.4');
+            });
+
+            // Reset 3D Assets visibility
+            anchorsGroup.setAttribute('visible', 'false');
+            landslide.setAttribute('visible', 'false');
+            laserLines.setAttribute('visible', 'false');
+            rainSystem.setAttribute('rain-particles', 'intensity', 0);
+            mountain.setAttribute('mountain-terrain', 'colorWire', '#10b981');
+
+            // Reset Telemetry Values
+            fosVal.innerText = "1.45";
+            fosVal.style.color = "var(--acumen-emerald)";
+            statusVal.innerText = "CONEXIÓN ACTIVA";
+            statusVal.style.color = "var(--acumen-emerald)";
+
+            // Reset Terminal Console box content
+            consoleLog.innerHTML = `
+                <div class="console-line">[SYSTEM]: Simulación reiniciada.</div>
+                <div class="console-line">[SYSTEM]: Telemetría en vivo enlazada.</div>
+                <div class="console-line">[SAFETY_MONITOR]: Monitoreando taludes...</div>
+            `;
+
+            // Reset Actions Buttons states
+            btnOptimize.style.display = 'block';
+            btnOptimize.disabled = true;
+            btnWhatsapp.style.display = 'none';
+            btnReset.style.display = 'none';
+            
+            // Force redraw
+            window.dispatchEvent(new Event('resize'));
         });
     </script>
 </body>

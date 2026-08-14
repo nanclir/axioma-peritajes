@@ -452,7 +452,7 @@
         .legend-dot.cyan { background-color: #00ffcc; }
         .legend-dot.emerald { background-color: var(--acumen-emerald); }
 
-        /* Monte Carlo Matrix Overlay Panel */
+        /* Monte Carlo Matrix Panel */
         #monte-carlo-panel {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -625,6 +625,26 @@
             display: none;
         }
 
+        .btn-reset {
+            background-color: transparent;
+            border: 1px solid var(--acumen-blue);
+            color: var(--acumen-blue);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .btn-reset:hover {
+            background-color: rgba(41, 119, 253, 0.1);
+        }
+
         /* Swipe Instruction Tip */
         .swipe-tip {
             position: absolute;
@@ -750,7 +770,7 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda de Componentes -->
+                <!-- Leyenda del Gemelo Digital -->
                 <div class="legend-box">
                     <div class="legend-title">Leyenda del Gemelo Digital</div>
                     <div class="legend-items">
@@ -813,6 +833,7 @@
                 <!-- Active optimize button -->
                 <button id="btnOptimize" class="btn-action" disabled>Desplegar Estrategia RDM</button>
                 <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+                <button id="btnReset" class="btn-reset">Simular de Nuevo</button>
             </div>
         </div>
     </div>
@@ -838,8 +859,14 @@
             <!-- Canyon Landscape (Procedural Solid + Rejilla Esmeralda) -->
             <a-entity id="canyon" canyon-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
 
-            <!-- River water (Dynamic Plane) -->
-            <a-plane id="river" position="0 0.05 0" rotation="-90 0 0" width="2.4" height="0.48"
+            <!-- Sandy riverbanks for geological context (Playas de Arena a los lados) -->
+            <a-plane position="-0.15 0.01 0" rotation="-90 0 0" width="0.08" height="2.4"
+                     material="color: #d1b894; opacity: 0.85; transparent: true; roughness: 0.9"></a-plane>
+            <a-plane position="0.15 0.01 0" rotation="-90 0 0" width="0.08" height="2.4"
+                     material="color: #d1b894; opacity: 0.85; transparent: true; roughness: 0.9"></a-plane>
+
+            <!-- River water (Sit inside the concave channel) -->
+            <a-plane id="river" position="0 0.01 0" rotation="-90 0 0" width="2.4" height="0.22"
                      material="color: #2977fd; opacity: 0.72; transparent: true; roughness: 0.2; metalness: 0.8"></a-plane>
             
             <!-- Viaduct Bridge Deck -->
@@ -859,27 +886,23 @@
             <a-cylinder id="pier-right" position="0.45 0.2 0" radius="0.035" height="0.4" material="color: #475569; roughness: 0.8"></a-cylinder>
             <a-box id="foundation-right" position="0.45 0.02 0" width="0.12" height="0.04" depth="0.12" material="color: #334155; roughness: 0.9"></a-box>
 
-            <!-- Active Countermeasures (Glowing + Rótulos del Refuerzo RDM) -->
+            <!-- Active Countermeasures -->
             <a-entity id="rdm-reinforcements" visible="false">
-                <!-- Riprap Left Pile base -->
                 <a-sphere position="-0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
                 <a-sphere position="-0.41 0.02 -0.05" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
                 <a-sphere position="-0.49 0.02 -0.04" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <!-- Riprap Right Pile base -->
                 <a-sphere position="0.45 0.02 0.05" radius="0.04" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
                 <a-sphere position="0.49 0.02 -0.04" radius="0.038" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
                 <a-sphere position="0.41 0.02 -0.05" radius="0.042" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.2; flatShading: true"></a-sphere>
 
-                <!-- Slope drainage tubes at abutments (Drenes de talud) -->
                 <a-cylinder position="-1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
                 <a-cylinder position="1.0 0.22 0" radius="0.005" height="0.15" rotation="0 0 -70" material="color: #00ffcc; emissive: #00ffcc; emissiveIntensity: 1.5"></a-cylinder>
                 
-                <!-- Rótulo RDM 3D para el cliente -->
                 <a-text value="REFUERZO RDM DESPLEGADO" align="center" width="1.2" position="0 0.54 0" color="#00ffcc" font="kandoo"></a-text>
             </a-entity>
 
-            <!-- Landslide Mudmass near Left Abutment (Grande y volumétrica de lodo/roca roja) -->
+            <!-- Landslide Mudmass near Left Abutment -->
             <a-entity id="landslide" landslide-mesh position="-0.85 0.22 0" scale="0.01 0.01 0.01" visible="false">
                 <a-text value="[!] DESLIZAMIENTO" align="center" width="1.4" position="0.1 0.35 0" color="#f87171" font="kandoo"></a-text>
             </a-entity>
@@ -913,7 +936,7 @@
                 <a-entity thick-laser="from: -0.8 0.35 0.3; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
             </a-entity>
 
-        </a-entity>
+        </is-landslide>
 
     </a-scene>
 
@@ -922,6 +945,13 @@
         function isMobileDevice() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
+
+        // FORCE GRAPHICS INITIALIZATION ON PAGE LOAD (FIXES HIDDEN MOUNTAIN BUG)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
+        });
 
         // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
         AFRAME.registerComponent('thick-laser', {
@@ -958,6 +988,7 @@
             }
         });
 
+        // GEOMETRÍA CON CAUCE CÓNCAVO PARA EL RÍO Y LADERAS DEFINIDAS
         AFRAME.registerComponent('canyon-terrain', {
             schema: {
                 colorSolid: { type: 'color', default: '#0c2310' },
@@ -976,14 +1007,15 @@
                     let z = 0;
                     
                     let distToCenter = Math.abs(x);
-                    if (distToCenter > 0.2) {
-                        z = (distToCenter - 0.2) * 0.75;
+                    if (distToCenter > 0.24) {
+                        // Laderas a ambos lados elevadas
+                        z = (distToCenter - 0.24) * 0.85;
                         z += Math.sin(x * 10) * Math.cos(y * 10) * 0.08;
                     } else {
-                        z = 0;
+                        // Lecho del río cóncavo (se deprime hacia el centro)
+                        z = -0.06 * (1.0 - (distToCenter / 0.24));
                     }
                     
-                    z = Math.max(0, z);
                     pos.setZ(i, z);
                 }
                 
@@ -1021,7 +1053,8 @@
                     let py = (Math.random() * 2.2) - 1.1;
 
                     if (Math.abs(px) > 0.28) {
-                        let z = (Math.abs(px) - 0.2) * 0.75;
+                        let distToCenter = Math.abs(px);
+                        let z = (distToCenter - 0.24) * 0.85;
                         z += Math.sin(px * 10) * Math.cos(py * 10) * 0.08;
                         z = Math.max(0, z);
 
@@ -1269,6 +1302,7 @@
         const rcpLabel = document.getElementById('rcpLabel');
         const btnOptimize = document.getElementById('btnOptimize');
         const btnWhatsapp = document.getElementById('btnWhatsapp');
+        const btnReset = document.getElementById('btnReset');
 
         // 3D Objects
         const river = document.getElementById('river');
@@ -1323,7 +1357,7 @@
                 robustnessVal.innerText = `${robustness}%`;
                 npvVal.innerText = `$${npv}M`;
 
-                let riverHeight = 0.05 + (rcp - 1) * 0.08 + (horizon - 2026) * 0.001;
+                let riverHeight = 0.01 + (rcp - 1) * 0.05 + (horizon - 2026) * 0.0006;
                 river.setAttribute('position', `0 ${riverHeight} 0`);
 
                 if (robustness < 65) {
@@ -1361,7 +1395,7 @@
                 robustnessVal.style.color = "var(--acumen-emerald)";
                 npvVal.style.color = "var(--acumen-emerald)";
                 
-                let riverHeight = 0.05 + (rcp - 1) * 0.08 + (horizon - 2026) * 0.001;
+                let riverHeight = 0.01 + (rcp - 1) * 0.05 + (horizon - 2026) * 0.0006;
                 river.setAttribute('position', `0 ${riverHeight} 0`);
             }
         }
@@ -1419,12 +1453,73 @@
                 
                 btnOptimize.style.display = 'none';
                 btnWhatsapp.style.display = 'block';
+                btnReset.style.display = 'block'; // Show reset simulation button
             }, 2400);
 
             setTimeout(() => {
                 log(`[SYSTEM]: Inversión futura blindada con éxito (RDM OK).`, 'green');
                 laserLines.setAttribute('visible', 'false');
             }, 3200);
+        });
+
+        // RESET DE SIMULACIÓN EN CALIENTE RDM
+        btnReset.addEventListener('click', () => {
+            isOptimized = false;
+            isOptimizing = false;
+            window.alertLogged = false;
+
+            // Reset Sliders
+            horizonSlider.value = 2026;
+            horizonSlider.disabled = false;
+            horizonLabel.innerText = "2026";
+
+            rcpSlider.value = 1;
+            rcpSlider.disabled = false;
+            rcpLabel.innerText = "Base";
+
+            // Reset Nodes colors
+            const nodes = [nodeClimate, nodeHydro, nodeStruct, nodeRdm];
+            nodes.forEach(node => {
+                node.setAttribute('material', 'color', '#2977fd');
+                node.setAttribute('material', 'emissive', '#2977fd');
+                node.setAttribute('material', 'emissiveIntensity', '0.4');
+            });
+
+            // Reset 3D Assets visibility
+            rdmReinforcements.setAttribute('visible', 'false');
+            landslide.setAttribute('visible', 'false');
+            laserLines.setAttribute('visible', 'false');
+            rainSystem.setAttribute('rain-particles', 'intensity', 0);
+            river.setAttribute('position', '0 0.01 0');
+
+            // Reset Monte Carlo Dots
+            dotsArray.forEach(dot => {
+                dot.style.backgroundColor = 'var(--acumen-emerald)';
+            });
+
+            // Reset Telemetry UI values
+            robustnessVal.innerText = "98%";
+            robustnessVal.style.color = "var(--acumen-emerald)";
+            npvVal.innerText = "-$1.2M";
+            npvVal.style.color = "var(--acumen-emerald)";
+            statusVal.innerText = "CONEXIÓN ACTIVA";
+            statusVal.style.color = "var(--acumen-emerald)";
+
+            // Reset console text
+            consoleLog.innerHTML = `
+                <div class="console-line">[SYSTEM]: Simulación RDM reiniciada.</div>
+                <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
+                <div class="console-line">[DECISION_AI]: Listo para desplegar RDM.</div>
+            `;
+
+            // Reset Buttons State
+            btnOptimize.style.display = 'block';
+            btnOptimize.disabled = true;
+            btnWhatsapp.style.display = 'none';
+            btnReset.style.display = 'none';
+
+            // Force rendering recalculation
+            window.dispatchEvent(new Event('resize'));
         });
     </script>
 </body>
