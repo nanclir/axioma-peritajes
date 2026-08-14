@@ -415,7 +415,32 @@
             gap: 12px;
         }
 
-        /* Legend Panel (Integrated with Project Description and Specs) */
+        /* Toggle Button for Mobile Info Box */
+        .btn-toggle-info {
+            display: none; /* Oculto por defecto en desktop */
+            pointer-events: auto;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+        }
+
+        .btn-toggle-info:hover {
+            border-color: var(--acumen-blue);
+        }
+
+        /* Legend Panel */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -529,6 +554,31 @@
             box-sizing: border-box;
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
+
+        /* Single Line Ticker for Mobile UI */
+        .console-ticker {
+            display: none; /* Oculto en desktop */
+            pointer-events: auto;
+            background-color: rgba(9, 11, 16, 0.85);
+            border: 1px solid var(--zinc-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: #93c5fd;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+        }
+
+        .console-ticker.red { color: #f87171; font-weight: bold; border-color: var(--acumen-red); }
+        .console-ticker.green { color: #4ade80; font-weight: bold; border-color: var(--acumen-emerald); }
+        .console-ticker.gold { color: #fcd34d; font-weight: bold; border-color: var(--acumen-gold); }
 
         .console-line {
             white-space: normal;
@@ -644,19 +694,55 @@
             background-color: rgba(41, 119, 253, 0.1);
         }
 
-        /* Responsive Mobile Layout adjustment */
+        /* Responsive Mobile Layout adjustment (FREE UP 3D Protagonism) */
         @media (max-width: 680px) {
+            .btn-toggle-info {
+                display: flex !important;
+            }
+            .console-ticker {
+                display: block !important;
+                margin: 0 auto;
+            }
+            
             .hud-lateral-panels {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
                 align-items: center;
+                width: 100%;
+                box-sizing: border-box;
             }
-            .hud-left-col, .hud-right-col {
+            
+            .hud-left-col {
                 width: 100%;
                 max-width: 340px;
+                align-items: flex-start;
             }
+
+            /* Ocultar Leyenda por defecto en móvil */
+            .legend-box.collapsed-mobile {
+                display: none !important;
+            }
+            
+            /* Leyenda en modo Drawer modal al hacer clic */
+            .legend-box.expanded-mobile {
+                display: flex !important;
+                position: fixed;
+                top: 80px;
+                left: 20px;
+                right: 20px;
+                z-index: 200;
+                background-color: rgba(18, 22, 32, 0.98);
+                border: 1px solid var(--acumen-blue);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            }
+
             .console-box {
-                height: 110px;
+                display: none !important; /* Ocultar caja grande en celular */
+            }
+            
+            .hud-right-col {
+                width: 100%;
+                max-width: 340px;
             }
         }
 
@@ -747,8 +833,11 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda del Gemelo Digital (Con descripción del proyecto y ficha técnica) -->
-                <div class="legend-box">
+                <!-- Botón de apertura de información en móviles -->
+                <button id="btnToggleInfo" class="btn-toggle-info interactive"><span>ℹ️</span> Proyecto / Leyenda</button>
+
+                <!-- Leyenda del Gemelo Digital (Colapsada en móvil por defecto) -->
+                <div id="legendBox" class="legend-box collapsed-mobile">
                     <div class="project-desc-block">
                         <div class="project-title">Proyecto: Túnel Alta Montaña</div>
                         <p class="project-desc">Evaluación geomecánica de la estabilidad del talud de acceso y el portal de entrada ante amenazas de remoción en masa inducidas por infiltración pluvial acelerada.</p>
@@ -780,7 +869,7 @@
                     </div>
                 </div>
 
-                <!-- Terminal -->
+                <!-- Terminal (Visible solo en PC) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: ACUMEN OS inicializado.</div>
                     <div class="console-line">[SYSTEM]: Telemetría de vídeo universal enlazada.</div>
@@ -790,6 +879,9 @@
 
             <!-- Right Controls Column -->
             <div class="hud-right-col">
+                <!-- Ticker de línea única para móviles -->
+                <div id="consoleLogTicker" class="console-ticker">[SAFETY_MONITOR]: Evaluando taludes...</div>
+
                 <!-- Rain control slider -->
                 <div class="control-group">
                     <div class="control-lbl">
@@ -1243,11 +1335,32 @@
         const statusVal = document.getElementById('statusVal');
         const fosVal = document.getElementById('fosVal');
         const consoleLog = document.getElementById('consoleLog');
+        const consoleLogTicker = document.getElementById('consoleLogTicker');
         const rainSlider = document.getElementById('rainSlider');
         const rainLabel = document.getElementById('rainLabel');
         const btnOptimize = document.getElementById('btnOptimize');
         const btnWhatsapp = document.getElementById('btnWhatsapp');
         const btnReset = document.getElementById('btnReset');
+        const btnToggleInfo = document.getElementById('btnToggleInfo');
+        const legendBox = document.getElementById('legendBox');
+
+        let isOptimized = false;
+        let isOptimizing = false;
+
+        // Toggle Drawer logic for mobile
+        btnToggleInfo.addEventListener('click', () => {
+            if (legendBox.classList.contains('collapsed-mobile')) {
+                legendBox.classList.remove('collapsed-mobile');
+                legendBox.classList.add('expanded-mobile');
+                btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
+                btnToggleInfo.style.borderColor = "var(--acumen-red)";
+            } else {
+                legendBox.classList.add('collapsed-mobile');
+                legendBox.classList.remove('expanded-mobile');
+                btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+                btnToggleInfo.style.borderColor = "var(--zinc-border)";
+            }
+        });
 
         // 3D Objects
         const landslide = document.getElementById('landslide');
@@ -1260,15 +1373,19 @@
         const mountain = document.getElementById('mountain');
         const rainSystem = document.getElementById('rainSystem');
 
-        let isOptimized = false;
-        let isOptimizing = false;
-
         function log(message, type = '') {
+            // Update PC console box
             const line = document.createElement('div');
             line.className = `console-line ${type}`;
             line.innerText = message;
             consoleLog.appendChild(line);
             consoleLog.scrollTop = consoleLog.scrollHeight;
+
+            // Update mobile single line ticker
+            if (consoleLogTicker) {
+                consoleLogTicker.innerText = message;
+                consoleLogTicker.className = `console-ticker ${type}`;
+            }
         }
 
         // Slider Interaction
@@ -1417,12 +1534,22 @@
                 <div class="console-line">[SYSTEM]: Telemetría en vivo enlazada.</div>
                 <div class="console-line">[SAFETY_MONITOR]: Monitoreando taludes...</div>
             `;
+            if (consoleLogTicker) {
+                consoleLogTicker.innerText = "[SYSTEM]: Simulación reiniciada.";
+                consoleLogTicker.className = "console-ticker";
+            }
 
             // Reset Actions Buttons states
             btnOptimize.style.display = 'block';
             btnOptimize.disabled = true;
             btnWhatsapp.style.display = 'none';
             btnReset.style.display = 'none';
+
+            // Collapse legend drawer if open
+            legendBox.classList.add('collapsed-mobile');
+            legendBox.classList.remove('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+            btnToggleInfo.style.borderColor = "var(--zinc-border)";
             
             // Force redraw
             window.dispatchEvent(new Event('resize'));

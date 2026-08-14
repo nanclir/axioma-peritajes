@@ -405,7 +405,32 @@
             gap: 12px;
         }
 
-        /* Legend Panel (Integrated with Project Description and Specs) */
+        /* Toggle Button for Mobile Info Box */
+        .btn-toggle-info {
+            display: none; /* Oculto en desktop por defecto */
+            pointer-events: auto;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+        }
+
+        .btn-toggle-info:hover {
+            border-color: var(--acumen-blue);
+        }
+
+        /* Legend Panel */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -560,6 +585,31 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
+        /* Single Line Ticker for Mobile UI */
+        .console-ticker {
+            display: none; /* Oculto en desktop */
+            pointer-events: auto;
+            background-color: rgba(9, 11, 16, 0.85);
+            border: 1px solid var(--zinc-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: #93c5fd;
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+        }
+
+        .console-ticker.red { color: #f87171; font-weight: bold; border-color: var(--acumen-red); }
+        .console-ticker.green { color: #4ade80; font-weight: bold; border-color: var(--acumen-emerald); }
+        .console-ticker.gold { color: #fcd34d; font-weight: bold; border-color: var(--acumen-gold); }
+
         .console-line {
             white-space: normal;
             word-break: break-all;
@@ -696,19 +746,55 @@
             animation: pulse 2s infinite;
         }
 
-        /* Responsive Mobile Layout adjustment */
+        /* Responsive Mobile Layout adjustment (FREE UP 3D Viewport) */
         @media (max-width: 680px) {
+            .btn-toggle-info {
+                display: flex !important;
+            }
+            .console-ticker {
+                display: block !important;
+                margin: 0 auto;
+            }
+            
             .hud-lateral-panels {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
                 align-items: center;
+                width: 100%;
+                box-sizing: border-box;
             }
-            .hud-left-col, .hud-right-col {
+            
+            .hud-left-col {
                 width: 100%;
                 max-width: 340px;
+                align-items: flex-start;
             }
+
+            /* Ocultar Leyenda y Monte Carlo por defecto */
+            .legend-box.collapsed-mobile {
+                display: none !important;
+            }
+            
+            /* Cajón flotante expandido */
+            .legend-box.expanded-mobile {
+                display: flex !important;
+                position: fixed;
+                top: 80px;
+                left: 20px;
+                right: 20px;
+                z-index: 200;
+                background-color: rgba(18, 22, 32, 0.98);
+                border: 1px solid var(--acumen-blue);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            }
+
             .console-box {
-                height: 110px;
+                display: none !important; /* Ocultar caja grande de consola en móvil */
+            }
+            
+            .hud-right-col {
+                width: 100%;
+                max-width: 340px;
             }
         }
 
@@ -805,8 +891,11 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda del Gemelo Digital (Con descripción y especificaciones técnicas del viaducto) -->
-                <div class="legend-box">
+                <!-- Botón de apertura de información en móviles -->
+                <button id="btnToggleInfo" class="btn-toggle-info interactive"><span>ℹ️</span> Proyecto / Leyenda</button>
+
+                <!-- Leyenda del Gemelo Digital (Colapsada en móvil por defecto, incluye Monte Carlo) -->
+                <div id="legendBox" class="legend-box collapsed-mobile">
                     <div class="project-desc-block">
                         <div class="project-title">Proyecto: Viaducto CCI 2026</div>
                         <p class="project-desc">Mitigación estocástica de riesgos de falla por socavación local en pilas y deslizamiento lateral del estribo bajo incertidumbre profunda de cambio climático (RCP).</p>
@@ -836,15 +925,15 @@
                             <span>🔵 Simulación Climática RCP (Monte Carlo)</span>
                         </div>
                     </div>
+
+                    <!-- Monte Carlo Matrix Panel (Movido dentro del drawer en móvil) -->
+                    <div id="monte-carlo-panel" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 10px;">
+                        <div class="matrix-title">Monte Carlo (100 Futuros)</div>
+                        <div id="matrixGrid" class="matrix-grid"></div>
+                    </div>
                 </div>
 
-                <!-- Monte Carlo Matrix Overlay Panel -->
-                <div id="monte-carlo-panel">
-                    <div class="matrix-title">Monte Carlo (100 Futuros)</div>
-                    <div id="matrixGrid" class="matrix-grid"></div>
-                </div>
-
-                <!-- Console log box -->
+                <!-- Console log box (Visible solo en PC) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
                     <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
@@ -854,6 +943,9 @@
 
             <!-- Right Controls/Sliders Column -->
             <div class="hud-right-col">
+                <!-- Ticker de línea única para móviles -->
+                <div id="consoleLogTicker" class="console-ticker">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
+
                 <!-- Sliders -->
                 <div class="sliders-container">
                     <!-- Horizon Slider -->
@@ -960,7 +1052,7 @@
             </a-entity>
 
             <!-- Landslide Mudmass near Left Abutment (Reposicionado para que caiga encima de la vía, exagerado y visible) -->
-            <a-entity id="landslide" landslide-mesh position="-0.95 0.46 0.02" scale="0.01 0.01 0.01" visible="false">
+            <a-entity id="slide-land" landslide-mesh position="-0.95 0.46 0.02" scale="0.01 0.01 0.01" visible="false">
                 <a-text value="[!] DESLIZAMIENTO" align="center" width="1.4" position="0.1 0.45 0" color="#f87171" font="kandoo"></a-text>
             </a-entity>
 
@@ -999,17 +1091,6 @@
 
     <!-- Componentes A-Frame de Maqueta y Partículas -->
     <script>
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        // FORCE GRAPHICS INITIALIZATION ON PAGE LOAD (FIXES HIDDEN MOUNTAIN BUG)
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 500);
-        });
-
         // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
         AFRAME.registerComponent('thick-laser', {
             schema: {
@@ -1219,6 +1300,10 @@
 
     <!-- Main Logic & Interactive Controllers -->
     <script>
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
         const onboardingDiv = document.getElementById('desktop-onboarding');
         const hudContainer = document.getElementById('hud-container');
         const btnDesktopEnter = document.getElementById('btn-desktop-enter');
@@ -1321,6 +1406,70 @@
             dotsArray.push(dot);
         }
 
+        // UI Interactions
+        const statusVal = document.getElementById('statusVal');
+        const robustnessVal = document.getElementById('robustnessVal');
+        const npvVal = document.getElementById('npvVal');
+        const consoleLog = document.getElementById('consoleLog');
+        const consoleLogTicker = document.getElementById('consoleLogTicker');
+        const horizonSlider = document.getElementById('horizonSlider');
+        const horizonLabel = document.getElementById('horizonLabel');
+        const rcpSlider = document.getElementById('rcpSlider');
+        const rcpLabel = document.getElementById('rcpLabel');
+        const btnOptimize = document.getElementById('btnOptimize');
+        const btnWhatsapp = document.getElementById('btnWhatsapp');
+        const btnReset = document.getElementById('btnReset');
+        const btnToggleInfo = document.getElementById('btnToggleInfo');
+        const legendBox = document.getElementById('legendBox');
+
+        // Toggle Drawer logic for mobile
+        btnToggleInfo.addEventListener('click', () => {
+            if (legendBox.classList.contains('collapsed-mobile')) {
+                legendBox.classList.remove('collapsed-mobile');
+                legendBox.classList.add('expanded-mobile');
+                btnToggleInfo.innerHTML = "<span>❌</span> Cerrar Leyenda";
+                btnToggleInfo.style.borderColor = "var(--acumen-red)";
+            } else {
+                legendBox.classList.add('collapsed-mobile');
+                legendBox.classList.remove('expanded-mobile');
+                btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+                btnToggleInfo.style.borderColor = "var(--zinc-border)";
+            }
+        });
+
+        // 3D Objects
+        const river = document.getElementById('river');
+        const landslide = document.getElementById('slide-land');
+        const rdmReinforcements = document.getElementById('rdm-reinforcements');
+        const laserLines = document.getElementById('laser-lines');
+        const nodeClimate = document.getElementById('node-climate');
+        const nodeHydro = document.getElementById('node-hydro');
+        const nodeStruct = document.getElementById('node-struct');
+        const nodeRdm = document.getElementById('node-rdm');
+        const rainSystem = document.getElementById('rainSystem');
+        
+        // Conos de Socavación
+        const scourHoleLeft = document.getElementById('scour-hole-left');
+        const scourHoleRight = document.getElementById('scour-hole-right');
+
+        let isOptimized = false;
+        let isOptimizing = false;
+
+        function log(message, type = '') {
+            // Update PC console box
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.innerText = message;
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+
+            // Update mobile single line ticker
+            if (consoleLogTicker) {
+                consoleLogTicker.innerText = message;
+                consoleLogTicker.className = `console-ticker ${type}`;
+            }
+        }
+
         setInterval(() => {
             if (isOptimizing) return;
             
@@ -1348,45 +1497,6 @@
                 }
             });
         }, 300);
-
-        // UI Interactions
-        const statusVal = document.getElementById('statusVal');
-        const robustnessVal = document.getElementById('robustnessVal');
-        const npvVal = document.getElementById('npvVal');
-        const consoleLog = document.getElementById('consoleLog');
-        const horizonSlider = document.getElementById('horizonSlider');
-        const horizonLabel = document.getElementById('horizonLabel');
-        const rcpSlider = document.getElementById('rcpSlider');
-        const rcpLabel = document.getElementById('rcpLabel');
-        const btnOptimize = document.getElementById('btnOptimize');
-        const btnWhatsapp = document.getElementById('btnWhatsapp');
-        const btnReset = document.getElementById('btnReset');
-
-        // 3D Objects
-        const river = document.getElementById('river');
-        const landslide = document.getElementById('landslide');
-        const rdmReinforcements = document.getElementById('rdm-reinforcements');
-        const laserLines = document.getElementById('laser-lines');
-        const nodeClimate = document.getElementById('node-climate');
-        const nodeHydro = document.getElementById('node-hydro');
-        const nodeStruct = document.getElementById('node-struct');
-        const nodeRdm = document.getElementById('node-rdm');
-        const rainSystem = document.getElementById('rainSystem');
-        
-        // Conos de Socavación
-        const scourHoleLeft = document.getElementById('scour-hole-left');
-        const scourHoleRight = document.getElementById('scour-hole-right');
-
-        let isOptimized = false;
-        let isOptimizing = false;
-
-        function log(message, type = '') {
-            const line = document.createElement('div');
-            line.className = `console-line ${type}`;
-            line.innerText = message;
-            consoleLog.appendChild(line);
-            consoleLog.scrollTop = consoleLog.scrollHeight;
-        }
 
         function updateSimulationState() {
             if (isOptimizing) return;
@@ -1586,12 +1696,22 @@
                 <div class="console-line">[CLIMA_AGENT]: Modelando CMIP6 en tiempo real...</div>
                 <div class="console-line">[DECISION_AI]: Listo para desplegar RDM.</div>
             `;
+            if (consoleLogTicker) {
+                consoleLogTicker.innerText = "[SYSTEM]: Simulación RDM reiniciada.";
+                consoleLogTicker.className = "console-ticker";
+            }
 
             // Reset Buttons State
             btnOptimize.style.display = 'block';
             btnOptimize.disabled = true;
             btnWhatsapp.style.display = 'none';
             btnReset.style.display = 'none';
+
+            // Collapse legend drawer if open
+            legendBox.classList.add('collapsed-mobile');
+            legendBox.classList.remove('expanded-mobile');
+            btnToggleInfo.innerHTML = "<span>ℹ️</span> Proyecto / Leyenda";
+            btnToggleInfo.style.borderColor = "var(--zinc-border)";
 
             // Force rendering recalculation
             window.dispatchEvent(new Event('resize'));
