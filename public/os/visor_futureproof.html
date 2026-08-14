@@ -405,7 +405,7 @@
             gap: 12px;
         }
 
-        /* Legend Panel */
+        /* Legend Panel (Integrated with Project Description) */
         .legend-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -414,7 +414,29 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .project-desc-block {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 2px;
+        }
+
+        .project-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+
+        .project-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin: 0;
         }
 
         .legend-title {
@@ -423,8 +445,7 @@
             color: var(--acumen-blue);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid rgba(41, 119, 253, 0.2);
-            padding-bottom: 4px;
+            padding-bottom: 2px;
         }
 
         .legend-items {
@@ -770,9 +791,13 @@
         <div class="hud-lateral-panels">
             <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
-                <!-- Leyenda del Gemelo Digital -->
+                <!-- Leyenda del Gemelo Digital (Con descripción del proyecto del viaducto) -->
                 <div class="legend-box">
-                    <div class="legend-title">Leyenda del Gemelo Digital</div>
+                    <div class="project-desc-block">
+                        <div class="project-title">Proyecto: Viaducto CCI 2026</div>
+                        <p class="project-desc">Mitigación estocástica de riesgos de falla por socavación local en pilas y deslizamiento lateral del estribo bajo incertidumbre profunda de cambio climático (RCP).</p>
+                    </div>
+                    <div class="legend-title">Leyenda del Visor</div>
                     <div class="legend-items">
                         <div class="legend-item">
                             <div class="legend-dot blue"></div>
@@ -936,7 +961,7 @@
                 <a-entity thick-laser="from: -0.8 0.35 0.3; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
             </a-entity>
 
-        </is-landslide>
+        </a-entity>
 
     </a-scene>
 
