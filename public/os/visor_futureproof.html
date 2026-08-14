@@ -396,16 +396,63 @@
             pointer-events: none;
         }
 
-        /* Left Column (Stacking Monte Carlo Matrix above Console) */
+        /* Left Column (Stacking Legend + Monte Carlo + Console) */
         .hud-left-col {
             width: 290px;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
-        /* Monte Carlo Matrix Overlay Panel (Nested inside left column) */
+        /* Legend Panel */
+        .legend-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .legend-title {
+            font-size: 0.65rem;
+            font-weight: bold;
+            color: var(--acumen-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(41, 119, 253, 0.2);
+            padding-bottom: 4px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.65rem;
+            color: var(--text-main);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.blue { background-color: var(--acumen-blue); }
+        .legend-dot.red { background-color: var(--acumen-red); }
+        .legend-dot.cyan { background-color: #00ffcc; }
+        .legend-dot.emerald { background-color: var(--acumen-emerald); }
+
+        /* Monte Carlo Matrix Overlay Panel */
         #monte-carlo-panel {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -459,7 +506,7 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console vertical layout */
+        /* Console styling */
         .console-box {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -699,15 +746,39 @@
 
         <div class="swipe-tip">Desliza en la pantalla para rotar la maqueta</div>
 
-        <!-- Split Lateral Layout (Demos layout with maximum 3D visibility) -->
+        <!-- Split Lateral Layout -->
         <div class="hud-lateral-panels">
-            <!-- Left Console & Monte Carlo Column -->
+            <!-- Left Console & Legend Column -->
             <div class="hud-left-col">
+                <!-- Leyenda de Componentes -->
+                <div class="legend-box">
+                    <div class="legend-title">Leyenda del Gemelo Digital</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-dot blue"></div>
+                            <span>🔷 [C, H, E, RDM] Nodos Agentes ACUMEN</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot red"></div>
+                            <span>🔴 Falla de Abutment (Derrumbe Activo)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot cyan"></div>
+                            <span>🟢 Refuerzos RDM (Enrocado + Drenajes)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot emerald"></div>
+                            <span>🔵 Simulación Climática RCP (Monte Carlo)</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Monte Carlo Matrix Overlay Panel -->
                 <div id="monte-carlo-panel">
                     <div class="matrix-title">Monte Carlo (100 Futuros)</div>
                     <div id="matrixGrid" class="matrix-grid"></div>
                 </div>
+
                 <!-- Console log box -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: FutureProof Lab® inicializado.</div>
@@ -764,7 +835,7 @@
             <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4"
                      material="wireframe: true; color: #2977fd; opacity: 0.15; transparent: true"></a-plane>
 
-            <!-- Canyon Landscape -->
+            <!-- Canyon Landscape (Procedural Solid + Rejilla Esmeralda) -->
             <a-entity id="canyon" canyon-terrain="colorSolid: #0c2310; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
 
             <!-- River water (Dynamic Plane) -->
@@ -809,7 +880,9 @@
             </a-entity>
 
             <!-- Landslide Mudmass near Left Abutment (Grande y volumétrica de lodo/roca roja) -->
-            <a-entity id="landslide" landslide-mesh position="-0.95 0.28 0" scale="0.01 0.01 0.01" visible="false"></a-entity>
+            <a-entity id="landslide" landslide-mesh position="-0.85 0.22 0" scale="0.01 0.01 0.01" visible="false">
+                <a-text value="[!] DESLIZAMIENTO" align="center" width="1.4" position="0.1 0.35 0" color="#f87171" font="kandoo"></a-text>
+            </a-entity>
 
             <!-- Floating AI Agent Nodes con Etiquetas Legibles -->
             <!-- Node A: Climate Unit -->
@@ -832,12 +905,12 @@
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
             <a-text value="[RDM] DECISIONES" align="center" width="1.8" position="-0.8 0.48 0.3" color="#fff" font="kandoo"></a-text>
 
-            <!-- Connection Laser lines -->
+            <!-- Connection Laser lines (Láseres 3D gruesos y emisivos) -->
             <a-entity id="laser-lines" visible="false">
-                <a-entity line="start: -0.8 0.65 -0.4; end: 0 0.3 0; color: #10b981; opacity: 0.7"></a-entity>
-                <a-entity line="start: 0.8 0.65 -0.4; end: 0 0.3 0; color: #10b981; opacity: 0.7"></a-entity>
-                <a-entity line="start: 0.8 0.35 0.3; end: 0 0.3 0; color: #10b981; opacity: 0.7"></a-entity>
-                <a-entity line="start: -0.8 0.35 0.3; end: 0 0.3 0; color: #10b981; opacity: 0.7"></a-entity>
+                <a-entity thick-laser="from: -0.8 0.65 -0.4; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.8 0.65 -0.4; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.8 0.35 0.3; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.8 0.35 0.3; to: 0 0.3 0; color: #10b981; radius: 0.015"></a-entity>
             </a-entity>
 
         </a-entity>
@@ -846,6 +919,45 @@
 
     <!-- Componentes A-Frame de Maqueta y Partículas -->
     <script>
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
+        AFRAME.registerComponent('thick-laser', {
+            schema: {
+                from: { type: 'vec3' },
+                to: { type: 'vec3' },
+                color: { type: 'color', default: '#10b981' },
+                radius: { type: 'number', default: 0.015 }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+
+                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
+                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
+                const distance = fromVec.distanceTo(toVec);
+
+                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
+                
+                geom.rotateX(Math.PI / 2);
+                geom.translate(0, 0, distance / 2);
+
+                const mat = new THREE.MeshBasicMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.85
+                });
+
+                const mesh = new THREE.Mesh(geom, mat);
+                el.setObject3D('mesh', mesh);
+                
+                el.setAttribute('position', data.from);
+                el.object3D.lookAt(toVec);
+            }
+        });
+
         AFRAME.registerComponent('canyon-terrain', {
             schema: {
                 colorSolid: { type: 'color', default: '#0c2310' },
@@ -933,16 +1045,14 @@
             }
         });
 
-        // Landslide mass component (Asimétrica y colapsada sobre el estribo)
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.25, 1);
+                const geom = new THREE.DodecahedronGeometry(0.24, 1);
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
                     let y = pos.getY(i);
                     let z = pos.getZ(i);
-                    // Caída volumétrica hacia la pila del puente
                     pos.setX(i, x * 1.5 + (Math.sin(y*8)*0.06));
                     pos.setY(i, y * 0.7 - 0.05);
                     pos.setZ(i, z * 1.2);
@@ -957,7 +1067,6 @@
             }
         });
 
-        // OPTIMIZED DYNAMIC 3D RAIN PARTICLE SYSTEM COMPONENT (SHARED)
         AFRAME.registerComponent('rain-particles', {
             schema: {
                 intensity: { type: 'number', default: 0 }
@@ -1019,10 +1128,6 @@
 
     <!-- Main Logic & Interactive Controllers -->
     <script>
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
         const onboardingDiv = document.getElementById('desktop-onboarding');
         const hudContainer = document.getElementById('hud-container');
         const btnDesktopEnter = document.getElementById('btn-desktop-enter');
@@ -1229,7 +1334,7 @@
                     
                     // Show landslide (Volumétrico y visible en estribo)
                     landslide.setAttribute('visible', 'true');
-                    let scaleFactor = 0.8 + (rcp - 1) * 0.25;
+                    let scaleFactor = 1.0 + (rcp - 1) * 0.3;
                     landslide.setAttribute('scale', `${scaleFactor} ${scaleFactor} ${scaleFactor}`);
 
                     btnOptimize.disabled = false;
@@ -1300,6 +1405,7 @@
                 isOptimized = true;
                 isOptimizing = false;
 
+                const val = parseInt(rcpSlider.value);
                 dotsArray.forEach(dot => {
                     dot.style.backgroundColor = 'var(--acumen-emerald)';
                 });
