@@ -1217,35 +1217,35 @@
 
             <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
             <!-- Node A: Geology Unit -->
-            <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.7 -0.1" rotation="90 30 0"
+            <a-cylinder id="node-geology" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.7 0.7" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
-            <a-text value="G.A" align="center" width="1.1" position="-0.65 0.58 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
-            <a-text value="[G] GEOLOGIA" align="center" width="1.8" position="-0.65 0.83 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="G.A" align="center" width="1.1" position="-0.65 0.58 0.7" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[G] GEOLOGIA" align="center" width="1.8" position="-0.65 0.83 0.7" color="#fff" font="Roboto-msdf.json"></a-text>
 
             <!-- Node B: Structural AI -->
-            <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.7 -0.1" rotation="90 30 0"
+            <a-cylinder id="node-structural" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.7 0.7" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
-            <a-text value="S.A" align="center" width="1.1" position="0.65 0.58 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
-            <a-text value="[E] ESTRUCTURA" align="center" width="1.8" position="0.65 0.83 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="S.A" align="center" width="1.1" position="0.65 0.58 0.7" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[E] ESTRUCTURA" align="center" width="1.8" position="0.65 0.83 0.7" color="#fff" font="Roboto-msdf.json"></a-text>
 
             <!-- Node C: Geotech Agent -->
-            <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.35 0.3" rotation="90 30 0"
+            <a-cylinder id="node-geotech" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.35 1.0" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
-            <a-text value="GT" align="center" width="1.1" position="0.65 0.23 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
-            <a-text value="[GT] GEOTECNIA" align="center" width="1.8" position="0.65 0.48 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="GT" align="center" width="1.1" position="0.65 0.23 1.0" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[GT] GEOTECNIA" align="center" width="1.8" position="0.65 0.48 1.0" color="#fff" font="Roboto-msdf.json"></a-text>
 
             <!-- Node D: Safety Monitor -->
-            <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.35 0.3" rotation="90 30 0"
+            <a-cylinder id="node-safety" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.35 1.0" rotation="90 30 0"
                         material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
-            <a-text value="S.M" align="center" width="1.1" position="-0.65 0.23 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
-            <a-text value="[S] SEGURIDAD" align="center" width="1.8" position="-0.65 0.48 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="S.M" align="center" width="1.1" position="-0.65 0.23 1.0" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[S] SEGURIDAD" align="center" width="1.8" position="-0.65 0.48 1.0" color="#fff" font="Roboto-msdf.json"></a-text>
 
             <!-- Connection Laser lines (Láseres 3D gruesos y emisivos) -->
             <a-entity id="laser-lines" visible="false">
-                <a-entity thick-laser="from: -0.65 0.7 -0.1; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: 0.65 0.7 -0.1; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: 0.65 0.35 0.3; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
-                <a-entity thick-laser="from: -0.65 0.35 0.3; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.65 0.7 0.7; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.65 0.7 0.7; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.65 0.35 1.0; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.65 0.35 1.0; to: 0 0.35 0.3; color: #10b981; radius: 0.015"></a-entity>
             </a-entity>
 
         </a-entity>
