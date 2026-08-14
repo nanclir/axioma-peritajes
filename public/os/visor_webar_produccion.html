@@ -417,7 +417,7 @@
 
         /* Toggle Button for Mobile Info Box */
         .btn-toggle-info {
-            display: none; /* Oculto por defecto en desktop */
+            display: none; /* Oculto en desktop por defecto */
             pointer-events: auto;
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
@@ -431,6 +431,7 @@
             letter-spacing: 0.5px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
             align-items: center;
             gap: 6px;
             width: fit-content;
@@ -555,34 +556,10 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Single Line Ticker for Mobile UI */
-        .console-ticker {
-            display: none; /* Oculto en desktop */
-            pointer-events: auto;
-            background-color: rgba(9, 11, 16, 0.85);
-            border: 1px solid var(--zinc-border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.7rem;
-            color: #93c5fd;
-            text-align: center;
-            width: 100%;
-            max-width: 340px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            box-sizing: border-box;
-        }
-
-        .console-ticker.red { color: #f87171; font-weight: bold; border-color: var(--acumen-red); }
-        .console-ticker.green { color: #4ade80; font-weight: bold; border-color: var(--acumen-emerald); }
-        .console-ticker.gold { color: #fcd34d; font-weight: bold; border-color: var(--acumen-gold); }
-
         .console-line {
             white-space: normal;
-            word-break: break-all;
+            word-wrap: break-word;
+            word-break: keep-all;
         }
 
         .console-line.red { color: #f87171; font-weight: bold; }
@@ -699,10 +676,6 @@
             .btn-toggle-info {
                 display: flex !important;
             }
-            .console-ticker {
-                display: block !important;
-                margin: 0 auto;
-            }
             
             .hud-lateral-panels {
                 flex-direction: column;
@@ -716,6 +689,7 @@
                 width: 100%;
                 max-width: 340px;
                 align-items: flex-start;
+                gap: 6px;
             }
 
             /* Ocultar Leyenda por defecto en móvil */
@@ -736,13 +710,23 @@
                 box-shadow: 0 10px 40px rgba(0,0,0,0.9);
             }
 
+            /* Consola compacta multi-línea con scroll para celular */
             .console-box {
-                display: none !important; /* Ocultar caja grande en celular */
+                display: flex !important;
+                width: 100%;
+                height: 75px !important; /* Altura compacta para evitar tapar el 3D */
+                font-size: 0.68rem !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
+                background-color: rgba(18, 22, 32, 0.85) !important;
+                box-sizing: border-box;
+                margin-bottom: 4px;
             }
             
             .hud-right-col {
                 width: 100%;
                 max-width: 340px;
+                padding: 15px !important;
             }
         }
 
@@ -869,7 +853,7 @@
                     </div>
                 </div>
 
-                <!-- Terminal (Visible solo en PC) -->
+                <!-- Terminal (Visible en PC con 160px, y en móvil compacta a 75px) -->
                 <div id="consoleLog" class="console-box">
                     <div class="console-line">[SYSTEM]: ACUMEN OS inicializado.</div>
                     <div class="console-line">[SYSTEM]: Telemetría de vídeo universal enlazada.</div>
@@ -879,9 +863,6 @@
 
             <!-- Right Controls Column -->
             <div class="hud-right-col">
-                <!-- Ticker de línea única para móviles -->
-                <div id="consoleLogTicker" class="console-ticker">[SAFETY_MONITOR]: Evaluando taludes...</div>
-
                 <!-- Rain control slider -->
                 <div class="control-group">
                     <div class="control-lbl">
@@ -1133,10 +1114,10 @@
             }
         });
 
-        // DEFINICIÓN DE DERRUMBE AMPLIADO (MASA MÁS GRANDE Y ORGANICA)
+        // DEFINICIÓN DE DERRUMBE AMPLIADO
         AFRAME.registerComponent('landslide-mesh', {
             init: function () {
-                const geom = new THREE.DodecahedronGeometry(0.38, 1); // Aumentado de 0.24 a 0.38 para exagerar el evento
+                const geom = new THREE.DodecahedronGeometry(0.38, 1);
                 const pos = geom.attributes.position;
                 for(let i=0; i<pos.count; i++) {
                     let x = pos.getX(i);
@@ -1335,7 +1316,6 @@
         const statusVal = document.getElementById('statusVal');
         const fosVal = document.getElementById('fosVal');
         const consoleLog = document.getElementById('consoleLog');
-        const consoleLogTicker = document.getElementById('consoleLogTicker');
         const rainSlider = document.getElementById('rainSlider');
         const rainLabel = document.getElementById('rainLabel');
         const btnOptimize = document.getElementById('btnOptimize');
@@ -1374,18 +1354,12 @@
         const rainSystem = document.getElementById('rainSystem');
 
         function log(message, type = '') {
-            // Update PC console box
+            // Update PC & Mobile Console box (Both share this box now, which has a custom compact height on mobile)
             const line = document.createElement('div');
             line.className = `console-line ${type}`;
             line.innerText = message;
             consoleLog.appendChild(line);
             consoleLog.scrollTop = consoleLog.scrollHeight;
-
-            // Update mobile single line ticker
-            if (consoleLogTicker) {
-                consoleLogTicker.innerText = message;
-                consoleLogTicker.className = `console-ticker ${type}`;
-            }
         }
 
         // Slider Interaction
@@ -1534,10 +1508,6 @@
                 <div class="console-line">[SYSTEM]: Telemetría en vivo enlazada.</div>
                 <div class="console-line">[SAFETY_MONITOR]: Monitoreando taludes...</div>
             `;
-            if (consoleLogTicker) {
-                consoleLogTicker.innerText = "[SYSTEM]: Simulación reiniciada.";
-                consoleLogTicker.className = "console-ticker";
-            }
 
             // Reset Actions Buttons states
             btnOptimize.style.display = 'block';
