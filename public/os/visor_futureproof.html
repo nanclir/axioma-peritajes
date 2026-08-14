@@ -446,21 +446,22 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
-        /* Console */
+        /* Console (Optimizada para legibilidad RDM) */
         .console-box {
-            background-color: rgba(9, 11, 16, 0.95);
-            border: 1px solid #1e293b;
+            background-color: rgba(6, 8, 12, 0.98);
+            border: 1px solid var(--zinc-border);
             border-radius: 8px;
-            padding: 10px;
-            height: 90px;
-            overflow-y: hidden;
+            padding: 12px;
+            height: 105px;
+            overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            color: var(--acumen-blue);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #93c5fd;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
+            box-sizing: border-box;
         }
 
         .console-line {
@@ -469,9 +470,9 @@
             text-overflow: ellipsis;
         }
 
-        .console-line.red { color: var(--acumen-red); }
-        .console-line.green { color: var(--acumen-emerald); }
-        .console-line.gold { color: var(--acumen-gold); }
+        .console-line.red { color: #f87171; font-weight: bold; }
+        .console-line.green { color: #4ade80; font-weight: bold; }
+        .console-line.gold { color: #fcd34d; font-weight: bold; }
 
         /* Controls */
         .sliders-container {
@@ -571,7 +572,7 @@
 </head>
 <body>
 
-    <!-- Camera Video Feed Element (Solo activa en móviles) -->
+    <!-- Camera Video Feed Element -->
     <video id="camera-video" autoplay playsinline muted></video>
     
     <!-- High-tech Grid Background Fallback -->
@@ -695,7 +696,7 @@
         </div>
     </div>
 
-    <!-- WebGL A-Frame Scene (Transparente y siempre activa debajo del HUD) -->
+    <!-- WebGL A-Frame Scene -->
     <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true; antialias: true;">
         
         <a-entity light="type: ambient; color: #1e293b; intensity: 0.8"></a-entity>
@@ -754,26 +755,26 @@
             <!-- Landslide Mudmass -->
             <a-entity id="landslide" landslide-mesh position="-0.95 0.22 0" scale="0.01 0.01 0.01" visible="false"></a-entity>
 
-            <!-- Floating AI Agent Nodes -->
+            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
+            <!-- Node A: Climate Unit -->
             <a-cylinder id="node-climate" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.65 -0.4" rotation="90 30 0"
-                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                <a-text value="CLIMA A" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-            </a-cylinder>
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
+            <a-text value="[C] CLIMA" align="center" width="1.8" position="-0.8 0.78 -0.4" color="#fff" font="kandoo"></a-text>
 
+            <!-- Node B: Hydrology AI -->
             <a-cylinder id="node-hydro" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.65 -0.4" rotation="90 30 0"
-                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                <a-text value="HIDRO B" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-            </a-cylinder>
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
+            <a-text value="[H] HIDROLOGIA" align="center" width="1.8" position="0.8 0.78 -0.4" color="#fff" font="kandoo"></a-text>
 
+            <!-- Node C: Structural AI -->
             <a-cylinder id="node-struct" segments-radial="6" radius="0.07" height="0.08" position="0.8 0.35 0.3" rotation="90 30 0"
-                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                <a-text value="ESTRUCTURA C" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-            </a-cylinder>
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
+            <a-text value="[E] ESTRUCTURA" align="center" width="1.8" position="0.8 0.48 0.3" color="#fff" font="kandoo"></a-text>
 
+            <!-- Node D: RDM Optimization Agent -->
             <a-cylinder id="node-rdm" segments-radial="6" radius="0.07" height="0.08" position="-0.8 0.35 0.3" rotation="90 30 0"
-                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true">
-                <a-text value="RDM AGENT D" align="center" width="1.4" position="0 0 0.05" rotation="0 0 0" font="kandoo" color="#f3f4f6"></a-text>
-            </a-cylinder>
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true"></a-cylinder>
+            <a-text value="[RDM] DECISIONES" align="center" width="1.8" position="-0.8 0.48 0.3" color="#fff" font="kandoo"></a-text>
 
             <!-- Connection Laser lines -->
             <a-entity id="laser-lines" visible="false">
@@ -899,7 +900,6 @@
             }
         });
 
-        // OPTIMIZED DYNAMIC 3D RAIN PARTICLE SYSTEM COMPONENT (SHARED)
         AFRAME.registerComponent('rain-particles', {
             schema: {
                 intensity: { type: 'number', default: 0 }
@@ -1128,7 +1128,6 @@
             if (rcp === 3) { rcpText = "RCP 8.5"; rainIntensity = 1.0; }
             rcpLabel.innerText = rcpText;
 
-            // Inyectar intensidad de lluvia estocástica
             rainSystem.setAttribute('rain-particles', 'intensity', rainIntensity);
 
             if (!isOptimized) {
