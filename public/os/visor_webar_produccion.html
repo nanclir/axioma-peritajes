@@ -66,6 +66,11 @@
             z-index: 5;
         }
 
+        /* Force WebGL canvas to overlay on top of video feed */
+        #scene-container canvas.a-canvas {
+            z-index: 5 !important;
+        }
+
         /* Desktop Onboarding Landing Page (Exact replica of the website design) */
         #desktop-onboarding {
             position: fixed;
@@ -664,7 +669,7 @@
     <!-- Webgl 3D Scene container -->
     <div id="scene-container" class="hidden">
         <!-- A-Frame Scene -->
-        <a-scene embedded vr-mode-ui="enabled: false" style="background: transparent;">
+        <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true;" style="background: transparent;">
             
             <a-entity light="type: ambient; color: #1e293b; intensity: 1.0"></a-entity>
             <a-entity light="type: directional; color: #fff; intensity: 1.6; castShadow: true;" position="-3 5 2"></a-entity>
