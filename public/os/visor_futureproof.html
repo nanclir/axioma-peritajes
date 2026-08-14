@@ -237,6 +237,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
+            height: 100dvh;
             overflow: hidden;
             font-family: 'Outfit', sans-serif;
             color: var(--text-main);
@@ -500,12 +501,15 @@
         #hud-container {
             position: absolute;
             inset: 0;
+            height: 100%;
+            height: 100dvh;
             z-index: 99;
             pointer-events: none;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .interactive {
@@ -952,7 +956,7 @@
         }
 
         /* Responsive Mobile Layout adjustment (FREE UP 3D Viewport) */
-        @media (max-width: 680px) {
+        @media (max-width: 1024px), (pointer: coarse) {
             .btn-toggle-info {
                 display: flex !important;
             }
@@ -1312,7 +1316,7 @@
     <script>
         function isMobileDevice() {
             const isUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|CriOS|FxiOS/i.test(navigator.userAgent);
-            const isIPadOS = (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isIPadOS = (navigator.platform === 'MacIntel' && ('ontouchstart' in window || navigator.maxTouchPoints > 1));
             return isUA || isIPadOS;
         }
 
@@ -1362,6 +1366,9 @@
             onboardingDiv.style.display = 'none';
             hudContainer.classList.remove('hidden');
             initUniversalCamera();
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 800);
         } else {
             initUniversalCamera();
             btnDesktopEnter.addEventListener('click', () => {
