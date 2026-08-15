@@ -398,47 +398,56 @@
             transform: translateY(-1px);
         }
 
-        /* Hero Image/Mockup */
-        .hero-visual {
-            position: relative;
-            aspect-ratio: 1/1;
-            border: 1px solid var(--zinc-border);
-            background: linear-gradient(135deg, rgba(18, 22, 32, 0.5) 0%, rgba(7, 9, 14, 0.8) 100%);
+        /* Right QR Box Card */
+        .qr-card-container {
             display: flex;
-            align-items: center;
             justify-content: center;
         }
 
-        .visual-decor {
-            position: absolute;
-            width: 80%;
-            height: 80%;
-            border: 1px dashed rgba(41, 119, 253, 0.15);
-            border-radius: 50%;
-            animation: spin 30s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        .visual-logo {
-            z-index: 2;
+        .qr-card {
+            background-color: rgba(18, 22, 32, 0.4);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 340px;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .visual-logo svg {
-            width: 80px;
-            height: 80px;
-            stroke: var(--acumen-blue);
-            stroke-width: 2.5;
-            animation: float 4s ease-in-out infinite;
+        .qr-code-box {
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+        .qr-code-box img {
+            width: 160px;
+            height: 160px;
+            display: block;
+        }
+
+        .qr-card h4 {
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .qr-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 0;
         }
 
         /* HUD Overlay (Simulator View) */
@@ -898,13 +907,14 @@
                         </button>
                     </div>
                 </div>
-                <div class="hero-visual">
-                    <div class="visual-decor"></div>
-                    <div class="visual-logo">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                        </svg>
-                        <h4 style="margin: 15px 0 0 0; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--acumen-blue);">HYDRO_TWIN_M1</h4>
+                <!-- Right QR Box -->
+                <div class="qr-card-container">
+                    <div class="qr-card">
+                        <div class="qr-code-box">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://www.acumeningenieria.com/os/visor_embalse.html" alt="QR Code">
+                        </div>
+                        <h4>Acceso Móvil</h4>
+                        <p>Escanee este código con la cámara de su celular para abrir la maqueta 3D interactiva directamente.</p>
                     </div>
                 </div>
             </div>
