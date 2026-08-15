@@ -449,12 +449,25 @@
             line-height: 1.4;
             margin-bottom: 0;
         }
+        /* Real-time Camera Background feed (Universal) */
+        #camera-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-        /* HUD Overlay (Simulator View) */
+        /* 2D HUD UI Overlay (Split Lateral Layout) */
         #hud-container {
             position: absolute;
             inset: 0;
-            z-index: 10;
+            height: 100%;
+            height: 100dvh;
+            z-index: 99;
             pointer-events: none;
             display: flex;
             flex-direction: column;
@@ -463,7 +476,11 @@
             box-sizing: border-box;
         }
 
-        /* Header HUD */
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Top Header */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -471,114 +488,325 @@
             width: 100%;
         }
 
-        .hud-panel {
+        .hud-badge {
             background-color: var(--panel-bg);
             border: 1px solid var(--zinc-border);
-            padding: 15px 25px;
-            pointer-events: auto;
-            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
-        .hud-title-box h2 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 800;
+        .hud-badge span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--acumen-emerald);
+            animation: pulse 1.5s infinite;
+        }
+
+        .hud-telemetry-right {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .hud-status {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .hud-fos-badge {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-lbl {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .hud-title-box p {
-            margin: 2px 0 0 0;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--acumen-blue);
-        }
-
-        /* Metric Cards */
-        .hud-metrics {
-            display: flex;
-            gap: 15px;
-        }
-
-        .metric-card {
-            text-align: right;
-        }
-
-        .metric-label {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .metric-value {
-            font-size: 1.4rem;
-            font-weight: 800;
+        .status-val {
+            font-size: 0.85rem;
+            font-weight: bold;
             color: var(--acumen-emerald);
-            margin-top: 2px;
+        }
+
+        .fos-val-txt {
             font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--acumen-emerald);
+            transition: color 0.3s;
         }
 
-        /* Side Controls Panel (Left) */
-        .hud-left-controls {
+        /* Swipe Instruction Tip */
+        .swipe-tip {
             position: absolute;
-            left: 20px;
-            top: 110px;
-            width: 310px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            pointer-events: auto;
+            top: 80px;
+            align-self: center;
+            background-color: rgba(9, 11, 16, 0.7);
+            border: 1px solid var(--zinc-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--acumen-blue);
+            animation: pulse 2s infinite;
         }
 
-        .control-group {
+        /* Split Lateral Panels (Left and Right Columns) */
+        .hud-lateral-panels {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        /* Left Column (Stacking Legend + Console) */
+        .hud-left-col {
+            width: 290px;
+            pointer-events: auto;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
 
-        .control-header {
+        /* Toggle Button for Mobile Info Box */
+        .btn-toggle-info {
+            display: none;
+            pointer-events: auto;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 6px;
+            width: fit-content;
         }
 
-        .control-label {
+        .btn-toggle-info:hover {
+            border-color: var(--acumen-blue);
+        }
+
+        /* Header de la Leyenda exclusivo para móvil */
+        .legend-header-mobile {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-close-legend-inner {
+            background: transparent;
+            border: none;
+            color: var(--acumen-red);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            padding: 2px 8px;
+        }
+
+        /* Legend Panel */
+        .legend-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .project-desc-block {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            margin-bottom: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .project-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .project-specs {
+            margin: 4px 0 0 0;
+            padding-left: 12px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .project-specs li span {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .legend-title {
+            font-size: 0.65rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--acumen-blue);
+            margin-top: 2px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.68rem;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.blue { background-color: var(--acumen-blue); }
+        .legend-dot.red { background-color: var(--acumen-red); }
+        .legend-dot.cyan { background-color: #00ffcc; }
+        .legend-dot.emerald { background-color: var(--acumen-emerald); }
+
+        /* Right Control Panel Column */
+        .hud-right-col {
+            width: 290px;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+        }
+
+        /* Console styling */
+        .console-box {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 10px;
+            height: 115px;
+            overflow-y: auto;
             font-family: 'Share Tech Mono', monospace;
             font-size: 0.75rem;
+            line-height: 1.4;
+            color: #93c5fd;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+        }
+
+        .console-line {
+            white-space: normal;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+
+        .console-line.red { color: #f87171; font-weight: bold; }
+        .console-line.green { color: #4ade80; font-weight: bold; }
+        .console-line.gold { color: #fcd34d; font-weight: bold; }
+
+        /* Controls */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-lbl {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .control-val {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--acumen-blue);
+            color: var(--text-main);
         }
 
-        /* Sliders */
-        input[type="range"] {
-            -webkit-appearance: none;
+        .slider-bar {
             width: 100%;
-            height: 5px;
-            background: var(--zinc-border);
+            -webkit-appearance: none;
+            background: #1e293b;
+            height: 6px;
+            border-radius: 3px;
             outline: none;
-            border-radius: 10px;
         }
 
-        input[type="range"]::-webkit-slider-thumb {
+        .slider-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
             background: var(--acumen-blue);
             cursor: pointer;
-            border-radius: 50%;
             border: 2px solid var(--bg-dark);
-            transition: transform 0.1s;
-        }
-
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
         }
 
         /* Custom Toggle Switch */
@@ -592,10 +820,11 @@
         }
 
         .switch-label {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .switch {
@@ -640,136 +869,70 @@
             transform: translateX(22px);
         }
 
-        /* Optimization Button */
-        .btn-optimize {
-            background-color: var(--acumen-gold);
-            color: #000;
+        /* Buttons */
+        .btn-action {
+            background-color: var(--acumen-blue);
+            color: white;
             border: none;
-            padding: 12px;
-            font-weight: 700;
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            letter-spacing: 0.5px;
+            transition: all 0.3s;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 14px rgba(41, 119, 253, 0.4);
         }
 
-        .btn-optimize:hover:not(:disabled) {
-            background-color: #fcd34d;
-            transform: translateY(-1px);
+        .btn-action:hover:not(:disabled) {
+            background-color: #1e63d3;
+            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.6);
         }
 
-        .btn-optimize:disabled {
+        .btn-action:disabled {
             background-color: var(--zinc-border);
             color: var(--text-muted);
+            box-shadow: none;
             cursor: not-allowed;
         }
 
-        /* Right Console Panel */
-        .hud-right-console {
-            position: absolute;
-            right: 20px;
-            top: 110px;
-            width: 320px;
-            height: calc(100% - 280px);
-            max-height: 480px;
-            display: flex;
-            flex-direction: column;
-            pointer-events: auto;
-        }
-
-        .console-header {
-            border-bottom: 1px solid var(--zinc-border);
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-
-        .console-log {
-            flex: 1;
-            overflow-y: auto;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .console-line {
-            border-left: 2px solid var(--text-muted);
-            padding-left: 8px;
-        }
-
-        .console-line.green { border-color: var(--acumen-emerald); color: #a7f3d0; }
-        .console-line.gold { border-color: var(--acumen-gold); color: #fef08a; }
-        .console-line.red { border-color: var(--acumen-red); color: #fca5a5; }
-
-        /* Bottom HUD Actions (PC/Mobile unified layout) */
-        .hud-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            display: none;
         }
 
         .btn-reset {
-            background: transparent;
-            border: 1px solid var(--acumen-red);
-            color: var(--acumen-red);
-            padding: 8px 16px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid var(--acumen-blue);
+            color: var(--acumen-blue);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
             text-transform: uppercase;
-            pointer-events: auto;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s;
             display: none;
         }
 
         .btn-reset:hover {
-            background-color: var(--acumen-red);
-            color: #fff;
+            background-color: rgba(41, 119, 253, 0.1);
         }
 
-        .btn-back-portal {
-            background: transparent;
-            border: 1px solid var(--zinc-border);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-decoration: none;
-            text-transform: uppercase;
-            pointer-events: auto;
-            transition: all 0.2s;
-        }
-
-        .btn-back-portal:hover {
-            border-color: #fff;
-            color: #fff;
-        }
-
-        /* Mobile Collapsible Control drawer (for phone displays) */
-        .mobile-toggle-drawer {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--acumen-blue);
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.4);
-            cursor: pointer;
-            pointer-events: auto;
-        }
-
-        /* Mobile/Tablet Responsiveness (Unified Breakpoint) */
         @media (max-width: 1024px) {
             .hero-grid {
                 grid-template-columns: 1fr;
@@ -921,23 +1084,24 @@
         </div>
     </div>
 
+    <!-- Camera Video Feed Element -->
+    <video id="camera-video" autoplay playsinline muted></video>
+
     <!-- Background Grid Fallback (Visible behind transparency) -->
     <div id="camera-fallback"></div>
 
     <!-- A-Frame 3D Scene -->
-    <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene embedded vr-mode-ui="enabled: false" renderer="alpha: true; antialias: true;">
         
-        <!-- Camera Rig & Orbit Controls -->
-        <a-entity id="cameraRig" position="0 0.4 1.4">
-            <a-camera id="camera" wasd-controls="enabled: false" look-controls="pointerLockEnabled: false"></a-camera>
-        </a-entity>
+        <!-- Standard Camera Perspective -->
+        <a-entity camera position="0 0.8 1.8" rotation="-20 0 0"></a-entity>
 
         <!-- Lights -->
         <a-light type="ambient" color="#1e293b" intensity="0.75"></a-light>
         <a-light type="directional" color="#ffffff" intensity="0.85" position="1.5 3.0 1.2"></a-light>
 
         <!-- Hologram 3D Maquette Root -->
-        <a-entity id="hologramRoot" position="0 0 0" rotation="0 45 0">
+        <a-entity id="hologramRoot" position="0 0 -0.5" rotation="0 0 0">
             
             <!-- Base Technical Reference Grid -->
             <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4" 
@@ -1070,86 +1234,142 @@
     </a-scene>
 
     <!-- HUD Control Panel & Interface -->
-    <div id="hud-container">
-        
-        <!-- Header -->
+    <!-- HUD Overlay UI -->
+    <div id="hud-container" class="hidden">
+        <!-- Top Header -->
         <div class="hud-header">
-            <div class="hud-panel hud-title-box">
-                <h2>ACUMEN OS 1.0</h2>
-                <p>SIMULACIÓN HIDROCLIMATOLÓGICA // M1</p>
+            <div class="hud-badge">
+                <span></span> ACUMEN OS 1.0
             </div>
-            
-            <div class="hud-panel hud-metrics">
-                <div class="metric-card">
-                    <div class="metric-label">Volumen Útil</div>
-                    <div id="capacityVal" class="metric-value">100%</div>
+            <div class="hud-telemetry-right">
+                <div class="hud-status">
+                    <div class="status-lbl">Caudal Afluente</div>
+                    <div id="flowVal" class="status-val">18.5 m³/s</div>
                 </div>
-                <div class="metric-card" style="margin-left: 20px;">
-                    <div class="metric-label">Caudal Afluente</div>
-                    <div id="flowVal" class="metric-value">18.5 m³/s</div>
+                <div class="hud-fos-badge">
+                    <div class="status-lbl">Volumen Útil</div>
+                    <div id="capacityVal" class="fos-val-txt">100%</div>
                 </div>
             </div>
         </div>
 
-        <!-- Left Controls -->
-        <div id="controlsPanel" class="hud-panel hud-left-controls">
-            
-            <!-- Slider 1: Clima -->
-            <div class="control-group">
-                <div class="control-header">
-                    <span class="control-label">Variabilidad Climática</span>
-                    <span id="climateVal" class="control-val">HISTÓRICO</span>
+        <div class="swipe-tip">Desliza en la pantalla para rotar la maqueta</div>
+
+        <!-- Split Lateral Layout -->
+        <div class="hud-lateral-panels">
+            <!-- Left Console & Legend Column -->
+            <div class="hud-left-col">
+                <!-- Botón de apertura de información en móviles -->
+                <button id="btnToggleInfo" class="btn-toggle-info interactive"><span>ℹ️</span> Proyecto / Leyenda</button>
+
+                <!-- Leyenda del Gemelo Digital (Colapsada en móvil por defecto) -->
+                <div id="legendBox" class="legend-box collapsed-mobile">
+                    <!-- Botón de cierre interno para celulares (con z-index y fácil interacción) -->
+                    <div class="legend-header-mobile">
+                        <span class="project-title" style="font-size: 0.7rem; color: var(--acumen-blue);">Ficha Técnica / Leyenda</span>
+                        <button class="btn-close-legend-inner interactive" id="btnCloseLegendInner">❌</button>
+                    </div>
+
+                    <div class="project-desc-block">
+                        <div class="project-title">Proyecto: Incertidumbre en Embalses</div>
+                        <p class="project-desc">Evaluación interactiva de variabilidad de caudal, colmatación acelerada por sedimentos y toma de decisiones estocásticas robustas (RDM) bajo interpolación espacial Kriging.</p>
+                        <ul class="project-specs">
+                            <li><span>Capacidad total:</span> 320 Hm³</li>
+                            <li><span>Tipo de Presa:</span> Gravedad en Concreto</li>
+                            <li><span>Método Geoestadístico:</span> Kriging Ordinario</li>
+                            <li><span>Mitigación RDM:</span> Compuertas de Descarga</li>
+                        </ul>
+                    </div>
+                    <div class="legend-title">Leyenda del Visor</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-dot blue"></div>
+                            <span>🔷 [SS, KI, VA, RDM] Nodos Agentes ACUMEN</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot red"></div>
+                            <span>🔴 Incertidumbre / Alerta Activa</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot cyan"></div>
+                            <span>🟢 Compuertas y Descargas Activas</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot emerald"></div>
+                            <span>🔵 Nivel del Embalse (Dinámico)</span>
+                        </div>
+                    </div>
                 </div>
-                <input type="range" id="climateSlider" min="0" max="2" value="1" step="1">
-            </div>
 
-            <!-- Slider 2: Sedimentación -->
-            <div class="control-group" style="margin-top: 10px;">
-                <div class="control-header">
-                    <span class="control-label">Años de Operación (Sedimento)</span>
-                    <span id="yearsVal" class="control-val">0 años</span>
+                <!-- Terminal -->
+                <div id="consoleLog" class="console-box">
+                    <div class="console-line">[SYSTEM]: Inicializando simulador hidroclimatológico...</div>
+                    <div class="console-line">[SYSTEM]: Sensores meteorológicos activos.</div>
+                    <div class="console-line">[SYSTEM]: Cargando datos de cuenca. Listo.</div>
                 </div>
-                <input type="range" id="yearsSlider" min="0" max="100" value="0" step="5">
             </div>
 
-            <!-- Switch Kriging -->
-            <div class="switch-container">
-                <span class="switch-label">Algoritmo Kriging (Reducción Error)</span>
-                <label class="switch">
-                    <input type="checkbox" id="krigingToggle">
-                    <span class="slider-switch"></span>
-                </label>
-            </div>
+            <!-- Right Controls Column -->
+            <div class="hud-right-col">
+                <!-- Climate Slider -->
+                <div class="control-group">
+                    <div class="control-lbl">
+                        <span>Variabilidad Climática</span>
+                        <span id="climateVal" class="control-val">Histórico</span>
+                    </div>
+                    <input id="climateSlider" class="slider-bar" type="range" min="0" max="2" value="1">
+                </div>
 
-            <!-- Optimization Action Button -->
-            <button id="btnOptimize" class="btn-optimize" style="margin-top: 5px;" disabled>
-                Optimizar Operación RDM
-            </button>
-            <button id="btnReset" class="btn-reset" style="margin-top: 10px;">Simular de Nuevo</button>
+                <!-- Years Slider -->
+                <div class="control-group">
+                    <div class="control-lbl">
+                        <span>Años de Operación (Sedimento)</span>
+                        <span id="yearsVal" class="control-val">0 años</span>
+                    </div>
+                    <input id="yearsSlider" class="slider-bar" type="range" min="0" max="100" value="0" step="5">
+                </div>
+
+                <!-- Kriging Toggle -->
+                <div class="control-group">
+                    <div class="switch-container">
+                        <span class="switch-label">Algoritmo Kriging (Reducción Error)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="krigingToggle">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Active optimize button -->
+                <button id="btnOptimize" class="btn-action" disabled>Optimizar Operación RDM</button>
+                <a id="btnWhatsapp" href="https://wa.me/573005771484?text=Hola.%20Conversamos%20en%20el%20Congreso%20CCI%20y%20me%20gustar%C3%ADa%20conocer%20c%C3%B3mo%20ACUMEN%20OS%20puede%20modelar%20la%20incertidumbre%20en%20nuestro%20proyecto." target="_blank" class="btn-whatsapp">Conectar con Dirección Técnica</a>
+                <button id="btnReset" class="btn-reset">Simular de Nuevo</button>
+            </div>
         </div>
-
-        <!-- Right Terminal/Console -->
-        <div id="consolePanel" class="hud-panel hud-right-console">
-            <div class="console-header">
-                <span class="control-label">Terminal de Eventos Estocásticos</span>
-            </div>
-            <div id="consoleLog" class="console-log">
-                <div class="console-line">[SYSTEM]: Inicializando simulador hidroclimatológico...</div>
-                <div class="console-line">[SYSTEM]: Sensores meteorológicos activos.</div>
-                <div class="console-line">[SYSTEM]: Cargando datos de cuenca. Listo.</div>
-            </div>
-        </div>
-
     </div>
-
-    <!-- Mobile Navigation & Collapsible Drawer Trigger -->
-    <button id="btnToggleMobile" class="mobile-toggle-drawer">Panel de Control</button>
 
     <!-- Main Logic Script -->
     <script>
+        function isMobileDevice() {
+            const isUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|CriOS|FxiOS/i.test(navigator.userAgent);
+            const isIPadOS = (navigator.platform === 'MacIntel' && ('ontouchstart' in window || navigator.maxTouchPoints > 1));
+            return isUA || isIPadOS;
+        }
+
+        // FORCE GRAPHICS INITIALIZATION ON PAGE LOAD (FIXES HIDDEN MOUNTAIN BUG)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
+        });
+
         // DOM Nodes
         const btnStart = document.getElementById('btnStart');
         const desktopOnboarding = document.getElementById('desktop-onboarding');
+        const hudContainer = document.getElementById('hud-container');
+        const video = document.getElementById('camera-video');
+        const fallback = document.getElementById('camera-fallback');
+
         const climateSlider = document.getElementById('climateSlider');
         const climateVal = document.getElementById('climateVal');
         const yearsSlider = document.getElementById('yearsSlider');
@@ -1160,10 +1380,96 @@
         const capacityVal = document.getElementById('capacityVal');
         const flowVal = document.getElementById('flowVal');
         const consoleLog = document.getElementById('consoleLog');
-        
-        // Mobile Drawer UI
-        const btnToggleMobile = document.getElementById('btnToggleMobile');
-        const controlsPanel = document.getElementById('controlsPanel');
+
+        // Mobile Info drawer
+        const btnToggleInfo = document.getElementById('btnToggleInfo');
+        const btnCloseLegendInner = document.getElementById('btnCloseLegendInner');
+        const legendBox = document.getElementById('legendBox');
+
+        if (btnToggleInfo && btnCloseLegendInner && legendBox) {
+            btnToggleInfo.addEventListener('click', () => {
+                legendBox.classList.add('expanded-mobile');
+                legendBox.classList.remove('collapsed-mobile');
+            });
+
+            btnCloseLegendInner.addEventListener('click', () => {
+                legendBox.classList.remove('expanded-mobile');
+                legendBox.classList.add('collapsed-mobile');
+            });
+        }
+
+        // Screen Touch Drag-to-Rotate 3D Model logic
+        const hologramRoot = document.getElementById('hologramRoot');
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+
+        window.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let deltaMove = {
+                x: e.clientX - previousMousePosition.x,
+                y: e.clientY - previousMousePosition.y
+            };
+            currentRotation.y += deltaMove.x * 0.4;
+            hologramRoot.setAttribute('rotation', `0 ${currentRotation.y} 0`);
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Mobile Touch Listeners for drag rotation
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            let deltaMove = {
+                x: e.touches[0].clientX - previousMousePosition.x,
+                y: e.touches[0].clientY - previousMousePosition.y
+            };
+            currentRotation.y += deltaMove.x * 0.5;
+            hologramRoot.setAttribute('rotation', `0 ${currentRotation.y} 0`);
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        // UNIVERSAL VIDEO ACQUISITION (PC, Tablet & Mobile)
+        function initUniversalCamera() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    fallback.style.display = 'none';
+                })
+                .catch(function(err) {
+                    console.log("Cámara trasera no disponible, reintentando con webcam genérica...", err);
+                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                        fallback.style.display = 'none';
+                    })
+                    .catch(function(e) {
+                        console.log("Cámara no disponible, usando malla técnica de fondo:", e);
+                        fallback.style.display = 'block';
+                    });
+                });
+            } else {
+                fallback.style.display = 'block';
+            }
+        }
 
         // A-Frame entities
         const water = document.getElementById('water');
@@ -1206,18 +1512,25 @@
             consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // Onboarding hide
-        btnStart.addEventListener('click', () => {
+        // Onboarding hide & setup
+        if (isMobileDevice()) {
             desktopOnboarding.style.display = 'none';
-            log(`[SYSTEM]: Simulación en tiempo real iniciada.`);
-            window.dispatchEvent(new Event('resize')); // Recalculate A-Frame size
-        });
-
-        // Mobile drawer toggle
-        btnToggleMobile.addEventListener('click', () => {
-            controlsPanel.classList.toggle('active');
-            btnToggleMobile.innerText = controlsPanel.classList.contains('active') ? 'Ocultar Panel' : 'Panel de Control';
-        });
+            hudContainer.classList.remove('hidden');
+            initUniversalCamera();
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        } else {
+            btnStart.addEventListener('click', () => {
+                desktopOnboarding.style.display = 'none';
+                hudContainer.classList.remove('hidden');
+                initUniversalCamera();
+                log(`[SYSTEM]: Simulación en tiempo real iniciada.`);
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
+            });
+        }
 
         // Update simulation values based on states
         function updateSimulation() {
