@@ -548,6 +548,14 @@ export default function AcumenOSPage() {
                 >
                   Abrir Visor Embalse &rarr;
                 </a>
+                <a
+                  href="/pdf/ficha_tecnica_embalse.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-blue-500 text-base font-bold rounded-md text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                >
+                  Ficha Técnica (PDF) &darr;
+                </a>
               </div>
             </div>
 
