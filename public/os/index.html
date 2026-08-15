@@ -164,10 +164,10 @@
         /* Grid of Simulators */
         .simulators-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
         }
 
         .sim-card {
@@ -327,6 +327,20 @@
                         <p>Simule escenarios climatológicos estocásticos de cambio climático sobre un viaducto de gran luz y evalúe la mitigación de socavación y fallas mediante la metodología RDM.</p>
                     </div>
                     <a href="visor_futureproof.html" class="btn-launch">Abrir Simulador RDM &rarr;</a>
+                </div>
+
+                <!-- Card 3: Riesgo Hidroclimatológico y Ambiental -->
+                <div class="sim-card">
+                    <div class="sim-card-header">
+                        <div class="sim-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                        </div>
+                        <h3>Riesgo Hidroclimatológico</h3>
+                        <p>Simule la variabilidad de caudales, colmatación por sedimentos y vida útil de embalses. Evalúe cómo el motor Kriging de ACUMEN OS optimiza la operación bajo cambio climático.</p>
+                    </div>
+                    <a href="visor_embalse.html" class="btn-launch">Abrir Simulador Embalse &rarr;</a>
                 </div>
             </div>
         </div>

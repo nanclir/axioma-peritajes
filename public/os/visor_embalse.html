@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ACUMEN OS 1.0 - Visor Hidroclimatológico</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- A-Frame (3D WebGL Library) -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+
+    <!-- Componentes A-Frame de Maqueta y Partículas -->
+    <script>
+        // COMPONENTE PARA LÁSERES 3D GRUESOS Y EMISIVOS (THREE.JS)
+        AFRAME.registerComponent('thick-laser', {
+            schema: {
+                from: { type: 'vec3' },
+                to: { type: 'vec3' },
+                color: { type: 'color', default: '#10b981' },
+                radius: { type: 'number', default: 0.015 }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+
+                const fromVec = new THREE.Vector3(data.from.x, data.from.y, data.from.z);
+                const toVec = new THREE.Vector3(data.to.x, data.to.y, data.to.z);
+                const distance = fromVec.distanceTo(toVec);
+
+                const geom = new THREE.CylinderGeometry(data.radius, data.radius, distance, 6);
+                
+                geom.rotateX(Math.PI / 2);
+                geom.translate(0, 0, distance / 2);
+
+                const mat = new THREE.MeshBasicMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.85
+                });
+
+                const mesh = new THREE.Mesh(geom, mat);
+                el.setObject3D('mesh', mesh);
+                
+                el.setAttribute('position', data.from);
+                el.object3D.lookAt(toVec);
+            }
+        });
+
+        // COMPONENTE DE TERRENO DE CAÑÓN/VASO DE EMBALSE
+        AFRAME.registerComponent('reservoir-terrain', {
+            schema: {
+                colorSolid: { type: 'color', default: '#09130d' },
+                colorWire: { type: 'color', default: '#10b981' }
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+                
+                const geom = new THREE.PlaneGeometry(2.4, 2.4, 32, 32);
+                const pos = geom.attributes.position;
+                
+                for (let i = 0; i < pos.count; i++) {
+                    let x = pos.getX(i);
+                    let y = pos.getY(i);
+                    let z = 0;
+                    
+                    let factorX = Math.abs(x);
+                    if (factorX > 0.22) {
+                        // Laderas montañosas escarpadas a los lados
+                        let diffX = factorX - 0.22;
+                        let profileY = Math.max(0, 1.0 - Math.abs(y - (-0.3)) * 1.67);
+                        z = diffX * 1.6 * (0.5 + profileY * 0.5) + (1.2 - y) * 0.15;
+                        z += Math.sin(x * 9) * Math.cos(y * 9) * 0.1 * (0.2 + profileY * 0.8);
+                    } else {
+                        // Lecho del río/embalse plano y bajo en el centro
+                        z = (y + 1.2) * 0.08;
+                    }
+                    z = Math.max(0, z);
+                    pos.setZ(i, z);
+                }
+                
+                geom.computeVertexNormals();
+                
+                const solidMaterial = new THREE.MeshStandardMaterial({
+                    color: data.colorSolid,
+                    roughness: 0.85,
+                    metalness: 0.1,
+                    flatShading: true,
+                    transparent: true,
+                    opacity: 0.95
+                });
+                
+                const wireMaterial = new THREE.MeshBasicMaterial({
+                    color: data.colorWire,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                
+                const solidMesh = new THREE.Mesh(geom, solidMaterial);
+                const wireMesh = new THREE.Mesh(geom, wireMaterial);
+                const group = new THREE.Group();
+                group.add(solidMesh);
+                group.add(wireMesh);
+                
+                el.setObject3D('mesh', group);
+            }
+        });
+
+        // COMPONENTE DE SISTEMA DE PARTÍCULAS DE LLUVIA
+        AFRAME.registerComponent('rain-particles', {
+            schema: {
+                intensity: { type: 'number', default: 0 }
+            },
+            init: function () {
+                this.drops = [];
+                const count = 350;
+                const geom = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                this.velocities = [];
+
+                for (let i = 0; i < count; i++) {
+                    positions[i*3] = (Math.random() * 2.4) - 1.2;     // X
+                    positions[i*3+1] = (Math.random() * 2.0);         // Y
+                    positions[i*3+2] = (Math.random() * 2.4) - 1.2;   // Z
+                    
+                    this.velocities.push(0.03 + Math.random() * 0.03);
+                }
+
+                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const mat = new THREE.PointsMaterial({
+                    color: '#60a5fa',
+                    size: 0.038,
+                    transparent: true,
+                    opacity: 0.8
+                });
+
+                this.particleSystem = new THREE.Points(geom, mat);
+                this.el.setObject3D('mesh', this.particleSystem);
+            },
+            tick: function (time, timeDelta) {
+                const intensity = this.data.intensity;
+                if (intensity <= 0) {
+                    this.particleSystem.visible = false;
+                    return;
+                }
+                
+                this.particleSystem.visible = true;
+                const geom = this.particleSystem.geometry;
+                const pos = geom.attributes.position;
+                const count = pos.count;
+
+                this.particleSystem.material.opacity = 0.2 + intensity * 0.6;
+                this.particleSystem.material.size = 0.02 + intensity * 0.028;
+
+                for (let i = 0; i < count; i++) {
+                    let y = pos.getY(i);
+                    y -= this.velocities[i] * (1.0 + intensity * 1.8);
+                    
+                    if (y < 0) {
+                        y = 2.0;
+                        pos.setX(i, (Math.random() * 2.4) - 1.2);
+                        pos.setZ(i, (Math.random() * 2.4) - 1.2);
+                    }
+                    pos.setY(i, y);
+                }
+                pos.needsUpdate = true;
+            }
+        });
+    </script>
+
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --panel-bg: rgba(18, 22, 32, 0.95);
+            --zinc-border: #1e2535;
+            --acumen-blue: #2977fd;
+            --acumen-emerald: #10b981;
+            --acumen-gold: #fbbf24;
+            --acumen-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #8a93a0;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-dark);
+        }
+
+        /* High-tech grid background fallback */
+        #camera-fallback {
+            position: absolute;
+            inset: 0;
+            background-color: #07090e;
+            background-image: 
+                radial-gradient(rgba(41, 119, 253, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(41, 119, 253, 0.03) 1px, transparent 0);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: 0;
+        }
+
+        /* WebGL Canvas transparency */
+        a-scene {
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 5 !important;
+            background: transparent !important;
+        }
+
+        /* Desktop Onboarding Landing Page */
+        #desktop-onboarding {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Corporate Navbar */
+        .navbar {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 3.5;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-item {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--acumen-blue);
+        }
+
+        .nav-item.active {
+            border: 1px solid var(--acumen-gold);
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: var(--acumen-gold);
+        }
+
+        .btn-contact {
+            background: transparent;
+            border: 1px solid var(--zinc-border);
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-contact:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Onboarding Content */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 20px 0;
+            letter-spacing: -1.5px;
+        }
+
+        .hero-text h1 span {
+            color: var(--acumen-blue);
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0 0 35px 0;
+        }
+
+        .badge-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--acumen-gold);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            background-color: rgba(251, 191, 36, 0.05);
+            padding: 6px 14px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--acumen-gold);
+            border-radius: 50%;
+            animation: pulse-glow 1.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        /* Action Buttons */
+        .action-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background-color: var(--acumen-blue);
+            color: #fff;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e64d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--zinc-border);
+            color: var(--text-muted);
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        /* Hero Image/Mockup */
+        .hero-visual {
+            position: relative;
+            aspect-ratio: 1/1;
+            border: 1px solid var(--zinc-border);
+            background: linear-gradient(135deg, rgba(18, 22, 32, 0.5) 0%, rgba(7, 9, 14, 0.8) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-decor {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 1px dashed rgba(41, 119, 253, 0.15);
+            border-radius: 50%;
+            animation: spin 30s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .visual-logo {
+            z-index: 2;
+            text-align: center;
+        }
+
+        .visual-logo svg {
+            width: 80px;
+            height: 80px;
+            stroke: var(--acumen-blue);
+            stroke-width: 2.5;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* HUD Overlay (Simulator View) */
+        #hud-container {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Header HUD */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .hud-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--zinc-border);
+            padding: 15px 25px;
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .hud-title-box h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .hud-title-box p {
+            margin: 2px 0 0 0;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--acumen-blue);
+        }
+
+        /* Metric Cards */
+        .hud-metrics {
+            display: flex;
+            gap: 15px;
+        }
+
+        .metric-card {
+            text-align: right;
+        }
+
+        .metric-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--acumen-emerald);
+            margin-top: 2px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Side Controls Panel (Left) */
+        .hud-left-controls {
+            position: absolute;
+            left: 20px;
+            top: 110px;
+            width: 310px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: auto;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .control-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--acumen-blue);
+        }
+
+        /* Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: var(--zinc-border);
+            outline: none;
+            border-radius: 10px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--acumen-blue);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid var(--bg-dark);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Custom Toggle Switch */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-top: 1px solid var(--zinc-border);
+            margin-top: 5px;
+        }
+
+        .switch-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-switch {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: var(--zinc-border);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider-switch:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-switch {
+            background-color: var(--acumen-gold);
+        }
+
+        input:checked + .slider-switch:before {
+            transform: translateX(22px);
+        }
+
+        /* Optimization Button */
+        .btn-optimize {
+            background-color: var(--acumen-gold);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-optimize:hover:not(:disabled) {
+            background-color: #fcd34d;
+            transform: translateY(-1px);
+        }
+
+        .btn-optimize:disabled {
+            background-color: var(--zinc-border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Right Console Panel */
+        .hud-right-console {
+            position: absolute;
+            right: 20px;
+            top: 110px;
+            width: 320px;
+            height: calc(100% - 280px);
+            max-height: 480px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+
+        .console-header {
+            border-bottom: 1px solid var(--zinc-border);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .console-log {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .console-line {
+            border-left: 2px solid var(--text-muted);
+            padding-left: 8px;
+        }
+
+        .console-line.green { border-color: var(--acumen-emerald); color: #a7f3d0; }
+        .console-line.gold { border-color: var(--acumen-gold); color: #fef08a; }
+        .console-line.red { border-color: var(--acumen-red); color: #fca5a5; }
+
+        /* Bottom HUD Actions (PC/Mobile unified layout) */
+        .hud-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--acumen-red);
+            color: var(--acumen-red);
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            pointer-events: auto;
+            display: none;
+        }
+
+        .btn-reset:hover {
+            background-color: var(--acumen-red);
+            color: #fff;
+        }
+
+        .btn-back-portal {
+            background: transparent;
+            border: 1px solid var(--zinc-border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            pointer-events: auto;
+            transition: all 0.2s;
+        }
+
+        .btn-back-portal:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        /* Mobile Collapsible Control drawer (for phone displays) */
+        .mobile-toggle-drawer {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--acumen-blue);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(41, 119, 253, 0.4);
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        /* Mobile/Tablet Responsiveness (Unified Breakpoint) */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.3rem;
+            }
+
+            .action-group {
+                justify-content: center;
+            }
+
+            .navbar {
+                padding: 20px;
+            }
+
+            .nav-items {
+                display: none; /* Hide desktop nav items on mobile */
+            }
+
+            /* HUD Relayout for touch devices */
+            #hud-container {
+                padding: 10px;
+            }
+
+            .hud-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hud-panel {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 15px;
+            }
+
+            .hud-metrics {
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            /* Hide panels on mobile by default, toggled via drawer */
+            .hud-left-controls {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                bottom: 80px;
+                top: auto;
+                width: calc(100% - 20px);
+                z-index: 90;
+                transform: translateY(120%);
+                transition: transform 0.3s ease;
+                background-color: var(--panel-bg);
+            }
+
+            .hud-left-controls.active {
+                transform: translateY(0);
+            }
+
+            /* Make console compact and place it at the top-right under header */
+            .hud-right-console {
+                position: fixed;
+                right: 10px;
+                left: 10px;
+                top: 130px;
+                width: calc(100% - 20px);
+                max-height: 100px;
+                height: 100px;
+                z-index: 80;
+                background-color: rgba(18, 22, 32, 0.85);
+            }
+
+            .console-log {
+                font-size: 0.65rem;
+            }
+
+            .mobile-toggle-drawer {
+                display: block;
+            }
+
+            .hud-bottom {
+                justify-content: center;
+                position: fixed;
+                bottom: 20px;
+                left: 10px;
+                width: calc(100% - 20px);
+                z-index: 95;
+                pointer-events: none;
+            }
+            
+            .btn-back-portal {
+                display: none; /* Hide to prevent cluttering mobile interface */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Onboarding Panel (Desktop Landing) -->
+    <div id="desktop-onboarding">
+        <div class="navbar">
+            <div class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg>
+                <span>ACUMEN OS</span>
+            </div>
+            <div class="nav-items">
+                <a href="index_redireccion.html" class="nav-item">Panel General</a>
+                <a href="#" class="nav-item active">Embalse 3D</a>
+            </div>
+            <button class="btn-contact">CCI 2026</button>
+        </div>
+
+        <div class="hero-section">
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <div class="badge-line">
+                        <div class="pulse-dot"></div>
+                        <span>LÍNEA HIDROCLIMATOLÓGICA Y AMBIENTAL</span>
+                    </div>
+                    <h1>Riesgo de <span>Incertidumbre</span> en Embalses</h1>
+                    <p>Evalúe de forma interactiva la simulación de variabilidad de caudal, la colmatación acelerada por sedimentos y la toma de decisiones estocásticas robustas (RDM) bajo el motor geoestadístico Kriging de ACUMEN OS.</p>
+                    <div class="action-group">
+                        <button id="btnStart" class="btn-primary">
+                            Iniciar Simulador 3D
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        <a href="index_redireccion.html" class="btn-secondary">Volver al Panel</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="visual-decor"></div>
+                    <div class="visual-logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                        <h4 style="margin: 15px 0 0 0; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--acumen-blue);">HYDRO_TWIN_M1</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Grid Fallback (Visible behind transparency) -->
+    <div id="camera-fallback"></div>
+
+    <!-- A-Frame 3D Scene -->
+    <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        
+        <!-- Camera Rig & Orbit Controls -->
+        <a-entity id="cameraRig" position="0 0.4 1.4">
+            <a-camera id="camera" wasd-controls="enabled: false" look-controls="pointerLockEnabled: false"></a-camera>
+        </a-entity>
+
+        <!-- Lights -->
+        <a-light type="ambient" color="#1e293b" intensity="0.75"></a-light>
+        <a-light type="directional" color="#ffffff" intensity="0.85" position="1.5 3.0 1.2"></a-light>
+
+        <!-- Hologram 3D Maquette Root -->
+        <a-entity id="hologramRoot" position="0 0 0" rotation="0 45 0">
+            
+            <!-- Base Technical Reference Grid -->
+            <a-plane position="0 0 0" rotation="-90 0 0" width="2.4" height="2.4" 
+                     material="color: #1e293b; wireframe: true; opacity: 0.15; side: double"></a-plane>
+
+            <!-- CAD/GIS Spatial Coordinates Origin -->
+            <a-entity id="coordinate-axes" position="0 0.01 0.7">
+                <!-- Eje X (Rojo) -->
+                <a-cylinder position="0.15 0 0" radius="0.005" height="0.3" rotation="0 0 -90" 
+                            material="color: #ef4444; emissive: #ef4444; emissiveIntensity: 0.5"></a-cylinder>
+                <a-text value="X" position="0.33 0 0" color="#ef4444" width="0.8" align="center" font="Roboto-msdf.json"></a-text>
+                
+                <!-- Eje Y (Verde) -->
+                <a-cylinder position="0 0.15 0" radius="0.005" height="0.3" rotation="0 0 0" 
+                            material="color: #10b981; emissive: #10b981; emissiveIntensity: 0.5"></a-cylinder>
+                <a-text value="Y" position="0 0.33 0" color="#10b981" width="0.8" align="center" font="Roboto-msdf.json"></a-text>
+                
+                <!-- Eje Z (Azul) -->
+                <a-cylinder position="0 0 0.15" radius="0.005" height="0.3" rotation="90 0 0" 
+                            material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.5"></a-cylinder>
+                <a-text value="Z" position="0 0 0.33" color="#2977fd" width="0.8" align="center" font="Roboto-msdf.json"></a-text>
+            </a-entity>
+
+            <!-- Vaso del Embalse / Relieve del Cañón -->
+            <a-entity id="canyon" reservoir-terrain="colorSolid: #09130d; colorWire: #10b981" position="0 0 0" rotation="-90 0 0"></a-entity>
+
+            <!-- Presa de Concreto (Diseño por secciones con vertedero central) -->
+            <!-- Presa Lateral Izquierda -->
+            <a-box position="-0.21 0.2 0.5" width="0.22" height="0.4" depth="0.08" 
+                   material="color: #334155; roughness: 0.8; flatShading: true"></a-box>
+            <a-box position="-0.21 0.2 0.5" width="0.225" height="0.405" depth="0.082" 
+                   material="color: #10b981; wireframe: true; transparent: true; opacity: 0.35"></a-box>
+
+            <!-- Presa Lateral Derecha -->
+            <a-box position="0.21 0.2 0.5" width="0.22" height="0.4" depth="0.08" 
+                   material="color: #334155; roughness: 0.8; flatShading: true"></a-box>
+            <a-box position="0.21 0.2 0.5" width="0.225" height="0.405" depth="0.082" 
+                   material="color: #10b981; wireframe: true; transparent: true; opacity: 0.35"></a-box>
+
+            <!-- Vertedero de Demasías (Cresta del canal de rebose a y=0.28) -->
+            <a-box id="dam-spillway" position="0 0.14 0.5" width="0.2" height="0.28" depth="0.08" 
+                   material="color: #334155; roughness: 0.8; flatShading: true"></a-box>
+            <a-box position="0 0.14 0.5" width="0.205" height="0.285" depth="0.082" 
+                   material="color: #10b981; wireframe: true; transparent: true; opacity: 0.35"></a-box>
+
+            <!-- Espejo de Agua del Embalse (Translúcido y ajustable) -->
+            <a-plane id="water" position="0 0.18 -0.3" rotation="-90 0 0" width="0.43" height="1.6" 
+                     material="color: #0284c7; transparent: true; opacity: 0.75; side: double; roughness: 0.15; metalness: 0.6"></a-plane>
+            <a-plane id="water-wire" position="0 0.181 -0.3" rotation="-90 0 0" width="0.432" height="1.6" 
+                     material="color: #38bdf8; wireframe: true; transparent: true; opacity: 0.45; side: double"></a-plane>
+
+            <!-- Capa de Sedimentación (Sube al colmatarse la represa) -->
+            <a-box id="sediment" position="0 0.01 -0.3" width="0.42" height="0.01" depth="1.6" 
+                   material="color: #5c4033; roughness: 0.95; flatShading: true; transparent: true; opacity: 0.9" scale="1 1 1"></a-box>
+            <a-box id="sediment-wire" position="0 0.01 -0.3" width="0.422" height="0.012" depth="1.6" 
+                   material="color: #8d6e63; wireframe: true; transparent: true; opacity: 0.3" scale="1 1 1"></a-box>
+
+            <!-- Sistema de Partículas de Lluvia -->
+            <a-entity id="rainSystem" rain-particles="intensity: 0"></a-entity>
+
+            <!-- Flujo de Rebose de Agua del Vertedero (Animado al desbordar) -->
+            <a-box id="overflow-stream" position="0 0.14 0.54" width="0.2" height="0.28" depth="0.01" 
+                   material="color: #0ea5e9; transparent: true; opacity: 0.85; roughness: 0.2; side: double" visible="false"></a-box>
+            <a-box id="overflow-stream-wire" position="0 0.14 0.541" width="0.202" height="0.282" depth="0.012" 
+                   material="color: #38bdf8; wireframe: true; transparent: true; opacity: 0.4" visible="false"></a-box>
+
+            <!-- Red de Estaciones Meteorológicas / Sensores de Cuenca -->
+            <!-- Estación 1 (Ladera Izquierda) -->
+            <a-cylinder position="-0.32 0.38 -0.3" radius="0.015" height="0.15" material="color: #475569; roughness: 0.8"></a-cylinder>
+            <a-sphere position="-0.32 0.47 -0.3" radius="0.025" material="color: #0ea5e9; emissive: #0ea5e9; emissiveIntensity: 1.2" id="sensor-1"></a-sphere>
+            <a-text value="[EST-01] PLUVIAL" align="center" width="1.0" position="-0.32 0.54 -0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Estación 2 (Ladera Derecha) -->
+            <a-cylinder position="0.32 0.42 -0.6" radius="0.015" height="0.15" material="color: #475569; roughness: 0.8"></a-cylinder>
+            <a-sphere position="0.32 0.51 -0.6" radius="0.025" material="color: #0ea5e9; emissive: #0ea5e9; emissiveIntensity: 1.2" id="sensor-2"></a-sphere>
+            <a-text value="[EST-02] PLUVIAL" align="center" width="1.0" position="0.32 0.58 -0.6" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Estación 3 (Fondo del Valle) -->
+            <a-cylinder position="0 0.18 -0.9" radius="0.015" height="0.15" material="color: #475569; roughness: 0.8"></a-cylinder>
+            <a-sphere position="0 0.27 -0.9" radius="0.025" material="color: #0ea5e9; emissive: #0ea5e9; emissiveIntensity: 1.2" id="sensor-3"></a-sphere>
+            <a-text value="[EST-03] FLUVIAL" align="center" width="1.0" position="0 0.34 -0.9" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Red de Interpolación Kriging en Tiempo Real (Líneas doradas) -->
+            <a-entity id="kriging-line-1" thick-laser="from: -0.32 0.47 -0.3; to: 0.32 0.51 -0.6; color: #fbbf24; radius: 0.008" visible="false"></a-entity>
+            <a-entity id="kriging-line-2" thick-laser="from: 0.32 0.51 -0.6; to: 0 0.27 -0.9; color: #fbbf24; radius: 0.008" visible="false"></a-entity>
+            <a-entity id="kriging-line-3" thick-laser="from: 0 0.27 -0.9; to: -0.32 0.47 -0.3; color: #fbbf24; radius: 0.008" visible="false"></a-entity>
+            <a-plane id="kriging-grid" position="0 0.38 -0.6" rotation="-90 0 0" width="0.8" height="1.0" 
+                     material="color: #fbbf24; wireframe: true; transparent: true; opacity: 0.3" visible="false"></a-plane>
+
+            <!-- Margen de Error / Nube de Incertidumbre (Se reduce con Kriging) -->
+            <a-sphere id="error-cloud" position="0 0.25 -0.3" radius="0.3" scale="1.4 0.8 2.0" 
+                      material="color: #ef4444; transparent: true; opacity: 0.18; side: double" visible="true"></a-sphere>
+            <a-text id="error-text" value="INCERTIDUMBRE ALTA (+/- 45%)" align="center" width="1.2" position="0 0.43 -0.3" color="#ef4444" font="Roboto-msdf.json"></a-text>
+
+            <!-- Floating AI Agent Nodes (Prismas Hexagonales 3D) con Etiquetas Legibles -->
+            <!-- Node A: Stochastic Simulator (SS) -->
+            <a-cylinder id="node-stochastic" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.7 -0.1" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
+            <a-text value="S.S" align="center" width="1.1" position="-0.65 0.58 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[SS] SIMULACION" align="center" width="1.8" position="-0.65 0.83 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Node B: Kriging Interpolator (KI) -->
+            <a-cylinder id="node-kriging" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.7 -0.1" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
+            <a-text value="K.I" align="center" width="1.1" position="0.65 0.58 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[KI] INTERPOLACION" align="center" width="1.8" position="0.65 0.83 -0.1" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Node C: Vulnerability Agent (VA) -->
+            <a-cylinder id="node-vulnerability" segments-radial="6" radius="0.07" height="0.08" position="0.65 0.35 0.3" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
+            <a-text value="V.A" align="center" width="1.1" position="0.65 0.23 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[VA] COLMATACION" align="center" width="1.8" position="0.65 0.48 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Node D: RDM Decisions Agent (RDM) -->
+            <a-cylinder id="node-rdm" segments-radial="6" radius="0.07" height="0.08" position="-0.65 0.35 0.3" rotation="90 30 0"
+                        material="color: #2977fd; emissive: #2977fd; emissiveIntensity: 0.4; opacity: 0.75; transparent: true; depthWrite: false"></a-cylinder>
+            <a-text value="RDM" align="center" width="1.1" position="-0.65 0.23 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+            <a-text value="[RDM] DECISIONES" align="center" width="1.8" position="-0.65 0.48 0.3" color="#fff" font="Roboto-msdf.json"></a-text>
+
+            <!-- Lasers de Conexión de Agentes a la Represa -->
+            <a-entity id="laser-lines" visible="false">
+                <a-entity thick-laser="from: -0.65 0.7 -0.1; to: 0 0.2 0.5; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.65 0.7 -0.1; to: 0 0.2 0.5; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: 0.65 0.35 0.3; to: 0 0.2 0.5; color: #10b981; radius: 0.015"></a-entity>
+                <a-entity thick-laser="from: -0.65 0.35 0.3; to: 0 0.2 0.5; color: #10b981; radius: 0.015"></a-entity>
+            </a-entity>
+
+        </a-entity>
+
+    </a-scene>
+
+    <!-- HUD Control Panel & Interface -->
+    <div id="hud-container">
+        
+        <!-- Header -->
+        <div class="hud-header">
+            <div class="hud-panel hud-title-box">
+                <h2>ACUMEN OS 1.0</h2>
+                <p>SIMULACIÓN HIDROCLIMATOLÓGICA // M1</p>
+            </div>
+            
+            <div class="hud-panel hud-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Volumen Útil</div>
+                    <div id="capacityVal" class="metric-value">100%</div>
+                </div>
+                <div class="metric-card" style="margin-left: 20px;">
+                    <div class="metric-label">Caudal Afluente</div>
+                    <div id="flowVal" class="metric-value">18.5 m³/s</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Controls -->
+        <div id="controlsPanel" class="hud-panel hud-left-controls">
+            
+            <!-- Slider 1: Clima -->
+            <div class="control-group">
+                <div class="control-header">
+                    <span class="control-label">Variabilidad Climática</span>
+                    <span id="climateVal" class="control-val">HISTÓRICO</span>
+                </div>
+                <input type="range" id="climateSlider" min="0" max="2" value="1" step="1">
+            </div>
+
+            <!-- Slider 2: Sedimentación -->
+            <div class="control-group" style="margin-top: 10px;">
+                <div class="control-header">
+                    <span class="control-label">Años de Operación (Sedimento)</span>
+                    <span id="yearsVal" class="control-val">0 años</span>
+                </div>
+                <input type="range" id="yearsSlider" min="0" max="100" value="0" step="5">
+            </div>
+
+            <!-- Switch Kriging -->
+            <div class="switch-container">
+                <span class="switch-label">Algoritmo Kriging (Reducción Error)</span>
+                <label class="switch">
+                    <input type="checkbox" id="krigingToggle">
+                    <span class="slider-switch"></span>
+                </label>
+            </div>
+
+            <!-- Optimization Action Button -->
+            <button id="btnOptimize" class="btn-optimize" style="margin-top: 5px;" disabled>
+                Optimizar Operación RDM
+            </button>
+        </div>
+
+        <!-- Right Terminal/Console -->
+        <div id="consolePanel" class="hud-panel hud-right-console">
+            <div class="console-header">
+                <span class="control-label">Terminal de Eventos Estocásticos</span>
+            </div>
+            <div id="consoleLog" class="console-log">
+                <div class="console-line">[SYSTEM]: Inicializando simulador hidroclimatológico...</div>
+                <div class="console-line">[SYSTEM]: Sensores meteorológicos activos.</div>
+                <div class="console-line">[SYSTEM]: Cargando datos de cuenca. Listo.</div>
+            </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="hud-bottom">
+            <a href="index_redireccion.html" class="btn-back-portal">Volver al Panel</a>
+            <button id="btnReset" class="btn-reset">Simular de Nuevo</button>
+        </div>
+
+    </div>
+
+    <!-- Mobile Navigation & Collapsible Drawer Trigger -->
+    <button id="btnToggleMobile" class="mobile-toggle-drawer">Panel de Control</button>
+
+    <!-- Main Logic Script -->
+    <script>
+        // DOM Nodes
+        const btnStart = document.getElementById('btnStart');
+        const desktopOnboarding = document.getElementById('desktop-onboarding');
+        const climateSlider = document.getElementById('climateSlider');
+        const climateVal = document.getElementById('climateVal');
+        const yearsSlider = document.getElementById('yearsSlider');
+        const yearsVal = document.getElementById('yearsVal');
+        const krigingToggle = document.getElementById('krigingToggle');
+        const btnOptimize = document.getElementById('btnOptimize');
+        const btnReset = document.getElementById('btnReset');
+        const capacityVal = document.getElementById('capacityVal');
+        const flowVal = document.getElementById('flowVal');
+        const consoleLog = document.getElementById('consoleLog');
+        
+        // Mobile Drawer UI
+        const btnToggleMobile = document.getElementById('btnToggleMobile');
+        const controlsPanel = document.getElementById('controlsPanel');
+
+        // A-Frame entities
+        const water = document.getElementById('water');
+        const waterWire = document.getElementById('water-wire');
+        const sediment = document.getElementById('sediment');
+        const sedimentWire = document.getElementById('sediment-wire');
+        const rainSystem = document.getElementById('rainSystem');
+        const overflowStream = document.getElementById('overflow-stream');
+        const overflowStreamWire = document.getElementById('overflow-stream-wire');
+        const errorCloud = document.getElementById('error-cloud');
+        const errorText = document.getElementById('error-text');
+
+        // Kriging network elements
+        const krigingL1 = document.getElementById('kriging-line-1');
+        const krigingL2 = document.getElementById('kriging-line-2');
+        const krigingL3 = document.getElementById('kriging-line-3');
+        const krigingGrid = document.getElementById('kriging-grid');
+        
+        // Agent nodes (for material adjustments)
+        const nodeSS = document.getElementById('node-stochastic');
+        const nodeKI = document.getElementById('node-kriging');
+        const nodeVA = document.getElementById('node-vulnerability');
+        const nodeRDM = document.getElementById('node-rdm');
+        const laserLines = document.getElementById('laser-lines');
+
+        // Simulation State variables
+        let climateState = 1; // 0: Sequía, 1: Histórico, 2: Avenida
+        let yearsState = 0;   // 0 a 100 años
+        let krigingActive = false;
+        let isOptimized = false;
+        let isOptimizing = false;
+        let alertLogged = false;
+
+        // Logging helper
+        function log(message, type = '') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.innerText = message;
+            consoleLog.appendChild(line);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        // Onboarding hide
+        btnStart.addEventListener('click', () => {
+            desktopOnboarding.style.display = 'none';
+            log(`[SYSTEM]: Simulación en tiempo real iniciada.`);
+            window.dispatchEvent(new Event('resize')); // Recalculate A-Frame size
+        });
+
+        // Mobile drawer toggle
+        btnToggleMobile.addEventListener('click', () => {
+            controlsPanel.classList.toggle('active');
+            btnToggleMobile.innerText = controlsPanel.classList.contains('active') ? 'Ocultar Panel' : 'Panel de Control';
+        });
+
+        // Update simulation values based on states
+        function updateSimulation() {
+            // 1. Calculate active storage capacity and flow based on sliders and kriging
+            let baseCapacity = 100 - (yearsState * 0.45); // Sediments reduce active capacity (up to 45%)
+            let flowMultiplier = climateState === 0 ? 0.15 : (climateState === 1 ? 1.0 : 3.8);
+            let rawFlow = 18.5 * flowMultiplier;
+            
+            // Apply slight random fluctuations
+            let flow = (rawFlow + (Math.sin(Date.now() / 1500) * 0.5 * flowMultiplier)).toFixed(1);
+            flowVal.innerText = `${flow} m³/s`;
+            
+            // Adjust water level (Y) based on climate and sediment reduction
+            let waterY = 0.05; // Default lowest (drought)
+            if (climateState === 1) {
+                // Normal: water sits at 0.18
+                waterY = 0.18 - (yearsState * 0.0003); // Slightly lower due to reduced volume
+            } else if (climateState === 2) {
+                // Wet: water level goes up
+                waterY = 0.32; // Flooding, crest of spillway is at 0.28
+            } else {
+                waterY = 0.06; // Drought level
+            }
+
+            // Apply positions to A-Frame elements
+            water.setAttribute('position', `0 ${waterY} -0.3`);
+            waterWire.setAttribute('position', `0 ${waterY + 0.001} -0.3`);
+
+            // Sediment scaling
+            let sedimentHeight = 0.01 + (yearsState * 0.0012); // Growth
+            let sedimentY = sedimentHeight / 2;
+            sediment.setAttribute('scale', `1 ${yearsState * 8 + 1} 1`);
+            sedimentWire.setAttribute('scale', `1.002 ${yearsState * 8 + 1.01} 1.002`);
+            sediment.setAttribute('position', `0 ${sedimentY} -0.3`);
+            sedimentWire.setAttribute('position', `0 ${sedimentY + 0.0005} -0.3`);
+
+            // Rain particle intensity
+            let rainIntensity = climateState === 0 ? 0 : (climateState === 1 ? 0.1 : 0.85);
+            rainSystem.setAttribute('rain-particles', 'intensity', rainIntensity);
+
+            // Overflow stream
+            if (climateState === 2) {
+                overflowStream.setAttribute('visible', 'true');
+                overflowStreamWire.setAttribute('visible', 'true');
+            } else {
+                overflowStream.setAttribute('visible', 'false');
+                overflowStreamWire.setAttribute('visible', 'false');
+            }
+
+            // Display Capacity in HUD
+            let displayCapacity = Math.max(0, baseCapacity).toFixed(0);
+            capacityVal.innerText = `${displayCapacity}%`;
+
+            // State alerts
+            if (climateState === 0 && !alertLogged) {
+                log(`[SS_AGENT]: Fenómeno de El Niño extremo activo (Tr > 80 años).`, 'gold');
+                log(`[VA_AGENT]: Afluencia de caudal cae críticamente por debajo del mínimo ecológico.`, 'red');
+                alertLogged = true;
+            } else if (climateState === 2 && !alertLogged) {
+                log(`[SS_AGENT]: Precipitación extrema (La Niña) detectada.`, 'gold');
+                log(`[VA_AGENT]: Caudal excede el límite de diseño. Rebose inminente en vertedero.`, 'red');
+                alertLogged = true;
+            } else if (climateState === 1) {
+                alertLogged = false;
+            }
+
+            // Enable RDM optimization button if system under stress
+            if ((climateState !== 1 || yearsState > 40) && !isOptimized && !isOptimizing) {
+                btnOptimize.disabled = false;
+                btnOptimize.style.backgroundColor = 'var(--acumen-gold)';
+            } else if (!isOptimized) {
+                btnOptimize.disabled = true;
+            }
+        }
+
+        // Climate Slider Event
+        climateSlider.addEventListener('input', (e) => {
+            if (isOptimizing) return;
+            climateState = parseInt(e.target.value);
+            
+            const labels = ["SEQUÍA EXTREMA", "HISTÓRICO", "AVENIDA MÁXIMA"];
+            climateVal.innerText = labels[climateState];
+            
+            if (climateState === 0) {
+                climateVal.style.color = "var(--acumen-gold)";
+            } else if (climateState === 2) {
+                climateVal.style.color = "var(--acumen-red)";
+            } else {
+                climateVal.style.color = "var(--acumen-blue)";
+            }
+            alertLogged = false;
+            updateSimulation();
+        });
+
+        // Years/Sediment Slider Event
+        yearsSlider.addEventListener('input', (e) => {
+            if (isOptimizing) return;
+            yearsState = parseInt(e.target.value);
+            yearsVal.innerText = `${yearsState} años`;
+            
+            if (yearsState > 50) {
+                yearsVal.style.color = "var(--acumen-red)";
+                if (yearsState === 75) {
+                    log(`[VA_AGENT]: Colmatación del embalse excede 30% del volumen de diseño.`, 'gold');
+                }
+            } else {
+                yearsVal.style.color = "var(--acumen-blue)";
+            }
+            updateSimulation();
+        });
+
+        // Kriging Switch Event
+        krigingToggle.addEventListener('change', (e) => {
+            krigingActive = e.target.checked;
+            
+            if (krigingActive) {
+                krigingL1.setAttribute('visible', 'true');
+                krigingL2.setAttribute('visible', 'true');
+                krigingL3.setAttribute('visible', 'true');
+                krigingGrid.setAttribute('visible', 'true');
+                
+                // Reduce uncertainty cloud size and change color/text
+                errorCloud.setAttribute('scale', '0.6 0.3 0.8');
+                errorCloud.setAttribute('material', 'color', 'var(--acumen-emerald)');
+                errorCloud.setAttribute('material', 'opacity', '0.08');
+                errorText.setAttribute('value', 'INCERTIDUMBRE ACUMEN OS (+/- 6%)');
+                errorText.setAttribute('color', 'var(--acumen-emerald)');
+
+                log(`[KI_AGENT]: Imputando registros de lluvia con Semivariogramas Kriging.`, 'green');
+                log(`[SYSTEM]: Incertidumbre espacial reducida en un 85%.`, 'green');
+            } else {
+                krigingL1.setAttribute('visible', 'false');
+                krigingL2.setAttribute('visible', 'false');
+                krigingL3.setAttribute('visible', 'false');
+                krigingGrid.setAttribute('visible', 'false');
+                
+                // Restore high uncertainty
+                errorCloud.setAttribute('scale', '1.4 0.8 2.0');
+                errorCloud.setAttribute('material', 'color', 'var(--acumen-red)');
+                errorCloud.setAttribute('material', 'opacity', '0.18');
+                errorText.setAttribute('value', 'INCERTIDUMBRE ALTA (+/- 45%)');
+                errorText.setAttribute('color', 'var(--acumen-red)');
+
+                log(`[SYSTEM]: Advertencia: Alta dispersión de datos sin interpolación espacial.`, 'gold');
+            }
+        });
+
+        // Optimization Multi-Agent (RDM Click)
+        btnOptimize.addEventListener('click', () => {
+            if (isOptimized || isOptimizing) return;
+            
+            isOptimizing = true;
+            btnOptimize.disabled = true;
+            log(`[SYSTEM]: Desplegando política operativa robusta (Multi-Agente)...`);
+            
+            // Light up agent nodes in green (active optimization)
+            const nodes = [nodeSS, nodeKI, nodeVA, nodeRDM];
+            nodes.forEach(n => {
+                n.setAttribute('material', 'color', '#10b981');
+                n.setAttribute('material', 'emissive', '#10b981');
+            });
+            laserLines.setAttribute('visible', 'true');
+
+            setTimeout(() => {
+                log(`[SS_AGENT]: Modelando caudales estocásticos de cambio climático... Hecho.`, 'green');
+            }, 800);
+
+            setTimeout(() => {
+                log(`[KI_AGENT]: Optimizando interpolación en tiempo real en cuenca... Hecho.`, 'green');
+            }, 1600);
+
+            setTimeout(() => {
+                log(`[VA_AGENT]: Ajustando regla operativa de descarga de fondo... Hecho.`, 'green');
+            }, 2400);
+
+            setTimeout(() => {
+                log(`[RDM_DECISIONES]: Desplegando compuertas y compuertas bypass automatizadas.`, 'green');
+                log(`[SYSTEM]: Factor de Resiliencia del Embalse estabilizado.`, 'green');
+                
+                isOptimized = true;
+                isOptimizing = false;
+                btnReset.style.display = 'block';
+                
+                // Stabilize HUD metrics
+                if (climateState === 2) {
+                    flowVal.innerText = "52.4 m³/s (Canalizado)";
+                    flowVal.style.color = "var(--acumen-emerald)";
+                }
+            }, 3200);
+        });
+
+        // Reset Simulator
+        btnReset.addEventListener('click', () => {
+            isOptimized = false;
+            isOptimizing = false;
+            climateState = 1;
+            yearsState = 0;
+            krigingActive = false;
+            alertLogged = false;
+
+            climateSlider.value = 1;
+            climateVal.innerText = "HISTÓRICO";
+            climateVal.style.color = "var(--acumen-blue)";
+
+            yearsSlider.value = 0;
+            yearsVal.innerText = "0 años";
+            yearsVal.style.color = "var(--acumen-blue)";
+
+            krigingToggle.checked = false;
+            
+            // Turn off agents
+            const nodes = [nodeSS, nodeKI, nodeVA, nodeRDM];
+            nodes.forEach(n => {
+                n.setAttribute('material', 'color', '#2977fd');
+                n.setAttribute('material', 'emissive', '#2977fd');
+            });
+            laserLines.setAttribute('visible', 'false');
+
+            krigingL1.setAttribute('visible', 'false');
+            krigingL2.setAttribute('visible', 'false');
+            krigingL3.setAttribute('visible', 'false');
+            krigingGrid.setAttribute('visible', 'false');
+
+            errorCloud.setAttribute('scale', '1.4 0.8 2.0');
+            errorCloud.setAttribute('material', 'color', 'var(--acumen-red)');
+            errorCloud.setAttribute('material', 'opacity', '0.18');
+            errorText.setAttribute('value', 'INCERTIDUMBRE ALTA (+/- 45%)');
+            errorText.setAttribute('color', 'var(--acumen-red)');
+
+            btnReset.style.display = 'none';
+            btnOptimize.disabled = true;
+
+            log(`[SYSTEM]: Parámetros del embalse reseteados.`);
+            updateSimulation();
+        });
+
+        // Run continuous updates for flow oscillations
+        setInterval(() => {
+            if (desktopOnboarding.style.display === 'none') {
+                updateSimulation();
+            }
+        }, 1500);
+
+    </script>
+</body>
+</html>
