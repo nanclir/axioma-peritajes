@@ -526,6 +526,56 @@ export default function AcumenOSPage() {
             </div>
           </div>
 
+          {/* SECCIÓN 3: RIESGO HIDROCLIMATOLÓGICO Y AMBIENTAL */}
+          <div className="grid md:grid-cols-2 gap-16 items-center pt-20 border-t border-zinc-800">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 bg-blue-500"></div>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">Riesgo Hidroclimatológico</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
+                Demo de Riesgo Hidroclimatológico
+              </h2>
+              <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
+                Simule la variabilidad de caudales, colmatación por sedimentos y vida útil de embalses. Evalúe cómo el motor Kriging de ACUMEN OS optimiza la operación de compuertas y la descarga de fondo bajo cambio climático extremo.
+              </p>
+              <div className="flex flex-wrap gap-4 items-center">
+                <a
+                  href="/os/visor_embalse.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-transparent text-base font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30"
+                >
+                  Abrir Visor Embalse &rarr;
+                </a>
+                <a
+                  href="/pdf/ficha_tecnica_embalse.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-blue-500 text-base font-bold rounded-md text-blue-500 bg-transparent hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                >
+                  Ficha Técnica (PDF) &darr;
+                </a>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center">
+              <div className="bg-zinc-850 border border-zinc-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full">
+                <div className="bg-white p-3 rounded-lg shadow-inner">
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.acumeningenieria.com/os/visor_embalse.html"
+                    alt="Código QR del visor Embalse"
+                    className="w-[180px] h-[180px] block"
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-bold text-sm text-white font-mono uppercase tracking-wider mb-1">Acceso Móvil</h4>
+                  <p className="text-xs text-zinc-400 leading-tight">Escanee este código con la cámara de su celular para abrir la maqueta 3D interactiva directamente.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
