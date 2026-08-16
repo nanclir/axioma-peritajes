@@ -431,13 +431,13 @@ export default function AcumenOSPage() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-8 bg-blue-500"></div>
-                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">CCI 2026 CARTAGENA</span>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">Modelación Geotécnica</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                Demo del Gemelo Digital en Vivo
+                Modelación Geotécnica y Estabilización de Taludes
               </h2>
               <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
-                Explore la maqueta digital interactiva diseñada para el Congreso CCI 2026. A través de este visor orbital en 3D, podrá simular fallas en el talud de un túnel debido a lluvias extremas y activar el protocolo de estabilización mediante pernos de roca guiado por el ecosistema de agentes inteligentes de ACUMEN OS.
+                Explore la maqueta digital interactiva para evaluar y estabilizar laderas expuestas a solicitaciones hidrológicas críticas en portales de túneles viales. Simule fallas de talud por lluvias extremas y active el protocolo de anclajes guiado en tiempo real por el ecosistema de agentes inteligentes de ACUMEN OS.
               </p>
               <div className="flex flex-wrap gap-4 items-center">
                 <a
@@ -446,7 +446,7 @@ export default function AcumenOSPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-6 py-3.5 border border-transparent text-base font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30"
                 >
-                  Abrir Visor Digital Twin &rarr;
+                  Abrir Visor Geotécnico &rarr;
                 </a>
                 <a
                   href="/pdf/ficha_tecnica_taludes.pdf"
