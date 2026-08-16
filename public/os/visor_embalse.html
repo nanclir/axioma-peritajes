@@ -933,90 +933,102 @@
             background-color: rgba(41, 119, 253, 0.1);
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1024px), (pointer: coarse) {
+            .btn-toggle-info {
+                display: flex !important;
+            }
+
+            .legend-header-mobile {
+                display: flex !important;
+            }
+            
+            .hud-lateral-panels {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .hud-left-col {
+                width: 100%;
+                max-width: 340px;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            /* Ocultar Leyenda por defecto */
+            .legend-box.collapsed-mobile {
+                display: none !important;
+            }
+            
+            /* Cajón flotante expandido */
+            .legend-box.expanded-mobile {
+                display: flex !important;
+                position: fixed;
+                top: 80px;
+                left: 20px;
+                right: 20px;
+                z-index: 200;
+                background-color: rgba(18, 22, 32, 0.98);
+                border: 1px solid var(--acumen-blue);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            }
+
+            /* Consola compacta con scroll en móvil */
+            .console-box {
+                display: flex !important;
+                width: 100%;
+                height: 75px !important;
+                font-size: 0.68rem !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
+                background-color: rgba(18, 22, 32, 0.85) !important;
+                box-sizing: border-box;
+                margin-bottom: 4px;
+            }
+            
+            .hud-right-col {
+                width: 100%;
+                max-width: 340px;
+                padding: 15px !important;
+            }
+
+            /* Conservar reglas previas de .hero-grid y onboarding */
             .hero-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
                 text-align: center;
             }
-
             .hero-text h1 {
                 font-size: 2.3rem;
             }
-
             .action-group {
                 justify-content: center;
             }
-
             .navbar {
                 padding: 20px;
             }
-
             .nav-items {
-                display: none; /* Hide desktop nav items on mobile */
+                display: none;
             }
-
-            /* HUD Relayout for touch devices */
             #hud-container {
                 padding: 10px;
             }
-
             .hud-header {
                 flex-direction: column;
                 gap: 10px;
             }
-
             .hud-panel {
                 width: 100%;
                 box-sizing: border-box;
                 padding: 10px 15px;
             }
-
             .hud-metrics {
                 justify-content: space-between;
                 width: 100%;
                 margin-top: 5px;
             }
-
-            /* Hide panels on mobile by default, toggled via drawer */
-            .hud-left-controls {
-                position: fixed;
-                left: 10px;
-                right: 10px;
-                bottom: 80px;
-                top: auto;
-                width: calc(100% - 20px);
-                z-index: 90;
-                transform: translateY(120%);
-                transition: transform 0.3s ease;
-                background-color: var(--panel-bg);
-            }
-
-            .hud-left-controls.active {
-                transform: translateY(0);
-            }
-
-            /* Make console compact and place it at the top-right under header */
-            .hud-right-console {
-                position: fixed;
-                right: 10px;
-                left: 10px;
-                top: 130px;
-                width: calc(100% - 20px);
-                max-height: 100px;
-                height: 100px;
-                z-index: 80;
-                background-color: rgba(18, 22, 32, 0.85);
-            }
-
-            .console-log {
-                font-size: 0.65rem;
-            }
-
-            .mobile-toggle-drawer {
-                display: block;
-            }
-
             .hud-bottom {
                 justify-content: center;
                 position: fixed;
@@ -1026,9 +1038,8 @@
                 z-index: 95;
                 pointer-events: none;
             }
-            
             .btn-back-portal {
-                display: none; /* Hide to prevent cluttering mobile interface */
+                display: none;
             }
         }
     </style>
@@ -1560,12 +1571,20 @@
             waterWire.setAttribute('position', `0 ${waterY + 0.001} -0.3`);
 
             // Sediment scaling
-            let sedimentHeight = 0.01 + (yearsState * 0.0012); // Growth
-            let sedimentY = sedimentHeight / 2;
-            sediment.setAttribute('scale', `1 ${yearsState * 8 + 1} 1`);
-            sedimentWire.setAttribute('scale', `1.002 ${yearsState * 8 + 1.01} 1.002`);
-            sediment.setAttribute('position', `0 ${sedimentY} -0.3`);
-            sedimentWire.setAttribute('position', `0 ${sedimentY + 0.0005} -0.3`);
+            if (isOptimized) {
+                sediment.setAttribute('visible', 'false');
+                sedimentWire.setAttribute('visible', 'false');
+                baseCapacity = 100;
+            } else {
+                sediment.setAttribute('visible', 'true');
+                sedimentWire.setAttribute('visible', 'true');
+                let sedimentHeight = 0.01 + (yearsState * 0.0012); // Growth
+                let sedimentY = sedimentHeight / 2;
+                sediment.setAttribute('scale', `1 ${yearsState * 8 + 1} 1`);
+                sedimentWire.setAttribute('scale', `1.002 ${yearsState * 8 + 1.01} 1.002`);
+                sediment.setAttribute('position', `0 ${sedimentY} -0.3`);
+                sedimentWire.setAttribute('position', `0 ${sedimentY + 0.0005} -0.3`);
+            }
 
             // Rain particle intensity
             let rainIntensity = climateState === 0 ? 0 : (climateState === 1 ? 0.1 : 0.85);
@@ -1713,6 +1732,10 @@
                 isOptimized = true;
                 isOptimizing = false;
                 btnReset.style.display = 'block';
+                
+                // Ocultar líneas de agentes y actualizar la maqueta para limpiar sedimentos
+                laserLines.setAttribute('visible', 'false');
+                updateSimulation();
                 
                 // Stabilize HUD metrics
                 if (climateState === 2) {
