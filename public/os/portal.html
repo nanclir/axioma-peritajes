@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ACUMEN OS 1.0 - Panel de Gemelos Digitales</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --panel-bg: rgba(18, 22, 32, 0.95);
+            --zinc-border: #1e2535;
+            --acumen-blue: #2977fd;
+            --text-main: #f3f4f6;
+            --text-muted: #8a93a0;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-dark);
+        }
+
+        /* Tech Grid Background */
+        #radar-grid {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(rgba(41, 119, 253, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(41, 119, 253, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .portal-container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 3.5;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-item {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--acumen-blue);
+        }
+
+        .nav-item.active {
+            border: 1px solid #fbbf24;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #fbbf24;
+        }
+
+        .btn-contact {
+            background-color: #121620;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-contact:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Main Section */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px 80px 20px;
+            text-align: center;
+        }
+
+        .tagline {
+            color: var(--acumen-blue);
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .main-content h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .main-content h1 span {
+            color: var(--acumen-blue);
+        }
+
+        .main-content p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 650px;
+            line-height: 1.6;
+            margin: 0 0 60px 0;
+        }
+
+        /* Grid of Simulators */
+        .simulators-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .sim-card {
+            background-color: rgba(18, 22, 32, 0.4);
+            border: 1px solid var(--zinc-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .sim-card:hover {
+            border-color: var(--acumen-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(41, 119, 253, 0.15);
+        }
+
+        .sim-card-header {
+            margin-bottom: 25px;
+        }
+
+        .sim-icon-box {
+            background-color: rgba(41, 119, 253, 0.1);
+            color: var(--acumen-blue);
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(41, 119, 253, 0.2);
+        }
+
+        .sim-icon-box svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+        }
+
+        .sim-card h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            color: #fff;
+        }
+
+        .sim-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .btn-launch {
+            background-color: var(--acumen-blue);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(41, 119, 253, 0.3);
+            margin-top: 30px;
+        }
+
+        .btn-launch:hover {
+            background-color: #1e63d3;
+            box-shadow: 0 4px 16px rgba(41, 119, 253, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .simulators-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .navbar .nav-items {
+                display: none; /* Hide on mobile to keep focus on choice */
+            }
+            .main-content h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="radar-grid"></div>
+
+    <div class="portal-container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="nav-logo">
+                <svg viewBox="0 0 100 100">
+                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35" stroke="#fff" stroke-width="6" fill="none"/>
+                    <polygon points="50,25 75,40 75,60 50,75 25,60 25,40" stroke="#fff" stroke-width="3" fill="none"/>
+                </svg>
+                ACUMEN
+            </div>
+            <div class="nav-items">
+                <a href="#" class="nav-item">Firma</a>
+                <a href="#" class="nav-item">Servicios</a>
+                <a href="#" class="nav-item">Proyectos</a>
+                <a href="#" class="nav-item">Insights</a>
+                <a href="#" class="nav-item active">ACUMEN OS</a>
+                <button class="btn-contact">Contacto</button>
+            </div>
+        </div>
+
+        <!-- Main choice portal -->
+        <div class="main-content">
+            <div class="tagline">CCI 2026 Cartagena</div>
+            <h1>Simulaciones de <span>Gemelos Digitales</span></h1>
+            <p class="subtitle">Seleccione el simulador interactivo de ACUMEN OS que desea evaluar en su ordenador o dispositivo móvil.</p>
+
+            <div class="simulators-grid">
+                <!-- Card 1: Túnel y Taludes -->
+                <div class="sim-card">
+                    <div class="sim-card-header">
+                        <div class="sim-icon-box">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2L2 22h20L12 2z" />
+                                <circle cx="12" cy="16" r="2" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3>Estabilización de Taludes</h3>
+                        <p>Simule fallas geológicas inducidas por lluvias extremas sobre la boca de un túnel vial y analice el protocolo de anclaje de pernos de roca guiado por agentes de IA.</p>
+                    </div>
+                    <a href="visor_webar_produccion.html" class="btn-launch">Abrir Simulador Geotecnia &rarr;</a>
+                </div>
+
+                <!-- Card 2: FutureProof Decisions -->
+                <div class="sim-card">
+                    <div class="sim-card-header">
+                        <div class="sim-icon-box">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 21V9l8-6 8 6v12H4z" />
+                                <path d="M12 3v18M4 12h16" />
+                            </svg>
+                        </div>
+                        <h3>Robust Decision Making (RDM)</h3>
+                        <p>Simule escenarios climatológicos estocásticos de cambio climático sobre un viaducto de gran luz y evalúe la mitigación de socavación y fallas mediante la metodología RDM.</p>
+                    </div>
+                    <a href="visor_futureproof.html" class="btn-launch">Abrir Simulador RDM &rarr;</a>
+                </div>
+
+                <!-- Card 3: Riesgo Hidroclimatológico y Ambiental -->
+                <div class="sim-card">
+                    <div class="sim-card-header">
+                        <div class="sim-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                        </div>
+                        <h3>Riesgo Hidroclimatológico</h3>
+                        <p>Simule la variabilidad de caudales, colmatación por sedimentos y vida útil de embalses. Evalúe cómo el motor Kriging de ACUMEN OS optimiza la operación bajo cambio climático.</p>
+                    </div>
+                    <a href="visor_embalse.html" class="btn-launch">Abrir Simulador Embalse &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
