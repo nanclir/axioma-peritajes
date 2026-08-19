@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ACUMEN - Engineering Intelligence</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        acumenBlue: '#2977fd',
+                        acumenDark: '#07090e',
+                        acumenPanel: '#121620',
+                        acumenBorder: '#1e2535',
+                        acumenGold: '#fbbf24',
+                        acumenGreen: '#10b981',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #07090e;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #radar-grid {
+            position: fixed;
+            inset: 0;
+            background-color: #07090e;
+            background-image: 
+                radial-gradient(rgba(41, 119, 253, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(41, 119, 253, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Projected Hotspots overlay */
+        #hotspots-container {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .hotspot {
+            position: absolute;
+            pointer-events: auto;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hotspot-ring {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(41, 119, 253, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(7, 9, 14, 0.6);
+            box-shadow: 0 0 10px rgba(41, 119, 253, 0.4);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .hotspot-dot {
+            width: 8px;
+            height: 8px;
+            background: #2977fd;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .hotspot-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #2977fd;
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite linear;
+            pointer-events: none;
+        }
+
+        .hotspot-label {
+            margin-top: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: #fff;
+            background: rgba(18, 22, 32, 0.9);
+            border: 1px solid #1e2535;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+
+        /* Hover & Active Hotspot states */
+        .hotspot:hover .hotspot-ring, .hotspot.active .hotspot-ring {
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        .hotspot:hover .hotspot-dot, .hotspot.active .hotspot-dot {
+            background: #ffffff;
+        }
+
+        .hotspot:hover .hotspot-label, .hotspot.active .hotspot-label {
+            opacity: 1;
+            border-color: #2977fd;
+            color: #2977fd;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Custom Scrollbar for side panel */
+        .custom-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(7, 9, 14, 0.2);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #1e2535;
+            border-radius: 2px;
+        }
+
+        /* Scanning overlay effect */
+        .scan-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            background: linear-gradient(rgba(16, 185, 129, 0) 90%, rgba(16, 185, 129, 0.08) 95%, rgba(16, 185, 129, 0.15) 100%);
+            background-size: 100% 200%;
+            animation: scanning-vertical 4s linear infinite;
+            display: none;
+        }
+
+        @keyframes scanning-vertical {
+            0% { background-position: 0 -100%; }
+            100% { background-position: 0 100%; }
+        }
+    </style>
+</head>
+<body class="text-white font-sans overflow-hidden">
+
+    <!-- Faint Tech Background -->
+    <div id="radar-grid"></div>
+
+    <!-- Scanning Visual Overlay for Forensics -->
+    <div id="scan-v-overlay" class="scan-overlay"></div>
+
+    <!-- 3D Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Projective Hotspots HTML Container -->
+    <div id="hotspots-container"></div>
+
+    <!-- 1. LOADING & INTRO SCREEN -->
+    <div id="intro-screen" class="fixed inset-0 bg-acumenDark z-50 flex flex-col justify-between p-6 transition-all duration-700 ease-in-out">
+        <!-- Top Event Name -->
+        <div class="flex justify-between items-center w-full">
+            <div id="intro-event" class="font-mono text-xs text-acumenBlue tracking-widest uppercase opacity-0 transition-opacity duration-1000">
+                CCI 2026 Cartagena
+            </div>
+            <div class="text-xs text-zinc-600 font-mono" id="intro-status">
+                SYS.INIT.OK
+            </div>
+        </div>
+
+        <!-- Center Text -->
+        <div class="flex flex-col items-center justify-center text-center flex-1 max-w-md mx-auto w-full">
+            <!-- Pulsing Logo Hexagon -->
+            <div class="w-16 h-16 border border-acumenBlue/30 rounded-full flex items-center justify-center mb-6 relative animate-pulse">
+                <svg viewBox="0 0 100 100" class="w-8 h-8 stroke-white fill-none stroke-[4.5]">
+                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
+                </svg>
+            </div>
+
+            <h1 id="intro-brand" class="text-4xl font-extrabold tracking-tight text-white mb-1 uppercase opacity-0 transition-all duration-1000 transform translate-y-4">
+                ACUMEN
+            </h1>
+            <p id="intro-sub" class="text-xs font-mono tracking-widest text-zinc-500 uppercase mb-8 opacity-0 transition-all duration-1000 transform translate-y-4 delay-300">
+                ENGINEERING INTELLIGENCE
+            </p>
+
+            <!-- Personalized welcome message -->
+            <div id="intro-welcome-box" class="h-16 flex flex-col justify-center mb-10">
+                <span id="intro-welcome" class="text-sm font-semibold tracking-wider text-white opacity-0 transition-opacity duration-1000"></span>
+                <span id="intro-welcome-id" class="text-[10px] font-mono text-zinc-500 mt-1 opacity-0 transition-opacity duration-1000"></span>
+            </div>
+
+            <!-- Action Button -->
+            <button id="btn-enter" class="opacity-0 px-8 py-3 bg-transparent border border-white hover:bg-white hover:text-acumenDark text-white font-mono text-xs tracking-widest uppercase transition-all duration-1000 transform translate-y-4 shadow-lg focus:outline-none">
+                ENTER ACUMEN OS →
+            </button>
+        </div>
+
+        <!-- Bottom Signature -->
+        <div class="text-center w-full pb-2">
+            <span class="font-mono text-[10px] text-zinc-600 tracking-wider">
+                © 2026 ACUMEN INGENIERÍA S.A.S. • NTAG213 ACTIVE
+            </span>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER (Logo, Lang and Navigation) -->
+    <div id="main-header" class="fixed top-0 left-0 w-full z-30 p-4 md:p-6 flex justify-between items-center pointer-events-none opacity-0 transition-opacity duration-500">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 pointer-events-auto cursor-pointer" onclick="resetToHome()">
+            <svg viewBox="0 0 100 100" class="w-6 h-6 stroke-white fill-none stroke-[6]">
+                <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
+            </svg>
+            <span class="font-bold text-sm tracking-tight text-white uppercase font-sans">ACUMEN</span>
+        </div>
+
+        <!-- Language and Souvenir Shortcuts -->
+        <div class="flex items-center gap-4 pointer-events-auto">
+            <!-- Language Selector -->
+            <div class="bg-zinc-950/80 border border-zinc-800 rounded px-2 py-1 text-xs font-mono flex gap-2">
+                <button id="lang-es" onclick="setLanguage('es')" class="text-zinc-500 hover:text-white transition-colors">ES</button>
+                <span class="text-zinc-700">|</span>
+                <button id="lang-en" onclick="setLanguage('en')" class="text-zinc-500 hover:text-white transition-colors">EN</button>
+            </div>
+            
+            <!-- Target Souvenir -->
+            <button id="btn-view-object" onclick="switchToSouvenir()" class="bg-acumenBlue/15 hover:bg-acumenBlue/30 text-acumenBlue border border-acumenBlue/30 px-3 py-1.5 rounded text-[10px] font-mono tracking-widest uppercase transition-all">
+                MY OBJECT
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. NODE DETAILS DRAWER (Floating Card on Desktop & Mobile) -->
+    <div id="details-drawer" class="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto md:bottom-6 w-auto md:w-96 md:max-w-md z-40 bg-zinc-950/90 border border-zinc-800 p-6 md:p-8 rounded-xl transform translate-y-full transition-transform duration-500 ease-in-out flex flex-col justify-between gap-4 pointer-events-auto shadow-2xl">
+        <div class="flex-1 max-w-2xl">
+            <!-- Close Button -->
+            <button onclick="closeDetails()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-xl p-1 focus:outline-none">✕</button>
+            
+            <div id="drawer-node-tag" class="font-mono text-[10px] text-acumenBlue tracking-widest uppercase mb-1">
+                CATEGORY
+            </div>
+            <h2 id="drawer-title" class="text-xl md:text-2xl font-extrabold tracking-tight mb-2">
+                Node Title
+            </h2>
+            <p id="drawer-tagline" class="text-xs text-zinc-400 font-medium mb-4 italic">
+                "Technical Tagline"
+            </p>
+            <p id="drawer-desc" class="text-sm text-zinc-300 leading-relaxed max-h-36 overflow-y-auto custom-scroll pr-2">
+                Detailed description...
+            </p>
+        </div>
+        <div class="flex flex-col gap-3 justify-end items-stretch md:w-64 w-full shrink-0">
+            <button id="drawer-btn-explore" target="_blank" class="w-full py-3 bg-acumenBlue hover:bg-blue-600 text-white font-mono text-xs tracking-wider uppercase transition-colors text-center">
+                EXPLORE THIS CAPABILITY →
+            </button>
+            <button onclick="openSolveFromDrawer()" id="drawer-btn-solve" class="w-full py-3 bg-transparent hover:bg-zinc-800 border border-zinc-700 text-white font-mono text-xs tracking-wider uppercase transition-colors text-center">
+                SOLVE A NEED
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. SOLVER OVERLAY ("WHAT ARE YOU TRYING TO SOLVE?") -->
+    <div id="solver-overlay" class="fixed inset-0 z-30 bg-acumenDark/85 backdrop-blur-sm flex flex-col justify-end p-6 md:justify-center md:items-center pointer-events-none opacity-0 transition-opacity duration-500">
+        <div class="w-full max-w-lg bg-zinc-950/90 border border-zinc-800 p-6 md:p-8 rounded-lg pointer-events-auto shadow-2xl relative">
+            
+            <!-- Close Button -->
+            <button onclick="toggleSolver(false)" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-xl p-1 focus:outline-none">✕</button>
+            
+            <div class="text-center md:text-left mb-6">
+                <div class="font-mono text-[9px] text-acumenBlue tracking-widest uppercase mb-1">ACUMEN CORE</div>
+                <h3 id="solver-title" class="text-lg md:text-xl font-bold tracking-tight uppercase">
+                    ¿QUÉ PROBLEMA ESTÁ TRATANDO DE RESOLVER?
+                </h3>
+            </div>
+
+            <!-- List of options -->
+            <div class="grid grid-cols-1 gap-2 mb-6" id="solver-options">
+                <button onclick="selectDiscipline('infrastructure')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-infra">Infrastructure</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+                <button onclick="selectDiscipline('waterClimate')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-water">Water + Climate</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+                <button onclick="selectDiscipline('technicalDispute')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-dispute">Technical Dispute</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+                <button onclick="selectDiscipline('risk')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-risk">Risk</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+                <button onclick="selectDiscipline('mobilityTerritory')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-mobility">Mobility + Territory</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+                <button onclick="selectDiscipline('digitalEngineering')" class="w-full text-left py-3 px-4 bg-zinc-900/50 hover:bg-acumenBlue/10 border border-zinc-800 hover:border-acumenBlue/40 text-xs font-semibold rounded transition-all flex justify-between items-center">
+                    <span id="opt-digital">Digital Engineering</span> <span class="text-zinc-600">&rarr;</span>
+                </button>
+            </div>
+            
+            <button onclick="toggleSolver(false)" id="solver-cancel-btn" class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white font-mono text-[10px] tracking-widest uppercase rounded border border-zinc-800 transition-colors text-center">
+                CANCEL
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. DISCIPLINE FOCUSED CAPABILITIES VIEW (Floating Card on Desktop & Mobile) -->
+    <div id="discipline-view" class="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto md:bottom-6 w-auto md:w-[480px] md:max-w-xl z-40 bg-zinc-950/95 border border-zinc-800 p-6 md:p-8 rounded-xl transform translate-y-full transition-transform duration-500 ease-in-out flex flex-col gap-5 pointer-events-auto shadow-2xl">
+        <div class="flex justify-between items-start">
+            <div>
+                <div id="disc-tag" class="font-mono text-[9px] text-acumenBlue tracking-widest uppercase mb-1">
+                    DISCIPLINE
+                </div>
+                <h2 id="disc-title" class="text-xl md:text-2xl font-extrabold tracking-tight">
+                    Discipline Title
+                </h2>
+            </div>
+            <button onclick="exitDisciplineFocus()" class="text-zinc-400 hover:text-white text-xs font-mono border border-zinc-800 hover:border-zinc-500 px-3 py-1.5 transition-colors">
+                ← MAP
+            </button>
+        </div>
+
+        <p id="disc-desc" class="text-sm text-zinc-300 max-w-3xl leading-relaxed">
+            Discipline long description...
+        </p>
+
+        <!-- Capabilities bullet block -->
+        <div>
+            <div id="disc-cap-label" class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider mb-2">Capabilities:</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2" id="disc-caps-list">
+                <!-- Javascript fills this -->
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button id="disc-btn-explore" target="_blank" class="flex-1 py-3 bg-transparent hover:bg-white hover:text-acumenDark text-white border border-white font-mono text-xs tracking-wider uppercase transition-all text-center">
+                EXPLORE THIS CAPABILITY →
+            </button>
+            <button id="disc-btn-talk" class="flex-1 py-3 bg-acumenBlue hover:bg-blue-600 text-white font-mono text-xs tracking-wider uppercase transition-colors text-center">
+                TALK TO US
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. SOUVENIR VIEW (Floating HTML controls over 3D token background) -->
+    <div id="souvenir-overlay" class="fixed inset-0 z-40 bg-transparent flex flex-col justify-between p-6 transform translate-x-full transition-transform duration-500 ease-in-out pointer-events-none">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center w-full pointer-events-auto">
+            <div class="flex items-center gap-2">
+                <svg viewBox="0 0 100 100" class="w-5 h-5 stroke-white fill-none stroke-[6]">
+                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
+                </svg>
+                <span class="font-extrabold text-xs tracking-tight text-white font-mono uppercase">ACUMEN DEVICE</span>
+            </div>
+            
+            <button onclick="exitSouvenir()" class="text-zinc-400 hover:text-white text-xs font-mono border border-zinc-800 hover:border-zinc-500 px-3 py-1.5 transition-colors">
+                ← MAP
+            </button>
+        </div>
+
+        <!-- Middle Content info layout -->
+        <div class="flex flex-col items-center justify-center flex-1 max-w-sm mx-auto w-full my-4 text-center">
+            <h2 id="souvenir-header" class="text-lg md:text-xl font-bold tracking-tight text-white uppercase mb-1">
+                YOUR ACUMEN ENGINEERING OBJECT
+            </h2>
+            <p id="souvenir-sub" class="text-[10px] font-mono text-acumenBlue tracking-widest uppercase mb-6">
+                CONGRESS EDITION 2026
+            </p>
+            
+            <!-- Instructions -->
+            <div class="bg-zinc-950/60 border border-zinc-900 rounded p-3 mb-6 w-full pointer-events-auto">
+                <p id="souvenir-instruct" class="text-[10px] font-mono text-zinc-500 leading-normal">
+                    Interact: Drag to rotate. Tap object to project telemetry.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="w-full max-w-md mx-auto flex flex-col gap-2.5 pb-2 pointer-events-auto">
+            <div class="text-center mb-1">
+                <h4 id="souvenir-footer-solve" class="text-xs font-bold tracking-widest text-zinc-300 uppercase">LET'S SOLVE SOMETHING COMPLEX.</h4>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2">
+                <button id="souvenir-btn-explore" target="_blank" class="py-3 bg-zinc-900/80 hover:bg-zinc-800 text-white font-mono text-[9px] tracking-wider uppercase rounded border border-zinc-800 transition-all text-center">
+                    EXPLORE
+                </button>
+                <button id="souvenir-btn-talk" class="py-3 bg-acumenBlue hover:bg-blue-600 text-white font-mono text-[9px] tracking-wider uppercase rounded transition-all text-center">
+                    TALK TO US
+                </button>
+                <button onclick="downloadvCard()" class="py-3 bg-transparent hover:bg-zinc-800 text-zinc-300 hover:text-white font-mono text-[9px] tracking-wider uppercase rounded border border-zinc-700 transition-all text-center">
+                    SAVE CONTACT
+                </button>
+            </div>
+            
+            <div class="text-center mt-2">
+                <span class="font-mono text-[9px] text-zinc-600 tracking-wider">acumeningenieria.com • MEDELLÍN · COLOMBIA</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. MAIN FLOATING FOOTER ACTIONS (Global Controls) -->
+    <div id="main-footer" class="fixed bottom-6 inset-x-0 z-20 flex justify-center items-center pointer-events-none opacity-0 transition-opacity duration-500">
+        <div class="flex gap-3 bg-zinc-950/80 border border-zinc-800 rounded-full px-4 py-2 pointer-events-auto shadow-2xl">
+            <!-- Explora solver manual button -->
+            <button id="footer-btn-solve" onclick="toggleSolver(true)" class="flex items-center gap-1.5 text-xs text-white hover:text-acumenBlue font-mono uppercase tracking-widest transition-colors focus:outline-none">
+                <svg viewBox="0 0 24 24" class="w-4 h-4 fill-none stroke-currentColor stroke-[2]">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <span id="footer-solve-txt">SOLVE</span>
+            </button>
+            <span class="text-zinc-800">|</span>
+            <!-- Explora map reset -->
+            <button id="footer-btn-reset" onclick="resetToHome()" class="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white font-mono uppercase tracking-widest transition-colors focus:outline-none">
+                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-none stroke-currentColor stroke-[2.5]">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                    <path d="M3 3v5h5"/>
+                </svg>
+                <span id="footer-reset-txt">RESET</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Console display overlay for ACUMEN OS -->
+    <div id="acumen-os-console" class="fixed bottom-6 left-6 z-20 w-72 bg-zinc-950/90 border border-zinc-900 rounded p-4 font-mono text-[9px] text-zinc-400 pointer-events-none hidden select-none max-h-48 overflow-hidden transition-all duration-300 shadow-xl">
+        <div class="flex justify-between items-center text-zinc-600 border-b border-zinc-900 pb-1 mb-2 font-mono text-[8px] uppercase tracking-widest">
+            <span>Console Output</span>
+            <span class="text-acumenBlue animate-pulse">● OS_ACTIVE</span>
+        </div>
+        <div id="console-lines" class="flex flex-col gap-1">
+            <!-- dynamically added -->
+        </div>
+    </div>
+
+    <!-- Real-time Debug Panel (Visible only with ?debug=true) -->
+    <div id="debug-panel" class="fixed top-20 left-4 z-50 bg-black/85 border border-red-500 p-3 rounded font-mono text-[9px] text-red-400 space-y-1 hidden">
+        <div>STATE: <span id="debug-state">-</span></div>
+        <div>CAM POS: <span id="debug-cam">-</span></div>
+        <div>TARGET: <span id="debug-target">-</span></div>
+        <div>TOKEN VIS: <span id="debug-token-vis">-</span></div>
+        <div>TOKEN SCALE: <span id="debug-token-scale">-</span></div>
+        <div>MAP VIS: <span id="debug-map-vis">-</span></div>
+        <div>MAP SCALE: <span id="debug-map-scale">-</span></div>
+    </div>
+
+    <!-- --------------------- SCRIPTING --------------------- -->
+    <script>
+        // Global Error Debugging Overlay
+        window.onerror = function(msg, url, line, col, error) {
+            const errDiv = document.createElement('div');
+            errDiv.style.position = 'fixed';
+            errDiv.style.bottom = '10px';
+            errDiv.style.left = '10px';
+            errDiv.style.backgroundColor = 'rgba(220, 38, 38, 0.95)';
+            errDiv.style.color = 'white';
+            errDiv.style.padding = '8px';
+            errDiv.style.fontFamily = 'monospace';
+            errDiv.style.fontSize = '10px';
+            errDiv.style.zIndex = '9999';
+            errDiv.style.maxWidth = '90%';
+            errDiv.style.wordBreak = 'break-all';
+            errDiv.style.border = '1px solid white';
+            errDiv.innerHTML = `Error: ${msg}<br>Line: ${line}<br>File: ${url ? url.split('/').pop() : ''}`;
+            document.body.appendChild(errDiv);
+            return false;
+        };
+
+        // GLOBALS & STATE
+        let currentLang = 'en';
+        let state = 'intro'; // intro, map, discipline, souvenir
+        let activeInterest = 'default'; // default, waterClimate, infrastructure, technicalDispute, risk, mobilityTerritory, digitalEngineering
+        let isUserInteracting = false;
+        let activeNodeKey = null;
+        let showDebugPanel = false; // Debug overlay flag
+
+        // Custom visitor data from URL query params
+        let visitorName = '';
+        let objectId = '001';
+        let eventName = 'CCI 2026 CARTAGENA';
+        let initialInterest = '';
+
+        // Three.js instances
+        let scene, camera, renderer, controls;
+        let mapGroup, tokenGroup;
+        
+        // Procedural geometries reference
+        let terrainBase, terrainWire, riverParticles, riverCurve, riverOffsets, riverPositions, riverParticleGeo;
+        let cityGrid, trafficParticles, trafficOffsets, trafficPositions, trafficParticleGeo;
+        let bridgeMesh, bridgeWires, tunnelMesh, tunnelScanRing;
+        let scanPlane; // forensics scanning plane
+        let laserLines = []; // OS node connections
+        let tokenMesh; // 3D Souvenir Object
+        let osCoreGroup, osRing1, osRing2; // ACUMEN OS Hologram Core
+        let waterDamMesh; // Water & Climate Dam
+
+        // Interactive hotspots locations (3D relative coordinates in mapGroup)
+        const nodePositions = {
+            waterClimate: new THREE.Vector3(0.5, 0.4, 0.8),
+            infrastructure: new THREE.Vector3(-1.0, 0.6, -0.5),
+            forensics: new THREE.Vector3(-1.8, 0.3, 1.2),
+            mobilityTerritory: new THREE.Vector3(1.9, 0.3, -1.9),
+            acumenos: new THREE.Vector3(0, 1.3, 0)
+        };
+
+        const hotspots = [];
+
+        // TEXT DICTIONARIES
+        const TRANSLATIONS = {
+            es: {
+                initializing: "INICIALIZANDO SISTEMA...",
+                enter: "ENTRAR A ACUMEN OS →",
+                welcome: "BIENVENIDO A ACUMEN",
+                tagline: "INGENIERÍA AUMENTADA POR DATOS",
+                solveQuestion: "¿QUÉ PROBLEMA ESTÁ TRATANDO DE RESOLVER?",
+                solvingComplex: "RESOLVAMOS ALGO COMPLEJO.",
+                exploreCorporate: "EXPLORAR ACUMEN",
+                talkToUs: "HABLAR CON NOSOTROS",
+                saveContact: "GUARDAR CONTACTO",
+                medellin: "MEDELLÍN · COLOMBIA",
+                engineeringObject: "SU OBJETO DE INGENIERÍA ACUMEN",
+                customObject: "ACUMEN ENGINEERING OBJECT",
+                edition: "EDICIÓN CONGRESO 2026",
+                exploreCapability: "EXPLORAR CAPACIDAD →",
+                backToMap: "← MAPA",
+                solve: "SOLUCIONAR",
+                reset: "REINICIAR",
+                welcomeName: "BIENVENIDO, ",
+                instruct: "Interactuar: Arrastra para rotar. Toca el objeto para telemetría.",
+                disciplines: {
+                    infrastructure: "Infraestructura",
+                    waterClimate: "Agua + Clima",
+                    technicalDispute: "Litigio Técnico",
+                    risk: "Riesgos",
+                    mobilityTerritory: "Movilidad + Territorio",
+                    digitalEngineering: "Ingeniería Digital"
+                },
+                capabilities: {
+                    infrastructure: {
+                        title: "Infraestructura Compleja",
+                        desc: "Evaluación rigurosa de viaductos, túneles viales y obras subterráneas. Combinamos análisis geotécnico avanzado y control de proyectos con metodologías de clase mundial para erradicar la incertidumbre en megaconstrucciones.",
+                        caps: ["Estabilidad de Taludes y Anclajes", "Diseño Estructural de Túneles", "Gerencia e Interventoría PMO"]
+                    },
+                    waterClimate: {
+                        title: "Agua + Clima",
+                        desc: "Comprender la dinámica del agua antes de que afecte la infraestructura. Modelación hidrológica e hidráulica avanzada bajo variabilidad climática extrema.",
+                        caps: ["Modelación Hidroclimatológica", "Variabilidad de Caudales en Embalses", "Simulaciones Hidráulicas Complejas"]
+                    },
+                    technicalDispute: {
+                        title: "Litigio Técnico (Peritajes)",
+                        desc: "División forense altamente especializada para estructurar dictámenes periciales y auditoría de fallas de ingeniería en tribunales de arbitraje.",
+                        caps: ["Ingeniería Forense Estructural", "Peritaje Técnico Hidroclimatológico", "Dictámenes Periciales de Alta Precisión"]
+                    },
+                    risk: {
+                        title: "Gestión de Riesgos (RDM)",
+                        desc: "Modelamos la incertidumbre. Implementamos metodologías estocásticas y Robust Decision Making (RDM) para estructurar decisiones de inversión y diseño resilientes.",
+                        caps: ["Robust Decision Making (RDM)", "Análisis Climatológico Estocástico", "Modelos Predictivos y Matrices de Riesgo"]
+                    },
+                    mobilityTerritory: {
+                        title: "Movilidad + Territorio",
+                        desc: "Analítica espacial e inteligencia territorial. Estudios de tránsito, ordenamiento del territorio y planificación de sistemas urbanos mediante modelos geográficos complejos.",
+                        caps: ["Estudios de Tránsito y Capacidad", "Planificación de Transporte", "Ordenamiento Territorial y Suelo Urbano"]
+                    },
+                    digitalEngineering: {
+                        title: "Ingeniería Digital (ACUMEN OS)",
+                        desc: "La arquitectura digital de la firma. Gemelos digitales y dashboards interactivos en tiempo real con trazabilidad total de datos para potenciar la toma de decisiones.",
+                        caps: ["Gemelos Digitales y SIG Activo", "Dashboards Interactivos de Proyecto", "Analítica Geoespacial de Datos"]
+                    }
+                },
+                nodeDetails: {
+                    waterClimate: {
+                        tag: "💧 RECURSO HÍDRICO Y CLIMA",
+                        title: "Agua + Clima",
+                        text: "Comprender el agua antes de que se convierta en incertidumbre.",
+                        desc: "Simulamos variables climatológicas extremas y colmatación de sedimentos mediante interpolación Kriging 3D, optimizando descargas en tiempo real.",
+                        linkText: "EXPLORAR AGUA + CLIMA →"
+                    },
+                    infrastructure: {
+                        tag: "🛤️ INFRAESTRUCTURA Y DISEÑO",
+                        title: "Infraestructura Compleja",
+                        text: "Infraestructura compleja exige decisiones rigurosa.",
+                        desc: "Diseño y modelación de túneles, puentes y taludes. Analizamos el comportamiento estructural mediante simulaciones de esfuerzos geomecánicos y PMO riguroso.",
+                        linkText: "EXPLORAR INFRAESTRUCTURA →"
+                    },
+                    forensics: {
+                        tag: "🔍 INGENIERÍA FORENSE",
+                        title: "Peritajes Técnicos",
+                        text: "Cuando una infraestructura falla, reconstruimos técnicamente lo ocurrido.",
+                        desc: "Auditoría técnica de patologías estructurales y fallos del terreno. Proporcionamos dictámenes periciales concluyentes para litigios y tribunales.",
+                        linkText: "EXPLORAR PERITAJES TÉCNICOS →"
+                    },
+                    mobilityTerritory: {
+                        tag: "🗺️ ANALÍTICA ESPACIAL",
+                        title: "Movilidad y Territorio",
+                        text: "El territorio también puede convertirse en información.",
+                        desc: "Modelamos patrones de transporte, tráfico vial y ordenamiento del suelo urbano, transformando cartografía y SIG en matrices de toma de decisiones.",
+                        linkText: "EXPLORAR MOVILIDAD Y SIG →"
+                    },
+                    acumenos: {
+                        tag: "🤖 ARQUITECTURA OPERATIVA",
+                        title: "ACUMEN OS 1.0",
+                        text: "Engineering augmented by intelligence.",
+                        desc: "La plataforma de inteligencia de la firma. Codificamos décadas de conocimiento geotécnico y climático en flujos automatizados de análisis para expandir el criterio humano.",
+                        linkText: "EXPLORAR ACUMEN OS →"
+                    }
+                }
+            },
+            en: {
+                initializing: "INITIALIZING SYSTEM...",
+                enter: "ENTER ACUMEN OS →",
+                welcome: "WELCOME TO ACUMEN",
+                tagline: "DATA-AUGMENTED ENGINEERING",
+                solveQuestion: "WHAT ARE YOU TRYING TO SOLVE?",
+                solvingComplex: "LET'S SOLVE SOMETHING COMPLEX.",
+                exploreCorporate: "EXPLORE ACUMEN",
+                talkToUs: "TALK TO US",
+                saveContact: "SAVE CONTACT",
+                medellin: "MEDELLÍN · COLOMBIA",
+                engineeringObject: "YOUR ACUMEN ENGINEERING OBJECT",
+                customObject: "ACUMEN ENGINEERING OBJECT",
+                edition: "CONGRESS EDITION 2026",
+                exploreCapability: "EXPLORE CAPABILITY →",
+                backToMap: "← MAP",
+                solve: "SOLVE",
+                reset: "RESET",
+                welcomeName: "WELCOME, ",
+                instruct: "Interact: Drag to rotate. Tap object to project telemetry.",
+                disciplines: {
+                    infrastructure: "Infrastructure",
+                    waterClimate: "Water + Climate",
+                    technicalDispute: "Technical Dispute",
+                    risk: "Risk",
+                    mobilityTerritory: "Mobility + Territory",
+                    digitalEngineering: "Digital Engineering"
+                },
+                capabilities: {
+                    infrastructure: {
+                        title: "Complex Infrastructure",
+                        desc: "Rigorous evaluation of viaducts, road tunnels, and underground works. We combine advanced geotechnical analysis and project control with world-class methodologies to eradicate uncertainty.",
+                        caps: ["Slope Stability & Anchors", "Structural Tunnel Design", "PMO Management & Auditing"]
+                    },
+                    waterClimate: {
+                        title: "Water + Climate",
+                        desc: "Understand water dynamics before it affects infrastructure. Advanced hydrological and hydraulic modeling under extreme climate change conditions.",
+                        caps: ["Hydroclimatological Modeling", "Reservoir Inflow & Siltation", "Complex Hydraulic Simulations"]
+                    },
+                    technicalDispute: {
+                        title: "Technical Disputes (Forensics)",
+                        desc: "Highly specialized forensic engineering division providing conclusive expert reports and failure analysis for arbitration tribunals.",
+                        caps: ["Forensic Structural Analysis", "Hydroclimatological Expert Witness", "Expert Witness Reports for Litigation"]
+                    },
+                    risk: {
+                        title: "Risk Management (RDM)",
+                        desc: "We model uncertainty. We implement stochastic methodologies and Robust Decision Making (RDM) to structure resilient investment and design decisions under climate change.",
+                        caps: ["Robust Decision Making (RDM)", "Stochastic Climatological Analysis", "Predictive Models & Risk Matrices"]
+                    },
+                    mobilityTerritory: {
+                        title: "Mobility + Territory",
+                        desc: "Spatial analytics and territorial intelligence. Traffic capacity studies, transportation planning, and metropolitan urban planning through spatial models.",
+                        caps: ["Traffic Capacity Studies", "Transportation Planning Models", "Territorial Planning & Urban GIS"]
+                    },
+                    digitalEngineering: {
+                        title: "Digital Engineering (ACUMEN OS)",
+                        desc: "The firm's digital infrastructure. Digital twins and real-time interactive dashboards with full data traceability to empower critical decision-making.",
+                        caps: ["Digital Twins & Active GIS", "Interactive Project Dashboards", "Geo-Spatial Data Analytics"]
+                    }
+                },
+                nodeDetails: {
+                    waterClimate: {
+                        tag: "💧 WATER & CLIMATE RESOURCES",
+                        title: "Water + Climate",
+                        text: "Understand water before it turns into uncertainty.",
+                        desc: "We simulate extreme climate events and siltation using 3D Kriging interpolation, optimizing reservoir discharges in real time.",
+                        linkText: "EXPLORE WATER + CLIMATE →"
+                    },
+                    infrastructure: {
+                        tag: "🛤️ INFRASTRUCTURE & DESIGN",
+                        title: "Complex Infrastructure",
+                        text: "Complex infrastructure demands rigorous decisions.",
+                        desc: "Tunnel, bridge, and slope design and modeling. We analyze geomechanical behavior using state-of-the-art structural stress simulations and rigorous PMO.",
+                        linkText: "EXPLORE INFRASTRUCTURE →"
+                    },
+                    forensics: {
+                        tag: "🔍 FORENSIC ENGINEERING",
+                        title: "Peritajes Técnicos",
+                        text: "When an infrastructure fails, we technically reconstruct what occurred.",
+                        desc: "Technical auditing of structural pathologies and terrain failures. We deliver expert reports with mathematical certainty for litigation and courtrooms.",
+                        linkText: "EXPLORE TECHNICAL FORENSICS →"
+                    },
+                    mobilityTerritory: {
+                        tag: "🗺️ SPATIAL ANALYTICS",
+                        title: "Mobility & Territory",
+                        text: "Territory can also be turned into information.",
+                        desc: "We model traffic flows and urban land use, converting cartography and GIS data into actionable decision-making matrices.",
+                        linkText: "EXPLORE MOBILITY & GIS →"
+                    },
+                    acumenos: {
+                        tag: "🤖 OPERATIONAL ARCHITECTURE",
+                        title: "ACUMEN OS 1.0",
+                        text: "Engineering augmented by intelligence.",
+                        desc: "The firm's intelligence platform. We code decades of geotechnical and climatic engineering knowledge into automated workflows to expand human judgment.",
+                        linkText: "EXPLORE ACUMEN OS →"
+                    }
+                }
+            }
+        };
+
+        const WHATSAPP_MESSAGES = {
+            es: {
+                default: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre un proyecto o necesidad de ingeniería. Mi nombre es ______ y me interesa especialmente ______.",
+                waterClimate: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Agua + Clima.",
+                infrastructure: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Infraestructura.",
+                technicalDispute: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Litigios Técnicos y Peritajes.",
+                risk: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Gestión de Riesgos y RDM.",
+                mobilityTerritory: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Movilidad + Territorio.",
+                digitalEngineering: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y de ACUMEN OS y quisiera conversar sobre una necesidad relacionada con Ingeniería Digital y ACUMEN OS."
+            },
+            en: {
+                default: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre un proyecto o necesidad de ingeniería. Mi nombre es ______ y me interesa especialmente ______.",
+                waterClimate: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y del World Water Congress y quisiera conversar sobre una necesidad relacionada con Water + Climate.",
+                infrastructure: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Infrastructure.",
+                technicalDispute: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Technical Disputes and Forensic Engineering.",
+                risk: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Risk Management and RDM.",
+                mobilityTerritory: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad relacionada con Mobility + Territory.",
+                digitalEngineering: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y de ACUMEN OS y quisiera conversar sobre una necesidad relacionada con Digital Engineering."
+            }
+        };
+
+        // PARSE URL QUERY PARAMETERS
+        function parseQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            visitorName = params.get('visitor') || params.get('name') || '';
+            objectId = params.get('id') || params.get('object') || String(Math.floor(Math.random() * 900) + 100).padStart(3, '0');
+            eventName = params.get('event') || 'CCI 2026 CARTAGENA';
+            initialInterest = params.get('interest') || '';
+            
+            showDebugPanel = params.get('debug') === 'true';
+            if (showDebugPanel) {
+                document.getElementById('debug-panel').classList.remove('hidden');
+            }
+            
+            // Auto detect language
+            const langParam = params.get('lang');
+            if (langParam === 'es' || langParam === 'en') {
+                currentLang = langParam;
+            } else {
+                // browser language
+                const userLang = navigator.language || navigator.userLanguage;
+                currentLang = userLang.startsWith('es') ? 'es' : 'en';
+            }
+        }
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            parseQueryParams();
+            setLanguage(currentLang);
+            initUI();
+            initThreeJS();
+            
+            // Dynamic welcome setup
+            const welcomeText = document.getElementById('intro-welcome');
+            const welcomeIdText = document.getElementById('intro-welcome-id');
+            const introEvent = document.getElementById('intro-event');
+            
+            introEvent.innerText = eventName;
+            
+            if (visitorName) {
+                const prefix = TRANSLATIONS[currentLang].welcomeName;
+                welcomeText.innerText = `${prefix}${visitorName.toUpperCase()}`;
+            } else {
+                welcomeText.innerText = TRANSLATIONS[currentLang].welcome;
+            }
+            welcomeIdText.innerText = `ACUMEN ENGINEERING OBJECT #${objectId}`;
+            
+            // Start animations for intro using CSS transition triggers
+            setTimeout(() => {
+                introEvent.classList.remove('opacity-0');
+                introEvent.classList.add('opacity-100');
+            }, 200);
+            
+            setTimeout(() => {
+                document.getElementById('intro-brand').classList.remove('opacity-0', 'translate-y-4');
+                document.getElementById('intro-brand').classList.add('opacity-100', 'translate-y-0');
+            }, 400);
+            
+            setTimeout(() => {
+                document.getElementById('intro-sub').classList.remove('opacity-0', 'translate-y-4');
+                document.getElementById('intro-sub').classList.add('opacity-100', 'translate-y-0');
+            }, 600);
+            
+            setTimeout(() => {
+                welcomeText.classList.remove('opacity-0');
+                welcomeText.classList.add('opacity-100');
+            }, 800);
+            
+            setTimeout(() => {
+                welcomeIdText.classList.remove('opacity-0');
+                welcomeIdText.classList.add('opacity-100');
+            }, 1000);
+            
+            setTimeout(() => {
+                document.getElementById('btn-enter').classList.remove('opacity-0', 'translate-y-4');
+                document.getElementById('btn-enter').classList.add('opacity-100', 'translate-y-0');
+            }, 1200);
+            
+            document.getElementById('btn-enter').addEventListener('click', enterAcumenOS);
+            
+            // Interaction listeners
+            window.addEventListener('resize', onWindowResize);
+            const canvasEl = document.getElementById('webgl-canvas');
+            canvasEl.addEventListener('mousedown', () => isUserInteracting = true);
+            canvasEl.addEventListener('touchstart', () => isUserInteracting = true, {passive: true});
+            canvasEl.addEventListener('mouseup', () => isUserInteracting = false);
+            canvasEl.addEventListener('touchend', () => isUserInteracting = false);
+            
+            // Pointer tap detection for souvenirs (ignores drags)
+            let startX = 0, startY = 0;
+            canvasEl.addEventListener('pointerdown', (e) => {
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+            canvasEl.addEventListener('pointerup', (e) => {
+                const diffX = Math.abs(e.clientX - startX);
+                const diffY = Math.abs(e.clientY - startY);
+                if (diffX < 6 && diffY < 6) {
+                    onCanvasClick(e);
+                }
+            });
+        });
+
+        // UI & LANGUAGE MANAGEMENT
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Toggle active classes in language UI buttons
+            if (lang === 'es') {
+                document.getElementById('lang-es').classList.add('text-white', 'font-bold');
+                document.getElementById('lang-es').classList.remove('text-zinc-500');
+                document.getElementById('lang-en').classList.remove('text-white', 'font-bold');
+                document.getElementById('lang-en').classList.add('text-zinc-500');
+            } else {
+                document.getElementById('lang-en').classList.add('text-white', 'font-bold');
+                document.getElementById('lang-en').classList.remove('text-zinc-500');
+                document.getElementById('lang-es').classList.remove('text-white', 'font-bold');
+                document.getElementById('lang-es').classList.add('text-zinc-500');
+            }
+            
+            // Translate texts
+            const t = TRANSLATIONS[currentLang];
+            document.getElementById('intro-status').innerText = 'SYS.INIT.OK';
+            document.getElementById('btn-enter').innerText = t.enter;
+            
+            // Solver options
+            document.getElementById('solver-title').innerText = t.solveQuestion;
+            document.getElementById('opt-infra').innerText = t.text_infrastructure || t.disciplines.infrastructure;
+            document.getElementById('opt-water').innerText = t.text_water || t.disciplines.waterClimate;
+            document.getElementById('opt-dispute').innerText = t.text_dispute || t.disciplines.technicalDispute;
+            document.getElementById('opt-risk').innerText = t.text_risk || t.disciplines.risk;
+            document.getElementById('opt-mobility').innerText = t.text_mobility || t.disciplines.mobilityTerritory;
+            document.getElementById('opt-digital').innerText = t.text_digital || t.disciplines.digitalEngineering;
+            document.getElementById('solver-cancel-btn').innerText = currentLang === 'es' ? 'CANCELAR' : 'CANCEL';
+            
+            // Footer text
+            document.getElementById('footer-solve-txt').innerText = t.solve;
+            document.getElementById('footer-reset-txt').innerText = t.reset;
+            
+            // Souvenir header
+            document.getElementById('souvenir-header').innerText = t.engineeringObject;
+            document.getElementById('souvenir-sub').innerText = t.edition;
+            document.getElementById('souvenir-instruct').innerText = t.instruct;
+            document.getElementById('souvenir-footer-solve').innerText = t.solvingComplex;
+            document.getElementById('souvenir-btn-explore').innerText = currentLang === 'es' ? 'EXPLORAR' : 'EXPLORE';
+            document.getElementById('souvenir-btn-talk').innerText = t.talkToUs;
+            
+            // Hotspots text labels update
+            const keys = ['waterClimate', 'infrastructure', 'forensics', 'mobilityTerritory', 'acumenos'];
+            keys.forEach(key => {
+                const labelEl = document.querySelector(`#h-label-${key}`);
+                if (labelEl) {
+                    labelEl.innerText = t.nodeDetails[key].title;
+                }
+            });
+            
+            // Update active drawer details if visible
+            if (activeNodeKey) {
+                updateDrawerContent(activeNodeKey);
+            }
+            
+            // Update active discipline details if visible
+            if (state === 'discipline') {
+                updateDisciplineView(activeInterest);
+            }
+            
+            // Redraw souvenir 3D canvas textures
+            if (tokenMesh) {
+                drawFrontCanvas(visitorName, objectId, eventName, false);
+                drawBackCanvas();
+            }
+
+            updateContactLinks();
+        }
+
+        function initUI() {
+            // Hotspots overlays in DOM
+            const container = document.getElementById('hotspots-container');
+            const t = TRANSLATIONS[currentLang];
+            
+            const nodes = [
+                { key: 'waterClimate', icon: '💧' },
+                { key: 'infrastructure', icon: '🛤️' },
+                { key: 'forensics', icon: '🔍' },
+                { key: 'mobilityTerritory', icon: '🗺️' },
+                { key: 'acumenos', icon: '🤖' }
+            ];
+            
+            nodes.forEach(node => {
+                const div = document.createElement('div');
+                div.id = `hotspot-${node.key}`;
+                div.className = 'hotspot';
+                div.innerHTML = `
+                    <div class="hotspot-ring">
+                        <div class="hotspot-pulse"></div>
+                        <div class="hotspot-dot"></div>
+                    </div>
+                    <span id="h-label-${node.key}" class="hotspot-label">${t.nodeDetails[node.key].title}</span>
+                `;
+                div.addEventListener('click', () => selectNode(node.key));
+                container.appendChild(div);
+                
+                hotspots.push({
+                    key: node.key,
+                    pos3D: nodePositions[node.key],
+                    element: div
+                });
+            });
+        }
+
+        // ENTER CORE EXPERIENCE
+        function enterAcumenOS() {
+            const introScreen = document.getElementById('intro-screen');
+            introScreen.classList.add('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                state = 'map';
+                
+                // Show header and footer
+                const mainHeader = document.getElementById('main-header');
+                const mainFooter = document.getElementById('main-footer');
+                mainHeader.classList.remove('pointer-events-none');
+                mainFooter.classList.remove('pointer-events-none');
+                
+                mainHeader.classList.remove('opacity-0');
+                mainHeader.classList.add('opacity-100');
+                mainFooter.classList.remove('opacity-0');
+                mainFooter.classList.add('opacity-100');
+                
+                // Zoom camera into landscape
+                gsap.to(camera.position, {
+                    x: 5.5,
+                    y: 4.0,
+                    z: 6.5,
+                    duration: 2.0,
+                    ease: 'power2.out',
+                    onUpdate: () => controls.update()
+                });
+                
+                // Trigger initial interest focus if defined in URL
+                if (initialInterest) {
+                    setTimeout(() => {
+                        if (initialInterest === 'water' || initialInterest === 'climate') {
+                            selectNode('waterClimate');
+                        } else if (initialInterest === 'infra' || initialInterest === 'infrastructure') {
+                            selectNode('infrastructure');
+                        } else if (initialInterest === 'forensics' || initialInterest === 'dispute') {
+                            selectNode('forensics');
+                        } else if (initialInterest === 'territory' || initialInterest === 'mobility') {
+                            selectNode('mobilityTerritory');
+                        } else if (initialInterest === 'acumenos' || initialInterest === 'core') {
+                            selectNode('acumenos');
+                        }
+                    }, 500);
+                }
+            }, 700);
+        }
+
+        // THREE.JS SETUP & GEOMETRY
+        function initThreeJS() {
+            const canvas = document.getElementById('webgl-canvas');
+            
+            // Scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x07090e, 0.05);
+            
+            // Camera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            // Starting position (far back for intro initialization)
+            camera.position.set(12, 10, 14);
+            
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 3;
+            controls.maxDistance = 18;
+            controls.maxPolarAngle = Math.PI / 2 - 0.05; // don't go below ground
+            controls.target.set(0, 0, 0);
+            
+            // Groups
+            mapGroup = new THREE.Group();
+            scene.add(mapGroup);
+            
+            tokenGroup = new THREE.Group();
+            tokenGroup.scale.set(0, 0, 0);
+            tokenGroup.visible = false;
+            scene.add(tokenGroup);
+            
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
+            dirLight.position.set(6, 12, 8);
+            scene.add(dirLight);
+            
+            const bluePointLight = new THREE.PointLight(0x2977fd, 2.0, 12);
+            bluePointLight.position.set(0, 1.5, 0);
+            scene.add(bluePointLight);
+            
+            const greenPointLight = new THREE.PointLight(0x10b981, 0.8, 8);
+            greenPointLight.position.set(-2, 0.5, 2);
+            scene.add(greenPointLight);
+            
+            // Construct Procedural Map Components
+            createTerrain();
+            createRiver();
+            createBridge();
+            createTunnel();
+            createCityMobility();
+            createForensicsScanPlane();
+            createAcumenOSLasers();
+            createWaterDam();
+            createAcumenOSCore();
+            
+            // Construct 3D Souvenir Object
+            createSouvenirObject();
+            
+            // Animation Loop
+            renderer.setAnimationLoop(animate);
+        }
+
+        // 1. TERRAIN (Mountain / Valley)
+        function createTerrain() {
+            const size = 11;
+            const segments = 42;
+            const geo = new THREE.PlaneGeometry(size, size, segments, segments);
+            
+            // Modify vertices to create topography
+            const pos = geo.attributes.position;
+            for (let i = 0; i < pos.count; i++) {
+                const x = pos.getX(i);
+                const y = pos.getY(i);
+                
+                // Height landscape formula
+                // Valley in diagonal, mountain peaks on sides
+                let z = Math.sin(x * 0.45) * Math.cos(y * 0.45) * 1.5;
+                z += Math.sin(x * 1.0) * 0.35; // secondary details
+                z += Math.cos(y * 1.2) * 0.25; // secondary details
+                
+                // Carve a diagonal river valley in the center
+                const distToValley = Math.abs(x + y * 0.6);
+                if (distToValley < 2.0) {
+                    z -= (2.0 - distToValley) * 0.8;
+                }
+                
+                // Flatten city area (bottom right)
+                if (x > 1.8 && y < -1.8) {
+                    z = -0.55 + (Math.sin(x*10) * Math.cos(y*10) * 0.04);
+                }
+                
+                pos.setZ(i, z);
+            }
+            geo.computeVertexNormals();
+            geo.rotateX(-Math.PI / 2); // align flat on XZ plane
+            
+            // Materials: Solid technical shading & wireframe overlay
+            const solidMat = new THREE.MeshStandardMaterial({
+                color: 0x0a0d14,
+                roughness: 0.82,
+                metalness: 0.15,
+                flatShading: true,
+                polygonOffset: true,
+                polygonOffsetFactor: 1,
+                polygonOffsetUnits: 1
+            });
+            
+            const wireMat = new THREE.MeshBasicMaterial({
+                color: 0x1e2738,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.45
+            });
+            
+            terrainBase = new THREE.Mesh(geo, solidMat);
+            terrainWire = new THREE.Mesh(geo, wireMat);
+            
+            mapGroup.add(terrainBase);
+            mapGroup.add(terrainWire);
+        }
+
+        // 2. WATER FLOW (Animated Particles along Riverbed Spline)
+        function createRiver() {
+            // Riverbed path points
+            const points = [
+                new THREE.Vector3(-4.5, 0.45, 5.0),
+                new THREE.Vector3(-2.5, 0.1, 3.8),
+                new THREE.Vector3(-1.0, -0.22, 2.0),
+                new THREE.Vector3(0.5, -0.42, 0.8),
+                new THREE.Vector3(1.8, -0.55, -0.8),
+                new THREE.Vector3(3.2, -0.6, -2.5),
+                new THREE.Vector3(4.5, -0.65, -4.5)
+            ];
+            
+            riverCurve = new THREE.CatmullRomCurve3(points);
+            
+            // River line visual (faint blue)
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(riverCurve.getPoints(50));
+            const lineMat = new THREE.LineBasicMaterial({ color: 0x2977fd, transparent: true, opacity: 0.25 });
+            const riverLine = new THREE.Line(lineGeo, lineMat);
+            mapGroup.add(riverLine);
+            
+            // River flow particles
+            const count = 75;
+            riverOffsets = [];
+            riverPositions = new Float32Array(count * 3);
+            
+            for (let i = 0; i < count; i++) {
+                riverOffsets.push(i / count);
+                const pt = riverCurve.getPointAt(riverOffsets[i]);
+                riverPositions[i * 3] = pt.x;
+                riverPositions[i * 3 + 1] = pt.y + 0.03; // slightly above terrain
+                riverPositions[i * 3 + 2] = pt.z;
+            }
+            
+            riverParticleGeo = new THREE.BufferGeometry();
+            riverParticleGeo.setAttribute('position', new THREE.BufferAttribute(riverPositions, 3));
+            
+            const particleMat = new THREE.PointsMaterial({
+                color: 0x2977fd,
+                size: 0.07,
+                transparent: true,
+                opacity: 0.0, // Hidden initially, animates on Water node selection
+                sizeAttenuation: true
+            });
+            
+            riverParticles = new THREE.Points(riverParticleGeo, particleMat);
+            mapGroup.add(riverParticles);
+        }
+
+        // 3. INFRASTRUCTURE: VIADUCT / BRIDGE (Cable-Stayed Bridge)
+        function createBridge() {
+            const bridgeGroup = new THREE.Group();
+            
+            // Road bed (Concrete grey)
+            const roadGeo = new THREE.BoxGeometry(2.5, 0.03, 0.22);
+            const roadMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 });
+            bridgeMesh = new THREE.Mesh(roadGeo, roadMat);
+            bridgeMesh.position.set(-0.6, 0.55, -0.5);
+            bridgeGroup.add(bridgeMesh);
+            
+            // High-contrast wireframe accent for road bed
+            const roadWireGeo = new THREE.EdgesGeometry(roadGeo);
+            const roadWireMat = new THREE.LineBasicMaterial({ color: 0x2977fd, transparent: true, opacity: 0.85 });
+            bridgeWires = new THREE.LineSegments(roadWireGeo, roadWireMat);
+            bridgeMesh.add(bridgeWires);
+            
+            // Concrete Piers (tapered columns down to ground)
+            const pierGeo = new THREE.BoxGeometry(0.08, 0.7, 0.08);
+            const colMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+            
+            const col1 = new THREE.Mesh(pierGeo, colMat);
+            col1.position.set(-1.25, 0.2, -0.5);
+            bridgeGroup.add(col1);
+            
+            const col2 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.0, 0.08), colMat);
+            col2.position.set(0.0, 0.05, -0.5);
+            bridgeGroup.add(col2);
+            
+            // A-SHAPE CABLE PYLON (Tower) in the center of the span
+            const pylonGroup = new THREE.Group();
+            pylonGroup.position.set(-0.6, 0.55, -0.5);
+            
+            // Left leg (Concrete grey)
+            const legLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.9), colMat);
+            legLeft.position.set(0, 0.4, -0.1);
+            legLeft.rotation.z = -0.12; // lean in
+            pylonGroup.add(legLeft);
+            
+            // Right leg (Concrete grey)
+            const legRight = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.9), colMat);
+            legRight.position.set(0, 0.4, 0.1);
+            legRight.rotation.z = 0.12; // lean in
+            pylonGroup.add(legRight);
+            
+            // Pylon top cap
+            const pylonTop = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.12, 0.22), colMat);
+            pylonTop.position.set(0, 0.8, 0);
+            pylonGroup.add(pylonTop);
+            
+            bridgeGroup.add(pylonGroup);
+            
+            // STAY CABLES (Line segments from pylon top to various parts of the deck)
+            const cablePositions = [];
+            const topPoint = new THREE.Vector3(-0.6, 0.55 + 0.8, -0.5);
+            
+            // Generate cables spaced along the deck
+            const cableOffsets = [-1.0, -0.7, -0.4, 0.4, 0.7, 1.0];
+            cableOffsets.forEach(dx => {
+                // Left side cable (Z offset)
+                cablePositions.push(topPoint.x, topPoint.y, topPoint.z);
+                cablePositions.push(-0.6 + dx, 0.55, -0.5 - 0.08);
+                
+                // Right side cable (Z offset)
+                cablePositions.push(topPoint.x, topPoint.y, topPoint.z);
+                cablePositions.push(-0.6 + dx, 0.55, -0.5 + 0.08);
+            });
+            
+            const cableGeo = new THREE.BufferGeometry();
+            cableGeo.setAttribute('position', new THREE.Float32BufferAttribute(cablePositions, 3));
+            const cableMat = new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.85 });
+            const cables = new THREE.LineSegments(cableGeo, cableMat);
+            bridgeGroup.add(cables);
+            
+            mapGroup.add(bridgeGroup);
+        }
+
+        // 4. TUNNEL (Boca de Túnel)
+        function createTunnel() {
+            const tunnelGroup = new THREE.Group();
+            
+            // 1. Concrete portal wall (Entrance Arch)
+            const portalGeo = new THREE.BoxGeometry(0.1, 0.45, 0.55);
+            const portalMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+            const portal = new THREE.Mesh(portalGeo, portalMat);
+            portal.position.set(-1.65, 0.22, 1.2);
+            portal.rotation.y = Math.PI / 6; // align face
+            tunnelGroup.add(portal);
+            
+            // Arch trim (wireframe highlight around portal)
+            const portalWire = new THREE.LineSegments(
+                new THREE.EdgesGeometry(portalGeo),
+                new THREE.LineBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.85 })
+            );
+            portal.add(portalWire);
+            
+            // 2. Tunnel tube (Half pipe cylinder)
+            const shellGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16, 1, true, -Math.PI / 2, Math.PI);
+            shellGeo.rotateX(Math.PI / 2);
+            shellGeo.rotateY(Math.PI / 6);
+            const shellMat = new THREE.MeshStandardMaterial({ color: 0x121722, roughness: 0.9, side: THREE.DoubleSide });
+            tunnelMesh = new THREE.Mesh(shellGeo, shellMat);
+            tunnelMesh.position.set(-1.95, 0.18, 1.37);
+            tunnelGroup.add(tunnelMesh);
+            
+            // Structural Ribs inside the tunnel (Steel grey)
+            const ribGeo = new THREE.CylinderGeometry(0.205, 0.205, 0.02, 16, 1, true, -Math.PI / 2, Math.PI);
+            ribGeo.rotateX(Math.PI / 2);
+            ribGeo.rotateY(Math.PI / 6);
+            const ribMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, side: THREE.DoubleSide });
+            
+            for (let i = 1; i <= 3; i++) {
+                const rib = new THREE.Mesh(ribGeo, ribMat);
+                // step back into the mountain along the tunnel axis
+                const offsetDistance = i * 0.18;
+                rib.position.set(
+                    -1.95 - Math.cos(Math.PI / 6) * offsetDistance,
+                    0.18,
+                    1.37 - Math.sin(Math.PI / 6) * offsetDistance
+                );
+                tunnelGroup.add(rib);
+            }
+            
+            // 3. Inner glowing scanner ring (Forensic Scanning)
+            const ringGeo = new THREE.RingGeometry(0.18, 0.195, 16);
+            ringGeo.rotateY(Math.PI / 6);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide, transparent: true, opacity: 0.0 });
+            tunnelScanRing = new THREE.Mesh(ringGeo, ringMat);
+            tunnelScanRing.position.set(-1.7, 0.2, 1.23);
+            tunnelGroup.add(tunnelScanRing);
+            
+            // Road leading into the tunnel
+            const roadGeo = new THREE.BoxGeometry(0.4, 0.01, 0.2);
+            const roadMat = new THREE.MeshStandardMaterial({ color: 0x181e2b, roughness: 0.9 });
+            const road = new THREE.Mesh(roadGeo, roadMat);
+            road.position.set(-1.5, 0.12, 1.11);
+            road.rotation.y = Math.PI / 6;
+            tunnelGroup.add(road);
+            
+            // LED safety lights along the tunnel ceiling (yellow warning lights)
+            const ledGeo = new THREE.SphereGeometry(0.015, 6, 6);
+            const ledMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
+            for (let i = 1; i <= 3; i++) {
+                const led = new THREE.Mesh(ledGeo, ledMat);
+                const offsetDistance = i * 0.18;
+                led.position.set(
+                    -1.95 - Math.cos(Math.PI / 6) * offsetDistance,
+                    0.28,
+                    1.37 - Math.sin(Math.PI / 6) * offsetDistance
+                );
+                tunnelGroup.add(led);
+            }
+            
+            mapGroup.add(tunnelGroup);
+        }
+
+        // 5. CITY & MOBILITY GRID (Flashing Traffic flows and Urban Blocks)
+        let cityBuildings = [];
+        function createCityMobility() {
+            const cityGroup = new THREE.Group();
+            
+            // Solid dark concrete foundation slab to mask the terrain wireframe lines
+            const slabGeo = new THREE.BoxGeometry(1.8, 0.04, 2.2);
+            const slabMat = new THREE.MeshStandardMaterial({ color: 0x07090e, roughness: 0.85 });
+            const slab = new THREE.Mesh(slabGeo, slabMat);
+            slab.position.set(1.9, -0.31, -1.9);
+            cityGroup.add(slab);
+            
+            // Grid of streets on top of the slab
+            const streetGeo = new THREE.BufferGeometry();
+            const verts = [
+                // Horizontal streets
+                1.1, -0.28, -1.1,   2.7, -0.28, -1.1,
+                1.1, -0.28, -1.9,   2.7, -0.28, -1.9,
+                1.1, -0.28, -2.7,   2.7, -0.28, -2.7,
+                // Vertical streets
+                1.3, -0.28, -0.9,   1.3, -0.28, -2.9,
+                1.9, -0.28, -0.9,   1.9, -0.28, -2.9,
+                2.7, -0.28, -0.9,   2.7, -0.28, -2.9
+            ];
+            streetGeo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+            const streetMat = new THREE.LineBasicMaterial({ color: 0x1e2738, transparent: true, opacity: 0.4 });
+            cityGrid = new THREE.LineSegments(streetGeo, streetMat);
+            cityGroup.add(cityGrid);
+            
+            // 3D Semi-transparent glowing blue glass skyscrapers representing the territory
+            const bldgMat = new THREE.MeshStandardMaterial({
+                color: 0x1e3a8a,
+                transparent: true,
+                opacity: 0.5,
+                roughness: 0.3,
+                metalness: 0.8,
+                emissive: 0x1d4ed8,
+                emissiveIntensity: 0.2
+            });
+            const bldgWireMat = new THREE.LineBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.85 });
+            
+            const buildingCoords = [
+                {x: 1.4, z: -1.3, w: 0.22, h: 0.5, d: 0.22},
+                {x: 1.4, z: -2.1, w: 0.20, h: 0.35, d: 0.20},
+                {x: 2.3, z: -1.3, w: 0.24, h: 0.4, d: 0.24},
+                {x: 2.3, z: -2.1, w: 0.18, h: 0.6, d: 0.18},
+                {x: 1.8, z: -2.6, w: 0.22, h: 0.45, d: 0.22}
+            ];
+            
+            buildingCoords.forEach(b => {
+                const geo = new THREE.BoxGeometry(b.w, b.h, b.d);
+                const mesh = new THREE.Mesh(geo, bldgMat);
+                mesh.position.set(b.x, -0.29 + b.h / 2, b.z);
+                cityGroup.add(mesh);
+                
+                // Add high-contrast glowing outline
+                const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), bldgWireMat);
+                mesh.add(wire);
+                cityBuildings.push(mesh);
+            });
+            
+            // Traffic flow particles (bright blue)
+            const count = 40;
+            trafficOffsets = [];
+            trafficPositions = new Float32Array(count * 3);
+            
+            for(let i=0; i<count; i++) {
+                trafficOffsets.push(Math.random());
+                trafficPositions[i*3] = 1.3 + Math.random() * 1.4;
+                trafficPositions[i*3+1] = -0.27;
+                trafficPositions[i*3+2] = -1.1 - Math.random() * 1.6;
+            }
+            
+            trafficParticleGeo = new THREE.BufferGeometry();
+            trafficParticleGeo.setAttribute('position', new THREE.BufferAttribute(trafficPositions, 3));
+            
+            const trafficMat = new THREE.PointsMaterial({
+                color: 0x3b82f6,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.0
+            });
+            
+            trafficParticles = new THREE.Points(trafficParticleGeo, trafficMat);
+            cityGroup.add(trafficParticles);
+            
+            cityGroup.position.set(0, 0, 0);
+            mapGroup.add(cityGroup);
+        }
+
+        // 6. FORENSICS SCANNING PLANE
+        function createForensicsScanPlane() {
+            const geo = new THREE.BoxGeometry(11, 0.015, 11);
+            const mat = new THREE.MeshBasicMaterial({
+                color: 0x10b981,
+                transparent: true,
+                opacity: 0.0,
+                side: THREE.DoubleSide
+            });
+            scanPlane = new THREE.Mesh(geo, mat);
+            scanPlane.position.set(0, 0, 0);
+            mapGroup.add(scanPlane);
+        }
+
+        // 7. ACUMEN OS CONNECTING LASERS
+        function createAcumenOSLasers() {
+            const keys = ['waterClimate', 'infrastructure', 'forensics', 'mobilityTerritory'];
+            
+            keys.forEach(key => {
+                const start = nodePositions[key];
+                const end = nodePositions.acumenos;
+                
+                const laserGeo = new THREE.BufferGeometry().setFromPoints([start, end]);
+                const laserMat = new THREE.LineBasicMaterial({
+                    color: 0x2977fd,
+                    transparent: true,
+                    opacity: 0.0
+                });
+                
+                const laser = new THREE.Line(laserGeo, laserMat);
+                mapGroup.add(laser);
+                laserLines.push(laser);
+            });
+        }
+
+        // 7b. WATER DAM & RESERVOIR (Water & Climate)
+        function createWaterDam() {
+            const damGroup = new THREE.Group();
+            
+            // Concrete dam wall (curved block)
+            const wallGeo = new THREE.BoxGeometry(0.12, 0.35, 0.45);
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+            waterDamMesh = new THREE.Mesh(wallGeo, wallMat);
+            waterDamMesh.position.set(0.28, 0.12, 0.42);
+            waterDamMesh.rotation.y = -Math.PI / 4; // block valley
+            damGroup.add(waterDamMesh);
+            
+            // Dam wireframe (Glowing cyan outline)
+            const wallWire = new THREE.LineSegments(
+                new THREE.EdgesGeometry(wallGeo),
+                new THREE.LineBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.85 })
+            );
+            waterDamMesh.add(wallWire);
+            
+            // Spillway
+            const spillGeo = new THREE.BoxGeometry(0.14, 0.08, 0.18);
+            const spill = new THREE.Mesh(spillGeo, wallMat);
+            spill.position.set(0, 0.15, 0);
+            waterDamMesh.add(spill);
+            
+            // Reservoir lake water surface (Glowing glass blue plane)
+            const waterPlaneGeo = new THREE.BoxGeometry(0.6, 0.01, 0.45);
+            const waterPlaneMat = new THREE.MeshStandardMaterial({
+                color: 0x0284c7,
+                roughness: 0.25,
+                metalness: 0.8,
+                transparent: true,
+                opacity: 0.7,
+                emissive: 0x0284c7,
+                emissiveIntensity: 0.4
+            });
+            const reservoirWater = new THREE.Mesh(waterPlaneGeo, waterPlaneMat);
+            reservoirWater.position.set(0.55, 0.22, 0.65);
+            reservoirWater.rotation.y = -Math.PI / 4;
+            damGroup.add(reservoirWater);
+            
+            mapGroup.add(damGroup);
+        }
+
+        // 7c. ACUMEN OS CORE (Holographic core core)
+        function createAcumenOSCore() {
+            osCoreGroup = new THREE.Group();
+            osCoreGroup.position.copy(nodePositions.acumenos); // (0, 1.3, 0)
+            
+            // Central glowing octahedron
+            const coreGeo = new THREE.OctahedronGeometry(0.12, 1);
+            const coreMat = new THREE.MeshBasicMaterial({
+                color: 0x3b82f6,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.8
+            });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            osCoreGroup.add(core);
+            
+            // Glowing solid center
+            const solidGeo = new THREE.SphereGeometry(0.04, 8, 8);
+            const solidMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const solidCenter = new THREE.Mesh(solidGeo, solidMat);
+            osCoreGroup.add(solidCenter);
+            
+            // Orbital Ring 1 (Glowing blue)
+            const ring1Geo = new THREE.RingGeometry(0.2, 0.215, 24);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x2977fd, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+            osRing1 = new THREE.Mesh(ring1Geo, ringMat);
+            osRing1.rotation.x = Math.PI / 2;
+            osCoreGroup.add(osRing1);
+            
+            // Orbital Ring 2 (Glowing light blue)
+            const ring2Geo = new THREE.RingGeometry(0.23, 0.245, 24);
+            const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+            osRing2 = new THREE.Mesh(ring2Geo, ring2Mat);
+            osRing2.rotation.y = Math.PI / 4;
+            osCoreGroup.add(osRing2);
+            
+            // Concrete/Structural base stand
+            const baseGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.28, 6);
+            const baseMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
+            const base = new THREE.Mesh(baseGeo, baseMat);
+            base.position.y = -0.22;
+            osCoreGroup.add(base);
+            
+            mapGroup.add(osCoreGroup);
+        }
+
+        // 8. THE 3D SOUVENIR: "YOUR ACUMEN ENGINEERING OBJECT"
+        function createSouvenirObject() {
+            // 1. Edge Cylinder (open ended border)
+            const edgeGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.28, 6, 1, true);
+            edgeGeo.rotateX(Math.PI / 2);
+            
+            const edgeMat = new THREE.MeshStandardMaterial({
+                color: 0x181e2b,
+                roughness: 0.24,
+                metalness: 0.9,
+                flatShading: true
+            });
+            const edgeMesh = new THREE.Mesh(edgeGeo, edgeMat);
+            tokenGroup.add(edgeMesh);
+            
+            // 2. Front Face Cap (Circle slightly offset on +Z axis)
+            const frontGeo = new THREE.CircleGeometry(1.8, 6);
+            frontTexture = new THREE.CanvasTexture(frontCanvas);
+            const frontMat = new THREE.MeshBasicMaterial({ map: frontTexture, side: THREE.DoubleSide });
+            const frontMesh = new THREE.Mesh(frontGeo, frontMat);
+            frontMesh.position.z = 0.141; // half of thickness (0.28 / 2 = 0.14) + slight air gap
+            tokenGroup.add(frontMesh);
+            
+            // 3. Back Face Cap (Circle slightly offset on -Z axis and rotated)
+            const backGeo = new THREE.CircleGeometry(1.8, 6);
+            backGeo.rotateY(Math.PI);
+            backTexture = new THREE.CanvasTexture(backCanvas);
+            const backMat = new THREE.MeshBasicMaterial({ map: backTexture, side: THREE.DoubleSide });
+            const backMesh = new THREE.Mesh(backGeo, backMat);
+            backMesh.position.z = -0.141;
+            tokenGroup.add(backMesh);
+            
+            // Set tokenMesh reference to frontMesh for click detection
+            tokenMesh = frontMesh;
+            
+            drawFrontCanvas(visitorName, objectId, eventName, false);
+            drawBackCanvas();
+        }
+
+        // ANIMATION LOOP
+        function animate(time) {
+            controls.update();
+            
+            // Rotate ACUMEN OS core elements in real-time
+            if (osCoreGroup) {
+                osRing1.rotation.x += 0.015;
+                osRing2.rotation.y += 0.02;
+                osRing2.rotation.z += 0.01;
+                
+                // Pulsate the scale slightly to simulate holographic core activity
+                const pulse = 1.0 + Math.sin(time * 0.003) * 0.06;
+                osCoreGroup.scale.set(pulse, pulse, pulse);
+            }
+            
+            if (!isUserInteracting) {
+                if (state === 'souvenir') {
+                    tokenGroup.rotation.y += 0.005;
+                    tokenGroup.rotation.x = Math.sin(time * 0.001) * 0.12;
+                } else {
+                    mapGroup.rotation.y += 0.0008;
+                }
+            }
+            
+            if (state !== 'souvenir' && riverParticles.material.opacity > 0) {
+                const posAttr = riverParticleGeo.attributes.position;
+                const count = posAttr.count;
+                
+                for (let i = 0; i < count; i++) {
+                    riverOffsets[i] = (riverOffsets[i] + 0.004) % 1.0;
+                    const pt = riverCurve.getPointAt(riverOffsets[i]);
+                    posAttr.setXYZ(i, pt.x, pt.y + 0.035, pt.z);
+                }
+                posAttr.needsUpdate = true;
+            }
+            
+            if (state !== 'souvenir' && trafficParticles.material.opacity > 0) {
+                const posAttr = trafficParticleGeo.attributes.position;
+                const count = posAttr.count;
+                
+                for (let i = 0; i < count; i++) {
+                    let tx = posAttr.getX(i);
+                    let tz = posAttr.getZ(i);
+                    
+                    if (i % 2 === 0) {
+                        tx -= 0.008;
+                        if (tx < 1.1) tx = 2.7;
+                    } else {
+                        tz -= 0.008;
+                        if (tz < -2.7) tz = -1.1;
+                    }
+                    posAttr.setXYZ(i, tx, -0.27, tz);
+                }
+                posAttr.needsUpdate = true;
+            }
+            
+            if (state === 'map') {
+                updateHotspotsProjection();
+            }
+            
+            // Update debug panel in real time if visible
+            if (showDebugPanel) {
+                document.getElementById('debug-state').innerText = state;
+                document.getElementById('debug-cam').innerText = `${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`;
+                document.getElementById('debug-target').innerText = `${controls.target.x.toFixed(2)}, ${controls.target.y.toFixed(2)}, ${controls.target.z.toFixed(2)}`;
+                document.getElementById('debug-token-vis').innerText = tokenGroup ? tokenGroup.visible : 'false';
+                document.getElementById('debug-token-scale').innerText = tokenGroup ? `${tokenGroup.scale.x.toFixed(2)}, ${tokenGroup.scale.y.toFixed(2)}, ${tokenGroup.scale.z.toFixed(2)}` : '0';
+                document.getElementById('debug-map-vis').innerText = mapGroup ? mapGroup.visible : 'false';
+                document.getElementById('debug-map-scale').innerText = mapGroup ? `${mapGroup.scale.x.toFixed(2)}, ${mapGroup.scale.y.toFixed(2)}, ${mapGroup.scale.z.toFixed(2)}` : '0';
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        const tempV = new THREE.Vector3();
+        function updateHotspotsProjection() {
+            hotspots.forEach(hotspot => {
+                tempV.copy(hotspot.pos3D);
+                tempV.applyMatrix4(mapGroup.matrixWorld);
+                tempV.project(camera);
+                
+                const isBehind = tempV.z > 1;
+                const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (tempV.y * -0.5 + 0.5) * window.innerHeight;
+                
+                const el = hotspot.element;
+                if (isBehind) {
+                    el.style.display = 'none';
+                } else {
+                    el.style.display = 'flex';
+                    el.style.left = `${x}px`;
+                    el.style.top = `${y}px`;
+                }
+            });
+        }
+
+        // NODE SELECTION
+        function selectNode(key) {
+            if (state !== 'map') return;
+            
+            activeNodeKey = key;
+            
+            hotspots.forEach(h => {
+                if (h.key === key) {
+                    h.element.classList.add('active');
+                } else {
+                    h.element.classList.remove('active');
+                }
+            });
+            
+            const targetPos = nodePositions[key];
+            const lookAtTarget = new THREE.Vector3().copy(targetPos).applyMatrix4(mapGroup.matrixWorld);
+            
+            const offset = new THREE.Vector3(2.5, 1.8, 2.5);
+            if (key === 'acumenos') offset.set(0.0, 2.0, 3.2);
+            
+            const destCamPos = new THREE.Vector3().copy(lookAtTarget).add(offset);
+            
+            controls.enabled = false;
+            gsap.killTweensOf(camera.position);
+            gsap.killTweensOf(controls.target);
+            
+            gsap.to(controls.target, {
+                x: lookAtTarget.x,
+                y: lookAtTarget.y,
+                z: lookAtTarget.z,
+                duration: 1.2,
+                ease: 'power2.out'
+            });
+            
+            gsap.to(camera.position, {
+                x: destCamPos.x,
+                y: destCamPos.y,
+                z: destCamPos.z,
+                duration: 1.2,
+                ease: 'power2.out',
+                onComplete: () => {
+                    controls.enabled = true;
+                    controls.update();
+                }
+            });
+            
+            resetNodeVisualStates();
+            
+            if (key === 'waterClimate') {
+                gsap.to(riverParticles.material, { opacity: 0.9, duration: 0.5 });
+            } else if (key === 'infrastructure') {
+                gsap.to(bridgeWires.material, { opacity: 0.9, duration: 0.2, yoyo: true, repeat: 3 });
+            } else if (key === 'forensics') {
+                document.getElementById('scan-v-overlay').style.display = 'block';
+                gsap.to(scanPlane.material, { opacity: 0.25, duration: 0.3 });
+                gsap.fromTo(scanPlane.position, { y: -1.0 }, { y: 1.0, duration: 2.0, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+                gsap.to(tunnelScanRing.material, { opacity: 0.8, duration: 0.4, yoyo: true, repeat: -1 });
+            } else if (key === 'mobilityTerritory') {
+                gsap.to(trafficParticles.material, { opacity: 0.9, duration: 0.5 });
+            } else if (key === 'acumenos') {
+                laserLines.forEach(line => {
+                    gsap.to(line.material, { opacity: 0.7, duration: 0.5 });
+                });
+                
+                document.getElementById('acumen-os-console').style.display = 'block';
+                runConsoleSequence();
+            }
+            
+            updateDrawerContent(key);
+            const drawerEl = document.getElementById('details-drawer');
+            drawerEl.classList.remove('translate-y-full');
+            drawerEl.classList.add('translate-y-0');
+        }
+
+        function resetNodeVisualStates() {
+            gsap.to(riverParticles.material, { opacity: 0.0, duration: 0.3 });
+            gsap.to(trafficParticles.material, { opacity: 0.0, duration: 0.3 });
+            
+            document.getElementById('scan-v-overlay').style.display = 'none';
+            gsap.killTweensOf(scanPlane.position);
+            gsap.to(scanPlane.material, { opacity: 0.0, duration: 0.3 });
+            gsap.to(tunnelScanRing.material, { opacity: 0.0, duration: 0.3 });
+            
+            laserLines.forEach(line => {
+                gsap.to(line.material, { opacity: 0.0, duration: 0.3 });
+            });
+            document.getElementById('acumen-os-console').style.display = 'none';
+        }
+
+        function closeDetails() {
+            activeNodeKey = null;
+            hotspots.forEach(h => h.element.classList.remove('active'));
+            const drawerEl = document.getElementById('details-drawer');
+            drawerEl.classList.remove('translate-y-0');
+            drawerEl.classList.add('translate-y-full');
+            resetNodeVisualStates();
+        }
+
+        function updateDrawerContent(key) {
+            const data = TRANSLATIONS[currentLang].nodeDetails[key];
+            
+            document.getElementById('drawer-node-tag').innerText = data.tag;
+            document.getElementById('drawer-title').innerText = data.title;
+            document.getElementById('drawer-tagline').innerText = data.text;
+            document.getElementById('drawer-desc').innerText = data.desc;
+            document.getElementById('drawer-btn-explore').innerText = data.linkText;
+            
+            let targetUrl = 'https://www.acumeningenieria.com/servicios';
+            if (key === 'waterClimate') {
+                targetUrl = 'https://www.acumeningenieria.com/riesgo-hidroclimatologico';
+                activeInterest = 'waterClimate';
+            } else if (key === 'infrastructure') {
+                targetUrl = 'https://www.acumeningenieria.com/obras-subterraneas';
+                activeInterest = 'infrastructure';
+            } else if (key === 'forensics') {
+                targetUrl = 'https://www.acumeningenieria.com/peritajes';
+                activeInterest = 'technicalDispute';
+            } else if (key === 'mobilityTerritory') {
+                targetUrl = 'https://www.acumeningenieria.com/servicios';
+                activeInterest = 'mobilityTerritory';
+            } else if (key === 'acumenos') {
+                targetUrl = 'https://www.acumeningenieria.com/acumen-os';
+                activeInterest = 'digitalEngineering';
+            }
+            
+            document.getElementById('drawer-btn-explore').onclick = () => {
+                window.open(targetUrl, '_blank');
+            };
+            
+            updateContactLinks();
+        }
+
+        // PROBLEM SOLVER SECTIONS
+        function toggleSolver(show) {
+            const solverEl = document.getElementById('solver-overlay');
+            if (show) {
+                closeDetails();
+                solverEl.classList.remove('pointer-events-none', 'opacity-0');
+                solverEl.classList.add('opacity-100');
+            } else {
+                solverEl.classList.remove('opacity-100');
+                solverEl.classList.add('pointer-events-none', 'opacity-0');
+            }
+        }
+
+        function openSolveFromDrawer() {
+            toggleSolver(true);
+        }
+
+        function selectDiscipline(type) {
+            activeInterest = type;
+            state = 'discipline';
+            toggleSolver(false);
+            
+            closeDetails(); // Close details drawer to clean up overlap
+            resetNodeVisualStates();
+            
+            let lookAtTarget = new THREE.Vector3(0, 0, 0);
+            let camOffset = new THREE.Vector3(5, 4, 5);
+            
+            if (type === 'waterClimate') {
+                lookAtTarget.copy(nodePositions.waterClimate).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(2.0, 1.2, 2.0);
+                gsap.to(riverParticles.material, { opacity: 0.9, duration: 0.5 });
+            } else if (type === 'infrastructure') {
+                lookAtTarget.copy(nodePositions.infrastructure).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(2.0, 1.5, 2.0);
+                gsap.to(bridgeWires.material, { opacity: 0.8, duration: 0.5 });
+            } else if (type === 'technicalDispute') {
+                lookAtTarget.copy(nodePositions.forensics).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(-1.5, 1.0, 1.8);
+                document.getElementById('scan-v-overlay').style.display = 'block';
+                gsap.to(scanPlane.material, { opacity: 0.2, duration: 0.3 });
+                gsap.fromTo(scanPlane.position, { y: -0.8 }, { y: 0.8, duration: 2.2, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+            } else if (type === 'risk') {
+                lookAtTarget.set(0, 0.2, 0).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(3.5, 3.0, 3.5);
+            } else if (type === 'mobilityTerritory') {
+                lookAtTarget.copy(nodePositions.mobilityTerritory).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(2.0, 1.4, -2.0);
+                gsap.to(trafficParticles.material, { opacity: 0.9, duration: 0.5 });
+            } else if (type === 'digitalEngineering') {
+                lookAtTarget.copy(nodePositions.acumenos).applyMatrix4(mapGroup.matrixWorld);
+                camOffset.set(0.0, 1.5, 2.8);
+                laserLines.forEach(line => gsap.to(line.material, { opacity: 0.5, duration: 0.5 }));
+            }
+            
+            const destCamPos = new THREE.Vector3().copy(lookAtTarget).add(camOffset);
+            
+            controls.enabled = false;
+            gsap.killTweensOf(camera.position);
+            gsap.killTweensOf(controls.target);
+            
+            gsap.to(controls.target, {
+                x: lookAtTarget.x,
+                y: lookAtTarget.y,
+                z: lookAtTarget.z,
+                duration: 1.4,
+                ease: 'power2.out'
+            });
+            
+            gsap.to(camera.position, {
+                x: destCamPos.x,
+                y: destCamPos.y,
+                z: destCamPos.z,
+                duration: 1.4,
+                ease: 'power2.out',
+                onComplete: () => {
+                    controls.enabled = true;
+                    controls.update();
+                }
+            });
+            
+            document.getElementById('hotspots-container').style.opacity = '0';
+            document.getElementById('hotspots-container').style.pointerEvents = 'none';
+            
+            const mainFooter = document.getElementById('main-footer');
+            mainFooter.classList.remove('opacity-100');
+            mainFooter.classList.add('opacity-0');
+            mainFooter.classList.add('pointer-events-none');
+            
+            updateDisciplineView(type);
+            const discEl = document.getElementById('discipline-view');
+            discEl.classList.remove('translate-y-full');
+            discEl.classList.add('translate-y-0');
+        }
+
+        function updateDisciplineView(type) {
+            const data = TRANSLATIONS[currentLang].capabilities[type];
+            document.getElementById('disc-title').innerText = data.title;
+            document.getElementById('disc-desc').innerText = data.desc;
+            
+            const listContainer = document.getElementById('disc-caps-list');
+            listContainer.innerHTML = '';
+            
+            data.caps.forEach(cap => {
+                const capDiv = document.createElement('div');
+                capDiv.className = 'bg-zinc-900 border border-zinc-800 p-3 rounded font-mono text-[10px] text-zinc-300';
+                capDiv.innerText = cap;
+                listContainer.appendChild(capDiv);
+            });
+            
+            let targetUrl = 'https://www.acumeningenieria.com/servicios';
+            if (type === 'waterClimate') targetUrl = 'https://www.acumeningenieria.com/riesgo-hidroclimatologico';
+            else if (type === 'infrastructure') targetUrl = 'https://www.acumeningenieria.com/obras-subterraneas';
+            else if (type === 'technicalDispute') targetUrl = 'https://www.acumeningenieria.com/peritajes';
+            else if (type === 'risk') targetUrl = 'https://www.acumeningenieria.com/futureproof-decisions';
+            else if (type === 'mobilityTerritory') targetUrl = 'https://www.acumeningenieria.com/servicios';
+            else if (type === 'digitalEngineering') targetUrl = 'https://www.acumeningenieria.com/acumen-os';
+            
+            document.getElementById('disc-btn-explore').onclick = () => window.open(targetUrl, '_blank');
+            
+            updateContactLinks();
+        }
+
+        function exitDisciplineFocus() {
+            state = 'map';
+            const discEl = document.getElementById('discipline-view');
+            discEl.classList.remove('translate-y-0');
+            discEl.classList.add('translate-y-full');
+            
+            document.getElementById('hotspots-container').style.opacity = '1';
+            document.getElementById('hotspots-container').style.pointerEvents = 'auto';
+            
+            const mainFooter = document.getElementById('main-footer');
+            mainFooter.classList.remove('opacity-0');
+            mainFooter.classList.add('opacity-100');
+            mainFooter.classList.remove('pointer-events-none');
+            
+            resetNodeVisualStates();
+            
+            const lookAt = new THREE.Vector3(0, 0, 0);
+            const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
+            
+            gsap.to(controls.target, {
+                x: lookAt.x,
+                y: lookAt.y,
+                z: lookAt.z,
+                duration: 1.2,
+                ease: 'power2.out',
+                onUpdate: () => controls.update()
+            });
+            
+            gsap.to(camera.position, {
+                x: camPos.x,
+                y: camPos.y,
+                z: camPos.z,
+                duration: 1.2,
+                ease: 'power2.out',
+                onUpdate: () => controls.update()
+            });
+        }
+
+        // SOUVENIR OBJECT 3D VIEW FADE-IN
+        function switchToSouvenir() {
+            closeDetails();
+            exitDisciplineFocus();
+            
+            state = 'souvenir';
+            activeInterest = 'default';
+            
+            document.getElementById('hotspots-container').style.display = 'none';
+            document.getElementById('main-footer').style.display = 'none';
+            
+            // Scale down map
+            gsap.killTweensOf(mapGroup.scale);
+            gsap.to(mapGroup.scale, {
+                x: 0,
+                y: 0,
+                z: 0,
+                duration: 0.6,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    mapGroup.visible = false;
+                }
+            });
+            
+            // Scale up token concurrently
+            tokenGroup.visible = true;
+            gsap.killTweensOf(tokenGroup.scale);
+            gsap.to(tokenGroup.scale, {
+                x: 1,
+                y: 1,
+                z: 1,
+                duration: 0.6,
+                ease: 'power2.out'
+            });
+            
+            // Disable controls during transition
+            controls.enabled = false;
+            gsap.killTweensOf(camera.position);
+            gsap.killTweensOf(controls.target);
+            
+            gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.0 });
+            gsap.to(camera.position, {
+                x: 0,
+                y: 0.26, // start slightly offset vertically to satisfy polar constraints
+                z: 5.2,
+                duration: 1.2,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    controls.enabled = true;
+                    controls.update();
+                }
+            });
+            
+            const souvenirEl = document.getElementById('souvenir-overlay');
+            souvenirEl.classList.remove('translate-x-full');
+            souvenirEl.classList.add('translate-x-0');
+            
+            updateContactLinks();
+        }
+
+        function exitSouvenir() {
+            state = 'map';
+            
+            const souvenirEl = document.getElementById('souvenir-overlay');
+            souvenirEl.classList.remove('translate-x-0');
+            souvenirEl.classList.add('translate-x-full');
+            
+            // Scale down token
+            gsap.killTweensOf(tokenGroup.scale);
+            gsap.to(tokenGroup.scale, {
+                x: 0,
+                y: 0,
+                z: 0,
+                duration: 0.6,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    tokenGroup.visible = false;
+                }
+            });
+            
+            // Scale up map concurrently
+            mapGroup.visible = true;
+            gsap.killTweensOf(mapGroup.scale);
+            gsap.to(mapGroup.scale, {
+                x: 1,
+                y: 1,
+                z: 1,
+                duration: 0.6,
+                ease: 'power2.out',
+                onComplete: () => {
+                    document.getElementById('hotspots-container').style.display = 'block';
+                    document.getElementById('main-footer').style.display = 'flex';
+                }
+            });
+            
+            // Disable controls during transition
+            controls.enabled = false;
+            
+            const lookAt = new THREE.Vector3(0, 0, 0);
+            const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
+            
+            gsap.killTweensOf(camera.position);
+            gsap.killTweensOf(controls.target);
+            
+            gsap.to(controls.target, {
+                x: lookAt.x,
+                y: lookAt.y,
+                z: lookAt.z,
+                duration: 1.0,
+                ease: 'power2.inOut'
+            });
+            
+            gsap.to(camera.position, {
+                x: camPos.x,
+                y: camPos.y,
+                z: camPos.z,
+                duration: 1.2,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    controls.enabled = true;
+                    controls.update();
+                }
+            });
+        }
+
+        // RESET MAP VIEW
+        function resetToHome() {
+            if (state === 'souvenir') {
+                exitSouvenir();
+            } else if (state === 'discipline') {
+                exitDisciplineFocus();
+            } else {
+                closeDetails();
+                
+                // Disable controls during transition
+                controls.enabled = false;
+                
+                const lookAt = new THREE.Vector3(0, 0, 0);
+                const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
+                
+                gsap.killTweensOf(camera.position);
+                gsap.killTweensOf(controls.target);
+                
+                gsap.to(controls.target, {
+                    x: lookAt.x,
+                    y: lookAt.y,
+                    z: lookAt.z,
+                    duration: 1.0,
+                    ease: 'power2.out'
+                });
+                
+                gsap.to(camera.position, {
+                    x: camPos.x,
+                    y: camPos.y,
+                    z: camPos.z,
+                    duration: 1.0,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        controls.enabled = true;
+                        controls.update();
+                    }
+                });
+            }
+        }
+
+        // TELEMETRY FLASH SIMULATOR ON SOUVENIR INTERACTION
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        function onCanvasClick(event) {
+            if (state !== 'souvenir') return;
+            
+            const clientX = event.clientX;
+            const clientY = event.clientY;
+            
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(tokenMesh);
+            
+            if (intersects.length > 0) {
+                flashTelemetry();
+            }
+        }
+        
+        let flashTimer = null;
+        function flashTelemetry() {
+            if (flashTimer) clearTimeout(flashTimer);
+            
+            drawFrontCanvas(visitorName, objectId, eventName, true);
+            
+            flashTimer = setTimeout(() => {
+                drawFrontCanvas(visitorName, objectId, eventName, false);
+                flashTimer = null;
+            }, 1600);
+        }
+
+        // DYNAMIC WHATSAPP LINKS & VCARD GENERATOR
+        function updateContactLinks() {
+            const phone = "573005771484";
+            let msg = WHATSAPP_MESSAGES[currentLang].default;
+            
+            if (activeInterest !== 'default') {
+                msg = WHATSAPP_MESSAGES[currentLang][activeInterest] || msg;
+            }
+            
+            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            
+            const talkBtns = ['drawer-btn-solve', 'disc-btn-talk', 'souvenir-btn-talk'];
+            talkBtns.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.onclick = () => window.open(waUrl, '_blank');
+                }
+            });
+            
+            const expUrl = 'https://www.acumeningenieria.com';
+            const expBtns = ['souvenir-btn-explore'];
+            expBtns.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.onclick = () => window.open(expUrl, '_blank');
+                }
+            });
+        }
+
+        function downloadvCard() {
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+N:INGENIERÍA S.A.S.;ACUMEN;;;
+FN:ACUMEN INGENIERÍA S.A.S.
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Inteligencia Territorial Aumentada
+TEL;TYPE=WORK,VOICE,CELL:+573005771484
+ADR;TYPE=WORK,PREF:;;Calle 20B sur #38-76 Interior 202;Medellín;Antioquia;050021;Colombia
+URL:https://www.acumeningenieria.com
+EMAIL;TYPE=PREF,INTERNET:contacto@acumeningenieria.com
+NOTE:Boutique de ingeniería aumentada y peritajes técnicos de alta precisión.
+END:VCARD`;
+
+            const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'ACUMEN_INGENIERIA.vcf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // ACUMEN OS TELEMETRY TERMINAL LOOPS
+        function runConsoleSequence() {
+            const lines = [
+                "[GEOLOGY_UNIT_A]: Imputing local climate series... saturating 94%",
+                "[GEOTECH_AGENT_C]: Slope failure boundary detected at 12m, FoS Critical: 0.91",
+                "[STRUCTURAL_AI_B]: Re-calculating anchors, proposing 8 rows x 30ton bolts",
+                "[SAFETY_MONITOR_D]: Cost optimization: +14% budget save, FoS final: 1.65 (APPROVED)"
+            ];
+            
+            const container = document.getElementById('console-lines');
+            container.innerHTML = '';
+            
+            let i = 0;
+            function addLine() {
+                if (i >= lines.length || state !== 'map' || activeNodeKey !== 'acumenos') return;
+                
+                const div = document.createElement('div');
+                div.className = 'text-left font-mono break-all text-[8px] leading-tight';
+                div.innerHTML = `<span class="text-acumenBlue">&gt;</span> ${lines[i]}`;
+                container.appendChild(div);
+                
+                document.getElementById('acumen-os-console').scrollTop = document.getElementById('acumen-os-console').scrollHeight;
+                
+                i++;
+                setTimeout(addLine, 1800);
+            }
+            addLine();
+        }
+
+        // CANVAS 2D TEXTURE DRAWINGS
+        const frontCanvas = document.createElement('canvas');
+        frontCanvas.width = 512;
+        frontCanvas.height = 512;
+
+        const backCanvas = document.createElement('canvas');
+        backCanvas.width = 512;
+        backCanvas.height = 512;
+
+        let frontTexture, backTexture;
+
+        function drawFrontCanvas(visitor, id, event, flash) {
+            const ctx = frontCanvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#090b10';
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Hexagon guides
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 4;
+            drawHexagonPath(ctx, 256, 256, 242);
+            ctx.stroke();
+            
+            // Blue inner accent line
+            ctx.strokeStyle = '#2977fd';
+            ctx.lineWidth = 2;
+            drawHexagonPath(ctx, 256, 256, 232);
+            ctx.stroke();
+            
+            // Scientific ticking lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(246, 256); ctx.lineTo(266, 256);
+            ctx.moveTo(256, 246); ctx.lineTo(256, 266);
+            ctx.stroke();
+            
+            // Logo Icon: Hexagon in center top
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3.5;
+            drawHexagonPath(ctx, 256, 122, 34);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 36px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('ACUMEN', 256, 192);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.font = '600 12px Outfit, sans-serif';
+            ctx.fillText('ENGINEERING INTELLIGENCE', 256, 214);
+            
+            // Identifier code
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '24px Share Tech Mono, monospace';
+            ctx.fillText(`OBJECT #${id}`, 256, 288);
+            
+            // Visitor Name
+            if (visitor) {
+                ctx.fillStyle = '#2977fd';
+                ctx.font = 'bold 20px Outfit, sans-serif';
+                ctx.fillText(visitor.toUpperCase(), 256, 332);
+            }
+            
+            // Event Details
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.font = '14px Share Tech Mono, monospace';
+            ctx.fillText(event || 'CCI 2026 CARTAGENA', 256, 372);
+            
+            // City
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.font = '11px Share Tech Mono, monospace';
+            ctx.fillText('MEDELLÍN · COLOMBIA', 256, 432);
+            
+            // Scanning Flash Overlay
+            if (flash) {
+                ctx.fillStyle = 'rgba(41, 119, 253, 0.18)';
+                ctx.fillRect(0, 0, 512, 512);
+                
+                ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let j = 40; j < 512; j += 40) {
+                    ctx.moveTo(j, 0); ctx.lineTo(j, 512);
+                    ctx.moveTo(0, j); ctx.lineTo(512, j);
+                }
+                ctx.stroke();
+                
+                ctx.fillStyle = '#10b981';
+                ctx.font = '12px Share Tech Mono, monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText('LAT: 6.2084 N', 35, 65);
+                ctx.fillText('LON: 75.5670 W', 35, 85);
+                ctx.fillText('ALT: 1,495 M', 35, 105);
+                ctx.fillText('NFC ACTIVE: NTAG213', 35, 125);
+                
+                ctx.textAlign = 'right';
+                ctx.fillText('SYS.STATUS: ACTIVE', 477, 65);
+                ctx.fillText('MEM.BLOCKS: 45', 477, 85);
+                ctx.fillText('FREQ: 13.56 MHz', 477, 105);
+                ctx.fillText('SIG.STRENGTH: 99%', 477, 125);
+            }
+            
+            if (frontTexture) frontTexture.needsUpdate = true;
+        }
+
+        function drawBackCanvas() {
+            const ctx = backCanvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#090b10';
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Hexagon outline
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 4;
+            drawHexagonPath(ctx, 256, 256, 242);
+            ctx.stroke();
+            
+            // Concentric copper coils representing NFC NTAG213 antenna layout
+            ctx.strokeStyle = '#2977fd';
+            ctx.lineWidth = 2.5;
+            for (let radius = 75; radius < 190; radius += 14) {
+                ctx.beginPath();
+                ctx.arc(256, 256, radius, 0, Math.PI * 2 * 0.96);
+                ctx.stroke();
+            }
+            
+            // Integrated Chip
+            ctx.fillStyle = '#111622';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.5;
+            ctx.fillRect(231, 231, 50, 50);
+            ctx.strokeRect(231, 231, 50, 50);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '10px Share Tech Mono, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('NTAG213', 256, 260);
+            
+            // Technical details
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.font = '12px Share Tech Mono, monospace';
+            ctx.fillText('NFC NTAG213 • 25MM • ACTIVE CHIP', 256, 436);
+            ctx.fillText('FREQUENCY 13.56 MHz', 256, 456);
+            
+            if (backTexture) backTexture.needsUpdate = true;
+        }
+
+        function drawHexagonPath(ctx, cx, cy, radius) {
+            ctx.beginPath();
+            for (let side = 0; side < 6; side++) {
+                const angle = (Math.PI / 3) * side - Math.PI / 6;
+                const hx = cx + radius * Math.cos(angle);
+                const hy = cy + radius * Math.sin(angle);
+                if (side === 0) ctx.moveTo(hx, hy);
+                else ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+        }
+
+        // BROWSER RESIZE CORRECTION
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>
