@@ -190,21 +190,6 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href="/servicios" className="glass-card p-10 group block">
-              <div className="mb-8 border-b border-zinc-200 pb-8 flex justify-between items-start">
-                <h3 className="text-2xl font-heading font-bold text-zinc-900 group-hover:text-gold-500 transition-colors">Movilidad y Territorio</h3>
-                <ArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-gold-500 group-hover:-rotate-45 transition-all" />
-              </div>
-              <p className="text-zinc-800">
-                Planificación urbana estratégica. Estudios de tránsito, evaluación de impacto y modelos integrados de ciudad inteligente.
-              </p>
-              <div className="mt-6 pt-6 border-t border-zinc-100">
-                <h4 className="text-sm font-bold text-zinc-900 mb-2">Diseño Urbano y Drenaje Inteligente</h4>
-                <p className="text-sm text-zinc-600">
-                  Evaluación de sistemas de drenaje urbano y estanques de retención mediante el análisis de curvas de Intensidad-Duración-Frecuencia (IDF) para ciudades resilientes.
-                </p>
-              </div>
-            </Link>
           </div>
         </div>
       </section>
