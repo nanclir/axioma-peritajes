@@ -156,7 +156,7 @@ export default function Movilidad360Page() {
                 Diagnóstico y optimización de corredores viales, semaforización adaptativa y diseño de intersecciones viales dinámicas utilizando microsimulación para maximizar la capacidad vial existente.
               </p>
               <ul className="space-y-2 text-xs text-zinc-500 mt-auto pt-4 border-t border-zinc-100">
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Microsimulación and asignación dinámica</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Microsimulación y asignación dinámica</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Semaforización dinámica y coordinación adaptativa</li>
               </ul>
             </div>
