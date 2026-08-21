@@ -165,6 +165,66 @@ export default function Movilidad360Page() {
         </div>
       </section>
 
+      {/* Liderazgo Técnico y Científico */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <h2 className="text-3xl font-heading font-bold text-zinc-900 mb-4">Liderazgo Técnico y Científico</h2>
+        <p className="text-zinc-600 mb-12 max-w-2xl">
+          Nuestra división de Movilidad 360 cuenta con la dirección experta de ingenieros y especialistas con amplia trayectoria liderando la planeación y operación de sistemas urbanos de transporte en Colombia y Latinoamérica.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          
+          {/* Perfil Ricardo Smith */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm h-full">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500 shrink-0">
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/team/ricardo_smith.jpeg')" }}
+              />
+            </div>
+            <div className="w-full md:w-2/3 flex flex-col justify-between h-full">
+              <div>
+                <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Dr. Ricardo Agustín Smith Q.</h3>
+                <p className="text-gold-500 font-medium uppercase tracking-widest text-[10px] mb-4">Director Científico / Ph.D. en Recursos Hidráulicos</p>
+                <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                  Ex-Secretario de Transportes y Tránsito de Medellín y Ex-Director del Área Metropolitana del Valle de Aburrá. Ph.D. de Colorado State University y Profesor Emérito de la Universidad Nacional de Colombia. Ha liderado la estructuración del Plan Maestro de Movilidad de Villavicencio, la integración del SITP de Barranquilla (para la FDN) y la creación de la Agencia Nacional de Seguridad Vial (ANSV) para el Banco Mundial y el Ministerio de Transporte.
+                </p>
+              </div>
+              <ul className="space-y-2 text-xs text-zinc-500 pt-4 border-t border-zinc-100 mt-auto">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Ex-Secretario de Tránsito de Medellín</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Plan Maestro de Movilidad de Villavicencio</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Estructuración de la ANSV (Banco Mundial)</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Perfil Rafael Nanclares */}
+          <div className="border border-zinc-200 bg-white p-8 flex flex-col md:flex-row gap-8 shadow-sm h-full">
+            <div className="w-full md:w-1/3 relative aspect-[3/4] bg-zinc-100 grayscale hover:grayscale-0 transition-all duration-500 shrink-0">
+              <div 
+                className="absolute inset-0 bg-cover bg-center z-0" 
+                style={{ backgroundImage: "url('/team/rafael-nanclares.jpg')" }}
+              />
+            </div>
+            <div className="w-full md:w-2/3 flex flex-col justify-between h-full">
+              <div>
+                <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Ing. Rafael Andrés Nanclares O.</h3>
+                <p className="text-gold-500 font-medium uppercase tracking-widest text-[10px] mb-4">Director Técnico / Especialista en Gerencia de Construcciones</p>
+                <p className="text-zinc-600 text-sm leading-relaxed mb-6">
+                  Ex-Secretario de Transportes y Tránsito de Medellín y Ex-Secretario de Infraestructura Física de Antioquia. Ingeniero Civil de la Universidad Nacional con estudios de Inteligencia Artificial en Berkeley. Estructuró, contrató e implementó el Sistema Inteligente de Movilidad de Medellín (SIMM). Ha sido Presidente de la Junta Directiva de Metroplús S.A., del Aeropuerto Olaya Herrera y de la Terminal de Transporte de Medellín, y consultor del Metro de la 80 y DEVIMAR.
+                </p>
+              </div>
+              <ul className="space-y-2 text-xs text-zinc-500 pt-4 border-t border-zinc-100 mt-auto">
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Implementador del SIMM (Sistemas ITS)</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Ex-Presidente de Junta de Metroplús S.A.</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Asesor en Modelos Multicriterio (Metro 80)</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* Filosofía IA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-zinc-900 text-white p-8 border-l-4 border-gold-500 rounded-r-md shadow-xl relative overflow-hidden">
