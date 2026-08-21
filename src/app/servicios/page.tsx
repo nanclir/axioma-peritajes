@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Search, Activity, Network, HardHat, FileLineChart, Database, Pickaxe, Waves, MapPin, TrendingUp, Award } from "lucide-react";
+import { ArrowRight, Search, Network, Pickaxe, Waves, MapPin, TrendingUp, Award } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
-  description: "Ingeniería aumentada. Peritajes, PMO, Movilidad, SIG y Evaluación de Riesgos.",
+  description: "Ingeniería aumentada. Decision Intelligence, Decisiones Robustas, Acreditación, Peritajes, Riesgo Hidroclimatológico, Obras Subterráneas y Ordenamiento Territorial.",
 };
 
 const services = [
@@ -55,27 +55,6 @@ const services = [
     icon: <MapPin className="h-6 w-6" />,
     href: "/ordenamiento-territorial",
     highlight: true,
-  },
-  {
-    title: "Movilidad y Dinámica Urbana",
-    description: "Planificación estratégica del transporte. Estudios de tránsito, modelos de demanda, logística urbana y estructuración de sistemas integrados de transporte público.",
-    icon: <Activity className="h-6 w-6" />,
-    href: "/contacto",
-    highlight: false,
-  },
-  {
-    title: "Evaluación de Riesgos y Vulnerabilidad",
-    description: "Análisis determinísticos y probabilísticos para evaluar fragilidad estructural, riesgos geotécnicos y resiliencia ante amenazas naturales y antrópicas.",
-    icon: <FileLineChart className="h-6 w-6" />,
-    href: "/contacto",
-    highlight: false,
-  },
-  {
-    title: "PMO Técnica y Trazabilidad",
-    description: "Gerencia de proyectos (Project Management Office) basada en datos. Control de presupuestos, cronogramas y trazabilidad contractual mediante plataformas digitales.",
-    icon: <Database className="h-6 w-6" />,
-    href: "/acumen-os",
-    highlight: false,
   },
 ];
 
