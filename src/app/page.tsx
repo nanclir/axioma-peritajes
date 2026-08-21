@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin, TrendingUp, Award } from "lucide-react";
+import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin, TrendingUp, Award, Activity } from "lucide-react";
 
 export default function Home() {
   return (
@@ -187,6 +187,17 @@ export default function Home() {
               </div>
               <p className="text-zinc-400 relative z-10">
                 Planificación urbana y metropolitana, política de vivienda e instrumentos de financiación de suelo para el desarrollo de ciudades sostenibles.
+              </p>
+            </Link>
+
+            <Link href="/movilidad-360" className="glass-card p-10 group block bg-zinc-900 border-zinc-800 hover:border-gold-500 transition-all relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] opacity-[0.03] bg-cover bg-center pointer-events-none" />
+              <div className="mb-8 border-b border-zinc-800 pb-8 flex justify-between items-start relative z-10">
+                <h3 className="text-2xl font-heading font-bold text-white group-hover:text-gold-500 transition-colors">Movilidad 360</h3>
+                <Activity className="h-6 w-6 text-zinc-500 group-hover:text-gold-500 transition-all" />
+              </div>
+              <p className="text-zinc-400 relative z-10">
+                Modelación avanzada, gemelos digitales y simulación de sistemas urbanos de transporte bajo incertidumbre estratégica.
               </p>
             </Link>
 

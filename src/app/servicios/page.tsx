@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Search, Network, Pickaxe, Waves, MapPin, TrendingUp, Award } from "lucide-react";
+import { ArrowRight, Search, Network, Pickaxe, Waves, MapPin, TrendingUp, Award, Activity } from "lucide-react";
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
-  description: "Ingeniería aumentada. Decision Intelligence, Decisiones Robustas, Acreditación, Peritajes, Riesgo Hidroclimatológico, Obras Subterráneas y Ordenamiento Territorial.",
+  description: "Ingeniería aumentada. Decision Intelligence, Decisiones Robustas, Acreditación, Peritajes, Riesgo Hidroclimatológico, Obras Subterráneas, Ordenamiento Territorial y Movilidad 360.",
 };
 
 const services = [
@@ -54,6 +54,13 @@ const services = [
     description: "Planeación a escala municipal y metropolitana. Instrumentos de gestión del suelo, modelos de ciudad sostenible y vivienda de interés social.",
     icon: <MapPin className="h-6 w-6" />,
     href: "/ordenamiento-territorial",
+    highlight: true,
+  },
+  {
+    title: "Movilidad 360",
+    description: "Modelación avanzada, gemelos digitales y simulación de transporte. Estrategias robustas de transporte público, logística de carga, movilidad activa y operación vial.",
+    icon: <Activity className="h-6 w-6" />,
+    href: "/movilidad-360",
     highlight: true,
   },
 ];
