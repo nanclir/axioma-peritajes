@@ -211,13 +211,13 @@ export default function Movilidad360Page() {
                 <h3 className="text-2xl font-heading font-bold text-zinc-900 mb-1">Ing. Rafael Andrés Nanclares O.</h3>
                 <p className="text-gold-500 font-medium uppercase tracking-widest text-[10px] mb-4">Director Técnico / Especialista en Gerencia de Construcciones</p>
                 <p className="text-zinc-600 text-sm leading-relaxed mb-6">
-                  Ex-Secretario de Transportes y Tránsito de Medellín y Ex-Secretario de Infraestructura Física de Antioquia. Ingeniero Civil de la Universidad Nacional con estudios de Inteligencia Artificial en Berkeley. Estructuró, contrató e implementó el Sistema Inteligente de Movilidad de Medellín (SIMM). Ha sido Presidente de la Junta Directiva de Metroplús S.A., del Aeropuerto Olaya Herrera y de la Terminal de Transporte de Medellín, y consultor del Metro de la 80 y DEVIMAR.
+                  Ex-Secretario de Transportes y Tránsito de Medellín y Ex-Secretario de Infraestructura Física de Antioquia. Ingeniero Civil de la Universidad Nacional con estudios de Inteligencia Artificial en Berkeley. Estructuró, contrató e implementó el Sistema Inteligente de Movilidad de Medellín (SIMM). Ha sido Presidente de la Junta Directiva de Metroplús S.A., del Aeropuerto Olaya Herrera y de la Terminal de Transporte de Medellín, y ha coordinado la formulación de los Planes de Seguridad Vial para Bello, Itagüí, Popayán y Rionegro, así como el estudio de impacto y riesgo operacional del uso de teléfonos móviles en el Túnel de Oriente.
                 </p>
               </div>
               <ul className="space-y-2 text-xs text-zinc-500 pt-4 border-t border-zinc-100 mt-auto">
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Implementador del SIMM (Sistemas ITS)</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Ex-Presidente de Junta de Metroplús S.A.</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Asesor en Modelos Multicriterio (Metro 80)</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Planes de Seguridad Vial Municipales</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-500 shrink-0" /> Consultoría de Seguridad - Túnel de Oriente</li>
               </ul>
             </div>
           </div>
