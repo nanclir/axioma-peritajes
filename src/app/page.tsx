@@ -6,7 +6,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       
       {/* Hero Cinematográfico (Arup style) */}
-      <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[95vh] flex items-center justify-center pt-24 md:pt-32 pb-12 overflow-hidden">
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <div 
