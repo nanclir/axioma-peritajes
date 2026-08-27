@@ -43,10 +43,10 @@ export default function AILab() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/inquiry-ia"
+              href="#prototipos"
               className="inline-flex justify-center items-center gap-2 bg-blue-600 text-white px-8 py-4 font-bold rounded hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)]"
             >
-              Probar InquiryIA <ArrowRight className="h-4 w-4" />
+              Probar Prototipos IA <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="#arquitectura"
@@ -59,29 +59,14 @@ export default function AILab() {
       </section>
 
       {/* The Enjambre Section */}
-      <section id="arquitectura" className="py-24 relative bg-[#0a0a0c]">
+      <section id="prototipos" className="py-24 relative bg-[#0a0a0c]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-heading font-bold text-white mb-4">El Enjambre de Agentes</h2>
             <p className="text-zinc-400">Modelos Fundacionales (LLMs) entrenados con 74 años de experiencia en infraestructura.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* InquiryIA Card */}
-            <div className="tech-card p-8 rounded-lg relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full group-hover:bg-blue-500/20 transition-colors"></div>
-              <FileSearch className="h-10 w-10 text-blue-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                InquiryIA <span className="text-[10px] font-mono bg-blue-500/20 text-blue-300 px-2 py-1 rounded border border-blue-500/30">MVP LISTO</span>
-              </h3>
-              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                Agente técnico para revisión documental. Procesa cientos de folios de contratos, actas y pólizas usando NLP para extraer inconsistencias y generar líneas de tiempo periciales en arbitramentos.
-              </p>
-              <Link href="/inquiry-ia" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
-                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* GeoRisk AI Card */}
             <div className="tech-card p-8 rounded-lg relative overflow-hidden group border-zinc-800">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-2xl rounded-full group-hover:bg-emerald-500/20 transition-colors"></div>
@@ -108,6 +93,21 @@ export default function AILab() {
                 Evaluador normativo automatizado. Revisa diseños estructurales contra la Norma Sismo Resistente (NSR-10) y POTs locales para acelerar trámites de curaduría.
               </p>
               <Link href="/nsr-ai" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
+                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* InquiryIA Card */}
+            <div className="tech-card p-8 rounded-lg relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full group-hover:bg-blue-500/20 transition-colors"></div>
+              <FileSearch className="h-10 w-10 text-blue-400 mb-6" />
+              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2">
+                InquiryIA <span className="text-[10px] font-mono bg-blue-500/20 text-blue-300 px-2 py-1 rounded border border-blue-500/30">SANDBOX LISTO</span>
+              </h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                Agente técnico para revisión documental. Procesa cientos de folios de contratos, actas y pólizas usando NLP para extraer inconsistencias y generar líneas de tiempo periciales en arbitramentos.
+              </p>
+              <Link href="/inquiry-ia" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
                 ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
