@@ -48,12 +48,6 @@ export default function AILab() {
             >
               Probar Prototipos IA <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="#arquitectura"
-              className="inline-flex justify-center items-center gap-2 bg-zinc-900 text-white px-8 py-4 font-medium border border-zinc-700 hover:border-blue-500/50 hover:bg-zinc-800 transition-colors rounded"
-            >
-              Ver Arquitectura Cloud
-            </Link>
           </div>
         </div>
       </section>
