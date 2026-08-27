@@ -79,10 +79,10 @@ export default function Home() {
                 <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">AI Lab (I+D)</h3>
                 <p className="text-zinc-500 text-sm">Modelos y agentes en desarrollo para ingeniería.</p>
               </Link>
-              <Link href="/inquiry-ia" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block mt-12">
-                <Terminal className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">InquiryIA (Sandbox)</h3>
-                <p className="text-zinc-500 text-sm">Simulador de auditoría documental asistida por IA.</p>
+              <Link href="/proyectos" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block mt-12">
+                <Map className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">Proyectos e Impacto</h3>
+                <p className="text-zinc-500 text-sm">Trayectoria técnica en megaproyectos de infraestructura y territorio.</p>
               </Link>
             </div>
           </div>
