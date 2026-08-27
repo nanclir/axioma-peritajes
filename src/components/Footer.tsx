@@ -28,13 +28,14 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-heading font-semibold mb-6">Expertise</h4>
-            <ul className="space-y-4 text-sm">
-              <li><Link href="/servicios" className="hover:text-white transition-colors">Infraestructura</Link></li>
-              <li><Link href="/servicios" className="hover:text-white transition-colors">Movilidad</Link></li>
-              <li><Link href="/acumen-os" className="hover:text-white transition-colors">Ingeniería Digital</Link></li>
+            <ul className="space-y-3 text-sm">
+              <li><Link href="/futureproof-decisions" className="hover:text-white transition-colors">FutureProof Decisions®</Link></li>
+              <li><Link href="/movilidad-360" className="hover:text-white transition-colors">Movilidad 360</Link></li>
+              <li><Link href="/obras-subterraneas" className="hover:text-white transition-colors">Obras Subterráneas</Link></li>
+              <li><Link href="/ordenamiento-territorial" className="hover:text-white transition-colors">Ordenamiento Territorial</Link></li>
               <li><Link href="/peritajes" className="hover:text-white transition-colors">Peritajes Técnicos</Link></li>
-              <li><Link href="/servicios" className="hover:text-white transition-colors">Analítica Territorial (SIG)</Link></li>
-              <li><Link href="/insights" className="hover:text-white transition-colors">Producción Científica (Insights)</Link></li>
+              <li><Link href="/ai-lab" className="hover:text-white transition-colors">AI Lab (I+D)</Link></li>
+              <li><Link href="/insights" className="hover:text-white transition-colors">Producción Científica</Link></li>
             </ul>
           </div>
 
