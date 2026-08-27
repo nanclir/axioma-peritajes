@@ -34,6 +34,7 @@ export default function Footer() {
               <li><Link href="/acumen-os" className="hover:text-white transition-colors">Ingeniería Digital</Link></li>
               <li><Link href="/peritajes" className="hover:text-white transition-colors">Peritajes Técnicos</Link></li>
               <li><Link href="/servicios" className="hover:text-white transition-colors">Analítica Territorial (SIG)</Link></li>
+              <li><Link href="/insights" className="hover:text-white transition-colors">Producción Científica (Insights)</Link></li>
             </ul>
           </div>
 

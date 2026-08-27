@@ -3,7 +3,7 @@ import { ArrowRight, Search, Network, Pickaxe, Waves, MapPin, TrendingUp, Award,
 
 export const metadata = {
   title: "Servicios | ACUMEN INGENIERÍA S.A.S.",
-  description: "Ingeniería aumentada. Decision Intelligence, Decisiones Robustas, Acreditación, Peritajes, Riesgo Hidroclimatológico, Obras Subterráneas, Ordenamiento Territorial y Movilidad 360.",
+  description: "Ingeniería aumentada. Decision Intelligence, Decisiones Robustas, Acreditación de Ingeniería, Peritajes Técnicos, Riesgo Hidroclimatológico, Obras Subterráneas, Ordenamiento Territorial y Movilidad 360.",
 };
 
 const services = [

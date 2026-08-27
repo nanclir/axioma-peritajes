@@ -17,14 +17,14 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "ACUMEN INGENIERÍA | Peritajes Técnicos y Auditoría Técnica",
+    default: "ACUMEN INGENIERÍA | Inteligencia Territorial e Ingeniería Aumentada",
     template: "%s | ACUMEN INGENIERÍA",
   },
-  description: "Firma experta en peritajes técnicos, dictámenes periciales para litigios, obras subterráneas y gerencia de proyectos de infraestructura en Colombia. Inteligencia territorial aumentada.",
-  keywords: ["Peritaje Técnico", "Dictamen Pericial", "Auditoría Técnica", "Obras Subterráneas", "Ingeniería Aumentada", "Colombia", "Infraestructura"],
+  description: "Firma boutique especializada en peritajes técnicos, obras subterráneas, decisiones bajo incertidumbre, movilidad 360 y ordenamiento territorial. Tecnología ACUMEN OS.",
+  keywords: ["Ingeniería Aumentada", "Inteligencia Territorial", "Peritajes Técnicos", "Obras Subterráneas", "Decisiones bajo Incertidumbre", "Movilidad 360", "Ordenamiento Territorial", "ACUMEN OS", "Colombia"],
   openGraph: {
-    title: "ACUMEN INGENIERÍA | Peritajes Técnicos de Alta Precisión",
-    description: "Dictámenes concluyentes para litigios, arbitrajes y controversias en grandes obras de ingeniería.",
+    title: "ACUMEN INGENIERÍA | Inteligencia Territorial e Ingeniería Aumentada",
+    description: "Firma boutique especializada en peritajes técnicos, obras subterráneas, decisiones bajo incertidumbre, movilidad 360 y ordenamiento territorial. Tecnología ACUMEN OS.",
     url: "https://www.acumeningenieria.com",
     siteName: "ACUMEN INGENIERÍA",
     locale: "es_CO",
