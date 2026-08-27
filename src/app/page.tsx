@@ -467,7 +467,7 @@ export default function Home() {
             {/* Demo 1: Geotecnia */}
             <div className="bg-white border border-zinc-200 hover:border-zinc-400 transition-all rounded-sm overflow-hidden flex flex-col shadow-sm">
               <div className="h-48 bg-zinc-900 relative overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.png')] bg-cover bg-center opacity-30 grayscale" />
+                <div className="absolute inset-0 bg-[url('/images/geotecnico_tunnel.jpg')] bg-cover bg-center opacity-40" />
                 <div className="relative z-10 text-center">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
@@ -491,7 +491,7 @@ export default function Home() {
             {/* Demo 2: RDM */}
             <div className="bg-white border border-zinc-200 hover:border-zinc-400 transition-all rounded-sm overflow-hidden flex flex-col shadow-sm">
               <div className="h-48 bg-zinc-900 relative overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30 grayscale" />
+                <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.jpg')] bg-cover bg-center opacity-40" />
                 <div className="relative z-10 text-center">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -515,7 +515,7 @@ export default function Home() {
             {/* Demo 3: Embalse */}
             <div className="bg-white border border-zinc-200 hover:border-zinc-400 transition-all rounded-sm overflow-hidden flex flex-col shadow-sm">
               <div className="h-48 bg-zinc-900 relative overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('/images/estructural_wireframe.png')] bg-cover bg-center opacity-30 grayscale" />
+                <div className="absolute inset-0 bg-[url('/images/embalse_simulador.jpg')] bg-cover bg-center opacity-40" />
                 <div className="relative z-10 text-center">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
