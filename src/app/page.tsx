@@ -482,7 +482,7 @@ export default function Home() {
                     Ajuste dinámicamente el perfil del terreno y los coeficientes de sostenimiento para visualizar el comportamiento geomecánico de un túnel en tiempo real.
                   </p>
                 </div>
-                <Link href="/acumen-os#geotecnia" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
+                <Link href="/os/visor_webar_produccion.html" target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
                   Iniciar Simulador <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -506,7 +506,7 @@ export default function Home() {
                     Simule múltiples escenarios de demanda y fallos estructurales para encontrar alternativas de diseño vial inmunes a la incertidumbre del futuro.
                   </p>
                 </div>
-                <Link href="/acumen-os#rdm" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
+                <Link href="/os/visor_futureproof.html" target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
                   Iniciar Simulador <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -530,7 +530,7 @@ export default function Home() {
                     Interactúe con un modelo 3D de represa, simulando variabilidad climática y sedimentos mediante interpolación Kriging geoespacial en vivo.
                   </p>
                 </div>
-                <Link href="/acumen-os#embalses" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
+                <Link href="/os/visor_embalse.html" target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
                   Iniciar Simulador <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
