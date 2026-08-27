@@ -2,2731 +2,1043 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ACUMEN - Engineering Intelligence</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACUMEN OS — System Core & Technical Specifications</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js and OrbitControls -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <!-- GSAP for animations -->
+    <!-- GSAP for smooth animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        acumenBlue: '#2977fd',
-                        acumenDark: '#07090e',
-                        acumenPanel: '#121620',
-                        acumenBorder: '#1e2535',
-                        acumenGold: '#fbbf24',
-                        acumenGreen: '#10b981',
+                        acumenDark: '#0a0d14',
+                        acumenGray: '#64748b',
+                        acumenGold: '#d97706',
+                        acumenGrid: 'rgba(148, 163, 184, 0.08)',
+                        acumenGridMajor: 'rgba(148, 163, 184, 0.15)'
                     },
                     fontFamily: {
                         sans: ['Outfit', 'sans-serif'],
-                        mono: ['Share Tech Mono', 'monospace'],
+                        mono: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
         }
     </script>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #f8fafc;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        #radar-grid {
-            position: fixed;
-            inset: 0;
-            background-color: #f8fafc;
+        /* Blueprint grid background */
+        .blueprint-grid {
+            background-color: #fcfdfe;
+            background-size: 20px 20px;
             background-image: 
-                radial-gradient(rgba(217, 119, 6, 0.08) 1.5px, transparent 0),
-                radial-gradient(rgba(217, 119, 6, 0.04) 1.5px, transparent 0);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-            z-index: 0;
-            pointer-events: none;
+                linear-gradient(to right, var(--tw-color-acumenGrid, rgba(148, 163, 184, 0.08)) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--tw-color-acumenGrid, rgba(148, 163, 184, 0.08)) 1px, transparent 1px);
+        }
+        
+        .blueprint-grid-major {
+            background-size: 100px 100px;
+            background-image: 
+                linear-gradient(to right, var(--tw-color-acumenGridMajor, rgba(148, 163, 184, 0.14)) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, var(--tw-color-acumenGridMajor, rgba(148, 163, 184, 0.14)) 1.5px, transparent 1.5px);
         }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        /* Projected Hotspots overlay */
-        #hotspots-container {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .hotspot {
-            position: absolute;
-            pointer-events: auto;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .hotspot-ring {
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(217, 119, 6, 0.8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 0 10px rgba(217, 119, 6, 0.3);
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .hotspot-dot {
-            width: 8px;
-            height: 8px;
-            background: #d97706;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-
-        .hotspot-pulse {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1px solid #d97706;
-            border-radius: 50%;
-            animation: pulse-ring 2s infinite linear;
-            pointer-events: none;
-        }
-
-        .hotspot-label {
-            margin-top: 6px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: #1e293b;
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #e2e8f0;
-            padding: 2px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-            opacity: 0.9;
-            transition: all 0.3s;
-        }
-
-        /* Hover & Active Hotspot states */
-        .hotspot:hover .hotspot-ring, .hotspot.active .hotspot-ring {
-            border-color: #d97706;
-            box-shadow: 0 0 15px rgba(217, 119, 6, 0.8);
-        }
-
-        .hotspot:hover .hotspot-dot, .hotspot.active .hotspot-dot {
-            background: #d97706;
-        }
-
-        .hotspot:hover .hotspot-label, .hotspot.active .hotspot-label {
-            opacity: 1;
-            border-color: #d97706;
-            color: #d97706;
-        }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
-
-        /* Custom Scrollbar for side panel */
-        .custom-scroll::-webkit-scrollbar {
-            width: 3px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: rgba(7, 9, 14, 0.2);
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #1e2535;
-            border-radius: 2px;
-        }
-
-        /* Scanning overlay effect */
-        .scan-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 5;
-            border: 1px solid rgba(16, 185, 129, 0.15);
-            background: linear-gradient(rgba(16, 185, 129, 0) 90%, rgba(16, 185, 129, 0.08) 95%, rgba(16, 185, 129, 0.15) 100%);
-            background-size: 100% 200%;
-            animation: scanning-vertical 4s linear infinite;
+        /* Hide scrollbars but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-
-        @keyframes scanning-vertical {
-            0% { background-position: 0 -100%; }
-            100% { background-position: 0 100%; }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-
-        /* ------------------ TAILWIND OFFLINE FALLBACKS ------------------ */
-        .fixed { position: fixed; }
-        .absolute { position: absolute; }
-        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-        .z-30 { z-index: 30; }
-        .z-40 { z-index: 40; }
-        .z-50 { z-index: 50; }
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
-        .pointer-events-none { pointer-events: none; }
-        .pointer-events-auto { pointer-events: auto; }
-        .opacity-0 { opacity: 0; }
-        .opacity-100 { opacity: 1; }
-        .transition-opacity { transition: opacity 0.5s ease-in-out; }
-        .transition-all { transition: all 0.5s ease-in-out; }
-        .duration-500 { transition-duration: 500ms; }
-        .duration-700 { transition-duration: 700ms; }
-        .duration-1000 { transition-duration: 1000ms; }
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
-        .uppercase { text-transform: uppercase; }
-        .tracking-widest { letter-spacing: 0.15em; }
-        .font-mono { font-family: 'Share Tech Mono', monospace; }
-        .translate-y-4 { transform: translateY(1rem); }
-        .translate-y-0 { transform: translateY(0); }
         
-        #intro-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #07090e;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 40px;
-            box-sizing: border-box;
+        /* Transition utility for columns */
+        .column-transition {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #desktop-grid:hover .col-item {
+            flex: 0.6;
+            opacity: 0.55;
+        }
+        #desktop-grid .col-item:hover {
+            flex: 2.2;
             opacity: 1;
-            transition: opacity 1s ease-in-out;
-        }
-        #intro-screen.opacity-0 {
-            opacity: 0;
-            pointer-events: none;
-        }
-        #btn-enter {
-            background-color: transparent;
-            border: 1px solid #ffffff;
-            color: #ffffff;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            padding: 12px 32px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
-            text-transform: uppercase;
-        }
-        #btn-enter:hover {
-            background-color: #ffffff;
-            color: #07090e;
-        }
-        #main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 30;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            box-sizing: border-box;
-        }
-        #main-header.opacity-100 {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #btn-view-object {
-            background-color: rgba(217, 119, 6, 0.1);
-            color: #d97706;
-            border: 1px solid rgba(217, 119, 6, 0.25);
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-        #btn-view-object:hover {
-            background-color: rgba(217, 119, 6, 0.20);
-        }
-        #main-footer {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
-            display: flex;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e2e8f0;
-            border-radius: 9999px;
-            padding: 10px 24px;
-            gap: 20px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        #main-footer.opacity-100 {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #details-drawer, #discipline-view {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            z-index: 40;
             background-color: rgba(255, 255, 255, 0.95);
-            border: 1px solid #e2e8f0;
-            padding: 24px;
-            border-radius: 12px;
-            box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            max-width: 480px;
         }
-        @media (min-width: 768px) {
-            #details-drawer, #discipline-view {
-                left: 24px;
-                right: auto;
-                bottom: 24px;
-                width: 384px;
-            }
+        #desktop-grid .col-item:hover svg {
+            stroke: #d97706;
         }
-        #details-drawer.translate-y-full, #discipline-view.translate-y-full {
-            transform: translateY(120%);
+        #desktop-grid .col-item:hover svg text {
+            fill: #64748b;
+            stroke: none;
         }
-        #details-drawer:not(.translate-y-full), #discipline-view:not(.translate-y-full) {
-            transform: translateY(0);
-        }
-        #souvenir-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 48;
-            background-color: transparent;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            box-sizing: border-box;
-        }
-        #souvenir-overlay.translate-x-full {
-            transform: translateX(100%);
-        }
-        #souvenir-overlay:not(.translate-x-full) {
-            transform: translateX(0);
+        #desktop-grid .col-item:hover svg circle {
+            fill: #d97706;
         }
     </style>
 </head>
-<body class="text-white font-sans overflow-hidden">
+<body class="blueprint-grid font-sans text-slate-900 min-h-screen flex flex-col overflow-x-hidden select-none">
+    <div class="blueprint-grid-major absolute inset-0 pointer-events-none z-0"></div>
 
-    <!-- Faint Tech Background -->
-    <div id="radar-grid"></div>
-
-    <!-- Scanning Visual Overlay for Forensics -->
-    <div id="scan-v-overlay" class="scan-overlay"></div>
-
-    <!-- 3D Canvas -->
-    <canvas id="webgl-canvas"></canvas>
-
-    <!-- Projective Hotspots HTML Container -->
-    <div id="hotspots-container"></div>
-
-    <!-- 1. LOADING & INTRO SCREEN -->
-    <div id="intro-screen" class="fixed inset-0 bg-acumenDark z-50 flex flex-col justify-between p-6 transition-all duration-700 ease-in-out">
-        <!-- Top Event Name -->
-        <div class="flex justify-between items-center w-full">
-            <div id="intro-event" class="font-mono text-xs text-acumenBlue tracking-widest uppercase opacity-0 transition-opacity duration-1000">
-                CCI 2026 Cartagena
-            </div>
-            <div class="text-xs text-zinc-600 font-mono" id="intro-status">
-                SYS.INIT.OK
-            </div>
-        </div>
-
-        <!-- Center Text -->
-        <div class="flex flex-col items-center justify-center text-center flex-1 max-w-md mx-auto w-full">
-            <!-- Pulsing Logo Hexagon -->
-            <div class="w-16 h-16 border border-acumenBlue/30 rounded-full flex items-center justify-center mb-6 relative animate-pulse">
-                <svg viewBox="0 0 100 100" class="w-8 h-8 stroke-white fill-none stroke-[4.5]">
-                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
-                </svg>
-            </div>
-
-            <h1 id="intro-brand" class="text-4xl font-extrabold tracking-tight text-white mb-1 uppercase opacity-0 transition-all duration-1000 transform translate-y-4">
-                ACUMEN
-            </h1>
-            <p id="intro-sub" class="text-xs font-mono tracking-widest text-zinc-500 uppercase mb-8 opacity-0 transition-all duration-1000 transform translate-y-4 delay-300">
-                ENGINEERING INTELLIGENCE
-            </p>
-
-            <!-- Personalized welcome message -->
-            <div id="intro-welcome-box" class="h-16 flex flex-col justify-center mb-10">
-                <span id="intro-welcome" class="text-sm font-semibold tracking-wider text-white opacity-0 transition-opacity duration-1000"></span>
-                <span id="intro-welcome-id" class="text-[10px] font-mono text-zinc-500 mt-1 opacity-0 transition-opacity duration-1000"></span>
-            </div>
-
-            <!-- Action Button -->
-            <button id="btn-enter" class="opacity-0 px-8 py-3 bg-transparent border border-white hover:bg-white hover:text-acumenDark text-white font-mono text-xs tracking-widest uppercase transition-all duration-1000 transform translate-y-4 shadow-lg focus:outline-none">
-                ENTER ACUMEN OS →
-            </button>
-        </div>
-
-        <!-- Bottom Signature -->
-        <div class="text-center w-full pb-2">
-            <span class="font-mono text-[10px] text-zinc-600 tracking-wider">
-                © 2026 ACUMEN INGENIERÍA S.A.S. • NTAG213 ACTIVE
-            </span>
-        </div>
-    </div>
-
-    <!-- 2. MAIN HEADER (Logo, Lang and Navigation) -->
-    <div id="main-header" class="fixed top-0 left-0 w-full z-30 p-4 md:p-6 flex justify-between items-center pointer-events-none opacity-0 transition-opacity duration-500">
-        <!-- Logo -->
-        <div class="flex items-center gap-2 pointer-events-auto cursor-pointer" onclick="resetToHome()">
-            <svg viewBox="0 0 100 100" class="w-6 h-6 stroke-zinc-900 fill-none stroke-[6] flex-shrink-0">
+    <!-- HEADER -->
+    <header class="relative z-10 border-b border-slate-200/80 bg-white/70 backdrop-blur-md px-6 py-4 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="goHome()">
+            <svg viewBox="0 0 100 100" class="w-7 h-7 stroke-slate-900 fill-none stroke-[6]">
                 <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
             </svg>
-            <span class="font-bold text-sm tracking-tight text-zinc-900 uppercase font-sans">ACUMEN</span>
-        </div>
-
-        <!-- Language and Souvenir Shortcuts -->
-        <div class="flex items-center gap-4 pointer-events-auto">
-            <!-- Language Selector -->
-            <div class="bg-white/90 border border-zinc-200 rounded px-2 py-1 text-xs font-mono flex gap-2">
-                <button id="lang-es" onclick="setLanguage('es')" class="text-zinc-400 hover:text-zinc-900 transition-colors">ES</button>
-                <span class="text-zinc-300">|</span>
-                <button id="lang-en" onclick="setLanguage('en')" class="text-zinc-400 hover:text-zinc-900 transition-colors">EN</button>
-            </div>
-            
-            <!-- Target Souvenir -->
-            <button id="btn-view-object" onclick="switchToSouvenir()" class="bg-gold-500/10 hover:bg-gold-500/20 text-gold-600 border border-gold-500/30 px-3 py-1.5 rounded text-[10px] font-mono tracking-widest uppercase transition-all">
-                MY OBJECT
-            </button>
-        </div>
-    </div>
-
-    <!-- 3. NODE DETAILS DRAWER (Floating Card on Desktop & Mobile) -->
-    <div id="details-drawer" class="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto md:bottom-6 w-auto md:w-96 md:max-w-md z-40 bg-white/95 border border-zinc-200 p-6 md:p-8 rounded-xl transform translate-y-full transition-transform duration-500 ease-in-out flex flex-col justify-between gap-4 pointer-events-auto shadow-2xl">
-        <div class="flex-1 max-w-2xl">
-            <!-- Close Button -->
-            <button onclick="closeDetails()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-950 text-xl p-1 focus:outline-none">✕</button>
-            
-            <div id="drawer-node-tag" class="font-mono text-[10px] text-gold-600 tracking-widest uppercase mb-1">
-                CATEGORY
-            </div>
-            <h2 id="drawer-title" class="text-xl md:text-2xl font-extrabold tracking-tight text-zinc-900 mb-2">
-                Node Title
-            </h2>
-            <p id="drawer-tagline" class="text-xs text-zinc-500 font-medium mb-4 italic">
-                "Technical Tagline"
-            </p>
-            <p id="drawer-desc" class="text-sm text-zinc-700 leading-relaxed max-h-36 overflow-y-auto custom-scroll pr-2">
-                Detailed description...
-            </p>
-        </div>
-        <div class="flex flex-col gap-3 justify-end items-stretch md:w-64 w-full shrink-0">
-            <button id="drawer-btn-explore" target="_blank" class="w-full py-3 bg-zinc-900 hover:bg-gold-500 text-white font-mono text-xs tracking-wider uppercase transition-colors text-center">
-                EXPLORE THIS CAPABILITY →
-            </button>
-            <button onclick="openSolveFromDrawer()" id="drawer-btn-solve" class="w-full py-3 bg-transparent hover:bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-xs tracking-wider uppercase transition-colors text-center">
-                SOLVE A NEED
-            </button>
-        </div>
-    </div>
-
-    <!-- 4. SOLVER OVERLAY ("WHAT ARE YOU TRYING TO SOLVE?") -->
-    <div id="solver-overlay" class="fixed inset-0 z-30 bg-zinc-900/40 backdrop-blur-sm flex flex-col justify-end p-6 md:justify-center md:items-center pointer-events-none opacity-0 transition-opacity duration-500">
-        <div class="w-full max-w-lg bg-white border border-zinc-200 p-6 md:p-8 rounded-lg pointer-events-auto shadow-2xl relative">
-            
-            <!-- Close Button -->
-            <button onclick="toggleSolver(false)" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-950 text-xl p-1 focus:outline-none">✕</button>
-            
-            <div class="text-center md:text-left mb-6">
-                <div class="font-mono text-[9px] text-gold-600 tracking-widest uppercase mb-1">ACUMEN CORE</div>
-                <h3 id="solver-title" class="text-lg md:text-xl font-bold tracking-tight text-zinc-900 uppercase">
-                    ¿QUÉ PROBLEMA ESTÁ TRATANDO DE RESOLVER?
-                </h3>
-            </div>
-
-            <!-- List of options -->
-            <div class="grid grid-cols-1 gap-2 mb-6" id="solver-options">
-                <button onclick="selectDiscipline('infrastructure')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-infra">Infrastructure</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('waterClimate')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-water">Water + Climate</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('technicalDispute')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-dispute">Technical Dispute</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('risk')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-risk">Risk</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('mobilityTerritory')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-mobility-territory">Territorial Planning</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('mobility360')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-mobility-360">Mobility 360</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-                <button onclick="selectDiscipline('digitalEngineering')" class="w-full text-left py-3 px-4 bg-zinc-50 hover:bg-gold-500/10 border border-zinc-200 hover:border-gold-500/30 text-xs font-semibold text-zinc-800 hover:text-zinc-950 rounded transition-all flex justify-between items-center">
-                    <span id="opt-digital">Digital Engineering</span> <span class="text-gold-600">&rarr;</span>
-                </button>
-            </div>
-            
-            <button onclick="toggleSolver(false)" id="solver-cancel-btn" class="w-full py-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 hover:text-zinc-900 font-mono text-[10px] tracking-widest uppercase rounded border border-zinc-200 transition-colors text-center">
-                CANCEL
-            </button>
-        </div>
-    </div>
-
-    <!-- 5. DISCIPLINE FOCUSED CAPABILITIES VIEW (Floating Card on Desktop & Mobile) -->
-    <div id="discipline-view" class="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto md:bottom-6 w-auto md:w-[480px] md:max-w-xl z-40 bg-white/95 border border-zinc-200 p-6 md:p-8 rounded-xl transform translate-y-full transition-transform duration-500 ease-in-out flex flex-col gap-5 pointer-events-auto shadow-2xl">
-        <div class="flex justify-between items-start">
             <div>
-                <div id="disc-tag" class="font-mono text-[9px] text-gold-600 tracking-widest uppercase mb-1">
-                    DISCIPLINE
+                <span class="font-bold tracking-tight text-slate-900 text-sm uppercase">ACUMEN OS</span>
+                <span class="font-mono text-[10px] text-acumenGold block tracking-widest -mt-0.5">CORE VERSION 1.0</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button onclick="openSouvenir()" class="bg-amber-600/10 hover:bg-amber-600/20 text-amber-700 border border-amber-600/30 px-3 py-1.5 rounded-sm text-[10px] font-mono tracking-widest uppercase transition-all">
+                [ FICHA DE IDENTIDAD ]
+            </button>
+            <a href="/" class="text-xs text-slate-500 hover:text-slate-950 font-mono tracking-wider">
+                ← WEB
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <main class="relative z-10 flex-1 flex flex-col md:flex-row w-full overflow-hidden">
+        
+        <!-- DESKTOP SCREEN: 5 COLUMNS VIEW -->
+        <div id="desktop-grid" class="hidden md:flex flex-1 w-full h-full divide-x divide-slate-200/80 overflow-hidden">
+            
+            <!-- Column 1: FutureProof Decisions -->
+            <div id="col-0" onclick="expandColumn(0)" class="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer column-transition bg-white/40 hover:bg-white/90">
+                <div class="flex flex-col gap-2">
+                    <span class="font-mono text-xs text-slate-400 font-medium">[ 01 ]</span>
+                    <h3 class="font-bold text-lg text-slate-900 tracking-tight leading-none uppercase">FutureProof Decisions®</h3>
+                    <p class="text-[10px] font-mono text-acumenGold tracking-widest uppercase">INGENIERÍA BAJO INCERTIDUMBRE</p>
                 </div>
-                <h2 id="disc-title" class="text-xl md:text-2xl font-extrabold tracking-tight text-zinc-900">
-                    Discipline Title
-                </h2>
+                
+                <!-- SVG Vector Preview -->
+                <div class="w-full py-8 flex justify-center items-center overflow-hidden">
+                    <svg id="svg-preview-0" viewBox="0 0 300 200" class="w-5/6 h-36 stroke-slate-400 fill-none stroke-[1.5] transition-colors duration-300">
+                        <!-- Grid Lines -->
+                        <line x1="40" y1="160" x2="280" y2="160" stroke-dasharray="3 3" />
+                        <line x1="40" y1="20" x2="40" y2="160" stroke-dasharray="3 3" />
+                        <!-- Hydrograph Curve -->
+                        <path id="curve-0-static" d="M 40 160 Q 120 40 180 120 T 280 160" stroke-width="2" />
+                        <path d="M 40 160 Q 120 40 180 120 T 280 160 L 280 160 L 40 160 Z" class="fill-slate-400/5" />
+                        <!-- Axis Labels -->
+                        <text x="270" y="180" class="font-mono text-[9px] fill-slate-400" stroke="none">t(h)</text>
+                        <text x="15" y="30" class="font-mono text-[9px] fill-slate-400" stroke="none">Q</text>
+                    </svg>
+                </div>
+
+                <div class="border-t border-slate-200/50 pt-4 flex justify-between items-center">
+                    <span class="font-mono text-[10px] text-slate-400">STATUS: INTERACTIVE</span>
+                    <span class="font-mono text-xs text-slate-900 hover:text-acumenGold font-bold">ABRIR CAPA →</span>
+                </div>
             </div>
-            <button onclick="exitDisciplineFocus()" class="text-zinc-600 hover:text-zinc-950 text-xs font-mono border border-zinc-200 hover:border-zinc-400 px-3 py-1.5 transition-colors">
-                ← MAP
-            </button>
+
+            <!-- Column 2: Movilidad 360 -->
+            <div id="col-1" onclick="expandColumn(1)" class="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer column-transition bg-white/40 hover:bg-white/90">
+                <div class="flex flex-col gap-2">
+                    <span class="font-mono text-xs text-slate-400 font-medium">[ 02 ]</span>
+                    <h3 class="font-bold text-lg text-slate-900 tracking-tight leading-none uppercase">Movilidad 360</h3>
+                    <p class="text-[10px] font-mono text-acumenGold tracking-widest uppercase">TRANSPORTE INTELIGENTE</p>
+                </div>
+                
+                <!-- SVG Vector Preview -->
+                <div class="w-full py-8 flex justify-center items-center overflow-hidden">
+                    <svg id="svg-preview-1" viewBox="0 0 300 200" class="w-5/6 h-36 stroke-slate-400 fill-none stroke-[1.5] transition-colors duration-300">
+                        <!-- Traffic Intersection Circles and Lines -->
+                        <circle cx="150" cy="100" r="30" stroke-dasharray="4 2" />
+                        <circle cx="150" cy="100" r="45" />
+                        <!-- Road Lanes -->
+                        <line x1="40" y1="100" x2="260" y2="100" />
+                        <line x1="150" y1="20" x2="150" y2="180" />
+                        <line x1="40" y1="75" x2="260" y2="75" stroke-dasharray="2 2" />
+                        <line x1="40" y1="125" x2="260" y2="125" stroke-dasharray="2 2" />
+                        <!-- Flow indicators -->
+                        <path d="M 90 90 L 105 100 L 90 110 Z" class="fill-slate-400/20" />
+                        <path d="M 210 110 L 195 100 L 210 90 Z" class="fill-slate-400/20" />
+                    </svg>
+                </div>
+
+                <div class="border-t border-slate-200/50 pt-4 flex justify-between items-center">
+                    <span class="font-mono text-[10px] text-slate-400">STATUS: ACTIVE</span>
+                    <span class="font-mono text-xs text-slate-900 hover:text-acumenGold font-bold">ABRIR CAPA →</span>
+                </div>
+            </div>
+
+            <!-- Column 3: Obras Subterráneas -->
+            <div id="col-2" onclick="expandColumn(2)" class="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer column-transition bg-white/40 hover:bg-white/90">
+                <div class="flex flex-col gap-2">
+                    <span class="font-mono text-xs text-slate-400 font-medium">[ 03 ]</span>
+                    <h3 class="font-bold text-lg text-slate-900 tracking-tight leading-none uppercase">Obras Subterráneas</h3>
+                    <p class="text-[10px] font-mono text-acumenGold tracking-widest uppercase">GEOTECNIA E INFRAESTRUCTURA</p>
+                </div>
+                
+                <!-- SVG Vector Preview -->
+                <div class="w-full py-8 flex justify-center items-center overflow-hidden">
+                    <svg id="svg-preview-2" viewBox="0 0 300 200" class="w-5/6 h-36 stroke-slate-400 fill-none stroke-[1.5] transition-colors duration-300">
+                        <!-- Tunnel Portal Cross-Section -->
+                        <path d="M 60 160 A 90 90 0 0 1 240 160" stroke-width="2.5" />
+                        <path d="M 75 160 A 75 75 0 0 1 225 160" />
+                        <line x1="50" y1="160" x2="250" y2="160" />
+                        <!-- Radial Rock Bolts -->
+                        <line x1="150" y1="85" x2="150" y2="40" stroke-dasharray="2 2" />
+                        <line x1="100" y1="105" x2="65" y2="80" stroke-dasharray="2 2" />
+                        <line x1="200" y1="105" x2="235" y2="80" stroke-dasharray="2 2" />
+                        <!-- Bolts end indicators -->
+                        <circle cx="150" cy="40" r="2" class="fill-slate-400" />
+                        <circle cx="65" cy="80" r="2" class="fill-slate-400" />
+                        <circle cx="235" cy="80" r="2" class="fill-slate-400" />
+                    </svg>
+                </div>
+
+                <div class="border-t border-slate-200/50 pt-4 flex justify-between items-center">
+                    <span class="font-mono text-[10px] text-slate-400">STATUS: STABLE</span>
+                    <span class="font-mono text-xs text-slate-900 hover:text-acumenGold font-bold">ABRIR CAPA →</span>
+                </div>
+            </div>
+
+            <!-- Column 4: Ordenamiento Territorial -->
+            <div id="col-3" onclick="expandColumn(3)" class="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer column-transition bg-white/40 hover:bg-white/90">
+                <div class="flex flex-col gap-2">
+                    <span class="font-mono text-xs text-slate-400 font-medium">[ 04 ]</span>
+                    <h3 class="font-bold text-lg text-slate-900 tracking-tight leading-none uppercase">Ordenamiento Territorial</h3>
+                    <p class="text-[10px] font-mono text-acumenGold tracking-widest uppercase">PLANIFICACIÓN URBANA</p>
+                </div>
+                
+                <!-- SVG Vector Preview -->
+                <div class="w-full py-8 flex justify-center items-center overflow-hidden">
+                    <svg id="svg-preview-3" viewBox="0 0 300 200" class="w-5/6 h-36 stroke-slate-400 fill-none stroke-[1.5] transition-colors duration-300">
+                        <!-- Zoning grid representing city plots -->
+                        <rect x="40" y="30" width="80" height="60" stroke-dasharray="3 3" />
+                        <rect x="180" y="30" width="80" height="60" />
+                        <rect x="40" y="110" width="80" height="60" />
+                        <rect x="180" y="110" width="80" height="60" stroke-dasharray="3 3" />
+                        <!-- Grid labels -->
+                        <text x="65" y="65" class="font-mono text-[8px] fill-slate-400" stroke="none">ZONA RES-1</text>
+                        <text x="205" y="65" class="font-mono text-[8px] fill-slate-400" stroke="none">COM-02</text>
+                    </svg>
+                </div>
+
+                <div class="border-t border-slate-200/50 pt-4 flex justify-between items-center">
+                    <span class="font-mono text-[10px] text-slate-400">STATUS: PLANNING</span>
+                    <span class="font-mono text-xs text-slate-900 hover:text-acumenGold font-bold">ABRIR CAPA →</span>
+                </div>
+            </div>
+
+            <!-- Column 5: Peritajes Técnicos -->
+            <div id="col-4" onclick="expandColumn(4)" class="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer column-transition bg-white/40 hover:bg-white/90">
+                <div class="flex flex-col gap-2">
+                    <span class="font-mono text-xs text-slate-400 font-medium">[ 05 ]</span>
+                    <h3 class="font-bold text-lg text-slate-900 tracking-tight leading-none uppercase">Peritajes Técnicos</h3>
+                    <p class="text-[10px] font-mono text-acumenGold tracking-widest uppercase">INGENIERÍA FORENSE</p>
+                </div>
+                
+                <!-- SVG Vector Preview -->
+                <div class="w-full py-8 flex justify-center items-center overflow-hidden">
+                    <svg id="svg-preview-4" viewBox="0 0 300 200" class="w-5/6 h-36 stroke-slate-400 fill-none stroke-[1.5] transition-colors duration-300">
+                        <!-- Structural Beam with bending moment curve -->
+                        <line x1="40" y1="100" x2="260" y2="100" stroke-width="2.5" />
+                        <!-- Supports -->
+                        <polygon points="40,100 30,115 50,115" />
+                        <polygon points="260,100 250,115 270,115" />
+                        <!-- Bending curve -->
+                        <path d="M 40 100 Q 150 170 260 100" stroke-dasharray="3 3" />
+                        <!-- Forces arrows -->
+                        <path d="M 150 50 L 150 100 M 150 100 L 145 90 M 150 100 L 155 90" stroke-width="1.5" />
+                        <text x="145" y="45" class="font-mono text-[9px] fill-slate-400" stroke="none">P</text>
+                    </svg>
+                </div>
+
+                <div class="border-t border-slate-200/50 pt-4 flex justify-between items-center">
+                    <span class="font-mono text-[10px] text-slate-400">STATUS: EXPERTISE</span>
+                    <span class="font-mono text-xs text-slate-900 hover:text-acumenGold font-bold">ABRIR CAPA →</span>
+                </div>
+            </div>
+
         </div>
 
-        <p id="disc-desc" class="text-sm text-zinc-700 max-w-3xl leading-relaxed">
-            Discipline long description...
-        </p>
-
-        <!-- Capabilities bullet block -->
-        <div>
-            <div id="disc-cap-label" class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider mb-2">Capabilities:</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2" id="disc-caps-list">
-                <!-- Javascript fills this -->
-            </div>
+        <!-- MOBILE SCREEN: COLLAPSED ACCORDION VIEW -->
+        <div id="mobile-accordion" class="flex md:hidden flex-col w-full divide-y divide-slate-200/80 overflow-y-auto z-10">
+            <!-- Accordions populated dynamically by JS -->
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-            <button id="disc-btn-explore" target="_blank" class="flex-1 py-3 bg-transparent hover:bg-zinc-100 hover:text-zinc-950 text-zinc-800 border border-zinc-300 font-mono text-xs tracking-wider uppercase transition-all text-center">
-                EXPLORE THIS CAPABILITY →
-            </button>
-            <button id="disc-btn-talk" class="flex-1 py-3 bg-zinc-900 hover:bg-gold-500 text-white font-mono text-xs tracking-wider uppercase transition-colors text-center">
-                TALK TO US
-            </button>
-        </div>
-    </div>
-
-    <!-- 6. SOUVENIR VIEW (Floating HTML controls over 3D token background) -->
-    <div id="souvenir-overlay" class="fixed inset-0 z-40 bg-transparent flex flex-col justify-between p-6 transform translate-x-full transition-transform duration-500 ease-in-out pointer-events-none">
-        
-        <!-- Header -->
-        <div class="flex justify-between items-center w-full pointer-events-auto">
-            <div class="flex items-center gap-2">
-                <svg viewBox="0 0 100 100" class="w-5 h-5 stroke-zinc-900 fill-none stroke-[6] flex-shrink-0">
-                    <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
-                </svg>
-                <span class="font-extrabold text-xs tracking-tight text-zinc-900 font-mono uppercase">ACUMEN DEVICE</span>
-            </div>
+        <!-- EXPANDED DETAILED PANEL VIEW (DESKTOP) -->
+        <div id="detailed-panel" class="hidden absolute inset-0 z-20 bg-white/95 backdrop-blur-md flex flex-col md:flex-row overflow-hidden blueprint-grid">
+            <div class="blueprint-grid-major absolute inset-0 pointer-events-none z-0"></div>
             
-            <button onclick="exitSouvenir()" class="text-zinc-600 hover:text-zinc-950 text-xs font-mono border border-zinc-200 hover:border-zinc-400 px-3 py-1.5 transition-colors">
-                ← MAP
-            </button>
+            <!-- Left Info Panel (60% width) -->
+            <div class="relative z-10 w-full md:w-3/5 border-r border-slate-200/80 flex flex-col overflow-y-auto no-scrollbar justify-between p-8 md:p-12">
+                <div>
+                    <!-- Back Button -->
+                    <button onclick="collapseAll()" class="mb-8 flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-slate-900 uppercase">
+                        ← Volver al Ecosistema OS
+                    </button>
+                    
+                    <span id="detail-tag" class="font-mono text-[11px] text-amber-700 tracking-widest uppercase mb-1 block">CAPÍTULO TÉCNICO</span>
+                    <h1 id="detail-title" class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 uppercase mb-3">Título de la División</h1>
+                    <p id="detail-tagline" class="text-sm font-medium text-slate-500 mb-8 italic">"Tagline científico del servicio"</p>
+                    
+                    <div class="border-t border-b border-slate-200/60 py-6 mb-8">
+                        <h4 class="font-mono text-[10px] text-slate-400 tracking-widest uppercase mb-4">Mapeo de Sub-servicios Activos</h4>
+                        <div id="detail-subservices" class="flex flex-col gap-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div id="detail-megaproject" class="bg-amber-600/5 border border-amber-600/10 p-5 rounded-sm">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t border-slate-200/60 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <a id="detail-pdf-link" href="#" target="_blank" class="px-5 py-2.5 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[11px] tracking-widest uppercase transition-colors">
+                        Descargar Ficha Técnica (.PDF)
+                    </a>
+                    <button onclick="openSolveForm()" class="px-5 py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-900 font-mono text-[11px] tracking-widest uppercase transition-colors">
+                        Resolver Necesidad
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Interactive Graphic Panel (40% width) -->
+            <div class="relative z-10 w-full md:w-2/5 flex flex-col bg-slate-50/50 justify-between p-8 md:p-12 overflow-y-auto no-scrollbar border-t md:border-t-0 border-slate-200">
+                <div class="w-full flex-1 flex flex-col justify-center items-center">
+                    <div class="w-full border border-slate-200/80 bg-white p-6 shadow-sm rounded-sm mb-8 flex justify-center items-center relative overflow-hidden">
+                        <span class="absolute top-2 left-3 font-mono text-[9px] text-slate-400">CAD OUTPUT: VECTOR LIVE SIMULATION</span>
+                        <!-- Dynamic SVG display -->
+                        <svg id="dynamic-simulation-svg" viewBox="0 0 300 200" class="w-5/6 h-48 stroke-slate-900 fill-none stroke-[1.5]">
+                            <!-- Modified in JS -->
+                        </svg>
+                    </div>
+
+                    <!-- Interactive Parameters / Sliders -->
+                    <div class="w-full border-t border-slate-200/60 pt-6">
+                        <h4 class="font-mono text-[10px] text-slate-400 tracking-widest uppercase mb-4">Parámetros Físicos de la Simulación</h4>
+                        <div id="sim-sliders-container" class="flex flex-col gap-5">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 border-t border-slate-200/40 pt-4 flex justify-between text-[10px] font-mono text-slate-400">
+                    <span>COORDS: REF_ZONE_5</span>
+                    <span>TENSION: ACTIVE</span>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Middle Content info layout -->
-        <div class="flex flex-col items-center justify-center flex-1 max-w-sm mx-auto w-full my-4 text-center">
-            <h2 id="souvenir-header" class="text-lg md:text-xl font-bold tracking-tight text-zinc-900 uppercase mb-1">
-                YOUR ACUMEN ENGINEERING OBJECT
-            </h2>
-            <p id="souvenir-sub" class="text-[10px] font-mono text-gold-600 tracking-widest uppercase mb-6">
-                CONGRESS EDITION 2026
-            </p>
-            
-            <!-- Instructions -->
-            <div class="bg-zinc-50 border border-zinc-200 rounded p-3 mb-6 w-full pointer-events-auto">
-                <p id="souvenir-instruct" class="text-[10px] font-mono text-zinc-500 leading-normal">
-                    Interact: Drag to rotate. Tap object to project telemetry.
-                </p>
+        <!-- SOLVER / CONTACT OVERLAY -->
+        <div id="solve-overlay" class="hidden fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex justify-center items-center p-6">
+            <div class="w-full max-w-md bg-white border border-slate-200 p-8 shadow-2xl relative rounded-sm blueprint-grid">
+                <div class="blueprint-grid-major absolute inset-0 pointer-events-none z-0"></div>
+                <button onclick="closeSolveForm()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-sm">✕</button>
+                
+                <div class="relative z-10">
+                    <span class="font-mono text-[9px] text-amber-700 tracking-widest uppercase">ACUMEN SOLVER</span>
+                    <h3 class="text-xl font-bold tracking-tight text-slate-950 uppercase mb-1">Diagnosticar Proyecto</h3>
+                    <p class="text-xs text-slate-500 mb-6">Envíe los requerimientos específicos a nuestro laboratorio y nos comunicaremos en menos de 24h.</p>
+                    
+                    <form onsubmit="handleSolveSubmit(event)" class="flex flex-col gap-4">
+                        <div>
+                            <label class="block font-mono text-[10px] text-slate-400 uppercase mb-1">Nombre Completo</label>
+                            <input required type="text" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="ING. ALBERTO GOMEZ">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-[10px] text-slate-400 uppercase mb-1">Correo Institucional</label>
+                            <input required type="email" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="AGOMEZ@EMPRESA.COM">
+                        </div>
+                        <div>
+                            <label class="block font-mono text-[10px] text-slate-400 uppercase mb-1">Descripción del Desafío</label>
+                            <textarea required rows="3" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="Describa el fallo, la modelación o el peritaje requerido..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-xs tracking-wider uppercase transition-colors mt-2">
+                            Enviar Parámetros de Solución →
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- Footer Actions -->
-        <div class="w-full max-w-md mx-auto flex flex-col gap-2.5 pb-2 pointer-events-auto">
-            <div class="text-center mb-1">
-                <h4 id="souvenir-footer-solve" class="text-xs font-bold tracking-widest text-zinc-700 uppercase">LET'S SOLVE SOMETHING COMPLEX.</h4>
+        <!-- SPEC SHEET / SOUVENIR OVERLAY -->
+        <div id="souvenir-overlay" class="hidden fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex justify-center items-center p-6 overflow-y-auto">
+            <div class="w-full max-w-2xl bg-white border border-slate-300 p-8 shadow-2xl relative rounded-sm blueprint-grid my-8">
+                <div class="blueprint-grid-major absolute inset-0 pointer-events-none z-0"></div>
+                <button onclick="closeSouvenir()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-sm">✕</button>
+                
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left Spec Configurator -->
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <span class="font-mono text-[9px] text-amber-700 tracking-widest uppercase">ACUMEN OS 1.0</span>
+                            <h3 class="text-xl font-bold tracking-tight text-slate-950 uppercase mb-1">Ficha de Identidad Técnica</h3>
+                            <p class="text-xs text-slate-500 mb-6">Personalice y exporte su ficha de especificaciones técnicas parametrizada por ACUMEN OS.</p>
+                            
+                            <div class="flex flex-col gap-4 mb-6">
+                                <div>
+                                    <label class="block font-mono text-[9px] text-slate-400 uppercase mb-1">Nombre del Profesional</label>
+                                    <input type="text" id="souvenir-name-input" oninput="updateSouvenirName(this.value)" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" value="ING. RICARDO SMITH">
+                                </div>
+                                <div>
+                                    <label class="block font-mono text-[9px] text-slate-400 uppercase mb-1">Esquema Técnico Base</label>
+                                    <select id="souvenir-design-select" onchange="updateSouvenirDesign(this.value)" class="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs bg-white">
+                                        <option value="tunnel">Sección de Túnel (Obras Subterráneas)</option>
+                                        <option value="hydro">Curva de Caudales (FutureProof)</option>
+                                        <option value="beam">Viga Estructural (Peritajes)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-mono text-[9px] text-slate-400 uppercase mb-1">Resistencia del Concreto (f'c)</label>
+                                    <div class="flex gap-4 items-center">
+                                        <input type="range" min="21" max="45" value="35" class="flex-1 accent-amber-600" oninput="updateSouvenirSlider('fc', this.value)">
+                                        <span class="font-mono text-xs w-12 text-right"><span id="souvenir-val-fc">35</span> MPa</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-mono text-[9px] text-slate-400 uppercase mb-1">Factor de Seguridad (F.S.)</label>
+                                    <div class="flex gap-4 items-center">
+                                        <input type="range" min="1.0" max="3.0" step="0.1" value="2.1" class="flex-1 accent-amber-600" oninput="updateSouvenirSlider('fs', this.value)">
+                                        <span class="font-mono text-xs w-12 text-right"><span id="souvenir-val-fs">2.1</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="window.print()" class="w-full py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-xs tracking-wider uppercase transition-colors">
+                            Exportar Ficha Técnica (Imprimir)
+                        </button>
+                    </div>
+
+                    <!-- Right Blueprint Card Display -->
+                    <div id="print-area" class="border border-slate-300 bg-white p-6 shadow-sm rounded-sm flex flex-col justify-between h-[340px] relative overflow-hidden">
+                        <div class="absolute inset-0 blueprint-grid opacity-30 z-0"></div>
+                        <div class="absolute inset-0 blueprint-grid-major opacity-30 z-0"></div>
+                        
+                        <div class="relative z-10 flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-xs tracking-wider text-slate-950 uppercase leading-none">ACUMEN OS</h4>
+                                <span class="font-mono text-[8px] text-slate-400 tracking-widest block uppercase">ESPECIFICACIONES B2B</span>
+                            </div>
+                            <svg viewBox="0 0 100 100" class="w-5 h-5 stroke-slate-900 fill-none stroke-[6]">
+                                <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
+                            </svg>
+                        </div>
+
+                        <!-- Render dynamic blueprint logo in card -->
+                        <div class="relative z-10 flex-1 flex justify-center items-center my-4 overflow-hidden border border-slate-200 bg-white/50 backdrop-blur-sm rounded-sm">
+                            <svg id="souvenir-card-svg" viewBox="0 0 300 200" class="w-5/6 h-28 stroke-slate-900 fill-none stroke-[1.2]">
+                                <!-- Drawn dynamically by select option -->
+                            </svg>
+                        </div>
+
+                        <div class="relative z-10 font-mono text-[8px] text-slate-600 border-t border-slate-200 pt-3">
+                            <div class="flex justify-between">
+                                <span class="uppercase">ID CERTIFICADO:</span>
+                                <span id="souvenir-card-id" class="font-bold text-slate-950">ACM-2026-X8F9</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="uppercase">PROFESIONAL:</span>
+                                <span id="souvenir-card-name" class="font-bold text-slate-950">ING. RICARDO SMITH</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="uppercase">PARÁMETROS:</span>
+                                <span class="font-bold text-slate-950">f'c=<span id="card-val-fc">35</span>MPa / FS=<span id="card-val-fs">2.1</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="grid grid-cols-3 gap-2">
-                <button id="souvenir-btn-explore" target="_blank" class="py-3 bg-zinc-900 hover:bg-gold-500 text-white font-mono text-[9px] tracking-wider uppercase rounded border border-transparent transition-all text-center">
-                    EXPLORE
-                </button>
-                <button id="souvenir-btn-talk" class="py-3 bg-zinc-900 hover:bg-gold-500 text-white font-mono text-[9px] tracking-wider uppercase rounded border border-transparent transition-all text-center">
-                    TALK TO US
-                </button>
-                <button onclick="downloadvCard()" class="py-3 bg-transparent hover:bg-zinc-100 text-zinc-700 hover:text-zinc-950 font-mono text-[9px] tracking-wider uppercase rounded border border-zinc-300 transition-all text-center">
-                    SAVE CONTACT
-                </button>
-            </div>
-            
-            <div class="text-center mt-2">
-                <span class="font-mono text-[9px] text-zinc-500 tracking-wider">acumeningenieria.com • MEDELLÍN · COLOMBIA</span>
-            </div>
         </div>
-    </div>
 
-    <!-- 7. MAIN FLOATING FOOTER ACTIONS (Global Controls) -->
-    <div id="main-footer" class="fixed bottom-6 inset-x-0 z-20 flex justify-center items-center pointer-events-none opacity-0 transition-opacity duration-500">
-        <div class="flex gap-3 bg-white/90 border border-zinc-200 rounded-full px-4 py-2 pointer-events-auto shadow-2xl">
-            <!-- Explora solver manual button -->
-            <button id="footer-btn-solve" onclick="toggleSolver(true)" class="flex items-center gap-1.5 text-xs text-zinc-800 hover:text-gold-600 font-mono uppercase tracking-widest transition-colors focus:outline-none">
-                <svg viewBox="0 0 24 24" class="w-4 h-4 fill-none stroke-currentColor stroke-[2]">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 16v-4M12 8h.01"/>
-                </svg>
-                <span id="footer-solve-txt">SOLVE</span>
-            </button>
-            <span class="text-zinc-300">|</span>
-            <!-- Explora map reset -->
-            <button id="footer-btn-reset" onclick="resetToHome()" class="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 font-mono uppercase tracking-widest transition-colors focus:outline-none">
-                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 fill-none stroke-currentColor stroke-[2.5]">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <path d="M3 3v5h5"/>
-                </svg>
-                <span id="footer-reset-txt">RESET</span>
-            </button>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 border-t border-slate-200/80 bg-white/70 backdrop-blur-md px-6 py-3 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-slate-400 shrink-0 gap-2 md:gap-0">
+        <span>© 2026 ACUMEN INGENIERÍA S.A.S. • NTAG213 ACTIVE</span>
+        <div class="flex gap-4">
+            <span class="text-acumenGold font-bold">• CONNECTED TO ACUMEN OS CORE</span>
+            <span class="text-slate-400">LATENCY: 12ms</span>
         </div>
-    </div>
+    </footer>
 
-    <!-- Console display overlay for ACUMEN OS -->
-    <div id="acumen-os-console" class="fixed bottom-6 left-6 z-20 w-72 bg-white/95 border border-zinc-200 rounded p-4 font-mono text-[9px] text-zinc-600 pointer-events-none hidden select-none max-h-48 overflow-hidden transition-all duration-300 shadow-xl">
-        <div class="flex justify-between items-center text-zinc-400 border-b border-zinc-200 pb-1 mb-2 font-mono text-[8px] uppercase tracking-widest">
-            <span>Console Output</span>
-            <span class="text-gold-600 animate-pulse">● OS_ACTIVE</span>
-        </div>
-        <div id="console-lines" class="flex flex-col gap-1">
-            <!-- dynamically added -->
-        </div>
-    </div>
-
-    <!-- Real-time Debug Panel (Visible only with ?debug=true) -->
-    <div id="debug-panel" class="fixed top-20 left-4 z-50 bg-black/85 border border-red-500 p-3 rounded font-mono text-[9px] text-red-400 space-y-1 hidden">
-        <div>STATE: <span id="debug-state">-</span></div>
-        <div>CAM POS: <span id="debug-cam">-</span></div>
-        <div>TARGET: <span id="debug-target">-</span></div>
-        <div>TOKEN VIS: <span id="debug-token-vis">-</span></div>
-        <div>TOKEN SCALE: <span id="debug-token-scale">-</span></div>
-        <div>MAP VIS: <span id="debug-map-vis">-</span></div>
-        <div>MAP SCALE: <span id="debug-map-scale">-</span></div>
-    </div>
-
-    <!-- --------------------- SCRIPTING --------------------- -->
+    <!-- INTERACTION LOGIC SCRIPT -->
     <script>
-        // Global Error Debugging Overlay
-        window.onerror = function(msg, url, line, col, error) {
-            const errDiv = document.createElement('div');
-            errDiv.style.position = 'fixed';
-            errDiv.style.bottom = '10px';
-            errDiv.style.left = '10px';
-            errDiv.style.backgroundColor = 'rgba(220, 38, 38, 0.95)';
-            errDiv.style.color = 'white';
-            errDiv.style.padding = '8px';
-            errDiv.style.fontFamily = 'monospace';
-            errDiv.style.fontSize = '10px';
-            errDiv.style.zIndex = '9999';
-            errDiv.style.maxWidth = '90%';
-            errDiv.style.wordBreak = 'break-all';
-            errDiv.style.border = '1px solid white';
-            errDiv.innerHTML = `Error: ${msg}<br>Line: ${line}<br>File: ${url ? url.split('/').pop() : ''}`;
-            document.body.appendChild(errDiv);
-            return false;
-        };
-
-        // GLOBALS & STATE
-        let currentLang = 'en';
-        let state = 'intro'; // intro, map, discipline, souvenir
-        let activeInterest = 'default'; // default, waterClimate, infrastructure, technicalDispute, risk, mobilityTerritory, digitalEngineering
-        let isUserInteracting = false;
-        let activeNodeKey = null;
-        let showDebugPanel = false; // Debug overlay flag
-
-        // Custom visitor data from URL query params
-        let visitorName = '';
-        let objectId = '001';
-        let eventName = 'CCI 2026 CARTAGENA';
-        let initialInterest = '';
-
-        // Three.js instances
-        let scene, camera, renderer, controls;
-        let mapGroup, tokenGroup;
-        
-        // Procedural geometries reference
-        let terrainBase, terrainWire, riverParticles, riverCurve, riverOffsets, riverPositions, riverParticleGeo;
-        let cityGrid, trafficParticles, trafficOffsets, trafficPositions, trafficParticleGeo;
-        let bridgeMesh, bridgeWires, tunnelMesh, tunnelScanRing;
-        let scanPlane; // forensics scanning plane
-        let laserLines = []; // OS node connections
-        let tokenMesh; // 3D Souvenir Object
-        let osCoreGroup, osRing1, osRing2; // ACUMEN OS Hologram Core
-        let waterDamMesh; // Water & Climate Dam
-
-        // Interactive hotspots locations (3D relative coordinates in mapGroup)
-        const nodePositions = {
-            waterClimate: new THREE.Vector3(0.5, 0.4, 0.8),
-            infrastructure: new THREE.Vector3(-1.0, 0.6, -0.5),
-            forensics: new THREE.Vector3(-1.8, 0.3, 1.2),
-            mobilityTerritory: new THREE.Vector3(2.3, 0.3, -2.1),
-            mobility360: new THREE.Vector3(1.4, 0.2, -1.4),
-            acumenos: new THREE.Vector3(-0.8, 1.3, -2.2)
-        };
-
-        const hotspots = [];
-
-        // TEXT DICTIONARIES
-        const TRANSLATIONS = {
-            es: {
-                initializing: "INICIALIZANDO SISTEMA...",
-                enter: "ENTRAR A ACUMEN OS →",
-                welcome: "BIENVENIDO A ACUMEN",
-                tagline: "INGENIERÍA AUMENTADA POR DATOS",
-                solveQuestion: "¿QUÉ PROBLEMA ESTÁ TRATANDO DE RESOLVER?",
-                solvingComplex: "RESOLVAMOS ALGO COMPLEJO.",
-                exploreCorporate: "EXPLORAR ACUMEN",
-                talkToUs: "HABLAR CON NOSOTROS",
-                saveContact: "GUARDAR CONTACTO",
-                medellin: "MEDELLÍN · COLOMBIA",
-                engineeringObject: "SU OBJETO DE INGENIERÍA ACUMEN",
-                customObject: "ACUMEN ENGINEERING OBJECT",
-                edition: "EDICIÓN CONGRESO 2026",
-                exploreCapability: "EXPLORAR CAPACIDAD →",
-                backToMap: "← MAPA",
-                solve: "SOLUCIONAR",
-                reset: "REINICIAR",
-                welcomeName: "BIENVENIDO, ",
-                instruct: "Interactuar: Arrastra para rotar. Toca el objeto para telemetría.",
-                disciplines: {
-                    infrastructure: "Infraestructura",
-                    waterClimate: "Agua + Clima",
-                    technicalDispute: "Litigio Técnico",
-                    risk: "Riesgos",
-                    mobilityTerritory: "Ordenamiento Territorial",
-                    mobility360: "Movilidad 360",
-                    digitalEngineering: "Ingeniería Digital"
-                },
-                capabilities: {
-                    infrastructure: {
-                        title: "Infraestructura Compleja",
-                        desc: "Evaluación rigurosa de viaductos, túneles viales y obras subterráneas. Combinamos análisis geotécnico avanzado y control de proyectos con metodologías de clase mundial para erradicar la incertidumbre en megaconstrucciones.",
-                        caps: ["Estabilidad de Taludes y Anclajes", "Diseño Estructural de Túneles", "Gerencia e Interventoría PMO"]
+        // Content definitions matching business lines
+        const divisions = [
+            {
+                number: "01",
+                title: "FutureProof Decisions®",
+                tagline: "Modelación estocástica y decisiones inteligentes bajo incertidumbre",
+                category: "INGENIERÍA BAJO INCERTIDUMBRE",
+                subservices: [
+                    {
+                        name: "Decision Intelligence Lab®",
+                        desc: "Desarrollo de modelos cuantitativos, análisis multicriterio y algoritmos de optimización para respaldar decisiones viales y ambientales complejas y auditables."
                     },
-                    waterClimate: {
-                        title: "Agua + Clima",
-                        desc: "Comprender la dinámica del agua antes de que afecte la infraestructura. Modelación hidrológica e hidráulica avanzada bajo variabilidad climática extrema.",
-                        caps: ["Modelación Hidroclimatológica", "Variabilidad de Caudales en Embalses", "Simulaciones Hidráulicas Complejas"]
+                    {
+                        name: "Riesgo Hidroclimatológico y Ambiental",
+                        desc: "Modelamiento avanzado de eventos extremos, balances hídricos dinámicos, cálculo de curvas IDF y simulaciones de tránsito de avenidas ante el cambio climático."
                     },
-                    technicalDispute: {
-                        title: "Litigio Técnico (Peritajes)",
-                        desc: "División forense altamente especializada para estructurar dictámenes periciales y auditoría de fallas de ingeniería en tribunales de arbitraje.",
-                        caps: ["Ingeniería Forense Estructural", "Peritaje Técnico Hidroclimatológico", "Dictámenes Periciales de Alta Precisión"]
-                    },
-                    risk: {
-                        title: "Gestión de Riesgos (RDM)",
-                        desc: "Modelamos la incertidumbre. Implementamos metodologías estocásticas y Robust Decision Making (RDM) para estructurar decisiones de inversión y diseño resilientes.",
-                        caps: ["Robust Decision Making (RDM)", "Análisis Climatológico Estocástico", "Modelos Predictivos y Matrices de Riesgo"]
-                    },
-                    mobilityTerritory: {
-                        title: "Ordenamiento Territorial",
-                        desc: "Planificación a escala municipal y regional. Instrumentos de gestión del suelo, modelos de ciudad sostenible e integración de plusvalías y políticas habitacionales.",
-                        caps: ["Ajuste de Planes de Ordenamiento (POT)", "Planificación Estratégica Metropolitana", "Gestión del Suelo y Captura de Valor"]
-                    },
-                    mobility360: {
-                        title: "Movilidad 360",
-                        desc: "Planificación de transporte mediante Gemelos Digitales de tráfico, Modelos Basados en Agentes (ABM), seguridad vial Visión Cero y semaforización dinámica.",
-                        caps: ["Gemelos Digitales y Simulación ABM/DTA", "Seguridad Vial con Enfoque Visión Cero", "Operación Vial Inteligente y Sistemas ITS"]
-                    },
-                    digitalEngineering: {
-                        title: "Ingeniería Digital (ACUMEN OS)",
-                        desc: "La arquitectura digital de la firma. Gemelos digitales y dashboards interactivos en tiempo real con trazabilidad total de datos para potenciar la toma de decisiones.",
-                        caps: ["Gemelos Digitales y SIG Activo", "Dashboards Interactivos de Proyecto", "Analítica Geoespacial de Datos"]
+                    {
+                        name: "Modelación Estocástica y No-Estacionariedad",
+                        desc: "Análisis probabilístico no estacionario enfocado en modelar la variabilidad y el cambio en series temporales lluvia-escorrentía."
                     }
+                ],
+                megaproject: {
+                    title: "Escenarios Energéticos UPME",
+                    detail: "Estructuración de simulaciones estocásticas a gran escala y escenarios de abastecimiento para el sector energético nacional."
                 },
-                nodeDetails: {
-                    waterClimate: {
-                        tag: "💧 RECURSO HÍDRICO Y CLIMA",
-                        title: "Agua + Clima",
-                        text: "Comprender el agua antes de que se convierta en incertidumbre.",
-                        desc: "Simulamos variables climatológicas extremas y colmatación de sedimentos mediante interpolación Kriging 3D, optimizando descargas en tiempo real.",
-                        linkText: "EXPLORAR AGUA + CLIMA →"
-                    },
-                    infrastructure: {
-                        tag: "🛤️ INFRAESTRUCTURA Y DISEÑO",
-                        title: "Infraestructura Compleja",
-                        text: "Infraestructura compleja exige decisiones rigurosas.",
-                        desc: "Diseño y modelación de túneles, puentes y taludes. Analizamos el comportamiento estructural mediante simulaciones de esfuerzos geomecánicos y PMO riguroso.",
-                        linkText: "EXPLORAR INFRAESTRUCTURA →"
-                    },
-                    forensics: {
-                        tag: "🔍 INGENIERÍA FORENSE",
-                        title: "Peritajes Técnicos",
-                        text: "Cuando una infraestructura falla, reconstruimos técnicamente lo ocurrido.",
-                        desc: "Auditoría técnica de patologías estructurales y fallos del terreno. Proporcionamos dictámenes periciales concluyentes para litigios y tribunales.",
-                        linkText: "EXPLORAR PERITAJES TÉCNICOS →"
-                    },
-                    mobilityTerritory: {
-                        tag: "📍 PLANIFICACIÓN Y SUELO",
-                        title: "Ordenamiento Territorial",
-                        text: "El territorio planificado reduce la incertidumbre social.",
-                        desc: "Estructuramos proyectos urbanos y planes de ordenamiento (POT) donde cada variable normativa, demográfica y de suelo está respaldada por datos trazables.",
-                        linkText: "EXPLORAR PLANIFICACIÓN →"
-                    },
-                    mobility360: {
-                        tag: "🚗 TRANSPORTE INTELIGENTE",
-                        title: "Movilidad 360",
-                        text: "Simulamos el movimiento para tomar decisiones robustas.",
-                        desc: "Modelamos la capacidad vial y el flujo vehicular dinámico mediante micro y macro-simulación de transporte basada en Big Data y analítica de Gemelos Digitales.",
-                        linkText: "EXPLORAR MOVILIDAD 360 →"
-                    },
-                    acumenos: {
-                        tag: "🤖 ARQUITECTURA OPERATIVA",
-                        title: "ACUMEN OS 1.0",
-                        text: "Engineering augmented by intelligence.",
-                        desc: "La plataforma de inteligencia de la firma. Codificamos décadas de conocimiento geotécnico y climático en flujos automatizados de análisis para expandir el criterio humano.",
-                        linkText: "EXPLORAR ACUMEN OS →"
-                    }
+                pdf: "/pdf/ficha_tecnica_futureproof.pdf",
+                sim: {
+                    title: "Curva Hidrográfica Dinámica",
+                    sliders: [
+                        { name: "Caudal Máximo (Q)", min: 100, max: 4000, val: 2500, unit: "m³/s", key: "peakQ" },
+                        { name: "Tiempo al Pico (Tp)", min: 4, max: 24, val: 12, unit: "hrs", key: "timeP" }
+                    ]
                 }
             },
-            en: {
-                initializing: "INITIALIZING SYSTEM...",
-                enter: "ENTER ACUMEN OS →",
-                welcome: "WELCOME TO ACUMEN",
-                tagline: "DATA-AUGMENTED ENGINEERING",
-                solveQuestion: "WHAT ARE YOU TRYING TO SOLVE?",
-                solvingComplex: "LET'S SOLVE SOMETHING COMPLEX.",
-                exploreCorporate: "EXPLORE ACUMEN",
-                talkToUs: "TALK TO US",
-                saveContact: "SAVE CONTACT",
-                medellin: "MEDELLÍN · COLOMBIA",
-                engineeringObject: "YOUR ACUMEN ENGINEERING OBJECT",
-                customObject: "ACUMEN ENGINEERING OBJECT",
-                edition: "CONGRESS EDITION 2026",
-                exploreCapability: "EXPLORE CAPABILITY →",
-                backToMap: "← MAP",
-                solve: "SOLVE",
-                reset: "RESET",
-                welcomeName: "WELCOME, ",
-                instruct: "Interact: Drag to rotate. Tap object to project telemetry.",
-                disciplines: {
-                    infrastructure: "Infrastructure",
-                    waterClimate: "Water + Climate",
-                    technicalDispute: "Technical Dispute",
-                    risk: "Risk",
-                    mobilityTerritory: "Territorial Planning",
-                    mobility360: "Mobility 360",
-                    digitalEngineering: "Digital Engineering"
-                },
-                capabilities: {
-                    infrastructure: {
-                        title: "Complex Infrastructure",
-                        desc: "Rigorous evaluation of viaducts, road tunnels, and underground works. We combine advanced geotechnical analysis and project control with world-class methodologies to eradicate uncertainty.",
-                        caps: ["Slope Stability & Anchors", "Structural Tunnel Design", "PMO Management & Auditing"]
+            {
+                number: "02",
+                title: "Movilidad 360",
+                tagline: "Modelación avanzada y analítica activa de sistemas urbanos de transporte",
+                category: "TRANSPORTE INTELIGENTE",
+                subservices: [
+                    {
+                        name: "Gemelos Digitales y Simulación DTA/ABM",
+                        desc: "Modelos de asignación dinámica de tráfico (DTA) y simulación multiagente (ABM) para evaluar la demanda y capacidad de redes de transporte urbano a nivel micro y macro."
                     },
-                    waterClimate: {
-                        title: "Water + Climate",
-                        desc: "Understand water dynamics before it affects infrastructure. Advanced hydrological and hydraulic modeling under extreme climate change conditions.",
-                        caps: ["Hydroclimatological Modeling", "Reservoir Inflow & Siltation", "Complex Hydraulic Simulations"]
+                    {
+                        name: "Seguridad Vial Operacional",
+                        desc: "Auditorías viales, análisis predictivo de colisiones y modelación bajo el enfoque de Sistema Seguro / Visión Cero para prevenir la siniestralidad."
                     },
-                    technicalDispute: {
-                        title: "Technical Disputes (Forensics)",
-                        desc: "Highly specialized forensic engineering division providing conclusive expert reports and failure analysis for arbitration tribunals.",
-                        caps: ["Forensic Structural Analysis", "Hydroclimatological Expert Witness", "Expert Witness Reports for Litigation"]
-                    },
-                    risk: {
-                        title: "Risk Management (RDM)",
-                        desc: "We model uncertainty. We implement stochastic methodologies and Robust Decision Making (RDM) to structure resilient investment and design decisions under climate change.",
-                        caps: ["Robust Decision Making (RDM)", "Stochastic Climatological Analysis", "Predictive Models & Risk Matrices"]
-                    },
-                    mobilityTerritory: {
-                        title: "Territorial Planning",
-                        desc: "Urban and metropolitan planning, land use management tools, sustainable city models, and public housing policies backed by spatial data.",
-                        caps: ["Urban Master Plans & POT Adjustment", "Metropolitan Strategic Planning", "Land Value Capture & Urban Management"]
-                    },
-                    mobility360: {
-                        title: "Mobility 360",
-                        desc: "Next-gen transportation planning. We build Traffic Digital Twins, Agent-Based Models (ABM), Vision Zero traffic safety strategies, and dynamic signal operation.",
-                        caps: ["Digital Twins & ABM/DTA Simulation", "Vision Zero / Safe System Approach", "Intelligent Highway Operation & ITS"]
-                    },
-                    digitalEngineering: {
-                        title: "Digital Engineering (ACUMEN OS)",
-                        desc: "The firm's digital infrastructure. Digital twins and real-time interactive dashboards with full data traceability to empower critical decision-making.",
-                        caps: ["Digital Twins & Active GIS", "Interactive Project Dashboards", "Geo-Spatial Data Analytics"]
+                    {
+                        name: "Logística y Operación Vial",
+                        desc: "Diseño de esquemas de distribución urbana de mercancías de última milla y estructuración operativa e integración de sistemas ITS."
                     }
+                ],
+                megaproject: {
+                    title: "SIMM Medellín",
+                    detail: "Modelación de flujos vehiculares a 10 años e integración financiera del Sistema Inteligente de Movilidad de la ciudad."
                 },
-                nodeDetails: {
-                    waterClimate: {
-                        tag: "💧 WATER & CLIMATE RESOURCES",
-                        title: "Water + Climate",
-                        text: "Understand water before it turns into uncertainty.",
-                        desc: "We simulate extreme climate events and siltation using 3D Kriging interpolation, optimizing reservoir discharges in real time.",
-                        linkText: "EXPLORE WATER + CLIMATE →"
+                pdf: "/os/visor_futureproof.html", // redirects or pdf
+                sim: {
+                    title: "Flujo de Intersección Vial",
+                    sliders: [
+                        { name: "Volumen de Tráfico", min: 300, max: 2000, val: 1200, unit: "veh/h", key: "trafficV" },
+                        { name: "Congestión de Red", min: 1, max: 10, val: 4, unit: "/10", key: "congest" }
+                    ]
+                }
+            },
+            {
+                number: "03",
+                title: "Obras Subterráneas",
+                tagline: "Diseño geomecánico y auditoría técnica de túneles y taludes complejos",
+                category: "GEOTECNIA E INFRAESTRUCTURA",
+                subservices: [
+                    {
+                        name: "Diseño Estructural de Túneles",
+                        desc: "Cálculo analítico y numérico por elementos finitos de sostenimiento de túneles viales e hidráulicos en suelos y rocas (métodos de excavación convencional y mecanizada)."
                     },
-                    infrastructure: {
-                        tag: "🛤️ INFRASTRUCTURE & DESIGN",
-                        title: "Complex Infrastructure",
-                        text: "Complex infrastructure demands rigorous decisions.",
-                        desc: "Tunnel, bridge, and slope design and modeling. We analyze geomechanical behavior using state-of-the-art structural stress simulations and rigorous PMO.",
-                        linkText: "EXPLORE INFRASTRUCTURE →"
+                    {
+                        name: "Estabilidad de Taludes y Anclajes",
+                        desc: "Modelación de fallas geotécnicas bajo condiciones de saturación por lluvias extremas y diseño de medidas activas y pasivas de estabilización."
                     },
-                    forensics: {
-                        tag: "🔍 FORENSIC ENGINEERING",
-                        title: "Peritajes Técnicos",
-                        text: "When an infrastructure fails, we technically reconstruct what occurred.",
-                        desc: "Technical auditing of structural pathologies and terrain failures. We deliver expert reports with mathematical certainty for litigation and courtrooms.",
-                        linkText: "EXPLORE TECHNICAL FORENSICS →"
-                    },
-                    mobilityTerritory: {
-                        tag: "📍 TERRITORIAL PLANNING",
-                        title: "Territorial Planning",
-                        text: "Planned territories reduce urban uncertainty.",
-                        desc: "We structure urban plans and zoning regulations (POT) where every demographic, normative, and land finance variable is backed by traceable spatial data.",
-                        linkText: "EXPLORE PLANNING →"
-                    },
-                    mobility360: {
-                        tag: "🚗 SMART MOBILITY 360",
-                        title: "Mobility 360",
-                        text: "Simulating networks to optimize dynamic cities.",
-                        desc: "We simulate traffic capacity and transit patterns using dynamic traffic assignment and agent-based models (ABM) derived from Big Data analytics.",
-                        linkText: "EXPLORE MOBILITY 360 →"
-                    },
-                    acumenos: {
-                        tag: "🤖 OPERATIONAL ARCHITECTURE",
-                        title: "ACUMEN OS 1.0",
-                        text: "Engineering augmented by intelligence.",
-                        desc: "The firm's intelligence platform. We code decades of geotechnical and climatic engineering knowledge into automated workflows to expand human judgment.",
-                        linkText: "EXPLORE ACUMEN OS →"
+                    {
+                        name: "Gerencia de Proyectos y Auditoría",
+                        desc: "Estructuración de planes de aseguramiento técnico (PMO), interventoría de excavaciones complejas y auditoría forense de desvíos presupuestarios."
                     }
+                ],
+                megaproject: {
+                    title: "Túnel del Toyo",
+                    detail: "Estabilización y control geomecánico del portal de acceso del túnel más largo de América, con presupuestos controlados."
+                },
+                pdf: "/pdf/ficha_tecnica_taludes.pdf",
+                sim: {
+                    title: "Esfuerzos Radiales del Túnel",
+                    sliders: [
+                        { name: "Radio del Túnel (R)", min: 4, max: 10, val: 6, unit: "m", key: "radius" },
+                        { name: "Número de Pernos de Roca", min: 6, max: 24, val: 16, unit: "unidades", key: "bolts" }
+                    ]
+                }
+            },
+            {
+                number: "04",
+                title: "Ordenamiento Territorial",
+                tagline: "Planificación urbana a escala regional, metropolitana y municipal",
+                category: "PLANIFICACIÓN URBANA",
+                subservices: [
+                    {
+                        name: "Ajustes de POT y Planes Maestros",
+                        desc: "Estructuración técnica y jurídica para la formulación, revisión y concertación de los Planes de Ordenamiento Territorial y parciales."
+                    },
+                    {
+                        name: "Estructuración y Gestión del Suelo",
+                        desc: "Modelación financiera y de reparto equitativo de cargas y beneficios, captura de plusvalías y financiación urbana sostenible."
+                    },
+                    {
+                        name: "Vivienda y Ciudades Sostenibles",
+                        desc: "Planes estratégicos de hábitat y modelos urbanísticos orientados al transporte masivo y resiliencia climática urbana."
+                    }
+                ],
+                megaproject: {
+                    title: "Plan Estratégico Ciudad de Panamá",
+                    detail: "Estructuración de políticas de ordenación territorial financiadas y supervisadas por el BID para el área metropolitana de Panamá."
+                },
+                pdf: "/pdf/ficha_tecnica_taludes.pdf",
+                sim: {
+                    title: "Zonificación y Edificabilidad",
+                    sliders: [
+                        { name: "Densidad Habitacional", min: 50, max: 300, val: 150, unit: "viv/ha", key: "density" },
+                        { name: "Espacio Público Libre", min: 10, max: 40, val: 20, unit: "%", key: "greenS" }
+                    ]
+                }
+            },
+            {
+                number: "05",
+                title: "Peritajes Técnicos",
+                tagline: "Dictámenes periciales concluyentes ante controversias y litigios arbitrales",
+                category: "INGENIERÍA FORENSE",
+                subservices: [
+                    {
+                        name: "Peritaje Técnico Judicial y Arbitral",
+                        desc: "Estudios patológicos de fallos y sustentación oral experta ante tribunales de arbitramento nacionales e internacionales."
+                    },
+                    {
+                        name: "Auditoría de Patologías y Fallos",
+                        desc: "Análisis forense de patologías estructurales y fallos geotécnicos en infraestructura vial colapsada o con daños severos."
+                    },
+                    {
+                        name: "Peritaje Técnico Hidroclimatológico",
+                        desc: "Determinación probabilística de causas de colapso de obras de drenaje y puentes por eventos fluvioclimáticos extraordinarios."
+                    }
+                ],
+                megaproject: {
+                    title: "Dictámenes de Litigio de Megaproyectos",
+                    detail: "Más de 30 dictámenes periciales presentados exitosamente en disputas de infraestructura vial nacional por fallos en túneles y puentes."
+                },
+                pdf: "/pdf/ficha_tecnica_embalse.pdf",
+                sim: {
+                    title: "Esfuerzos Flectores en Viga",
+                    sliders: [
+                        { name: "Carga Puntual (P)", min: 50, max: 400, val: 180, unit: "kN", key: "loadP" },
+                        { name: "Longitud de la Luz (L)", min: 10, max: 50, val: 30, unit: "m", key: "spanL" }
+                    ]
                 }
             }
-        };
+        ];
 
-        const WHATSAPP_MESSAGES = {
-            es: {
-                default: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre un proyecto o necesidad de ingeniería. Mi nombre es ______ y me interesa especialmente ______.",
-                waterClimate: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad de Riesgo Hidroclimatológico.",
-                infrastructure: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad de Obras Subterráneas o Geotecnia.",
-                technicalDispute: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar con un experto en Peritajes Técnicos.",
-                risk: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre una necesidad de Gestión de Riesgo y RDM.",
-                mobilityTerritory: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y quisiera conversar sobre Ordenamiento Territorial o Gestión de Suelo.",
-                mobility360: "Hola ACUMEN. Conocí su trabajo a través de la experiencia NFC y me interesa conversar sobre Movilidad 360 o Modelación de Transporte.",
-                digitalEngineering: "Hola ACUMEN. Quisiera conocer más sobre las capacidades analíticas de ACUMEN OS."
+        let state = {
+            activeColumn: null,
+            souvenirOpen: false,
+            visitorName: "ING. RICARDO SMITH",
+            souvenirVars: {
+                fc: 35,
+                fs: 2.1,
+                diagram: "tunnel"
             },
-            en: {
-                default: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss engineering solutions. My name is ______ and I'm interested in ______.",
-                waterClimate: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss a need related to Water + Climate.",
-                infrastructure: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss a need related to Infrastructure.",
-                technicalDispute: "Hola ACUMEN. I learned about your work from the NFC experience and would like to speak to an expert in Technical Disputes.",
-                risk: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss a need related to Risk and RDM.",
-                mobilityTerritory: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss a need related to Territorial Planning.",
-                mobility360: "Hola ACUMEN. I learned about your work from the NFC experience and would like to discuss a need related to Mobility 360.",
-                digitalEngineering: "Hola ACUMEN. I would like to learn more about the analytical capabilities of ACUMEN OS."
-            }
+            simulations: [
+                { peakQ: 2500, timeP: 12 },   // FP
+                { trafficV: 1200, congest: 4 }, // MV
+                { radius: 6, bolts: 16 },      // OB
+                { density: 150, greenS: 20 },  // OT
+                { loadP: 180, spanL: 30 }      // PR
+            ]
         };
 
-        // PARSE URL QUERY PARAMETERS
-        function parseQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            visitorName = params.get('visitor') || params.get('name') || '';
-            objectId = params.get('id') || params.get('object') || String(Math.floor(Math.random() * 900) + 100).padStart(3, '0');
-            eventName = params.get('event') || 'CCI 2026 CARTAGENA';
-            initialInterest = params.get('interest') || '';
-            
-            showDebugPanel = params.get('debug') === 'true';
-            if (showDebugPanel) {
-                document.getElementById('debug-panel').classList.remove('hidden');
-            }
-            
-            // Auto detect language
-            const langParam = params.get('lang');
-            if (langParam === 'es' || langParam === 'en') {
-                currentLang = langParam;
-            } else {
-                // browser language
-                const userLang = navigator.language || navigator.userLanguage;
-                currentLang = userLang.startsWith('es') ? 'es' : 'en';
-            }
-        }
-
-        // INITIALIZATION
+        // Populate Mobile Accordion on Load
         window.addEventListener('DOMContentLoaded', () => {
-            parseQueryParams();
-            setLanguage(currentLang);
-            initUI();
-            initThreeJS();
-            
-            // Dynamic welcome setup
-            const welcomeText = document.getElementById('intro-welcome');
-            const welcomeIdText = document.getElementById('intro-welcome-id');
-            const introEvent = document.getElementById('intro-event');
-            
-            introEvent.innerText = eventName;
-            
-            if (visitorName) {
-                const prefix = TRANSLATIONS[currentLang].welcomeName;
-                welcomeText.innerText = `${prefix}${visitorName.toUpperCase()}`;
-            } else {
-                welcomeText.innerText = TRANSLATIONS[currentLang].welcome;
-            }
-            welcomeIdText.innerText = `ACUMEN ENGINEERING OBJECT #${objectId}`;
-            
-            // Start animations for intro using CSS transition triggers
-            setTimeout(() => {
-                introEvent.classList.remove('opacity-0');
-                introEvent.classList.add('opacity-100');
-            }, 200);
-            
-            setTimeout(() => {
-                document.getElementById('intro-brand').classList.remove('opacity-0', 'translate-y-4');
-                document.getElementById('intro-brand').classList.add('opacity-100', 'translate-y-0');
-            }, 400);
-            
-            setTimeout(() => {
-                document.getElementById('intro-sub').classList.remove('opacity-0', 'translate-y-4');
-                document.getElementById('intro-sub').classList.add('opacity-100', 'translate-y-0');
-            }, 600);
-            
-            setTimeout(() => {
-                welcomeText.classList.remove('opacity-0');
-                welcomeText.classList.add('opacity-100');
-            }, 800);
-            
-            setTimeout(() => {
-                welcomeIdText.classList.remove('opacity-0');
-                welcomeIdText.classList.add('opacity-100');
-            }, 1000);
-            
-            setTimeout(() => {
-                document.getElementById('btn-enter').classList.remove('opacity-0', 'translate-y-4');
-                document.getElementById('btn-enter').classList.add('opacity-100', 'translate-y-0');
-            }, 1200);
-            
-            document.getElementById('btn-enter').addEventListener('click', enterAcumenOS);
-            
-            // Interaction listeners
-            window.addEventListener('resize', onWindowResize);
-            const canvasEl = document.getElementById('webgl-canvas');
-            canvasEl.addEventListener('mousedown', () => isUserInteracting = true);
-            canvasEl.addEventListener('touchstart', () => isUserInteracting = true, {passive: true});
-            canvasEl.addEventListener('mouseup', () => isUserInteracting = false);
-            canvasEl.addEventListener('touchend', () => isUserInteracting = false);
-            
-            // Pointer tap detection for souvenirs (ignores drags)
-            let startX = 0, startY = 0;
-            canvasEl.addEventListener('pointerdown', (e) => {
-                startX = e.clientX;
-                startY = e.clientY;
-            });
-            canvasEl.addEventListener('pointerup', (e) => {
-                const diffX = Math.abs(e.clientX - startX);
-                const diffY = Math.abs(e.clientY - startY);
-                if (diffX < 6 && diffY < 6) {
-                    onCanvasClick(e);
-                }
-            });
+            const container = document.getElementById('mobile-accordion');
+            divisions.forEach((div, index) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'bg-white/40 border-b border-slate-200/80';
+                accordionItem.innerHTML = `
+                    <button onclick="toggleMobileAccordion(${index})" class="w-full p-6 flex justify-between items-center text-left focus:outline-none">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-mono text-[10px] text-slate-400 font-medium">[ 0${div.number} ]</span>
+                            <h3 class="font-bold text-base text-slate-900 uppercase">${div.title}</h3>
+                            <span class="text-[9px] font-mono text-acumenGold tracking-wider uppercase">${div.category}</span>
+                        </div>
+                        <span id="accordion-arrow-${index}" class="text-xs text-slate-400 font-mono transition-transform duration-300">✕</span>
+                    </button>
+                    <div id="accordion-content-${index}" class="hidden p-6 border-t border-slate-100 bg-white flex flex-col gap-6">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 italic mb-4">"${div.tagline}"</p>
+                            <h4 class="font-mono text-[9px] text-slate-400 tracking-wider uppercase mb-2">Sub-servicios</h4>
+                            <div class="flex flex-col gap-3">
+                                ${div.subservices.map(sub => `
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-900">${sub.name}</h5>
+                                        <p class="text-[11px] text-slate-500">${sub.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
 
-            // Redraw canvases when fonts are loaded to ensure correct font rendering
-            if (document.fonts) {
-                document.fonts.ready.then(() => {
-                    drawFrontCanvas(visitorName, objectId, eventName, false);
-                    drawBackCanvas();
-                });
-            }
+                        <div class="bg-amber-600/5 border border-amber-600/10 p-4 rounded-sm">
+                            <span class="font-mono text-[9px] text-amber-700 tracking-wider uppercase font-bold block mb-1">PROYECTO DESTACADO</span>
+                            <h4 class="font-bold text-xs text-slate-900 leading-tight">${div.megaproject.title}</h4>
+                            <p class="text-[11px] text-slate-600 mt-1">${div.megaproject.detail}</p>
+                        </div>
+
+                        <div class="flex flex-col gap-4 pt-4 border-t border-slate-100">
+                            <a href="${div.pdf}" target="_blank" class="w-full py-2.5 bg-slate-950 text-white font-mono text-[10px] tracking-widest uppercase text-center">
+                                Descargar Ficha Técnica (.PDF)
+                            </a>
+                            <button onclick="openSolveForm()" class="w-full py-2.5 border border-slate-300 text-slate-900 font-mono text-[10px] tracking-widest uppercase text-center">
+                                Resolver Necesidad
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(accordionItem);
+            });
+            
+            // Set initial dynamic spec sheet rendering
+            renderDynamicSpecCard();
         });
 
-        // UI & LANGUAGE MANAGEMENT
-        function setLanguage(lang) {
-            currentLang = lang;
+        // Toggle mobile accordion
+        function toggleMobileAccordion(index) {
+            const content = document.getElementById(`accordion-content-${index}`);
+            const arrow = document.getElementById(`accordion-arrow-${index}`);
             
-            // Toggle active classes in language UI buttons
-            if (lang === 'es') {
-                document.getElementById('lang-es').classList.add('text-zinc-950', 'font-bold');
-                document.getElementById('lang-es').classList.remove('text-zinc-400');
-                document.getElementById('lang-en').classList.remove('text-zinc-950', 'font-bold');
-                document.getElementById('lang-en').classList.add('text-zinc-400');
-            } else {
-                document.getElementById('lang-en').classList.add('text-zinc-950', 'font-bold');
-                document.getElementById('lang-en').classList.remove('text-zinc-400');
-                document.getElementById('lang-es').classList.remove('text-zinc-950', 'font-bold');
-                document.getElementById('lang-es').classList.add('text-zinc-400');
+            const isHidden = content.classList.contains('hidden');
+            
+            // Close all
+            for (let i = 0; i < divisions.length; i++) {
+                document.getElementById(`accordion-content-${i}`).classList.add('hidden');
+                document.getElementById(`accordion-arrow-${i}`).innerText = "✕";
             }
             
-            // Translate texts
-            const t = TRANSLATIONS[currentLang];
-            document.getElementById('intro-status').innerText = 'SYS.INIT.OK';
-            document.getElementById('btn-enter').innerText = t.enter;
-            
-            // Solver options
-            document.getElementById('solver-title').innerText = t.solveQuestion;
-            document.getElementById('opt-infra').innerText = t.text_infrastructure || t.disciplines.infrastructure;
-            document.getElementById('opt-water').innerText = t.text_water || t.disciplines.waterClimate;
-            document.getElementById('opt-dispute').innerText = t.text_dispute || t.disciplines.technicalDispute;
-            document.getElementById('opt-risk').innerText = t.text_risk || t.disciplines.risk;
-            document.getElementById('opt-mobility-territory').innerText = t.disciplines.mobilityTerritory;
-            document.getElementById('opt-mobility-360').innerText = t.disciplines.mobility360;
-            document.getElementById('opt-digital').innerText = t.text_digital || t.disciplines.digitalEngineering;
-            document.getElementById('solver-cancel-btn').innerText = currentLang === 'es' ? 'CANCELAR' : 'CANCEL';
-            
-            // Footer text
-            document.getElementById('footer-solve-txt').innerText = t.solve;
-            document.getElementById('footer-reset-txt').innerText = t.reset;
-            
-            // Souvenir header
-            document.getElementById('souvenir-header').innerText = t.engineeringObject;
-            document.getElementById('souvenir-sub').innerText = t.edition;
-            document.getElementById('souvenir-instruct').innerText = t.instruct;
-            document.getElementById('souvenir-footer-solve').innerText = t.solvingComplex;
-            document.getElementById('souvenir-btn-explore').innerText = currentLang === 'es' ? 'EXPLORAR' : 'EXPLORE';
-            document.getElementById('souvenir-btn-talk').innerText = t.talkToUs;
-            
-            // Hotspots text labels update
-            const keys = ['waterClimate', 'infrastructure', 'forensics', 'mobilityTerritory', 'mobility360', 'acumenos'];
-            keys.forEach(key => {
-                const labelEl = document.querySelector(`#h-label-${key}`);
-                if (labelEl) {
-                    labelEl.innerText = t.nodeDetails[key].title;
-                }
-            });
-            
-            // Update active drawer details if visible
-            if (activeNodeKey) {
-                updateDrawerContent(activeNodeKey);
+            if (isHidden) {
+                content.classList.remove('hidden');
+                arrow.innerText = "✕";
+                gsap.from(content, { opacity: 0, y: -10, duration: 0.3 });
             }
-            
-            // Update active discipline details if visible
-            if (state === 'discipline') {
-                updateDisciplineView(activeInterest);
-            }
-            
-            // Redraw souvenir 3D canvas textures
-            if (tokenMesh) {
-                drawFrontCanvas(visitorName, objectId, eventName, false);
-                drawBackCanvas();
-            }
-
-            updateContactLinks();
         }
 
-        function initUI() {
-            // Hotspots overlays in DOM
-            const container = document.getElementById('hotspots-container');
-            const t = TRANSLATIONS[currentLang];
+        // Expand Desktop Column
+        function expandColumn(index) {
+            state.activeColumn = index;
             
-            const nodes = [
-                { key: 'waterClimate', icon: '💧' },
-                { key: 'infrastructure', icon: '🛤️' },
-                { key: 'forensics', icon: '🔍' },
-                { key: 'mobilityTerritory', icon: '📍' },
-                { key: 'mobility360', icon: '🚗' },
-                { key: 'acumenos', icon: '🤖' }
-            ];
+            // Populate detail view content
+            const div = divisions[index];
+            document.getElementById('detail-title').innerText = div.title;
+            document.getElementById('detail-tagline').innerText = `"${div.tagline}"`;
             
-            nodes.forEach(node => {
-                const div = document.createElement('div');
-                div.id = `hotspot-${node.key}`;
-                div.className = 'hotspot';
-                div.innerHTML = `
-                    <div class="hotspot-ring">
-                        <div class="hotspot-pulse"></div>
-                        <div class="hotspot-dot"></div>
+            // Sub-services population
+            const subsContainer = document.getElementById('detail-subservices');
+            subsContainer.innerHTML = div.subservices.map(sub => `
+                <div class="flex flex-col gap-1">
+                    <h5 class="font-bold text-sm text-slate-950">${sub.name}</h5>
+                    <p class="text-xs text-slate-600 leading-relaxed">${sub.desc}</p>
+                </div>
+            `).join('');
+            
+            // Mega project population
+            document.getElementById('detail-megaproject').innerHTML = `
+                <span class="font-mono text-[9px] text-amber-700 tracking-widest uppercase font-bold block mb-1">PROYECTO EMBLEMÁTICO</span>
+                <h4 class="font-bold text-sm text-slate-950 leading-tight">${div.megaproject.title}</h4>
+                <p class="text-xs text-slate-600 mt-1">${div.megaproject.detail}</p>
+            `;
+            
+            // Links
+            document.getElementById('detail-pdf-link').setAttribute('href', div.pdf);
+            
+            // Dynamic Simulation SVG setup
+            renderDynamicSimulationSVG();
+            
+            // Sliders Setup
+            const slidersContainer = document.getElementById('sim-sliders-container');
+            slidersContainer.innerHTML = div.sim.sliders.map(slider => {
+                const currentVal = state.simulations[index][slider.key];
+                return `
+                    <div>
+                        <div class="flex justify-between font-mono text-[10px] text-slate-500 mb-1">
+                            <span class="uppercase">${slider.name}</span>
+                            <span><span id="slider-val-${slider.key}">${currentVal}</span> ${slider.unit}</span>
+                        </div>
+                        <input type="range" min="${slider.min}" max="${slider.max}" value="${currentVal}" 
+                            class="w-full accent-amber-600" 
+                            oninput="updateSimulationSlider(${index}, '${slider.key}', this.value)">
                     </div>
-                    <span id="h-label-${node.key}" class="hotspot-label">${t.nodeDetails[node.key].title}</span>
                 `;
-                div.addEventListener('click', () => selectNode(node.key));
-                container.appendChild(div);
-                
-                hotspots.push({
-                    key: node.key,
-                    pos3D: nodePositions[node.key],
-                    element: div
-                });
+            }).join('');
+            
+            // Slide in the panel using GSAP
+            const panel = document.getElementById('detailed-panel');
+            panel.classList.remove('hidden');
+            gsap.fromTo(panel, { x: '100%' }, { x: '0%', duration: 0.5, ease: 'power2.out' });
+        }
+
+        // Collapse detail panel
+        function collapseAll() {
+            state.activeColumn = null;
+            const panel = document.getElementById('detailed-panel');
+            
+            gsap.to(panel, { 
+                x: '100%', 
+                duration: 0.4, 
+                ease: 'power2.in',
+                onComplete: () => {
+                    panel.classList.add('hidden');
+                }
             });
         }
 
-        // ENTER CORE EXPERIENCE
-        function enterAcumenOS() {
-            const introScreen = document.getElementById('intro-screen');
-            introScreen.classList.add('opacity-0', 'pointer-events-none');
+        // Live updating simulation sliders
+        function updateSimulationSlider(divIndex, key, val) {
+            state.simulations[divIndex][key] = parseFloat(val);
+            document.getElementById(`slider-val-${key}`).innerText = val;
             
-            setTimeout(() => {
-                introScreen.style.display = 'none';
-                state = 'map';
-                
-                // Show header and footer
-                const mainHeader = document.getElementById('main-header');
-                const mainFooter = document.getElementById('main-footer');
-                mainHeader.classList.remove('pointer-events-none');
-                mainFooter.classList.remove('pointer-events-none');
-                
-                mainHeader.classList.remove('opacity-0');
-                mainHeader.classList.add('opacity-100');
-                mainFooter.classList.remove('opacity-0');
-                mainFooter.classList.add('opacity-100');
-                
-                // Zoom camera into landscape
-                gsap.to(camera.position, {
-                    x: 5.5,
-                    y: 4.0,
-                    z: 6.5,
-                    duration: 2.0,
-                    ease: 'power2.out',
-                    onUpdate: () => controls.update()
-                });
-                
-                // Trigger initial interest focus if defined in URL
-                if (initialInterest) {
-                    setTimeout(() => {
-                        if (initialInterest === 'water' || initialInterest === 'climate') {
-                            selectNode('waterClimate');
-                        } else if (initialInterest === 'infra' || initialInterest === 'infrastructure') {
-                            selectNode('infrastructure');
-                        } else if (initialInterest === 'forensics' || initialInterest === 'dispute') {
-                            selectNode('forensics');
-                        } else if (initialInterest === 'territory') {
-                            selectNode('mobilityTerritory');
-                        } else if (initialInterest === 'mobility' || initialInterest === 'mobility360' || initialInterest === 'transit') {
-                            selectNode('mobility360');
-                        } else if (initialInterest === 'acumenos' || initialInterest === 'core') {
-                            selectNode('acumenos');
-                        }
-                    }, 500);
-                }
-            }, 700);
+            // Render simulation SVG changes in real-time
+            renderDynamicSimulationSVG();
         }
 
-        // THREE.JS SETUP & GEOMETRY
-        function initThreeJS() {
-            const canvas = document.getElementById('webgl-canvas');
+        // Render dynamic interactive vector SVGs in detail view
+        function renderDynamicSimulationSVG() {
+            const index = state.activeColumn;
+            const svg = document.getElementById('dynamic-simulation-svg');
+            const data = state.simulations[index];
             
-            // Scene
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0xf8fafc, 0.045);
-            
-            // Camera
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-            // Starting position (far back for intro initialization)
-            camera.position.set(12, 10, 14);
-            
-            // Renderer
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            
-            // Controls
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.minDistance = 3;
-            controls.maxDistance = 18;
-            controls.maxPolarAngle = Math.PI / 2 - 0.05; // don't go below ground
-            controls.target.set(0, 0, 0);
-            
-            // Groups
-            mapGroup = new THREE.Group();
-            scene.add(mapGroup);
-            
-            tokenGroup = new THREE.Group();
-            tokenGroup.scale.set(0, 0, 0);
-            tokenGroup.visible = false;
-            scene.add(tokenGroup);
-            
-            // Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
-            scene.add(ambientLight);
-            
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
-            dirLight.position.set(6, 12, 8);
-            scene.add(dirLight);
-            
-            const bluePointLight = new THREE.PointLight(0xd97706, 2.5, 12);
-            bluePointLight.position.set(0, 1.5, 0);
-            scene.add(bluePointLight);
-            
-            const greenPointLight = new THREE.PointLight(0xfbbf24, 1.0, 8);
-            greenPointLight.position.set(-2, 0.5, 2);
-            scene.add(greenPointLight);
-            
-            // Construct Procedural Map Components
-            createTerrain();
-            createRiver();
-            createBridge();
-            createTunnel();
-            createCityMobility();
-            createForensicsScanPlane();
-            createAcumenOSLasers();
-            createWaterDam();
-            createAcumenOSCore();
-            
-            // Construct 3D Souvenir Object
-            createSouvenirObject();
-            
-            // Force layout update to avoid NaN aspect ratio on load
-            onWindowResize();
-            
-            // Animation Loop
-            renderer.setAnimationLoop(animate);
-        }
-
-        // 1. TERRAIN (Mountain / Valley)
-        function createTerrain() {
-            const size = 11;
-            const segments = 42;
-            const geo = new THREE.PlaneGeometry(size, size, segments, segments);
-            
-            // Modify vertices to create topography
-            const pos = geo.attributes.position;
-            for (let i = 0; i < pos.count; i++) {
-                const x = pos.getX(i);
-                const y = pos.getY(i);
+            if (index === 0) { // FutureProof (Hydrograph)
+                const peak = data.peakQ; // 100 to 4000
+                const time = data.timeP; // 4 to 24
                 
-                // Height landscape formula
-                // Valley in diagonal, mountain peaks on sides
-                let z = Math.sin(x * 0.45) * Math.cos(y * 0.45) * 1.5;
-                z += Math.sin(x * 1.0) * 0.35; // secondary details
-                z += Math.cos(y * 1.2) * 0.25; // secondary details
+                // Map values to coords
+                const peakY = 160 - (peak / 4000) * 120;
+                const peakX = 40 + (time / 24) * 200;
                 
-                // Carve a diagonal river valley in the center
-                const distToValley = Math.abs(x + y * 0.6);
-                if (distToValley < 2.0) {
-                    z -= (2.0 - distToValley) * 0.8;
+                svg.innerHTML = `
+                    <!-- Grid Lines -->
+                    <line x1="40" y1="160" x2="280" y2="160" stroke="#cbd5e1" stroke-dasharray="3 3" />
+                    <line x1="40" y1="20" x2="40" y2="160" stroke="#cbd5e1" stroke-dasharray="3 3" />
+                    <!-- Threshold Limit Line -->
+                    <line x1="40" y1="60" x2="280" y2="60" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="4 2" />
+                    <text x="210" y="52" class="font-mono text-[7px] fill-red-500" stroke="none">LIMITE DE DESBORDAMIENTO</text>
+                    <!-- Hydrograph Curve -->
+                    <path d="M 40 160 Q ${peakX - 30} ${peakY - 10} ${peakX} ${peakY} T 280 160" stroke="#d97706" stroke-width="2.5" />
+                    <path d="M 40 160 Q ${peakX - 30} ${peakY - 10} ${peakX} ${peakY} T 280 160 L 280 160 L 40 160 Z" class="fill-amber-500/10" />
+                    <!-- Dot at peak -->
+                    <circle cx="${peakX}" cy="${peakY}" r="4" class="fill-amber-600" />
+                    <text x="${peakX + 8}" y="${peakY - 4}" class="font-mono text-[9px] fill-slate-900 font-bold" stroke="none">Qmax</text>
+                    <!-- Axes labels -->
+                    <text x="270" y="180" class="font-mono text-[9px] fill-slate-500" stroke="none">t(h)</text>
+                    <text x="15" y="30" class="font-mono text-[9px] fill-slate-500" stroke="none">Q</text>
+                `;
+            } 
+            else if (index === 1) { // Movilidad 360 (Traffic)
+                const traffic = data.trafficV; // 300 to 2000
+                const congest = data.congest; // 1 to 10
+                
+                // Map values to circular size / speed representation
+                const circleSize = 30 + congest * 2;
+                const pathCount = Math.floor(traffic / 300) + 1;
+                
+                let dynamicPaths = '';
+                for (let i = 0; i < pathCount; i++) {
+                    dynamicPaths += `<circle cx="150" cy="100" r="${25 + i * 8}" stroke="#d97706" stroke-width="1" stroke-dasharray="6 4" class="opacity-75" />`;
                 }
                 
-                // Flatten city area (bottom right in rotated space: x > 0.95, rotated z < -0.75 which means y > 0.75)
-                if (x > 0.95 && y > 0.75) {
-                    z = -0.35 + (Math.sin(x*10) * Math.cos(y*10) * 0.04);
-                }
-                
-                pos.setZ(i, z);
-            }
-            geo.computeVertexNormals();
-            geo.rotateX(-Math.PI / 2); // align flat on XZ plane
-            
-            // Materials: Solid technical shading & wireframe overlay
-            const solidMat = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                roughness: 0.85,
-                metalness: 0.05,
-                flatShading: true,
-                polygonOffset: true,
-                polygonOffsetFactor: 1,
-                polygonOffsetUnits: 1
-            });
-            
-            const wireMat = new THREE.MeshBasicMaterial({
-                color: 0xcbd5e1,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.3
-            });
-            
-            terrainBase = new THREE.Mesh(geo, solidMat);
-            terrainWire = new THREE.Mesh(geo, wireMat);
-            
-            mapGroup.add(terrainBase);
-            mapGroup.add(terrainWire);
-        }
-
-        // 2. WATER FLOW (Animated Particles along Riverbed Spline)
-        function createRiver() {
-            // Riverbed path points
-            const points = [
-                new THREE.Vector3(-4.5, 0.45, 5.0),
-                new THREE.Vector3(-2.5, 0.1, 3.8),
-                new THREE.Vector3(-1.0, -0.22, 2.0),
-                new THREE.Vector3(0.5, -0.42, 0.8),
-                new THREE.Vector3(1.8, -0.55, -0.8),
-                new THREE.Vector3(3.2, -0.6, -2.5),
-                new THREE.Vector3(4.5, -0.65, -4.5)
-            ];
-            
-            riverCurve = new THREE.CatmullRomCurve3(points);
-            
-            // River line visual (faint blue)
-            const lineGeo = new THREE.BufferGeometry().setFromPoints(riverCurve.getPoints(50));
-            const lineMat = new THREE.LineBasicMaterial({ color: 0x2977fd, transparent: true, opacity: 0.25 });
-            const riverLine = new THREE.Line(lineGeo, lineMat);
-            mapGroup.add(riverLine);
-            
-            // River flow particles
-            const count = 75;
-            riverOffsets = [];
-            riverPositions = new Float32Array(count * 3);
-            
-            for (let i = 0; i < count; i++) {
-                riverOffsets.push(i / count);
-                const pt = riverCurve.getPointAt(riverOffsets[i]);
-                riverPositions[i * 3] = pt.x;
-                riverPositions[i * 3 + 1] = pt.y + 0.03; // slightly above terrain
-                riverPositions[i * 3 + 2] = pt.z;
-            }
-            
-            riverParticleGeo = new THREE.BufferGeometry();
-            riverParticleGeo.setAttribute('position', new THREE.BufferAttribute(riverPositions, 3));
-            
-            const particleMat = new THREE.PointsMaterial({
-                color: 0x2977fd,
-                size: 0.07,
-                transparent: true,
-                opacity: 0.0, // Hidden initially, animates on Water node selection
-                sizeAttenuation: true
-            });
-            
-            riverParticles = new THREE.Points(riverParticleGeo, particleMat);
-            mapGroup.add(riverParticles);
-        }
-
-        // 3. INFRASTRUCTURE: VIADUCT / BRIDGE (Cable-Stayed Bridge)
-        function createBridge() {
-            const bridgeGroup = new THREE.Group();
-            bridgeGroup.userData = { nodeKey: 'infrastructure' };
-            
-            // Road bed (Concrete grey)
-            const roadGeo = new THREE.BoxGeometry(2.5, 0.03, 0.22);
-            const roadMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 });
-            bridgeMesh = new THREE.Mesh(roadGeo, roadMat);
-            bridgeMesh.position.set(-0.6, 0.55, -0.5);
-            bridgeGroup.add(bridgeMesh);
-            
-            // High-contrast wireframe accent for road bed
-            const roadWireGeo = new THREE.EdgesGeometry(roadGeo);
-            const roadWireMat = new THREE.LineBasicMaterial({ color: 0x2977fd, transparent: true, opacity: 0.85 });
-            bridgeWires = new THREE.LineSegments(roadWireGeo, roadWireMat);
-            bridgeMesh.add(bridgeWires);
-            
-            // Concrete Piers (tapered columns down to ground)
-            const pierGeo = new THREE.BoxGeometry(0.08, 0.7, 0.08);
-            const colMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
-            
-            const col1 = new THREE.Mesh(pierGeo, colMat);
-            col1.position.set(-1.25, 0.2, -0.5);
-            bridgeGroup.add(col1);
-            
-            const col2 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.0, 0.08), colMat);
-            col2.position.set(0.0, 0.05, -0.5);
-            bridgeGroup.add(col2);
-            
-            // A-SHAPE CABLE PYLON (Tower) in the center of the span
-            const pylonGroup = new THREE.Group();
-            pylonGroup.position.set(-0.6, 0.55, -0.5);
-            
-            // Left leg (Concrete grey)
-            const legLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.9), colMat);
-            legLeft.position.set(0, 0.4, -0.1);
-            legLeft.rotation.z = -0.12; // lean in
-            pylonGroup.add(legLeft);
-            
-            // Right leg (Concrete grey)
-            const legRight = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.025, 0.9), colMat);
-            legRight.position.set(0, 0.4, 0.1);
-            legRight.rotation.z = 0.12; // lean in
-            pylonGroup.add(legRight);
-            
-            // Pylon top cap
-            const pylonTop = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.12, 0.22), colMat);
-            pylonTop.position.set(0, 0.8, 0);
-            pylonGroup.add(pylonTop);
-            
-            bridgeGroup.add(pylonGroup);
-            
-            // STAY CABLES (Line segments from pylon top to various parts of the deck)
-            const cablePositions = [];
-            const topPoint = new THREE.Vector3(-0.6, 0.55 + 0.8, -0.5);
-            
-            // Generate cables spaced along the deck
-            const cableOffsets = [-1.0, -0.7, -0.4, 0.4, 0.7, 1.0];
-            cableOffsets.forEach(dx => {
-                // Left side cable (Z offset)
-                cablePositions.push(topPoint.x, topPoint.y, topPoint.z);
-                cablePositions.push(-0.6 + dx, 0.55, -0.5 - 0.08);
-                
-                // Right side cable (Z offset)
-                cablePositions.push(topPoint.x, topPoint.y, topPoint.z);
-                cablePositions.push(-0.6 + dx, 0.55, -0.5 + 0.08);
-            });
-            
-            const cableGeo = new THREE.BufferGeometry();
-            cableGeo.setAttribute('position', new THREE.Float32BufferAttribute(cablePositions, 3));
-            const cableMat = new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.85 });
-            const cables = new THREE.LineSegments(cableGeo, cableMat);
-            bridgeGroup.add(cables);
-            
-            mapGroup.add(bridgeGroup);
-        }
-
-        // 4. TUNNEL (Boca de Túnel)
-        function createTunnel() {
-            const tunnelGroup = new THREE.Group();
-            tunnelGroup.userData = { nodeKey: 'forensics' };
-            
-            // 1. Concrete portal wall (Entrance Arch)
-            const portalGeo = new THREE.BoxGeometry(0.1, 0.45, 0.55);
-            const portalMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
-            const portal = new THREE.Mesh(portalGeo, portalMat);
-            portal.position.set(-1.65, 0.22, 1.2);
-            portal.rotation.y = Math.PI / 6; // align face
-            tunnelGroup.add(portal);
-            
-            // Arch trim (wireframe highlight around portal)
-            const portalWire = new THREE.LineSegments(
-                new THREE.EdgesGeometry(portalGeo),
-                new THREE.LineBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.85 })
-            );
-            portal.add(portalWire);
-            
-            // 2. Tunnel tube (Half pipe cylinder)
-            const shellGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.7, 16, 1, true, -Math.PI / 2, Math.PI);
-            shellGeo.rotateX(Math.PI / 2);
-            shellGeo.rotateY(Math.PI / 6);
-            const shellMat = new THREE.MeshStandardMaterial({ color: 0x121722, roughness: 0.9, side: THREE.DoubleSide });
-            tunnelMesh = new THREE.Mesh(shellGeo, shellMat);
-            tunnelMesh.position.set(-1.95, 0.18, 1.37);
-            tunnelGroup.add(tunnelMesh);
-            
-            // Structural Ribs inside the tunnel (Steel grey)
-            const ribGeo = new THREE.CylinderGeometry(0.205, 0.205, 0.02, 16, 1, true, -Math.PI / 2, Math.PI);
-            ribGeo.rotateX(Math.PI / 2);
-            ribGeo.rotateY(Math.PI / 6);
-            const ribMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, side: THREE.DoubleSide });
-            
-            for (let i = 1; i <= 3; i++) {
-                const rib = new THREE.Mesh(ribGeo, ribMat);
-                // step back into the mountain along the tunnel axis
-                const offsetDistance = i * 0.18;
-                rib.position.set(
-                    -1.95 - Math.cos(Math.PI / 6) * offsetDistance,
-                    0.18,
-                    1.37 - Math.sin(Math.PI / 6) * offsetDistance
-                );
-                tunnelGroup.add(rib);
-            }
-            
-            // 3. Inner glowing scanner ring (Forensic Scanning)
-            const ringGeo = new THREE.RingGeometry(0.18, 0.195, 16);
-            ringGeo.rotateY(Math.PI / 6);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide, transparent: true, opacity: 0.0 });
-            tunnelScanRing = new THREE.Mesh(ringGeo, ringMat);
-            tunnelScanRing.position.set(-1.7, 0.2, 1.23);
-            tunnelGroup.add(tunnelScanRing);
-            
-            // Road leading into the tunnel
-            const roadGeo = new THREE.BoxGeometry(0.4, 0.01, 0.2);
-            const roadMat = new THREE.MeshStandardMaterial({ color: 0x181e2b, roughness: 0.9 });
-            const road = new THREE.Mesh(roadGeo, roadMat);
-            road.position.set(-1.5, 0.12, 1.11);
-            road.rotation.y = Math.PI / 6;
-            tunnelGroup.add(road);
-            
-            // LED safety lights along the tunnel ceiling (yellow warning lights)
-            const ledGeo = new THREE.SphereGeometry(0.015, 6, 6);
-            const ledMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
-            for (let i = 1; i <= 3; i++) {
-                const led = new THREE.Mesh(ledGeo, ledMat);
-                const offsetDistance = i * 0.18;
-                led.position.set(
-                    -1.95 - Math.cos(Math.PI / 6) * offsetDistance,
-                    0.28,
-                    1.37 - Math.sin(Math.PI / 6) * offsetDistance
-                );
-                tunnelGroup.add(led);
-            }
-            
-            mapGroup.add(tunnelGroup);
-        }
-
-        // 5. CITY & MOBILITY GRID (Flashing Traffic flows and Urban Blocks)
-        let cityBuildings = [];
-        function createCityMobility() {
-            const cityGroup = new THREE.Group();
-            
-            // Solid dark concrete foundation slab to mask the terrain wireframe lines
-            const slabGeo = new THREE.BoxGeometry(1.8, 0.04, 2.2);
-            const slabMat = new THREE.MeshStandardMaterial({ color: 0x07090e, roughness: 0.85 });
-            const slab = new THREE.Mesh(slabGeo, slabMat);
-            slab.position.set(1.9, -0.31, -1.9);
-            cityGroup.add(slab);
-            
-            // Grid of streets on top of the slab
-            const streetGeo = new THREE.BufferGeometry();
-            const verts = [
-                // Horizontal streets
-                1.1, -0.28, -1.1,   2.7, -0.28, -1.1,
-                1.1, -0.28, -1.9,   2.7, -0.28, -1.9,
-                1.1, -0.28, -2.7,   2.7, -0.28, -2.7,
-                // Vertical streets
-                1.3, -0.28, -0.9,   1.3, -0.28, -2.9,
-                1.9, -0.28, -0.9,   1.9, -0.28, -2.9,
-                2.7, -0.28, -0.9,   2.7, -0.28, -2.9
-            ];
-            streetGeo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
-            const streetMat = new THREE.LineBasicMaterial({ color: 0xcbd5e1, transparent: true, opacity: 0.7 });
-            cityGrid = new THREE.LineSegments(streetGeo, streetMat);
-            cityGroup.add(cityGrid);
-            
-            // 3D Semi-transparent glowing gold glass skyscrapers representing the territory
-            const bldgMat = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                roughness: 0.6,
-                metalness: 0.1,
-                emissive: 0xd97706,
-                emissiveIntensity: 0.15
-            });
-            const bldgWireMat = new THREE.LineBasicMaterial({ color: 0xd97706, transparent: true, opacity: 0.70 });
-            
-            const buildingCoords = [
-                {x: 1.4, z: -1.3, w: 0.22, h: 0.5, d: 0.22},
-                {x: 1.4, z: -2.1, w: 0.20, h: 0.35, d: 0.20},
-                {x: 2.3, z: -1.3, w: 0.24, h: 0.4, d: 0.24},
-                {x: 2.3, z: -2.1, w: 0.18, h: 0.6, d: 0.18},
-                {x: 1.8, z: -2.6, w: 0.22, h: 0.45, d: 0.22}
-            ];
-            
-            buildingCoords.forEach(b => {
-                const geo = new THREE.BoxGeometry(b.w, b.h, b.d);
-                const mesh = new THREE.Mesh(geo, bldgMat);
-                mesh.position.set(b.x, -0.29 + b.h / 2, b.z);
-                const nodeKey = (b.x < 1.8) ? 'mobility360' : 'mobilityTerritory';
-                mesh.userData = { nodeKey: nodeKey };
-                cityGroup.add(mesh);
-                
-                // Add high-contrast glowing outline
-                const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), bldgWireMat);
-                wire.position.set(b.x, -0.29 + b.h / 2, b.z);
-                wire.userData = { nodeKey: nodeKey };
-                cityGroup.add(wire);
-                
-                cityBuildings.push(mesh);
-            });
-            
-            // Traffic flow particles (bright blue)
-            const count = 40;
-            trafficOffsets = [];
-            trafficPositions = new Float32Array(count * 3);
-            
-            for(let i=0; i<count; i++) {
-                trafficOffsets.push(Math.random());
-                trafficPositions[i*3] = 1.3 + Math.random() * 1.4;
-                trafficPositions[i*3+1] = -0.27;
-                trafficPositions[i*3+2] = -1.1 - Math.random() * 1.6;
-            }
-            
-            trafficParticleGeo = new THREE.BufferGeometry();
-            trafficParticleGeo.setAttribute('position', new THREE.BufferAttribute(trafficPositions, 3));
-            
-            const trafficMat = new THREE.PointsMaterial({
-                color: 0xd97706,
-                size: 0.05,
-                transparent: true,
-                opacity: 0.0
-            });
-            
-            trafficParticles = new THREE.Points(trafficParticleGeo, trafficMat);
-            cityGroup.add(trafficParticles);
-            
-            cityGroup.position.set(0, 0, 0);
-            mapGroup.add(cityGroup);
-        }
-
-        // 6. FORENSICS SCANNING PLANE
-        function createForensicsScanPlane() {
-            const geo = new THREE.BoxGeometry(11, 0.015, 11);
-            const mat = new THREE.MeshBasicMaterial({
-                color: 0x10b981,
-                transparent: true,
-                opacity: 0.0,
-                side: THREE.DoubleSide
-            });
-            scanPlane = new THREE.Mesh(geo, mat);
-            scanPlane.position.set(0, 0, 0);
-            mapGroup.add(scanPlane);
-        }
-
-        // 7. ACUMEN OS CONNECTING LASERS
-        function createAcumenOSLasers() {
-            const keys = ['waterClimate', 'infrastructure', 'forensics', 'mobilityTerritory', 'mobility360'];
-            
-            keys.forEach(key => {
-                const start = nodePositions[key];
-                const end = nodePositions.acumenos;
-                
-                const laserGeo = new THREE.BufferGeometry().setFromPoints([start, end]);
-                const laserMat = new THREE.LineBasicMaterial({
-                    color: 0xd97706,
-                    transparent: true,
-                    opacity: 0.0
-                });
-                
-                const laser = new THREE.Line(laserGeo, laserMat);
-                mapGroup.add(laser);
-                laserLines.push(laser);
-            });
-        }
-
-        // 7b. WATER DAM & RESERVOIR (Water & Climate)
-        function createWaterDam() {
-            const damGroup = new THREE.Group();
-            damGroup.userData = { nodeKey: 'waterClimate' };
-            
-            // Concrete dam wall (curved block)
-            const wallGeo = new THREE.BoxGeometry(0.12, 0.35, 0.45);
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
-            waterDamMesh = new THREE.Mesh(wallGeo, wallMat);
-            waterDamMesh.position.set(0.28, 0.12, 0.42);
-            waterDamMesh.rotation.y = -Math.PI / 4; // block valley
-            damGroup.add(waterDamMesh);
-            
-            // Dam wireframe (Glowing cyan outline)
-            const wallWire = new THREE.LineSegments(
-                new THREE.EdgesGeometry(wallGeo),
-                new THREE.LineBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.85 })
-            );
-            waterDamMesh.add(wallWire);
-            
-            // Spillway
-            const spillGeo = new THREE.BoxGeometry(0.14, 0.08, 0.18);
-            const spill = new THREE.Mesh(spillGeo, wallMat);
-            spill.position.set(0, 0.15, 0);
-            waterDamMesh.add(spill);
-            
-            // Reservoir lake water surface (Glowing glass blue plane)
-            const waterPlaneGeo = new THREE.BoxGeometry(0.6, 0.01, 0.45);
-            const waterPlaneMat = new THREE.MeshStandardMaterial({
-                color: 0x0284c7,
-                roughness: 0.25,
-                metalness: 0.8,
-                transparent: true,
-                opacity: 0.7,
-                emissive: 0x0284c7,
-                emissiveIntensity: 0.4
-            });
-            const reservoirWater = new THREE.Mesh(waterPlaneGeo, waterPlaneMat);
-            reservoirWater.position.set(0.55, 0.22, 0.65);
-            reservoirWater.rotation.y = -Math.PI / 4;
-            damGroup.add(reservoirWater);
-            
-            mapGroup.add(damGroup);
-        }
-
-        // 7c. ACUMEN OS CORE (Holographic core core)
-        function createAcumenOSCore() {
-            osCoreGroup = new THREE.Group();
-            osCoreGroup.userData = { nodeKey: 'acumenos' };
-            osCoreGroup.position.copy(nodePositions.acumenos); // (0, 1.3, 0)
-            
-            // Central glowing octahedron
-            const coreGeo = new THREE.OctahedronGeometry(0.12, 1);
-            const coreMat = new THREE.MeshBasicMaterial({
-                color: 0x3b82f6,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.8
-            });
-            const core = new THREE.Mesh(coreGeo, coreMat);
-            osCoreGroup.add(core);
-            
-            // Glowing solid center
-            const solidGeo = new THREE.SphereGeometry(0.04, 8, 8);
-            const solidMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-            const solidCenter = new THREE.Mesh(solidGeo, solidMat);
-            osCoreGroup.add(solidCenter);
-            
-            // Orbital Ring 1 (Glowing blue)
-            const ring1Geo = new THREE.RingGeometry(0.2, 0.215, 24);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0x2977fd, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-            osRing1 = new THREE.Mesh(ring1Geo, ringMat);
-            osRing1.rotation.x = Math.PI / 2;
-            osCoreGroup.add(osRing1);
-            
-            // Orbital Ring 2 (Glowing light blue)
-            const ring2Geo = new THREE.RingGeometry(0.23, 0.245, 24);
-            const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-            osRing2 = new THREE.Mesh(ring2Geo, ring2Mat);
-            osRing2.rotation.y = Math.PI / 4;
-            osCoreGroup.add(osRing2);
-            
-            // Concrete/Structural base stand
-            const baseGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.28, 6);
-            const baseMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6 });
-            const base = new THREE.Mesh(baseGeo, baseMat);
-            base.position.y = -0.22;
-            osCoreGroup.add(base);
-            
-            mapGroup.add(osCoreGroup);
-        }
-
-        // 8. THE 3D SOUVENIR: "YOUR ACUMEN ENGINEERING OBJECT"
-        function createSouvenirObject() {
-            // 1. Edge Cylinder (open ended border)
-            const edgeGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.28, 6, 1, true);
-            edgeGeo.rotateX(Math.PI / 2);
-            edgeGeo.rotateZ(-Math.PI / 6);
-            
-            const edgeMat = new THREE.MeshStandardMaterial({
-                color: 0xd97706,
-                roughness: 0.3,
-                metalness: 0.95,
-                flatShading: true
-            });
-            const edgeMesh = new THREE.Mesh(edgeGeo, edgeMat);
-            tokenGroup.add(edgeMesh);
-            
-            // 2. Front Face Cap (Circle slightly offset on +Z axis)
-            const frontGeo = new THREE.CircleGeometry(1.8, 6);
-            frontGeo.rotateZ(-Math.PI / 6);
-            frontTexture = new THREE.CanvasTexture(frontCanvas);
-            const frontMat = new THREE.MeshBasicMaterial({ map: frontTexture, side: THREE.DoubleSide });
-            const frontMesh = new THREE.Mesh(frontGeo, frontMat);
-            frontMesh.position.z = 0.141; // half of thickness (0.28 / 2 = 0.14) + slight air gap
-            tokenGroup.add(frontMesh);
-            
-            // 3. Back Face Cap (Circle slightly offset on -Z axis and rotated)
-            const backGeo = new THREE.CircleGeometry(1.8, 6);
-            backGeo.rotateY(Math.PI);
-            backGeo.rotateZ(Math.PI / 6);
-            backTexture = new THREE.CanvasTexture(backCanvas);
-            const backMat = new THREE.MeshBasicMaterial({ map: backTexture, side: THREE.DoubleSide });
-            const backMesh = new THREE.Mesh(backGeo, backMat);
-            backMesh.position.z = -0.141;
-            tokenGroup.add(backMesh);
-            
-            // Set tokenMesh reference to frontMesh for click detection
-            tokenMesh = frontMesh;
-            
-            drawFrontCanvas(visitorName, objectId, eventName, false);
-            drawBackCanvas();
-        }
-
-        // ANIMATION LOOP
-        function animate(time) {
-            controls.update();
-            
-            // Rotate ACUMEN OS core elements in real-time
-            if (osCoreGroup) {
-                osRing1.rotation.x += 0.015;
-                osRing2.rotation.y += 0.02;
-                osRing2.rotation.z += 0.01;
-                
-                // Pulsate the scale slightly to simulate holographic core activity
-                const pulse = 1.0 + Math.sin(time * 0.003) * 0.06;
-                osCoreGroup.scale.set(pulse, pulse, pulse);
-            }
-            
-            if (!isUserInteracting) {
-                if (state === 'souvenir') {
-                    tokenGroup.rotation.y += 0.005;
-                    tokenGroup.rotation.x = Math.sin(time * 0.001) * 0.12;
-                } else {
-                    // mapGroup.rotation.y += 0.0008; (disabled rotation for usability)
-                }
-            }
-            
-            if (state !== 'souvenir' && riverParticles.material.opacity > 0) {
-                const posAttr = riverParticleGeo.attributes.position;
-                const count = posAttr.count;
-                
-                for (let i = 0; i < count; i++) {
-                    riverOffsets[i] = (riverOffsets[i] + 0.004) % 1.0;
-                    const pt = riverCurve.getPointAt(riverOffsets[i]);
-                    posAttr.setXYZ(i, pt.x, pt.y + 0.035, pt.z);
-                }
-                posAttr.needsUpdate = true;
-            }
-            
-            if (state !== 'souvenir' && trafficParticles.material.opacity > 0) {
-                const posAttr = trafficParticleGeo.attributes.position;
-                const count = posAttr.count;
-                
-                for (let i = 0; i < count; i++) {
-                    let tx = posAttr.getX(i);
-                    let tz = posAttr.getZ(i);
+                svg.innerHTML = `
+                    <!-- Static road layouts -->
+                    <line x1="40" y1="100" x2="260" y2="100" stroke="#cbd5e1" stroke-width="2.5" />
+                    <line x1="150" y1="20" x2="150" y2="180" stroke="#cbd5e1" stroke-width="2.5" />
                     
-                    if (i % 2 === 0) {
-                        tx -= 0.008;
-                        if (tx < 1.1) tx = 2.7;
-                    } else {
-                        tz -= 0.008;
-                        if (tz < -2.7) tz = -1.1;
-                    }
-                    posAttr.setXYZ(i, tx, -0.27, tz);
-                }
-                posAttr.needsUpdate = true;
-            }
-            
-            if (state === 'map') {
-                updateHotspotsProjection();
-            }
-            
-            // Update debug panel in real time if visible
-            if (showDebugPanel) {
-                document.getElementById('debug-state').innerText = state;
-                document.getElementById('debug-cam').innerText = `${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`;
-                document.getElementById('debug-target').innerText = `${controls.target.x.toFixed(2)}, ${controls.target.y.toFixed(2)}, ${controls.target.z.toFixed(2)}`;
-                document.getElementById('debug-token-vis').innerText = tokenGroup ? tokenGroup.visible : 'false';
-                document.getElementById('debug-token-scale').innerText = tokenGroup ? `${tokenGroup.scale.x.toFixed(2)}, ${tokenGroup.scale.y.toFixed(2)}, ${tokenGroup.scale.z.toFixed(2)}` : '0';
-                document.getElementById('debug-map-vis').innerText = mapGroup ? mapGroup.visible : 'false';
-                document.getElementById('debug-map-scale').innerText = mapGroup ? `${mapGroup.scale.x.toFixed(2)}, ${mapGroup.scale.y.toFixed(2)}, ${mapGroup.scale.z.toFixed(2)}` : '0';
-            }
-            
-            renderer.render(scene, camera);
-        }
-
-        const tempV = new THREE.Vector3();
-        function updateHotspotsProjection() {
-            hotspots.forEach(hotspot => {
-                tempV.copy(hotspot.pos3D);
-                tempV.applyMatrix4(mapGroup.matrixWorld);
-                tempV.project(camera);
-                
-                const isBehind = tempV.z > 1;
-                const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
-                const y = (tempV.y * -0.5 + 0.5) * window.innerHeight;
-                
-                const el = hotspot.element;
-                if (isBehind) {
-                    el.style.display = 'none';
-                } else {
-                    el.style.display = 'flex';
-                    el.style.left = `${x}px`;
-                    el.style.top = `${y}px`;
-                }
-            });
-        }
-
-        // NODE SELECTION
-        function selectNode(key) {
-            if (state !== 'map') return;
-            
-            activeNodeKey = key;
-            
-            hotspots.forEach(h => {
-                if (h.key === key) {
-                    h.element.classList.add('active');
-                } else {
-                    h.element.classList.remove('active');
-                }
-            });
-            
-            const targetPos = nodePositions[key];
-            const lookAtTarget = new THREE.Vector3().copy(targetPos).applyMatrix4(mapGroup.matrixWorld);
-            
-            const offset = new THREE.Vector3(1.6, 1.0, 1.6);
-            if (key === 'acumenos') offset.set(0.0, 1.2, 2.2);
-            else if (key === 'forensics') offset.set(1.2, 0.7, 1.2);
-            else if (key === 'waterClimate') offset.set(1.4, 0.8, 1.4);
-            else if (key === 'mobilityTerritory') offset.set(1.5, 0.9, 1.5);
-            else if (key === 'mobility360') offset.set(1.5, 0.9, 1.5);
-            else if (key === 'infrastructure') offset.set(-1.6, 1.0, 1.6);
-            
-            const destCamPos = new THREE.Vector3().copy(lookAtTarget).add(offset);
-            
-            controls.enabled = false;
-            gsap.killTweensOf(camera.position);
-            gsap.killTweensOf(controls.target);
-            
-            gsap.to(controls.target, {
-                x: lookAtTarget.x,
-                y: lookAtTarget.y,
-                z: lookAtTarget.z,
-                duration: 1.2,
-                ease: 'power2.out'
-            });
-            
-            gsap.to(camera.position, {
-                x: destCamPos.x,
-                y: destCamPos.y,
-                z: destCamPos.z,
-                duration: 1.2,
-                ease: 'power2.out',
-                onComplete: () => {
-                    controls.enabled = true;
-                    controls.update();
-                }
-            });
-            
-            resetNodeVisualStates();
-            
-            if (key === 'waterClimate') {
-                gsap.to(riverParticles.material, { opacity: 0.9, duration: 0.5 });
-            } else if (key === 'infrastructure') {
-                gsap.to(bridgeWires.material, { opacity: 0.9, duration: 0.2, yoyo: true, repeat: 3 });
-            } else if (key === 'forensics') {
-                document.getElementById('scan-v-overlay').style.display = 'block';
-                gsap.to(scanPlane.material, { opacity: 0.25, duration: 0.3 });
-                gsap.fromTo(scanPlane.position, { y: -1.0 }, { y: 1.0, duration: 2.0, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-                gsap.to(tunnelScanRing.material, { opacity: 0.8, duration: 0.4, yoyo: true, repeat: -1 });
-            } else if (key === 'mobilityTerritory') {
-                cityBuildings.forEach(mesh => {
-                    gsap.to(mesh.material, { emissiveIntensity: 0.6, duration: 0.5 });
-                });
-            } else if (key === 'mobility360') {
-                gsap.to(trafficParticles.material, { opacity: 0.9, duration: 0.5 });
-            } else if (key === 'acumenos') {
-                laserLines.forEach(line => {
-                    gsap.to(line.material, { opacity: 0.7, duration: 0.5 });
-                });
-                
-                document.getElementById('acumen-os-console').style.display = 'block';
-                runConsoleSequence();
-            }
-            
-            updateDrawerContent(key);
-            const drawerEl = document.getElementById('details-drawer');
-            drawerEl.classList.remove('translate-y-full');
-            drawerEl.classList.add('translate-y-0');
-        }
-
-        function resetNodeVisualStates() {
-            gsap.to(riverParticles.material, { opacity: 0.0, duration: 0.3 });
-            gsap.to(trafficParticles.material, { opacity: 0.0, duration: 0.3 });
-            cityBuildings.forEach(mesh => {
-                gsap.to(mesh.material, { emissiveIntensity: 0.15, duration: 0.3 });
-            });
-            
-            document.getElementById('scan-v-overlay').style.display = 'none';
-            gsap.killTweensOf(scanPlane.position);
-            gsap.to(scanPlane.material, { opacity: 0.0, duration: 0.3 });
-            gsap.to(tunnelScanRing.material, { opacity: 0.0, duration: 0.3 });
-            
-            laserLines.forEach(line => {
-                gsap.to(line.material, { opacity: 0.0, duration: 0.3 });
-            });
-            document.getElementById('acumen-os-console').style.display = 'none';
-        }
-
-        function closeDetails() {
-            activeNodeKey = null;
-            hotspots.forEach(h => h.element.classList.remove('active'));
-            const drawerEl = document.getElementById('details-drawer');
-            drawerEl.classList.remove('translate-y-0');
-            drawerEl.classList.add('translate-y-full');
-            resetNodeVisualStates();
-        }
-
-        function updateDrawerContent(key) {
-            const data = TRANSLATIONS[currentLang].nodeDetails[key];
-            
-            document.getElementById('drawer-node-tag').innerText = data.tag;
-            document.getElementById('drawer-title').innerText = data.title;
-            document.getElementById('drawer-tagline').innerText = data.text;
-            document.getElementById('drawer-desc').innerText = data.desc;
-            document.getElementById('drawer-btn-explore').innerText = data.linkText;
-            
-            let targetUrl = 'https://www.acumeningenieria.com/servicios';
-            if (key === 'waterClimate') {
-                targetUrl = 'https://www.acumeningenieria.com/riesgo-hidroclimatologico';
-                activeInterest = 'waterClimate';
-            } else if (key === 'infrastructure') {
-                targetUrl = 'https://www.acumeningenieria.com/obras-subterraneas';
-                activeInterest = 'infrastructure';
-            } else if (key === 'forensics') {
-                targetUrl = 'https://www.acumeningenieria.com/peritajes';
-                activeInterest = 'technicalDispute';
-            } else if (key === 'mobilityTerritory') {
-                targetUrl = 'https://www.acumeningenieria.com/ordenamiento-territorial';
-                activeInterest = 'mobilityTerritory';
-            } else if (key === 'mobility360') {
-                targetUrl = 'https://www.acumeningenieria.com/movilidad-360';
-                activeInterest = 'mobility360';
-            } else if (key === 'acumenos') {
-                targetUrl = 'https://www.acumeningenieria.com/acumen-os';
-                activeInterest = 'digitalEngineering';
-            }
-            
-            document.getElementById('drawer-btn-explore').onclick = () => {
-                window.open(targetUrl, '_blank');
-            };
-            
-            updateContactLinks();
-        }
-
-        // PROBLEM SOLVER SECTIONS
-        function toggleSolver(show) {
-            const solverEl = document.getElementById('solver-overlay');
-            if (show) {
-                closeDetails();
-                solverEl.classList.remove('pointer-events-none', 'opacity-0');
-                solverEl.classList.add('opacity-100');
-            } else {
-                solverEl.classList.remove('opacity-100');
-                solverEl.classList.add('pointer-events-none', 'opacity-0');
-            }
-        }
-
-        function openSolveFromDrawer() {
-            toggleSolver(true);
-        }
-
-        function selectDiscipline(type) {
-            activeInterest = type;
-            state = 'discipline';
-            toggleSolver(false);
-            
-            closeDetails(); // Close details drawer to clean up overlap
-            resetNodeVisualStates();
-            
-            let lookAtTarget = new THREE.Vector3(0, 0, 0);
-            let camOffset = new THREE.Vector3(5, 4, 5);
-            
-            if (type === 'waterClimate') {
-                lookAtTarget.copy(nodePositions.waterClimate).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(1.4, 0.8, 1.4);
-                gsap.to(riverParticles.material, { opacity: 0.9, duration: 0.5 });
-            } else if (type === 'infrastructure') {
-                lookAtTarget.copy(nodePositions.infrastructure).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(-1.6, 1.0, 1.6);
-                gsap.to(bridgeWires.material, { opacity: 0.8, duration: 0.5 });
-            } else if (type === 'technicalDispute') {
-                lookAtTarget.copy(nodePositions.forensics).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(1.2, 0.7, 1.2);
-                document.getElementById('scan-v-overlay').style.display = 'block';
-                gsap.to(scanPlane.material, { opacity: 0.2, duration: 0.3 });
-                gsap.fromTo(scanPlane.position, { y: -0.8 }, { y: 0.8, duration: 2.2, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-            } else if (type === 'risk') {
-                lookAtTarget.set(0, 0.2, 0).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(2.5, 1.8, 2.5);
-            } else if (type === 'mobilityTerritory') {
-                lookAtTarget.copy(nodePositions.mobilityTerritory).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(1.5, 0.9, 1.5);
-                cityBuildings.forEach(mesh => {
-                    gsap.to(mesh.material, { emissiveIntensity: 0.6, duration: 0.5 });
-                });
-            } else if (type === 'mobility360') {
-                lookAtTarget.copy(nodePositions.mobility360).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(1.5, 0.9, 1.5);
-                gsap.to(trafficParticles.material, { opacity: 0.9, duration: 0.5 });
-            } else if (type === 'digitalEngineering') {
-                lookAtTarget.copy(nodePositions.acumenos).applyMatrix4(mapGroup.matrixWorld);
-                camOffset.set(0.0, 1.2, 2.2);
-                laserLines.forEach(line => gsap.to(line.material, { opacity: 0.5, duration: 0.5 }));
-            }
-            
-            const destCamPos = new THREE.Vector3().copy(lookAtTarget).add(camOffset);
-            
-            controls.enabled = false;
-            gsap.killTweensOf(camera.position);
-            gsap.killTweensOf(controls.target);
-            
-            gsap.to(controls.target, {
-                x: lookAtTarget.x,
-                y: lookAtTarget.y,
-                z: lookAtTarget.z,
-                duration: 1.4,
-                ease: 'power2.out'
-            });
-            
-            gsap.to(camera.position, {
-                x: destCamPos.x,
-                y: destCamPos.y,
-                z: destCamPos.z,
-                duration: 1.4,
-                ease: 'power2.out',
-                onComplete: () => {
-                    controls.enabled = true;
-                    controls.update();
-                }
-            });
-            
-            document.getElementById('hotspots-container').style.opacity = '0';
-            document.getElementById('hotspots-container').style.pointerEvents = 'none';
-            
-            const mainFooter = document.getElementById('main-footer');
-            mainFooter.classList.remove('opacity-100');
-            mainFooter.classList.add('opacity-0');
-            mainFooter.classList.add('pointer-events-none');
-            
-            updateDisciplineView(type);
-            const discEl = document.getElementById('discipline-view');
-            discEl.classList.remove('translate-y-full');
-            discEl.classList.add('translate-y-0');
-        }
-
-        function updateDisciplineView(type) {
-            const data = TRANSLATIONS[currentLang].capabilities[type];
-            document.getElementById('disc-title').innerText = data.title;
-            document.getElementById('disc-desc').innerText = data.desc;
-            
-            const listContainer = document.getElementById('disc-caps-list');
-            listContainer.innerHTML = '';
-            
-            data.caps.forEach(cap => {
-                const capDiv = document.createElement('div');
-                capDiv.className = 'bg-zinc-50 border border-zinc-200 p-3 rounded font-mono text-[10px] text-zinc-700';
-                capDiv.innerText = cap;
-                listContainer.appendChild(capDiv);
-            });
-            
-            let targetUrl = 'https://www.acumeningenieria.com/servicios';
-            if (type === 'waterClimate') targetUrl = 'https://www.acumeningenieria.com/riesgo-hidroclimatologico';
-            else if (type === 'infrastructure') targetUrl = 'https://www.acumeningenieria.com/obras-subterraneas';
-            else if (type === 'technicalDispute') targetUrl = 'https://www.acumeningenieria.com/peritajes';
-            else if (type === 'risk') targetUrl = 'https://www.acumeningenieria.com/futureproof-decisions';
-            else if (type === 'mobilityTerritory') targetUrl = 'https://www.acumeningenieria.com/ordenamiento-territorial';
-            else if (type === 'mobility360') targetUrl = 'https://www.acumeningenieria.com/movilidad-360';
-            else if (type === 'digitalEngineering') targetUrl = 'https://www.acumeningenieria.com/acumen-os';
-            
-            document.getElementById('disc-btn-explore').onclick = () => window.open(targetUrl, '_blank');
-            
-            updateContactLinks();
-        }
-
-        function exitDisciplineFocus() {
-            state = 'map';
-            const discEl = document.getElementById('discipline-view');
-            discEl.classList.remove('translate-y-0');
-            discEl.classList.add('translate-y-full');
-            
-            document.getElementById('hotspots-container').style.opacity = '1';
-            document.getElementById('hotspots-container').style.pointerEvents = 'auto';
-            
-            const mainFooter = document.getElementById('main-footer');
-            mainFooter.classList.remove('opacity-0');
-            mainFooter.classList.add('opacity-100');
-            mainFooter.classList.remove('pointer-events-none');
-            
-            resetNodeVisualStates();
-            
-            const lookAt = new THREE.Vector3(0, 0, 0);
-            const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
-            
-            gsap.to(controls.target, {
-                x: lookAt.x,
-                y: lookAt.y,
-                z: lookAt.z,
-                duration: 1.2,
-                ease: 'power2.out',
-                onUpdate: () => controls.update()
-            });
-            
-            gsap.to(camera.position, {
-                x: camPos.x,
-                y: camPos.y,
-                z: camPos.z,
-                duration: 1.2,
-                ease: 'power2.out',
-                onUpdate: () => controls.update()
-            });
-        }
-
-        // SOUVENIR OBJECT 3D VIEW FADE-IN
-        function switchToSouvenir() {
-            closeDetails();
-            exitDisciplineFocus();
-            
-            state = 'souvenir';
-            activeInterest = 'default';
-            
-            document.getElementById('hotspots-container').style.display = 'none';
-            document.getElementById('main-footer').style.display = 'none';
-            
-            const mainHeader = document.getElementById('main-header');
-            mainHeader.classList.remove('opacity-100');
-            mainHeader.classList.add('opacity-0', 'pointer-events-none');
-            
-            // Scale down map
-            gsap.killTweensOf(mapGroup.scale);
-            gsap.to(mapGroup.scale, {
-                x: 0,
-                y: 0,
-                z: 0,
-                duration: 0.6,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    mapGroup.visible = false;
-                }
-            });
-            
-            // Scale up token concurrently
-            tokenGroup.visible = true;
-            gsap.killTweensOf(tokenGroup.scale);
-            gsap.to(tokenGroup.scale, {
-                x: 1,
-                y: 1,
-                z: 1,
-                duration: 0.6,
-                ease: 'power2.out'
-            });
-            
-            // Disable controls during transition
-            controls.enabled = false;
-            gsap.killTweensOf(camera.position);
-            gsap.killTweensOf(controls.target);
-            
-            gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.0 });
-            gsap.to(camera.position, {
-                x: 0,
-                y: 0.26, // start slightly offset vertically to satisfy polar constraints
-                z: 5.2,
-                duration: 1.2,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    controls.enabled = true;
-                    controls.update();
-                }
-            });
-            
-            const souvenirEl = document.getElementById('souvenir-overlay');
-            souvenirEl.classList.remove('translate-x-full');
-            souvenirEl.classList.add('translate-x-0');
-            
-            updateContactLinks();
-        }
-
-        function exitSouvenir() {
-            state = 'map';
-            
-            const souvenirEl = document.getElementById('souvenir-overlay');
-            souvenirEl.classList.remove('translate-x-0');
-            souvenirEl.classList.add('translate-x-full');
-            
-            // Scale down token
-            gsap.killTweensOf(tokenGroup.scale);
-            gsap.to(tokenGroup.scale, {
-                x: 0,
-                y: 0,
-                z: 0,
-                duration: 0.6,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    tokenGroup.visible = false;
-                }
-            });
-            
-            // Scale up map concurrently
-            mapGroup.visible = true;
-            gsap.killTweensOf(mapGroup.scale);
-            gsap.to(mapGroup.scale, {
-                x: 1,
-                y: 1,
-                z: 1,
-                duration: 0.6,
-                ease: 'power2.out',
-                onComplete: () => {
-                    document.getElementById('hotspots-container').style.display = 'block';
-                    document.getElementById('main-footer').style.display = 'flex';
+                    <!-- Dynamic flows -->
+                    ${dynamicPaths}
+                    <circle cx="150" cy="100" r="${circleSize}" stroke="#d97706" stroke-width="2" class="fill-white/80" />
                     
-                    const mainHeader = document.getElementById('main-header');
-                    mainHeader.classList.remove('opacity-0', 'pointer-events-none');
-                    mainHeader.classList.add('opacity-100');
+                    <!-- Center Core status -->
+                    <circle cx="150" cy="100" r="10" class="fill-amber-600" />
+                    <text x="135" y="103" class="font-mono text-[8px] fill-white" stroke="none">ITS</text>
+                `;
+            } 
+            else if (index === 2) { // Obras Subterráneas (Tunnel)
+                const radius = data.radius; // 4 to 10
+                const bolts = data.bolts;   // 6 to 24
+                
+                // Map values to radius
+                const drawRadius = radius * 9;
+                
+                // Dynamic bolts calculations
+                let boltLines = '';
+                for (let i = 0; i < bolts; i++) {
+                    const angle = (i * (360 / bolts)) * (Math.PI / 180);
+                    const xStart = 150 + Math.cos(angle) * drawRadius;
+                    const yStart = 100 + Math.sin(angle) * drawRadius;
+                    const xEnd = 150 + Math.cos(angle) * (drawRadius + 18);
+                    const yEnd = 100 + Math.sin(angle) * (drawRadius + 18);
+                    boltLines += `
+                        <line x1="${xStart}" y1="${yStart}" x2="${xEnd}" y2="${yEnd}" stroke="#d97706" stroke-width="1" />
+                        <circle cx="${xEnd}" cy="${yEnd}" r="1.5" class="fill-amber-600" />
+                    `;
                 }
-            });
-            
-            // Disable controls during transition
-            controls.enabled = false;
-            
-            const lookAt = new THREE.Vector3(0, 0, 0);
-            const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
-            
-            gsap.killTweensOf(camera.position);
-            gsap.killTweensOf(controls.target);
-            
-            gsap.to(controls.target, {
-                x: lookAt.x,
-                y: lookAt.y,
-                z: lookAt.z,
-                duration: 1.0,
-                ease: 'power2.inOut'
-            });
-            
-            gsap.to(camera.position, {
-                x: camPos.x,
-                y: camPos.y,
-                z: camPos.z,
-                duration: 1.2,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    controls.enabled = true;
-                    controls.update();
-                }
-            });
-        }
-
-        // RESET MAP VIEW
-        function resetToHome() {
-            if (state === 'souvenir') {
-                exitSouvenir();
-            } else if (state === 'discipline') {
-                exitDisciplineFocus();
-            } else {
-                closeDetails();
                 
-                // Disable controls during transition
-                controls.enabled = false;
+                svg.innerHTML = `
+                    <!-- Ground lines background -->
+                    <path d="M 40 40 Q 150 15 260 40" stroke="#e2e8f0" stroke-dasharray="3 3" />
+                    <path d="M 40 160 Q 150 135 260 160" stroke="#e2e8f0" stroke-dasharray="3 3" />
+                    <!-- Tunnel Outer concrete profile -->
+                    <circle cx="150" cy="100" r="${drawRadius + 5}" stroke="#cbd5e1" stroke-width="4" />
+                    <!-- Tunnel Inner profile -->
+                    <circle cx="150" cy="100" r="${drawRadius}" stroke="#1e293b" stroke-width="2.5" />
+                    <!-- Core center -->
+                    <circle cx="150" cy="100" r="3" class="fill-slate-400" />
+                    <!-- Radial rock bolts -->
+                    ${boltLines}
+                    <!-- Dimensions lines -->
+                    <line x1="${150 - drawRadius}" y1="100" x2="${150 + drawRadius}" y2="100" stroke="#cbd5e1" stroke-width="0.8" />
+                    <text x="142" y="96" class="font-mono text-[8px] fill-slate-400" stroke="none">D=${radius*2}m</text>
+                `;
+            } 
+            else if (index === 3) { // Ordenamiento (POT Layout)
+                const density = data.density; // 50 to 300
+                const green = data.greenS;   // 10 to 40
                 
-                const lookAt = new THREE.Vector3(0, 0, 0);
-                const camPos = new THREE.Vector3(5.5, 4.0, 6.5);
+                // Represent density with block sub-grid
+                const gridSpacing = 40 - (density / 10);
+                const greenScale = green / 100;
                 
-                gsap.killTweensOf(camera.position);
-                gsap.killTweensOf(controls.target);
+                svg.innerHTML = `
+                    <!-- City limits grid -->
+                    <rect x="40" y="30" width="220" height="140" stroke="#cbd5e1" stroke-width="2" />
+                    <!-- Green lung space (represented by a green shaded rectangle) -->
+                    <rect x="50" y="40" width="${200 * greenScale}" height="120" class="fill-emerald-500/10 stroke-emerald-600 stroke-[1.2]" />
+                    <text x="58" y="55" class="font-mono text-[7px] fill-emerald-700" stroke="none">RESERVA AMB (${green}%)</text>
+                    
+                    <!-- Densified city blocks -->
+                    <g stroke="#d97706" stroke-width="1.2">
+                        <rect x="140" y="50" width="40" height="40" stroke-dasharray="${gridSpacing > 15 ? 'none' : '2 2'}" />
+                        <rect x="190" y="50" width="40" height="40" />
+                        <rect x="140" y="100" width="40" height="40" />
+                        <rect x="190" y="100" width="40" height="40" stroke-dasharray="${gridSpacing > 15 ? 'none' : '2 2'}" />
+                    </g>
+                    <text x="145" y="73" class="font-mono text-[7px] fill-amber-700" stroke="none">RESTR: 4P</text>
+                    <text x="195" y="73" class="font-mono text-[7px] fill-amber-700" stroke="none">MAX DENS</text>
+                `;
+            } 
+            else if (index === 4) { // Peritajes (Structural Beam)
+                const load = data.loadP; // 50 to 400
+                const span = data.spanL; // 10 to 50
                 
-                gsap.to(controls.target, {
-                    x: lookAt.x,
-                    y: lookAt.y,
-                    z: lookAt.z,
-                    duration: 1.0,
-                    ease: 'power2.out'
-                });
+                const arrowLength = 20 + (load / 400) * 40;
+                const beamHeight = 100;
                 
-                gsap.to(camera.position, {
-                    x: camPos.x,
-                    y: camPos.y,
-                    z: camPos.z,
-                    duration: 1.0,
-                    ease: 'power2.out',
-                    onComplete: () => {
-                        controls.enabled = true;
-                        controls.update();
-                    }
-                });
+                svg.innerHTML = `
+                    <!-- Structural Beam -->
+                    <line x1="40" y1="${beamHeight}" x2="260" y2="${beamHeight}" stroke="#1e293b" stroke-width="3" />
+                    <!-- Supports -->
+                    <polygon points="40,${beamHeight} 30,${beamHeight+15} 50,${beamHeight+15}" stroke="#1e293b" class="fill-slate-100" />
+                    <polygon points="260,${beamHeight} 250,${beamHeight+15} 270,${beamHeight+15}" stroke="#1e293b" class="fill-slate-100" />
+                    
+                    <!-- Downward Point Load Arrow -->
+                    <path d="M 150 ${beamHeight - arrowLength} L 150 ${beamHeight} M 150 ${beamHeight} L 145 ${beamHeight-8} M 150 ${beamHeight} L 155 ${beamHeight-8}" stroke="#d97706" stroke-width="2.5" />
+                    <text x="140" y="${beamHeight - arrowLength - 8}" class="font-mono text-[10px] fill-slate-900 font-bold" stroke="none">P=${load}kN</text>
+                    
+                    <!-- Moment Bending Curve (Parabola) -->
+                    <path d="M 40 ${beamHeight} Q 150 ${beamHeight + (arrowLength * 1.5)} 260 ${beamHeight}" stroke="#3b82f6" stroke-width="1.8" stroke-dasharray="4 2" />
+                    <text x="156" y="${beamHeight + (arrowLength * 1.5) + 12}" class="font-mono text-[9px] fill-blue-600" stroke="none">Mmax = ${((load * span)/4).toFixed(1)} kNm</text>
+                    <!-- Span Dimensions -->
+                    <line x1="40" y1="${beamHeight+25}" x2="260" y2="${beamHeight+25}" stroke="#cbd5e1" stroke-width="0.8" />
+                    <text x="138" y="${beamHeight+36}" class="font-mono text-[8px] fill-slate-400" stroke="none">L = ${span}m</text>
+                `;
             }
         }
 
-        // TELEMETRY FLASH SIMULATOR ON SOUVENIR INTERACTION
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        
-        function getNodeKeyFromObject(obj) {
-            while (obj) {
-                if (obj.userData && obj.userData.nodeKey) {
-                    return obj.userData.nodeKey;
-                }
-                obj = obj.parent;
-            }
-            return null;
+        // Contact solver handlers
+        function openSolveForm() {
+            document.getElementById('solve-overlay').classList.remove('hidden');
+        }
+        function closeSolveForm() {
+            document.getElementById('solve-overlay').classList.add('hidden');
+        }
+        function handleSolveSubmit(e) {
+            e.preventDefault();
+            alert("PARÁMETROS ENVIADOS AL CORE: Requerimientos técnicos catalogados exitosamente en la base de datos.");
+            closeSolveForm();
         }
 
-        function onCanvasClick(event) {
-            const clientX = event.clientX;
-            const clientY = event.clientY;
+        // Digital Souvenir handlers
+        function openSouvenir() {
+            // Generate dynamic unique certificate ID
+            const date = new Date();
+            const year = date.getFullYear();
+            const dayCode = date.getDate().toString().padStart(2, '0');
+            const randomCode = Math.floor(Math.random() * 9000 + 1000);
+            const certId = `ACM-${year}-X${dayCode}${randomCode}`;
             
-            mouse.x = (clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+            document.getElementById('souvenir-card-id').innerText = certId;
+            document.getElementById('souvenir-overlay').classList.remove('hidden');
             
-            raycaster.setFromCamera(mouse, camera);
-            
-            if (state === 'souvenir') {
-                const intersects = raycaster.intersectObject(tokenMesh);
-                if (intersects.length > 0) {
-                    flashTelemetry();
-                }
-            } else if (state === 'map') {
-                const intersects = raycaster.intersectObjects(mapGroup.children, true);
-                if (intersects.length > 0) {
-                    let hitObj = intersects[0].object;
-                    const key = getNodeKeyFromObject(hitObj);
-                    if (key) {
-                        selectNode(key);
-                    }
-                }
-            }
+            renderDynamicSpecCard();
         }
-        
-        let flashTimer = null;
-        function flashTelemetry() {
-            if (flashTimer) clearTimeout(flashTimer);
+        function closeSouvenir() {
+            document.getElementById('souvenir-overlay').classList.add('hidden');
+        }
+        function updateSouvenirName(name) {
+            state.visitorName = name.toUpperCase() || "VISITANTE REGISTRADO";
+            document.getElementById('souvenir-card-name').innerText = state.visitorName;
+        }
+        function updateSouvenirDesign(val) {
+            state.souvenirVars.diagram = val;
+            renderDynamicSpecCard();
+        }
+        function updateSouvenirSlider(key, val) {
+            state.souvenirVars[key] = val;
+            document.getElementById(`souvenir-val-${key}`).innerText = val;
+            document.getElementById(`card-val-${key}`).innerText = val;
             
-            drawFrontCanvas(visitorName, objectId, eventName, true);
-            
-            flashTimer = setTimeout(() => {
-                drawFrontCanvas(visitorName, objectId, eventName, false);
-                flashTimer = null;
-            }, 1600);
+            renderDynamicSpecCard();
         }
 
-        // DYNAMIC WHATSAPP LINKS & VCARD GENERATOR
-        function updateContactLinks() {
-            const phone = "573005771484";
-            let msg = WHATSAPP_MESSAGES[currentLang].default;
+        function renderDynamicSpecCard() {
+            const svg = document.getElementById('souvenir-card-svg');
+            const type = state.souvenirVars.diagram;
             
-            if (activeInterest !== 'default') {
-                msg = WHATSAPP_MESSAGES[currentLang][activeInterest] || msg;
+            if (type === 'tunnel') {
+                const drawRadius = 30 + (state.souvenirVars.fc - 21) * 0.8;
+                svg.innerHTML = `
+                    <circle cx="150" cy="100" r="${drawRadius}" stroke="#94a3b8" stroke-width="1" />
+                    <circle cx="150" cy="100" r="${drawRadius + 6}" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="3 3" />
+                    <line x1="150" y1="100" x2="150" y2="40" stroke="#d97706" stroke-width="1" />
+                    <line x1="150" y1="100" x2="90" y2="100" stroke="#d97706" stroke-width="1" />
+                    <text x="156" y="55" class="font-mono text-[8px] fill-amber-700" stroke="none">FS=${state.souvenirVars.fs}</text>
+                `;
+            } 
+            else if (type === 'hydro') {
+                const peakVal = 40 + (state.souvenirVars.fc - 21) * 2;
+                svg.innerHTML = `
+                    <line x1="40" y1="160" x2="260" y2="160" stroke="#94a3b8" />
+                    <line x1="40" y1="40" x2="40" y2="160" stroke="#94a3b8" />
+                    <path d="M 40 160 Q 120 ${160 - peakVal} 180 120 T 260 160" stroke="#0f172a" stroke-width="1.8" />
+                    <circle cx="120" cy="${160 - peakVal}" r="3" class="fill-amber-600" />
+                    <text x="128" y="${165 - peakVal}" class="font-mono text-[8px] fill-slate-900" stroke="none">Q100</text>
+                `;
+            } 
+            else if (type === 'beam') {
+                const drawLoad = 40 + (state.souvenirVars.fc - 21) * 1.5;
+                svg.innerHTML = `
+                    <line x1="40" y1="100" x2="260" y2="100" stroke="#0f172a" stroke-width="2.5" />
+                    <polygon points="40,100 32,112 48,112" stroke="#0f172a" />
+                    <polygon points="260,100 252,112 268,112" stroke="#0f172a" />
+                    <path d="M 150 40 L 150 100 M 150 100 L 146 92 M 150 100 L 154 92" stroke="#d97706" stroke-width="1.8" />
+                    <path d="M 40 100 Q 150 ${100 + drawLoad} 260 100" stroke="#94a3b8" stroke-dasharray="3 3" />
+                    <text x="156" y="55" class="font-mono text-[8px] fill-amber-700" stroke="none">Mmax</text>
+                `;
             }
-            
-            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-            
-            const talkBtns = ['disc-btn-talk', 'souvenir-btn-talk'];
-            talkBtns.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.onclick = () => window.open(waUrl, '_blank');
-                }
-            });
-            
-            const expUrl = 'https://www.acumeningenieria.com';
-            const expBtns = ['souvenir-btn-explore'];
-            expBtns.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.onclick = () => window.open(expUrl, '_blank');
-                }
-            });
         }
 
-        function downloadvCard() {
-            const vcard = `BEGIN:VCARD
-VERSION:3.0
-N:INGENIERÍA S.A.S.;ACUMEN;;;
-FN:ACUMEN INGENIERÍA S.A.S.
-ORG:ACUMEN INGENIERÍA S.A.S.
-TITLE:Inteligencia Territorial Aumentada
-TEL;TYPE=WORK,VOICE,CELL:+573005771484
-ADR;TYPE=WORK,PREF:;;Calle 20B sur #38-76 Interior 202;Medellín;Antioquia;050021;Colombia
-URL:https://www.acumeningenieria.com
-EMAIL;TYPE=PREF,INTERNET:contacto@acumeningenieria.com
-NOTE:Boutique de ingeniería aumentada y peritajes técnicos de alta precisión.
-END:VCARD`;
-
-            const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'ACUMEN_INGENIERIA.vcf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // ACUMEN OS TELEMETRY TERMINAL LOOPS
-        function runConsoleSequence() {
-            const lines = [
-                "[GEOLOGY_UNIT_A]: Imputing local climate series... saturating 94%",
-                "[GEOTECH_AGENT_C]: Slope failure boundary detected at 12m, FoS Critical: 0.91",
-                "[STRUCTURAL_AI_B]: Re-calculating anchors, proposing 8 rows x 30ton bolts",
-                "[SAFETY_MONITOR_D]: Cost optimization: +14% budget save, FoS final: 1.65 (APPROVED)"
-            ];
-            
-            const container = document.getElementById('console-lines');
-            container.innerHTML = '';
-            
-            let i = 0;
-            function addLine() {
-                if (i >= lines.length || state !== 'map' || activeNodeKey !== 'acumenos') return;
-                
-                const div = document.createElement('div');
-                div.className = 'text-left font-mono break-all text-[8px] leading-tight';
-                div.innerHTML = `<span class="text-acumenBlue">&gt;</span> ${lines[i]}`;
-                container.appendChild(div);
-                
-                document.getElementById('acumen-os-console').scrollTop = document.getElementById('acumen-os-console').scrollHeight;
-                
-                i++;
-                setTimeout(addLine, 1800);
-            }
-            addLine();
-        }
-
-        // CANVAS 2D TEXTURE DRAWINGS
-        const frontCanvas = document.createElement('canvas');
-        frontCanvas.width = 512;
-        frontCanvas.height = 512;
-
-        const backCanvas = document.createElement('canvas');
-        backCanvas.width = 512;
-        backCanvas.height = 512;
-
-        let frontTexture, backTexture;
-
-        function drawFrontCanvas(visitor, id, event, flash) {
-            const ctx = frontCanvas.getContext('2d');
-            
-            // Background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 512, 512);
-            
-            // Hexagon outer guide
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 4;
-            drawHexagonPath(ctx, 256, 256, 242);
-            ctx.stroke();
-            
-            // Gold inner accent line
-            ctx.strokeStyle = '#d97706';
-            ctx.lineWidth = 2;
-            drawHexagonPath(ctx, 256, 256, 232);
-            ctx.stroke();
-            
-            // Scientific ticking lines
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(246, 256); ctx.lineTo(266, 256);
-            ctx.moveTo(256, 246); ctx.lineTo(256, 266);
-            ctx.stroke();
-            
-            // Logo Icon: Hexagon in center top
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 3.5;
-            drawHexagonPath(ctx, 256, 122, 34);
-            ctx.stroke();
-            
-            ctx.fillStyle = '#0f172a';
-            ctx.font = '800 36px Outfit, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('ACUMEN', 256, 192);
-            
-            ctx.fillStyle = '#64748b';
-            ctx.font = '600 12px Outfit, sans-serif';
-            ctx.fillText('ENGINEERING INTELLIGENCE', 256, 214);
-            
-            // Identifier code
-            ctx.fillStyle = '#0f172a';
-            ctx.font = '24px Share Tech Mono, monospace';
-            ctx.fillText(`OBJECT #${id}`, 256, 288);
-            
-            // Visitor Name
-            if (visitor) {
-                ctx.fillStyle = '#d97706';
-                ctx.font = 'bold 20px Outfit, sans-serif';
-                ctx.fillText(visitor.toUpperCase(), 256, 332);
-            }
-            
-            // Event Details
-            ctx.fillStyle = '#64748b';
-            ctx.font = '14px Share Tech Mono, monospace';
-            ctx.fillText(event || 'CCI 2026 CARTAGENA', 256, 372);
-            
-            // City
-            ctx.fillStyle = '#64748b';
-            ctx.font = '11px Share Tech Mono, monospace';
-            ctx.fillText('MEDELLÍN · COLOMBIA', 256, 432);
-            
-            // Scanning Flash Overlay
-            if (flash) {
-                ctx.fillStyle = 'rgba(217, 119, 6, 0.06)';
-                ctx.fillRect(0, 0, 512, 512);
-                
-                ctx.strokeStyle = 'rgba(217, 119, 6, 0.2)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                for (let j = 40; j < 512; j += 40) {
-                    ctx.moveTo(j, 0); ctx.lineTo(j, 512);
-                    ctx.moveTo(0, j); ctx.lineTo(512, j);
-                }
-                ctx.stroke();
-                
-                ctx.fillStyle = '#d97706';
-                ctx.font = '12px Share Tech Mono, monospace';
-                ctx.textAlign = 'left';
-                ctx.fillText('LAT: 6.2084 N', 35, 65);
-                ctx.fillText('LON: 75.5670 W', 35, 85);
-                ctx.fillText('ALT: 1,495 M', 35, 105);
-                ctx.fillText('NFC ACTIVE: NTAG213', 35, 125);
-                
-                ctx.textAlign = 'right';
-                ctx.fillText('SYS.STATUS: ACTIVE', 477, 65);
-                ctx.fillText('MEM.BLOCKS: 45', 477, 85);
-                ctx.fillText('FREQ: 13.56 MHz', 477, 105);
-                ctx.fillText('SIG.STRENGTH: 99%', 477, 125);
-            }
-            
-            if (frontTexture) frontTexture.needsUpdate = true;
-        }
-
-        function drawBackCanvas() {
-            const ctx = backCanvas.getContext('2d');
-            
-            // Background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 512, 512);
-            
-            // Hexagon outline
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 4;
-            drawHexagonPath(ctx, 256, 256, 242);
-            ctx.stroke();
-            
-            // Concentric copper coils representing NFC NTAG213 antenna layout
-            ctx.strokeStyle = '#d97706';
-            ctx.lineWidth = 2.5;
-            for (let radius = 75; radius < 190; radius += 14) {
-                ctx.beginPath();
-                ctx.arc(256, 256, radius, 0, Math.PI * 2 * 0.96);
-                ctx.stroke();
-            }
-            
-            // Integrated Chip
-            ctx.fillStyle = '#f1f5f9';
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 2.5;
-            ctx.fillRect(231, 231, 50, 50);
-            ctx.strokeRect(231, 231, 50, 50);
-            
-            ctx.fillStyle = '#0f172a';
-            ctx.font = '10px Share Tech Mono, monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('NTAG213', 256, 260);
-            
-            // Technical details
-            ctx.fillStyle = '#64748b';
-            ctx.font = '12px Share Tech Mono, monospace';
-            ctx.fillText('NFC NTAG213 • 25MM • ACTIVE CHIP', 256, 436);
-            ctx.fillText('FREQUENCY 13.56 MHz', 256, 456);
-            
-            if (backTexture) backTexture.needsUpdate = true;
-        }
-
-        function drawHexagonPath(ctx, cx, cy, radius) {
-            ctx.beginPath();
-            for (let side = 0; side < 6; side++) {
-                const angle = (Math.PI / 3) * side - Math.PI / 6;
-                const hx = cx + radius * Math.cos(angle);
-                const hy = cy + radius * Math.sin(angle);
-                if (side === 0) ctx.moveTo(hx, hy);
-                else ctx.lineTo(hx, hy);
-            }
-            ctx.closePath();
-        }
-
-        // BROWSER RESIZE CORRECTION
-        function onWindowResize() {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            if (width > 0 && height > 0) {
-                camera.aspect = width / height;
-                camera.updateProjectionMatrix();
-                renderer.setSize(width, height);
-            }
+        function goHome() {
+            window.location.href = "/";
         }
     </script>
 </body>
