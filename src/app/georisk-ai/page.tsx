@@ -23,17 +23,25 @@ export default function GeoRiskAISandbox() {
       let score = "MEDIO";
       let colorClass = "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
       let details = "";
+      let sourceLabel = "INTERPOLACIÓN CLIMA";
+      let sourceValue = "COMPLETADA (14 estaciones IDEAM)";
 
       if (riskType === "Deslizamiento") {
         score = dept === "Chocó" || dept === "Antioquia" ? "ALTO" : "MEDIO";
         details = `Susceptibilidad de talud crítica detectada en el departamento de ${dept}. Las precipitaciones acumuladas de los últimos 15 días exceden el umbral histórico en un 24%, elevando el riesgo de remoción en masa en zonas con pendientes mayores a 30 grados.`;
+        sourceLabel = "INTERPOLACIÓN CLIMA";
+        sourceValue = "COMPLETADA (14 estaciones IDEAM)";
       } else if (riskType === "Inundación") {
         score = dept === "Chocó" ? "CRÍTICO" : dept === "Atlántico" ? "ALTO" : "BAJO";
         details = `Modelación hidráulica de drenajes y llanuras de inundación finalizada para ${dept}. El incremento proyectado del nivel de escorrentía superficial indica un riesgo de desbordamiento en infraestructuras aledañas a cuerpos hídricos activos.`;
+        sourceLabel = "DATOS HIDROLÓGICOS";
+        sourceValue = "Fluviométricas e IDEAM (registro 30 años)";
       } else {
         // Sismicidad
         score = dept === "Cundinamarca" || dept === "Antioquia" ? "ALTO" : "MEDIO";
         details = `Aceleración pico efectiva en roca (Aa) estimada según NSR-10 para la zona de ${dept}. Se recomienda cimentación profunda y análisis sismo-resistente avanzado debido a la presencia de sistemas de fallas activas regionales.`;
+        sourceLabel = "MONITOREO SÍSMICO (SGC)";
+        sourceValue = "8 estaciones RSNC (Servicio Geológico Col.)";
       }
 
       if (score === "ALTO" || score === "CRÍTICO") {
@@ -49,7 +57,8 @@ export default function GeoRiskAISandbox() {
         score: score,
         colorClass: colorClass,
         details: details,
-        krigingStatus: "COMPLETADA (14 estaciones IDEAM interpoladas)",
+        sourceLabel: sourceLabel,
+        sourceValue: sourceValue,
         geomorphology: "Pendientes fuertes, rocas sedimentarias fracturadas",
       });
     }, 4500);
@@ -190,8 +199,8 @@ export default function GeoRiskAISandbox() {
                         <span className="text-zinc-300 font-mono">{results.coordinates}</span>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block">INTERPOLACIÓN CLIMA</span>
-                        <span className="text-zinc-300 font-mono">{results.krigingStatus}</span>
+                        <span className="text-zinc-500 block">{results.sourceLabel}</span>
+                        <span className="text-zinc-300 font-mono">{results.sourceValue}</span>
                       </div>
                     </div>
                     <div className="text-xs">
