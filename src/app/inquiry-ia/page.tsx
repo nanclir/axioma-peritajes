@@ -21,23 +21,89 @@ export default function InquiryIAMockup() {
     setIsProcessing(true);
     setHumanValidated(false);
     
-    // Simular el tiempo de procesamiento de la IA Híbrida
-    setTimeout(() => {
-      setIsProcessing(false);
-      setResults({
-        documentName: file.name,
-        pagesProcessed: 142,
-        imagesAnalyzed: 12,
-        anomaliesFound: 4,
-        summary: "Se ha analizado el 'Contrato de Obra Pública 045-2023' junto con el anexo fotográfico de avance. Se detectan inconsistencias estructurales graves en campo que contradicen las especificaciones legales y cantidades de obra.",
-        findings: [
-          { type: "Técnica", title: "Falla Estructural Detectada (Visión Computacional)", context: "Túnel K14+200. Grieta transversal de 15cm detectada en fotografía 3 (YOLOv5). No reportada en actas." },
-          { type: "Jurídica", title: "Ausencia de Póliza Todo Riesgo", context: "Página 14, Párrafo 2. No se anexa comprobante vigente para la fecha de inicio del acta de obra." },
-          { type: "Financiera", title: "Discrepancia en Cantidades de Obra", context: "Anexo B vs Acta de Recibo #3. Diferencia de 4,500 m3 en remoción de tierra." },
-          { type: "Administrativa", title: "Firma faltante", context: "Página 45. Falta rúbrica del representante legal de la interventoría." }
-        ]
-      });
-    }, 5500); // 5.5 segundos de simulación para dar efecto "IA trabajando en multimodal"
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const fileContent = event.target?.result as string || "";
+      const fileName = file.name;
+      const nameLower = fileName.toLowerCase();
+      const contentLower = fileContent.toLowerCase();
+
+      // Mapeo inteligente de palabras clave
+      const hasClima = nameLower.includes("clima") || nameLower.includes("agua") || nameLower.includes("hidro") || nameLower.includes("lluvia") || nameLower.includes("embalse") || contentLower.includes("clima") || contentLower.includes("agua") || contentLower.includes("hidro") || contentLower.includes("lluvia") || contentLower.includes("embalse");
+      const hasTunel = nameLower.includes("tunel") || nameLower.includes("túnel") || nameLower.includes("subterraneo") || nameLower.includes("geotec") || nameLower.includes("suelo") || nameLower.includes("talud") || contentLower.includes("tunel") || contentLower.includes("túnel") || contentLower.includes("subterraneo") || contentLower.includes("geotec") || contentLower.includes("suelo") || contentLower.includes("talud");
+      const hasPoliza = nameLower.includes("poliza") || nameLower.includes("póliza") || nameLower.includes("seguro") || nameLower.includes("garant") || contentLower.includes("poliza") || contentLower.includes("póliza") || contentLower.includes("seguro") || contentLower.includes("garant");
+      const hasContrato = nameLower.includes("contrato") || nameLower.includes("acta") || nameLower.includes("convenio") || nameLower.includes("pliego") || contentLower.includes("contrato") || contentLower.includes("acta") || contentLower.includes("convenio") || contentLower.includes("pliego");
+      const hasMovilidad = nameLower.includes("movilidad") || nameLower.includes("transito") || nameLower.includes("tránsito") || nameLower.includes("vía") || nameLower.includes("via") || nameLower.includes("carretera") || nameLower.includes("tráfico") || nameLower.includes("trafico") || contentLower.includes("movilidad") || contentLower.includes("transito") || contentLower.includes("tránsito") || contentLower.includes("vía") || contentLower.includes("via") || contentLower.includes("carretera") || contentLower.includes("tráfico") || contentLower.includes("trafico");
+
+      setTimeout(() => {
+        setIsProcessing(false);
+
+        let summary = `Se ha analizado el documento "${fileName}". La IA multimodal de ACUMEN ha procesado la estructura semántica y los metadatos del archivo para extraer anomalías críticas y verificar consistencias técnicas.`;
+        let findingsList = [];
+
+        if (hasClima) {
+          findingsList.push({
+            type: "Técnica (Clima/Agua)",
+            title: "Subestimación de Variabilidad Climática",
+            context: `Se detectan variables hidrológicas en el documento. La IA identifica que las curvas IDF y los periodos de retorno descritos no integran las series estocásticas no-estacionarias recientes, elevando el riesgo de inundación.`
+          });
+        }
+        if (hasTunel) {
+          findingsList.push({
+            type: "Técnica (Geotecnia)",
+            title: "Anomalía de Estabilidad Geotécnica",
+            context: `Se identifican referencias a excavaciones o taludes. El análisis geomecánico indica que el coeficiente de seguridad en condiciones de saturación máxima está al límite (FOS < 1.25).`
+          });
+        }
+        if (hasPoliza) {
+          findingsList.push({
+            type: "Jurídica (Seguros)",
+            title: "Descalce de Vigencia de Póliza",
+            context: `Se detectan menciones a pólizas o amparos. Se advierte que el periodo de ejecución propuesto excede la vigencia del amparo de estabilidad de obra y responsabilidad civil en el anexo de seguros.`
+          });
+        }
+        if (hasContrato) {
+          findingsList.push({
+            type: "Jurídica (Contrato)",
+            title: "Riesgo en Cláusula de Ajuste Polinómico",
+            context: `El análisis semántico del contrato detecta que la fórmula de reajuste de precios (fórmula polinómica) no contempla variaciones severas del IPC para insumos de importación crítica.`
+          });
+        }
+        if (hasMovilidad) {
+          findingsList.push({
+            type: "Técnica (Movilidad)",
+            title: "Conflicto de Capacidad y Demanda Vial",
+            context: `Se identifican flujos viales. Los aforos descritos proyectan un nivel de servicio F prematuro en la intersección propuesta, entrando en contradicción con el diseño geométrico planteado.`
+          });
+        }
+
+        // Si no se encuentra ninguna palabra clave, generamos hallazgos generales realistas basados en el nombre
+        if (findingsList.length === 0) {
+          findingsList.push({
+            type: "Análisis General",
+            title: "Verificación de Integridad Documental",
+            context: `Se analizó la estructura general de "${fileName}". Se comprueba que las referencias técnicas y las especificaciones generales se encuentran dentro de los rangos admisibles de la ingeniería de consulta.`
+          });
+          findingsList.push({
+            type: "Control Contractual",
+            title: "Rúbricas y Firmas Pendientes",
+            context: `Se recomienda verificar la presencia de la firma electrónica del representante técnico de la interventoría en el folio de cierre para garantizar validez formal.`
+          });
+        }
+
+        setResults({
+          documentName: fileName,
+          pagesProcessed: Math.max(1, Math.floor(file.size / 1024 / 5)), // Estimación de páginas basada en tamaño
+          imagesAnalyzed: nameLower.includes("img") || nameLower.includes("foto") ? 4 : 0,
+          anomaliesFound: findingsList.length,
+          summary: summary,
+          findings: findingsList
+        });
+      }, 5000);
+    };
+
+    // Intentar leer las primeras 50KB como texto (suficiente para escanear keywords del encabezado de cualquier PDF/TXT)
+    reader.readAsText(file.slice(0, 50000));
   };
 
   return (

@@ -83,25 +83,33 @@ export default function AILab() {
             </div>
 
             {/* GeoRisk AI Card */}
-            <div className="tech-card p-8 rounded-lg relative overflow-hidden group border-zinc-800 opacity-70">
-              <ShieldAlert className="h-10 w-10 text-zinc-500 mb-6" />
-              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-zinc-300">
-                GeoRisk AI <span className="text-[10px] font-mono bg-zinc-800 text-zinc-500 px-2 py-1 rounded border border-zinc-700">EN DESARROLLO</span>
+            <div className="tech-card p-8 rounded-lg relative overflow-hidden group border-zinc-800">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-2xl rounded-full group-hover:bg-emerald-500/20 transition-colors"></div>
+              <ShieldAlert className="h-10 w-10 text-emerald-400 mb-6" />
+              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white">
+                GeoRisk AI <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded border border-emerald-500/30">SANDBOX LISTO</span>
               </h3>
-              <p className="text-zinc-500 text-sm leading-relaxed mb-6">
+              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
                 Inteligencia Territorial y Resiliencia Climática. Cruzamos datos hidro-meteorológicos con GIS para simular el impacto en grandes infraestructuras antes de la inversión.
               </p>
+              <Link href="/georisk-ai" className="text-emerald-400 text-sm font-mono flex items-center gap-1 hover:text-emerald-300 transition-colors">
+                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
             
             {/* NSR AI Card */}
-            <div className="tech-card p-8 rounded-lg relative overflow-hidden group border-zinc-800 opacity-70">
-              <Cpu className="h-10 w-10 text-zinc-500 mb-6" />
-              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-zinc-300">
-                NSR AI <span className="text-[10px] font-mono bg-zinc-800 text-zinc-500 px-2 py-1 rounded border border-zinc-700">ROADMAP 2026</span>
+            <div className="tech-card p-8 rounded-lg relative overflow-hidden group border-zinc-800">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full group-hover:bg-blue-500/20 transition-colors"></div>
+              <Cpu className="h-10 w-10 text-blue-400 mb-6" />
+              <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white">
+                NSR AI <span className="text-[10px] font-mono bg-blue-500/20 text-blue-300 px-2 py-1 rounded border border-blue-500/30">SANDBOX LISTO</span>
               </h3>
-              <p className="text-zinc-500 text-sm leading-relaxed mb-6">
+              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
                 Evaluador normativo automatizado. Revisa diseños estructurales contra la Norma Sismo Resistente (NSR-10) y POTs locales para acelerar trámites de curaduría.
               </p>
+              <Link href="/nsr-ai" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
+                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>
