@@ -72,7 +72,7 @@ export default function AILab() {
                 Inteligencia Territorial y Resiliencia Climática. Cruzamos datos hidro-meteorológicos con GIS para simular el impacto en grandes infraestructuras antes de la inversión.
               </p>
               <Link href="/georisk-ai" className="text-emerald-400 text-sm font-mono flex items-center gap-1 hover:text-emerald-300 transition-colors">
-                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+                PROBAR SIMULADOR <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
             
@@ -87,7 +87,7 @@ export default function AILab() {
                 Evaluador normativo automatizado. Revisa diseños estructurales contra la Norma Sismo Resistente (NSR-10) y POTs locales para acelerar trámites de curaduría.
               </p>
               <Link href="/nsr-ai" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
-                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+                PROBAR SIMULADOR <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
 
@@ -102,7 +102,7 @@ export default function AILab() {
                 Agente técnico para revisión documental. Procesa cientos de folios de contratos, actas y pólizas usando NLP para extraer inconsistencias y generar líneas de tiempo periciales en arbitramentos.
               </p>
               <Link href="/inquiry-ia" className="text-blue-400 text-sm font-mono flex items-center gap-1 hover:text-blue-300 transition-colors">
-                ABRIR TERMINAL <ChevronRight className="h-4 w-4" />
+                PROBAR SIMULADOR <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
