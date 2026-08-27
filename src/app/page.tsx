@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin, TrendingUp, Award, Activity, Scale, Pickaxe } from "lucide-react";
+import { ArrowRight, Hexagon, BarChart3, Database, Workflow, Map, Waves, Network, History, MapPin, TrendingUp, Award, Activity, Scale, Pickaxe, BrainCircuit, Terminal } from "lucide-react";
 
 export default function Home() {
   return (
@@ -74,15 +74,15 @@ export default function Home() {
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <Link href="/acumen-os" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block">
-                <Hexagon className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">Ingeniería Digital</h3>
-                <p className="text-zinc-500 text-sm">Modelado, Dashboards y Gemelos Digitales.</p>
+              <Link href="/ai-lab" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block">
+                <BrainCircuit className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">AI Lab (I+D)</h3>
+                <p className="text-zinc-500 text-sm">Modelos y agentes en desarrollo para ingeniería.</p>
               </Link>
-              <Link href="/servicios" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block mt-12">
-                <Map className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">SIG y Analítica</h3>
-                <p className="text-zinc-500 text-sm">Inteligencia espacial aplicada a grandes proyectos.</p>
+              <Link href="/inquiry-ia" className="bg-slate-50 p-8 flex flex-col justify-end aspect-square border border-zinc-100 hover:border-gold-500 transition-colors group cursor-pointer block mt-12">
+                <Terminal className="h-8 w-8 text-gold-500 mb-4 group-hover:scale-110 transition-transform" />
+                <h3 className="font-heading font-bold text-xl text-zinc-900 mb-2 group-hover:text-gold-500 transition-colors">InquiryIA (Sandbox)</h3>
+                <p className="text-zinc-500 text-sm">Simulador de auditoría documental asistida por IA.</p>
               </Link>
             </div>
           </div>
