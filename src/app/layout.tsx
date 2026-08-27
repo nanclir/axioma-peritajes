@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,12 +38,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${outfit.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans antialiased selection:bg-zinc-900 selection:text-white">
-        <Navbar />
-        <main className="flex-1">
+        <LayoutWrapper>
           {children}
-        </main>
-        <Footer />
-        <WhatsAppButton />
+        </LayoutWrapper>
       </body>
     </html>
   );
