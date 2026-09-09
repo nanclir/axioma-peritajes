@@ -203,12 +203,6 @@ export default function AcumenOSMicrosite() {
   const [activeColumn, setActiveColumn] = useState<number | null>(null);
   const [mobileActive, setMobileActive] = useState<number | null>(null);
   const [souvenirOpen, setSouvenirOpen] = useState(false);
-  const [visitorName, setVisitorName] = useState("ING. RAFAEL NANCLARES");
-  const [souvenirVars, setSouvenirVars] = useState({
-    fc: 35,
-    fs: 2.1,
-    diagram: "tunnel"
-  });
 
   const [simulations, setSimulations] = useState([
     { peakQ: 2500, timeP: 12 },   // FP
@@ -218,14 +212,6 @@ export default function AcumenOSMicrosite() {
     { loadP: 180, spanL: 30 }      // PR
   ]);
 
-  const [certId, setCertId] = useState("");
-
-  useEffect(() => {
-    // Generate unique cert id on client side once
-    const randomCode = Math.floor(Math.random() * 9000 + 1000);
-    setCertId(`ACM-2026-X8F${randomCode}`);
-  }, []);
-
   const updateSimulationSlider = (divIndex: number, key: string, val: number) => {
     setSimulations(prev => {
       const copy = [...prev];
@@ -234,8 +220,67 @@ export default function AcumenOSMicrosite() {
     });
   };
 
-  const updateSouvenirSlider = (key: string, val: number) => {
-    setSouvenirVars(prev => ({ ...prev, [key]: val }));
+  const downloadVCard = (partner?: "ricardo" | "rafael") => {
+    let vcardContent = "";
+    
+    if (partner === "ricardo") {
+      vcardContent = `BEGIN:VCARD
+VERSION:3.0
+N:Smith Quintero;Ricardo;A.;PhD.;
+FN:PhD. Ricardo A. Smith Quintero
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Socio Director / PhD. en Recursos Hidráulicos
+TEL;TYPE=CELL,VOICE:+573005771484
+EMAIL:contacto@acumeningenieria.com
+URL:https://www.acumeningenieria.com
+NOTE:Ph.D. y M.Sc. Colorado State University. Profesor Emérito y ex-Decano Facultad de Minas UNAL.
+END:VCARD`;
+    } else if (partner === "rafael") {
+      vcardContent = `BEGIN:VCARD
+VERSION:3.0
+N:Nanclares Ospina;Rafael;;Ing.;
+FN:Rafael Nanclares Ospina
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Socio Director / Especialista en Gerencia de Construcciones
+TEL;TYPE=CELL,VOICE:+573005771484
+EMAIL:contacto@acumeningenieria.com
+URL:https://www.acumeningenieria.com
+NOTE:Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía. Arquitecto ACUMEN OS.
+END:VCARD`;
+    } else {
+      vcardContent = `BEGIN:VCARD
+VERSION:3.0
+N:Smith Quintero;Ricardo;A.;PhD.;
+FN:PhD. Ricardo A. Smith Quintero
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Socio Director / PhD. en Recursos Hidráulicos
+TEL;TYPE=CELL,VOICE:+573005771484
+EMAIL:contacto@acumeningenieria.com
+URL:https://www.acumeningenieria.com
+NOTE:Ph.D. y M.Sc. Colorado State University. Profesor Emérito y ex-Decano Facultad de Minas UNAL.
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Nanclares Ospina;Rafael;;Ing.;
+FN:Rafael Nanclares Ospina
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Socio Director / Especialista en Gerencia de Construcciones
+TEL;TYPE=CELL,VOICE:+573005771484
+EMAIL:contacto@acumeningenieria.com
+URL:https://www.acumeningenieria.com
+NOTE:Ingeniero Civil, Especialista en Gerencia de Construcciones, Magíster en Filosofía. Arquitecto ACUMEN OS.
+END:VCARD`;
+    }
+
+    const blob = new Blob([vcardContent], { type: "text/vcard;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", partner ? `Contacto_${partner === "ricardo" ? "Ricardo_Smith" : "Rafael_Nanclares"}_ACUMEN.vcf` : "Directores_ACUMEN.vcf");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleSolveSubmit = (e: React.FormEvent) => {
@@ -332,11 +377,12 @@ export default function AcumenOSMicrosite() {
   };
 
   // Render expanded detail SVGs with real-time state variable binding
-  const renderDetailSVG = () => {
-    if (activeColumn === null) return null;
-    const data = simulations[activeColumn];
+  const renderDetailSVG = (colIndex?: number) => {
+    const targetCol = colIndex !== undefined ? colIndex : activeColumn;
+    if (targetCol === null) return null;
+    const data = simulations[targetCol];
     
-    if (activeColumn === 0) { // FutureProof (Hydrograph)
+    if (targetCol === 0) { // FutureProof (Hydrograph)
       const peak = data.peakQ ?? 2500;
       const time = data.timeP ?? 12;
       const peakY = 160 - (peak / 4000) * 120;
@@ -357,7 +403,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (activeColumn === 1) { // Movilidad 360 (Traffic)
+    else if (targetCol === 1) { // Movilidad 360 (Traffic)
       const traffic = data.trafficV ?? 1200;
       const congest = data.congest ?? 4;
       const circleSize = 30 + congest * 2;
@@ -376,7 +422,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (activeColumn === 2) { // Obras Subterráneas (Tunnel)
+    else if (targetCol === 2) { // Obras Subterráneas (Tunnel)
       const radius = data.radius ?? 6;
       const bolts = data.bolts ?? 16;
       const drawRadius = radius * 9;
@@ -406,7 +452,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (activeColumn === 3) { // Ordenamiento (POT Layout)
+    else if (targetCol === 3) { // Ordenamiento (POT Layout)
       const density = data.density ?? 150;
       const green = data.greenS ?? 20;
       const gridSpacing = 40 - (density / 10);
@@ -428,7 +474,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (activeColumn === 4) { // Peritajes (Structural Beam)
+    else if (targetCol === 4) { // Peritajes (Structural Beam)
       const load = data.loadP ?? 180;
       const span = data.spanL ?? 30;
       const arrowLength = 20 + (load / 400) * 40;
@@ -451,48 +497,7 @@ export default function AcumenOSMicrosite() {
     return null;
   };
 
-  // Render souvenir card dynamic diagram based on user selection
-  const renderSouvenirCardSVG = () => {
-    const type = souvenirVars.diagram;
-    if (type === "tunnel") {
-      const drawRadius = 30 + (souvenirVars.fc - 21) * 0.8;
-      return (
-        <svg viewBox="0 0 300 200" className="w-5/6 h-28 stroke-slate-900 fill-none stroke-[1.2]">
-          <circle cx="150" cy="100" r={drawRadius} stroke="#94a3b8" strokeWidth="1" />
-          <circle cx="150" cy="100" r={drawRadius + 6} stroke="#0f172a" strokeWidth="1.5" strokeDasharray="3 3" />
-          <line x1="150" y1="100" x2="150" y2="40" stroke="#d97706" strokeWidth="1" />
-          <line x1="150" y1="100" x2="90" y2="100" stroke="#d97706" strokeWidth="1" />
-          <text x="156" y="55" className="font-mono text-[8px] fill-amber-700" stroke="none">{`FS=${souvenirVars.fs}`}</text>
-        </svg>
-      );
-    } 
-    else if (type === "hydro") {
-      const peakVal = 40 + (souvenirVars.fc - 21) * 2;
-      return (
-        <svg viewBox="0 0 300 200" className="w-5/6 h-28 stroke-slate-900 fill-none stroke-[1.2]">
-          <line x1="40" y1="160" x2="260" y2="160" stroke="#94a3b8" />
-          <line x1="40" y1="40" x2="40" y2="160" stroke="#94a3b8" />
-          <path d={`M 40 160 Q 120 ${160 - peakVal} 180 120 T 260 160`} stroke="#0f172a" stroke-width="1.8" />
-          <circle cx="120" cy={160 - peakVal} r="3" fill="#d97706" stroke="none" />
-          <text x="128" y={165 - peakVal} className="font-mono text-[8px] fill-slate-900" stroke="none">Q100</text>
-        </svg>
-      );
-    } 
-    else if (type === "beam") {
-      const drawLoad = 40 + (souvenirVars.fc - 21) * 1.5;
-      return (
-        <svg viewBox="0 0 300 200" className="w-5/6 h-28 stroke-slate-900 fill-none stroke-[1.2]">
-          <line x1="40" y1="100" x2="260" y2="100" stroke="#0f172a" strokeWidth="2.5" />
-          <polygon points="40,100 32,112 48,112" stroke="#0f172a" fill="none" />
-          <polygon points="260,100 252,112 268,112" stroke="#0f172a" fill="none" />
-          <path d="M 150 40 L 150 100 M 150 100 L 146 92 M 150 100 L 154 92" stroke="#d97706" strokeWidth="1.8" fill="none" />
-          <path d={`M 40 100 Q 150 ${100 + drawLoad} 260 100`} stroke="#94a3b8" strokeDasharray="3 3" />
-          <text x="156" y="55" className="font-mono text-[8px] fill-amber-700" stroke="none">Mmax</text>
-        </svg>
-      );
-    }
-    return null;
-  };
+
 
   return (
     <div style={gridStyle} className="font-sans text-slate-900 min-h-screen flex flex-col overflow-x-hidden relative select-none">
@@ -576,6 +581,39 @@ export default function AcumenOSMicrosite() {
                   <div className="p-6 border-t border-slate-100 bg-white flex flex-col gap-6 animate-fadeIn">
                     <div>
                       <p className="text-xs font-semibold text-slate-500 italic mb-4">{`"${div.tagline}"`}</p>
+
+                      {/* Gráfica interactiva en iPhone / Móvil */}
+                      <div className="w-full border border-slate-200/80 bg-slate-50/50 p-4 shadow-sm rounded-sm mb-6 flex flex-col justify-center items-center relative overflow-hidden">
+                        <span className="self-start font-mono text-[8px] text-slate-400 mb-2 uppercase">CAD OUTPUT: SIMULACIÓN EN VIVO</span>
+                        {renderDetailSVG(index)}
+                        
+                        {/* Sliders táctiles en Móvil */}
+                        <div className="w-full border-t border-slate-200/60 pt-3 mt-3">
+                          <span className="font-mono text-[8px] text-slate-400 tracking-wider uppercase mb-2 block">Parámetros Físicos Dinámicos</span>
+                          <div className="flex flex-col gap-3">
+                            {div.sim.sliders.map((slider, sIdx) => {
+                              const currentVal = (simulations[index] as any)[slider.key];
+                              return (
+                                <div key={sIdx}>
+                                  <div className="flex justify-between font-mono text-[9px] text-slate-500 mb-0.5">
+                                    <span className="uppercase">{slider.name}</span>
+                                    <span className="font-bold text-slate-950">{currentVal} {slider.unit}</span>
+                                  </div>
+                                  <input 
+                                    type="range" 
+                                    min={slider.min} 
+                                    max={slider.max} 
+                                    value={currentVal} 
+                                    className="w-full accent-amber-600" 
+                                    onChange={(e) => updateSimulationSlider(index, slider.key, parseFloat(e.target.value))}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
                       <h4 className="font-mono text-[9px] text-slate-400 tracking-wider uppercase mb-2">Sub-servicios</h4>
                       <div className="flex flex-col gap-3">
                         {div.subservices.map((sub, sIdx) => (
@@ -761,116 +799,208 @@ export default function AcumenOSMicrosite() {
           </div>
         </div>
 
-        {/* SPEC SHEET / SOUVENIR OVERLAY */}
+        {/* EXECUTIVE LEADERSHIP & CONTACT MODAL (FICHA DE IDENTIDAD) */}
         {souvenirOpen && (
-          <div id="souvenir-overlay" className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex justify-center items-center p-6 overflow-y-auto">
-            <div style={gridStyle} className="w-full max-w-2xl bg-white border border-slate-300 p-8 shadow-2xl relative rounded-sm my-8">
+          <div id="souvenir-overlay" className="fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-md flex justify-center items-center p-4 md:p-6 overflow-y-auto">
+            <div style={gridStyle} className="w-full max-w-4xl bg-white border border-slate-300 p-6 md:p-8 shadow-2xl relative rounded-sm my-auto max-h-[92vh] flex flex-col overflow-y-auto">
               <div style={gridMajorStyle} className="absolute inset-0 pointer-events-none z-0"></div>
-              <button onClick={() => setSouvenirOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-sm">✕</button>
               
-              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Spec Configurator */}
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <span className="font-mono text-[9px] text-amber-700 tracking-widest uppercase">ACUMEN OS 1.0</span>
-                    <h3 className="text-xl font-bold tracking-tight text-slate-950 uppercase mb-1">Ficha de Identidad Técnica</h3>
-                    <p className="text-xs text-slate-500 mb-6">Personalice y exporte su ficha de especificaciones técnicas parametrizada por ACUMEN OS.</p>
-                    
-                    <div className="flex flex-col gap-4 mb-6">
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">Nombre del Profesional</label>
-                        <input 
-                          type="text" 
-                          onInput={(e) => setVisitorName((e.target as HTMLInputElement).value.toUpperCase())} 
-                          className="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" 
-                          value={visitorName} 
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">Esquema Técnico Base</label>
-                        <select 
-                          value={souvenirVars.diagram} 
-                          onChange={(e) => setSouvenirVars(prev => ({ ...prev, diagram: e.target.value }))} 
-                          className="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs bg-white"
-                        >
-                          <option value="tunnel">Sección de Túnel (Obras Subterráneas)</option>
-                          <option value="hydro">Curva de Caudales (FutureProof)</option>
-                          <option value="beam">Viga Estructural (Peritajes)</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">Resistencia del Concreto (f'c)</label>
-                        <div className="flex gap-4 items-center">
-                          <input 
-                            type="range" 
-                            min="21" 
-                            max="45" 
-                            value={souvenirVars.fc} 
-                            className="flex-1 accent-amber-600" 
-                            onInput={(e) => updateSouvenirSlider("fc", parseInt((e.target as HTMLInputElement).value))} 
-                          />
-                          <span className="font-mono text-xs w-12 text-right">{souvenirVars.fc} MPa</span>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">Factor de Seguridad (F.S.)</label>
-                        <div className="flex gap-4 items-center">
-                          <input 
-                            type="range" 
-                            min="1.0" 
-                            max="3.0" 
-                            step="0.1" 
-                            value={souvenirVars.fs} 
-                            className="flex-1 accent-amber-600" 
-                            onInput={(e) => updateSouvenirSlider("fs", parseFloat((e.target as HTMLInputElement).value))} 
-                          />
-                          <span className="font-mono text-xs w-12 text-right">{souvenirVars.fs}</span>
-                        </div>
-                      </div>
-                    </div>
+              <button 
+                onClick={() => setSouvenirOpen(false)} 
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-base z-20"
+                aria-label="Cerrar modal"
+              >
+                ✕
+              </button>
+              
+              <div className="relative z-10 flex flex-col gap-6">
+                {/* Modal Header */}
+                <div className="border-b border-slate-200/80 pb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-amber-700 font-bold tracking-widest uppercase">ACUMEN INGENIERÍA S.A.S.</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="font-mono text-[10px] text-slate-400 uppercase">FICHA DE IDENTIDAD</span>
                   </div>
-                  
-                  <button onClick={() => window.print()} className="w-full py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-xs tracking-wider uppercase transition-colors">
-                    Exportar Ficha Técnica (Imprimir)
-                  </button>
+                  <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-950 uppercase mt-1">
+                    Liderazgo Técnico & Directores
+                  </h2>
+                  <p className="text-xs md:text-sm text-slate-600 mt-1 font-medium">
+                    Inteligencia de Ingeniería y Reducción de Incertidumbre
+                  </p>
                 </div>
 
-                {/* Right Display Spec Card */}
-                <div id="print-area" className="border border-slate-300 bg-white p-6 shadow-sm rounded-sm flex flex-col justify-between h-[340px] relative overflow-hidden">
-                  <div style={gridStyle} className="absolute inset-0 opacity-30 z-0"></div>
-                  <div style={gridMajorStyle} className="absolute inset-0 opacity-30 z-0"></div>
+                {/* Partners Grid: Both Ricardo Smith & Rafael Nanclares together */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
-                  <div className="relative z-10 flex justify-between items-start">
+                  {/* Partner 1: Ricardo Smith */}
+                  <div className="border border-slate-200 bg-white/90 p-5 rounded-sm flex flex-col justify-between shadow-sm">
                     <div>
-                      <h4 className="font-bold text-xs tracking-wider text-slate-950 uppercase leading-none">ACUMEN OS</h4>
-                      <span className="font-mono text-[8px] text-slate-400 tracking-widest block uppercase">ESPECIFICACIONES B2B</span>
+                      <div className="flex gap-4 items-start mb-4">
+                        <div className="w-20 h-24 shrink-0 bg-zinc-100 rounded-sm overflow-hidden border border-slate-200 relative">
+                          <img 
+                            src="/team/ricardo_smith.jpeg" 
+                            alt="PhD. Ricardo A. Smith Quintero" 
+                            className="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-500" 
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <h3 className="font-bold text-base text-slate-950 leading-tight">Ricardo A. Smith Quintero</h3>
+                          <span className="font-mono text-[10px] text-amber-700 font-semibold uppercase tracking-wider mt-0.5">
+                            Socio Director / PhD. en Recursos Hidráulicos
+                          </span>
+                          <p className="text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+                            Ph.D. y M.Sc. por Colorado State University. Ingeniero Civil por la Universidad Nacional de Colombia.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-slate-600 leading-relaxed font-light space-y-2 border-t border-slate-100 pt-3">
+                        <p>
+                          Con más de 40 años de experiencia, es una de las voces más autorizadas en Colombia en materia de recursos hídricos, planificación energética y movilidad.
+                        </p>
+                        <p>
+                          Ha sido Profesor Emérito, Decano de la Facultad de Minas y Director del programa de Doctorado en Ingeniería de la Universidad Nacional. Ha ocupado cargos como Secretario de Transportes y Tránsito y Alcalde Encargado de Medellín, además de Director del Área Metropolitana del Valle de Aburrá.
+                        </p>
+                        <p>
+                          Consultor de alto nivel para el BID, Banco Mundial, Findeter y múltiples concesiones viales, aplicando modelos matemáticos avanzados y optimización para la toma de decisiones con múltiples objetivos.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-100">
+                        <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
+                          +270 Artículos & 18 Libros
+                        </span>
+                        <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
+                          Asesor BID & Banco Mundial
+                        </span>
+                      </div>
                     </div>
-                    <svg viewBox="0 0 100 100" className="w-5 h-5 stroke-slate-900 fill-none stroke-[6]">
-                      <polygon points="50,15 85,35 85,65 50,85 15,65 15,35"/>
-                    </svg>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex gap-2">
+                      <a 
+                        href="https://wa.me/573005771484?text=Hola%20Dr.%20Ricardo%20Smith%2C%20le%20contacto%20a%20trav%C3%A9s%20de%20ACUMEN%20OS..." 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="flex-1 py-2 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[10px] tracking-wider uppercase text-center transition-colors"
+                      >
+                        WhatsApp Directo
+                      </a>
+                      <button 
+                        onClick={() => downloadVCard("ricardo")} 
+                        className="px-3 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-mono text-[10px] uppercase transition-colors"
+                        title="Descargar contacto individual"
+                      >
+                        vCard ↓
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 flex-1 flex justify-center items-center my-4 overflow-hidden border border-slate-200 bg-white/50 backdrop-blur-sm rounded-sm">
-                    {renderSouvenirCardSVG()}
+                  {/* Partner 2: Rafael Nanclares */}
+                  <div className="border border-slate-200 bg-white/90 p-5 rounded-sm flex flex-col justify-between shadow-sm">
+                    <div>
+                      <div className="flex gap-4 items-start mb-4">
+                        <div className="w-20 h-24 shrink-0 bg-zinc-100 rounded-sm overflow-hidden border border-slate-200 relative">
+                          <img 
+                            src="/team/rafael-nanclares.jpg" 
+                            alt="Rafael Nanclares Ospina" 
+                            className="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-500" 
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <h3 className="font-bold text-base text-slate-950 leading-tight">Rafael Nanclares Ospina</h3>
+                          <span className="font-mono text-[10px] text-amber-700 font-semibold uppercase tracking-wider mt-0.5">
+                            Socio Director / Magíster en Filosofía
+                          </span>
+                          <p className="text-[11px] text-slate-500 font-medium mt-1 leading-snug">
+                            Ingeniero Civil, Especialista en Gerencia de Construcciones y Magíster en Filosofía.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-slate-600 leading-relaxed font-light space-y-2 border-t border-slate-100 pt-3">
+                        <p>
+                          Su perfil híbrido fusiona la gerencia de alta complejidad en infraestructura con el pensamiento crítico, la ética tecnológica y la inteligencia artificial, formación consolidada con sus estudios en Inteligencia Artificial en la Universidad de Berkeley.
+                        </p>
+                        <p>
+                          Con más de 20 años de experiencia, ha fungido como Secretario de Infraestructura Física de Antioquia y Secretario de Tránsito y Transporte de Medellín. A nivel internacional, ha sido Asesor de infraestructura del Secretario de Infraestructura del estado de Nuevo León (México).
+                        </p>
+                        <p>
+                          En Acumen, es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la consultoría de infraestructura.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-100">
+                        <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
+                          Filosofía e IA (Berkeley)
+                        </span>
+                        <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
+                          Arquitecto ACUMEN OS
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex gap-2">
+                      <a 
+                        href="https://wa.me/573005771484?text=Hola%20Ing.%20Rafael%20Nanclares%2C%20le%20contacto%20a%20trav%C3%A9s%20de%20ACUMEN%20OS..." 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="flex-1 py-2 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[10px] tracking-wider uppercase text-center transition-colors"
+                      >
+                        WhatsApp Directo
+                      </a>
+                      <button 
+                        onClick={() => downloadVCard("rafael")} 
+                        className="px-3 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-mono text-[10px] uppercase transition-colors"
+                        title="Descargar contacto individual"
+                      >
+                        vCard ↓
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 font-mono text-[8px] text-slate-600 border-t border-slate-200 pt-3">
-                    <div className="flex justify-between">
-                      <span className="uppercase">ID CERTIFICADO:</span>
-                      <span className="font-bold text-slate-950">{certId}</span>
+                </div>
+
+                {/* Shared Contact & 1-Tap Conversion Bar */}
+                <div className="bg-slate-50 border border-slate-200/90 p-5 rounded-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-center sm:text-left">
+                    <div>
+                      <span className="font-mono text-[9px] text-slate-400 uppercase block">Celular / WhatsApp</span>
+                      <a href="tel:+573005771484" className="font-mono text-xs font-bold text-slate-950 hover:text-amber-700">
+                        +57 300 577 1484
+                      </a>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="uppercase">PROFESIONAL:</span>
-                      <span className="font-bold text-slate-950">{visitorName || "RICARDO SMITH"}</span>
+                    <div>
+                      <span className="font-mono text-[9px] text-slate-400 uppercase block">Correo Institucional</span>
+                      <a href="mailto:contacto@acumeningenieria.com" className="font-mono text-xs font-bold text-slate-950 hover:text-amber-700">
+                        contacto@acumeningenieria.com
+                      </a>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="uppercase">PARÁMETROS:</span>
-                      <span className="font-bold text-slate-950">
-                        f'c={souvenirVars.fc}MPa / FS={souvenirVars.fs}
-                      </span>
+                    <div>
+                      <span className="font-mono text-[9px] text-slate-400 uppercase block">Portal Oficial</span>
+                      <Link href="/" className="font-mono text-xs font-bold text-slate-950 hover:text-amber-700">
+                        acumeningenieria.com
+                      </Link>
                     </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <button 
+                      onClick={() => downloadVCard()} 
+                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-mono text-[11px] font-bold tracking-wider uppercase transition-colors shadow-sm text-center"
+                    >
+                      Guardar Ambos Contactos (.vcf)
+                    </button>
+                    <a 
+                      href="https://wa.me/573005771484" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="px-5 py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-mono text-[11px] tracking-wider uppercase transition-colors text-center"
+                    >
+                      WhatsApp Institucional
+                    </a>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
