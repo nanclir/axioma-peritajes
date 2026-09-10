@@ -632,17 +632,14 @@ END:VCARD`;
                     </div>
 
                     <div className="flex flex-col gap-4 pt-4 border-t border-slate-100">
-                      <a href={div.pdf} target="_blank" rel="noopener noreferrer" className="w-full py-2.5 bg-slate-950 text-white font-mono text-[10px] tracking-widest uppercase text-center block">
-                        Descargar Ficha Técnica (.PDF)
-                      </a>
                       <button 
                         onClick={() => {
                           const overlay = document.getElementById("solve-overlay");
                           if (overlay) overlay.classList.remove("hidden");
                         }} 
-                        className="w-full py-2.5 border border-slate-300 text-slate-950 font-mono text-[10px] tracking-widest uppercase text-center"
+                        className="w-full py-2.5 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[10px] tracking-widest uppercase text-center transition-colors"
                       >
-                        Resolver Necesidad
+                        Resolver Necesidad →
                       </button>
                     </div>
                   </div>
@@ -695,23 +692,15 @@ END:VCARD`;
                 </div>
               </div>
 
-              <div className="mt-8 border-t border-slate-200/60 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <a 
-                  href={divisions[activeColumn].pdf} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="px-5 py-2.5 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[11px] tracking-widest uppercase transition-colors"
-                >
-                  Descargar Ficha Técnica (.PDF)
-                </a>
+              <div className="mt-8 border-t border-slate-200/60 pt-6 flex flex-col md:flex-row justify-end items-start md:items-center gap-4">
                 <button 
                   onClick={() => {
                     const overlay = document.getElementById("solve-overlay");
                     if (overlay) overlay.classList.remove("hidden");
                   }} 
-                  className="px-5 py-2.5 border border-slate-300 hover:bg-slate-50 text-slate-950 font-mono text-[11px] tracking-widest uppercase transition-colors"
+                  className="px-6 py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[11px] tracking-widest uppercase transition-colors"
                 >
-                  Resolver Necesidad
+                  Resolver Necesidad →
                 </button>
               </div>
             </div>
