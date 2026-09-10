@@ -520,7 +520,7 @@ END:VCARD`;
             onClick={() => setSouvenirOpen(true)} 
             className="bg-amber-600/10 hover:bg-amber-600/20 text-amber-700 border border-amber-600/30 px-3 py-1.5 rounded-sm text-[10px] font-mono tracking-widest uppercase transition-all"
           >
-            [ FICHA DE IDENTIDAD ]
+            [ QUIÉNES SOMOS ]
           </button>
           <Link href="/" className="text-xs text-slate-500 hover:text-slate-950 font-mono tracking-wider">
             ← WEB
@@ -808,7 +808,7 @@ END:VCARD`;
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[10px] text-amber-700 font-bold tracking-widest uppercase">ACUMEN INGENIERÍA S.A.S.</span>
                     <span className="text-slate-300">•</span>
-                    <span className="font-mono text-[10px] text-slate-400 uppercase">FICHA DE IDENTIDAD</span>
+                    <span className="font-mono text-[10px] text-slate-400 uppercase">QUIÉNES SOMOS</span>
                   </div>
                   <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-950 uppercase mt-1">
                     Liderazgo Técnico & Directores
