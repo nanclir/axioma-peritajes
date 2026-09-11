@@ -798,20 +798,20 @@ export default function AcumenOSMicrosite() {
                             Socio Director / Magíster en Filosofía
                           </span>
                           <p className="text-[11px] text-slate-500 font-medium mt-1 leading-snug">
-                            Ingeniero Civil, Especialista en Gerencia de Construcciones y Magíster en Filosofía.
+                            Magíster en Filosofía por la Universidad Pontificia Bolivariana (UPB). Especialista en Gerencia de Construcciones por la Universidad de Medellín. Ingeniero Civil por la Universidad Nacional de Colombia. Estudios en Inteligencia Artificial en la Universidad de Berkeley.
                           </p>
                         </div>
                       </div>
 
                       <div className="text-xs text-slate-600 leading-relaxed font-light space-y-2 border-t border-slate-100 pt-3">
                         <p>
-                          Su perfil híbrido fusiona la gerencia de alta complejidad en infraestructura con el pensamiento crítico, la ética tecnológica y la inteligencia artificial, formación consolidada con sus estudios en Inteligencia Artificial en la Universidad de Berkeley.
+                          Con más de 20 años de experiencia en la dirección y estructuración de proyectos estratégicos de infraestructura, movilidad urbana y gestión de decisiones de alta complejidad.
                         </p>
                         <p>
-                          Con más de 20 años de experiencia, ha fungido como Secretario de Infraestructura Física de Antioquia y Secretario de Tránsito y Transporte de Medellín. A nivel internacional, ha sido Asesor de infraestructura del Secretario de Infraestructura del estado de Nuevo León (México).
+                          Su perfil fusiona la gerencia técnica de infraestructura con el pensamiento crítico, la ética tecnológica y la analítica computacional avanzada. Ha ocupado cargos como Secretario de Infraestructura Física de Antioquia, Secretario de Tránsito y Transporte de Medellín y Asesor de Infraestructura del estado de Nuevo León (México).
                         </p>
                         <p>
-                          En Acumen, es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la consultoría de infraestructura.
+                          En Acumen, es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la consultoría de infraestructura y la estructuración de decisiones periciales.
                         </p>
                       </div>
 
