@@ -92,7 +92,7 @@ export default function LiderazgoPage() {
             
             <div className="prose prose-zinc max-w-none text-zinc-600 leading-relaxed font-light mb-8">
               <p>
-                Magíster en Filosofía por la Universidad Pontificia Bolivariana (UPB), Especialista en Gerencia de Construcciones por la Universidad de Medellín e Ingeniero Civil por la Universidad Nacional de Colombia, con estudios en Inteligencia Artificial en la Universidad de Berkeley. Con más de 20 años de experiencia en la dirección y estructuración de proyectos estratégicos de infraestructura, movilidad urbana y gestión de decisiones de alta complejidad.
+                M.Phil. por la Universidad Pontificia Bolivariana (UPB), Esp. por la Universidad de Medellín e Ingeniero Civil por la Universidad Nacional de Colombia. Con más de 20 años de experiencia en la dirección y estructuración de proyectos estratégicos de infraestructura, movilidad urbana y gestión de decisiones de alta complejidad.
               </p>
               <p>
                 Su perfil fusiona la gerencia técnica de infraestructura con el pensamiento crítico, la ética tecnológica y la analítica computacional avanzada. Ha ocupado cargos como Secretario de Infraestructura Física de Antioquia y Secretario de Tránsito y Transporte de la ciudad de Medellín, teniendo bajo su responsabilidad estructuraciones estratégicas a gran escala. A nivel internacional, ha sido Asesor de infraestructura del Secretario de Infraestructura del estado de Nuevo León (México).

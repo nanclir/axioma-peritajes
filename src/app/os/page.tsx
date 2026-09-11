@@ -798,7 +798,7 @@ export default function AcumenOSMicrosite() {
                             Socio Director / Magíster en Filosofía
                           </span>
                           <p className="text-[11px] text-slate-500 font-medium mt-1 leading-snug">
-                            Magíster en Filosofía por la Universidad Pontificia Bolivariana (UPB). Especialista en Gerencia de Construcciones por la Universidad de Medellín. Ingeniero Civil por la Universidad Nacional de Colombia. Estudios en Inteligencia Artificial en la Universidad de Berkeley.
+                            M.Phil. por la UPB. Esp. por la Universidad de Medellín. Ingeniero Civil por la Universidad Nacional de Colombia.
                           </p>
                         </div>
                       </div>
