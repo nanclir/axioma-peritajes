@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Smith Quintero;Ricardo;A.;PhD.;
+FN:PhD. Ricardo A. Smith Quintero
+ORG:ACUMEN INGENIERÍA S.A.S.
+TITLE:Socio Director / PhD. en Recursos Hidráulicos
+TEL;TYPE=CELL,VOICE,PREF:+573005771484
+EMAIL;TYPE=WORK,PREF:contacto@acumeningenieria.com
+URL;TYPE=WORK:https://www.acumeningenieria.com
+NOTE:Ph.D. y M.Sc. Colorado State University. Profesor Emérito y ex-Decano Facultad de Minas UNAL.
+END:VCARD
