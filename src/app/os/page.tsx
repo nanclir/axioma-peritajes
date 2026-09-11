@@ -283,11 +283,13 @@ END:VCARD`;
     URL.revokeObjectURL(url);
   };
 
-  const handleSolveSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("PARÁMETROS ENVIADOS AL CORE: Requerimientos técnicos catalogados exitosamente en la base de datos.");
-    const overlay = document.getElementById("solve-overlay");
-    if (overlay) overlay.classList.add("hidden");
+  const openWhatsAppSolve = (divIndex: number) => {
+    const div = divisions[divIndex];
+    if (!div) return;
+    const phone = "573005771484";
+    const message = `Hola, estuve revisando la división de ${div.title} (${div.category}) en ACUMEN OS y me gustaría consultar la estructuración técnica o evaluación de un proyecto.`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
   };
 
   // Grid style variables for offline CSS reliability
@@ -633,13 +635,10 @@ END:VCARD`;
 
                     <div className="flex flex-col gap-4 pt-4 border-t border-slate-100">
                       <button 
-                        onClick={() => {
-                          const overlay = document.getElementById("solve-overlay");
-                          if (overlay) overlay.classList.remove("hidden");
-                        }} 
-                        className="w-full py-2.5 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[10px] tracking-widest uppercase text-center transition-colors"
+                        onClick={() => openWhatsAppSolve(index)} 
+                        className="w-full py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[10px] tracking-widest uppercase text-center transition-colors"
                       >
-                        Resolver Necesidad →
+                        Resolver Necesidad vía WhatsApp →
                       </button>
                     </div>
                   </div>
@@ -694,13 +693,10 @@ END:VCARD`;
 
               <div className="mt-8 border-t border-slate-200/60 pt-6 flex flex-col md:flex-row justify-end items-start md:items-center gap-4">
                 <button 
-                  onClick={() => {
-                    const overlay = document.getElementById("solve-overlay");
-                    if (overlay) overlay.classList.remove("hidden");
-                  }} 
+                  onClick={() => openWhatsAppSolve(activeColumn as number)} 
                   className="px-6 py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-[11px] tracking-widest uppercase transition-colors"
                 >
-                  Resolver Necesidad →
+                  Resolver Necesidad vía WhatsApp →
                 </button>
               </div>
             </div>
@@ -748,45 +744,7 @@ END:VCARD`;
           </div>
         )}
 
-        {/* SOLVER / CONTACT OVERLAY */}
-        <div id="solve-overlay" className="hidden fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm flex justify-center items-center p-6">
-          <div style={gridStyle} className="w-full max-w-md bg-white border border-slate-200 p-8 shadow-2xl relative rounded-sm">
-            <div style={gridMajorStyle} className="absolute inset-0 pointer-events-none z-0"></div>
-            <button 
-              onClick={() => {
-                const overlay = document.getElementById("solve-overlay");
-                if (overlay) overlay.classList.add("hidden");
-              }} 
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-sm"
-            >
-              ✕
-            </button>
-            
-            <div className="relative z-10">
-              <span className="font-mono text-[9px] text-amber-700 tracking-widest uppercase">ACUMEN SOLVER</span>
-              <h3 className="text-xl font-bold tracking-tight text-slate-950 uppercase mb-1">Diagnosticar Proyecto</h3>
-              <p className="text-xs text-slate-500 mb-6">Envíe los requerimientos específicos a nuestro laboratorio y nos comunicaremos en menos de 24h.</p>
-              
-              <form onSubmit={handleSolveSubmit} className="flex flex-col gap-4">
-                <div>
-                  <label className="block font-mono text-[10px] text-slate-400 uppercase mb-1">Nombre Completo</label>
-                  <input required type="text" className="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="ING. ALBERTO GOMEZ" />
-                </div>
-                <div>
-                  <label className="block font-mono text-[10px] text-slate-400 uppercase mb-1">Correo Institucional</label>
-                  <input required type="email" className="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="AGOMEZ@EMPRESA.COM" />
-                </div>
-                <div>
-                  <label className="block font-mono text-[10px] text-slate-400 uppercase mb-1">Descripción del Desafío</label>
-                  <textarea required rows={3} className="w-full px-3 py-2 border border-slate-200 focus:outline-none focus:border-amber-600 font-mono text-xs" placeholder="Describa el fallo, la modelación o el peritaje requerido..."></textarea>
-                </div>
-                <button type="submit" className="w-full py-3 bg-slate-950 hover:bg-amber-700 text-white font-mono text-xs tracking-wider uppercase transition-colors mt-2">
-                  Enviar Parámetros de Solución →
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
+
 
         {/* EXECUTIVE LEADERSHIP & CONTACT MODAL (FICHA DE IDENTIDAD) */}
         {souvenirOpen && (
