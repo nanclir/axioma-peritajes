@@ -57,8 +57,8 @@ const divisions: Division[] = [
       }
     ],
     megaproject: {
-      title: "Escenarios Energéticos UPME",
-      detail: "Estructuración de simulaciones estocásticas a gran escala y escenarios de abastecimiento para el sector energético nacional."
+      title: "Escenarios Energéticos para el Siglo XXI - UPME",
+      detail: "Desarrollo de escenarios energéticos para Colombia bajo el liderazgo de la Unidad de Planeamiento Minero Energético (UPME), Ministerio de Minas y Energía (1999-2000)."
     },
     pdf: "/pdf/ficha_tecnica_futureproof.pdf",
     sim: {
@@ -89,8 +89,8 @@ const divisions: Division[] = [
       }
     ],
     megaproject: {
-      title: "SIMM Medellín",
-      detail: "Modelación de flujos vehiculares a 10 años e integración financiera del Sistema Inteligente de Movilidad de la ciudad."
+      title: "Sistema Inteligente de Movilidad de Medellín (SIMM)",
+      detail: "Estructuración, contratación e implementación de herramientas de Sistemas Inteligentes de Transporte únicas en Colombia, complementadas con modelamiento financiero a 10 años."
     },
     pdf: "/os/visor_futureproof.html",
     sim: {
@@ -121,8 +121,8 @@ const divisions: Division[] = [
       }
     ],
     megaproject: {
-      title: "Túnel del Toyo",
-      detail: "Estabilización y control geomecánico del portal de acceso del túnel más largo de América, con presupuestos controlados."
+      title: "Túnel del Toyo y Gestión Vial (Antioquia)",
+      detail: "Estructuración, presupuestación y contratación del Túnel del Toyo y recuperación de la red vial del departamento de Antioquia, pasando de un 15% a un 85% en buen estado. Premio Presidencial por ejecución de regalías."
     },
     pdf: "/pdf/ficha_tecnica_taludes.pdf",
     sim: {
@@ -153,8 +153,8 @@ const divisions: Division[] = [
       }
     ],
     megaproject: {
-      title: "Plan Estratégico Ciudad de Panamá",
-      detail: "Estructuración de políticas de ordenación territorial financieras y supervisadas por el BID para el área metropolitana de Panamá."
+      title: "Plan Estratégico de Gobierno - Ciudad de Panamá (BID)",
+      detail: "Asesoría y acompañamiento a la Alcaldía de la Ciudad de Panamá en la elaboración de su plan quinquenal y en la construcción de su plan estratégico de gobierno, financiado por el Banco Interamericano de Desarrollo - BID (2024-2025)."
     },
     pdf: "/pdf/ficha_tecnica_taludes.pdf",
     sim: {
@@ -185,8 +185,8 @@ const divisions: Division[] = [
       }
     ],
     megaproject: {
-      title: "Dictámenes de Litigio de Megaproyectos",
-      detail: "Más de 30 dictámenes periciales presentados exitosamente en disputas de infraestructura vial nacional por fallos en túneles y puentes."
+      title: "Peritajes Técnicos en Megaobras",
+      detail: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas."
     },
     pdf: "/pdf/ficha_tecnica_embalse.pdf",
     sim: {
