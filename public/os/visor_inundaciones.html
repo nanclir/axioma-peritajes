@@ -975,18 +975,18 @@
                 display: none !important;
             }
 
-            /* Bottom Drawer (Hidrogramas) en Móvil */
+            /* Bottom Drawer (Hidrogramas) en Móvil: VISIBLE Y PROMINENTE */
             .bottom-drawer {
-                height: 245px !important;
-                padding: 6px 8px 8px 8px !important;
-                transform: translateY(calc(100% - 36px)) !important;
-                z-index: 45 !important;
+                height: 205px !important;
+                padding: 6px 10px 6px 10px !important;
+                transform: translateY(0) !important;
+                z-index: 35 !important;
                 box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.85) !important;
                 transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
 
-            .bottom-drawer.expanded-mobile {
-                transform: translateY(0) !important;
+            .bottom-drawer.collapsed-mobile {
+                transform: translateY(calc(100% - 34px)) !important;
             }
 
             .drawer-header {
@@ -994,7 +994,7 @@
                 justify-content: space-between !important;
                 align-items: center !important;
                 gap: 4px !important;
-                margin-bottom: 4px !important;
+                margin-bottom: 3px !important;
                 width: 100% !important;
                 box-sizing: border-box !important;
             }
@@ -1036,17 +1036,32 @@
             }
 
             #hydrograph-canvas {
-                height: 110px !important;
+                width: 100% !important;
+                height: 125px !important;
+                display: block !important;
             }
 
             .hydro-legend-bar {
-                gap: 2px 3px !important;
-                margin-bottom: 2px !important;
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                gap: 5px !important;
+                margin-bottom: 3px !important;
+                padding-bottom: 2px !important;
+                scrollbar-width: none !important;
+            }
+
+            .hydro-legend-bar::-webkit-scrollbar {
+                display: none !important;
             }
 
             .legend-pill {
-                padding: 1px 4px !important;
-                font-size: 0.56rem !important;
+                flex-shrink: 0 !important;
+                padding: 1px 5px !important;
+                font-size: 0.58rem !important;
+                white-space: nowrap !important;
             }
 
             /* Sidebar: Cajón Deslizante Bottom-Sheet para Celulares */
@@ -1136,27 +1151,31 @@
             /* Botón Flotante (FAB) de Parámetros en Móvil */
             .mobile-fab {
                 display: flex !important;
-                position: fixed;
-                bottom: 44px;
-                right: 12px;
-                z-index: 40;
-                background: linear-gradient(135deg, var(--acumen-blue), #0284c7);
-                color: #fff;
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                border-radius: 24px;
-                padding: 7px 13px;
-                font-family: var(--font-sans);
-                font-size: 0.74rem;
-                font-weight: 700;
-                box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
-                align-items: center;
-                gap: 5px;
-                cursor: pointer;
-                transition: transform 0.2s, box-shadow 0.2s;
+                position: fixed !important;
+                bottom: 215px !important;
+                right: 12px !important;
+                z-index: 40 !important;
+                background: linear-gradient(135deg, var(--acumen-blue), #0284c7) !important;
+                color: #fff !important;
+                border: 1px solid rgba(255, 255, 255, 0.25) !important;
+                border-radius: 24px !important;
+                padding: 7px 13px !important;
+                font-family: var(--font-sans) !important;
+                font-size: 0.74rem !important;
+                font-weight: 700 !important;
+                box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5) !important;
+                align-items: center !important;
+                gap: 5px !important;
+                cursor: pointer !important;
+                transition: transform 0.2s, box-shadow 0.2s, bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+
+            body.drawer-collapsed .mobile-fab {
+                bottom: 44px !important;
             }
 
             .mobile-fab:active {
-                transform: scale(0.95);
+                transform: scale(0.95) !important;
             }
 
             /* Modal Infográfico en Móvil */
@@ -1363,7 +1382,7 @@
                         </div>
                         <button class="drawer-toggle-btn" id="drawer-toggle-text">
                             <span class="btn-text-full">Ocultar ▼</span>
-                            <span class="btn-text-short">Mostrar ▲</span>
+                            <span class="btn-text-short">Ocultar ▼</span>
                         </button>
                     </div>
 
@@ -2711,8 +2730,9 @@
             }
 
             if (hydroCanvas && hydroCanvas.parentElement) {
-                const hw = hydroCanvas.parentElement.clientWidth - 40;
-                const hh = 130;
+                const isMobile = window.innerWidth <= 850;
+                const hw = isMobile ? (hydroCanvas.parentElement.clientWidth - 20) : (hydroCanvas.parentElement.clientWidth - 40);
+                const hh = isMobile ? 125 : 130;
                 const dpr = Math.min(window.devicePixelRatio || 1, 2);
                 hydroCanvas.width = Math.round(hw * dpr);
                 hydroCanvas.height = Math.round(hh * dpr);
@@ -2982,10 +3002,12 @@
             const drawer = document.getElementById('bottom-drawer');
             const toggleBtn = document.getElementById('drawer-toggle-text');
             if (window.innerWidth <= 850) {
-                const isExp = drawer.classList.toggle('expanded-mobile');
+                const isCollapsed = drawer.classList.toggle('collapsed-mobile');
+                document.body.classList.toggle('drawer-collapsed', isCollapsed);
                 if (toggleBtn) {
-                    toggleBtn.innerHTML = isExp ? '<span class="btn-text-short">Ocultar ▼</span>' : '<span class="btn-text-short">Mostrar ▲</span>';
+                    toggleBtn.innerHTML = isCollapsed ? '<span class="btn-text-short">Mostrar ▲</span>' : '<span class="btn-text-short">Ocultar ▼</span>';
                 }
+                setTimeout(resizeCanvases, 50);
             } else {
                 isDrawerCollapsed = !isDrawerCollapsed;
                 if (isDrawerCollapsed) {
@@ -2995,6 +3017,7 @@
                     drawer.classList.remove('collapsed');
                     if (toggleBtn) toggleBtn.innerHTML = '<span class="btn-text-full">Ocultar ▼</span>';
                 }
+                setTimeout(resizeCanvases, 50);
             }
         }
 
@@ -4379,7 +4402,11 @@
             const h = hydroCanvas.height / dpr;
             hydroCtx.clearRect(0, 0, w, h);
 
-            const padL = 50, padR = 18, padT = 18, padB = 26;
+            const isMobile = window.innerWidth <= 850;
+            const padL = isMobile ? 36 : 50;
+            const padR = isMobile ? 12 : 18;
+            const padT = isMobile ? 14 : 18;
+            const padB = isMobile ? 22 : 26;
             const gw = w - padL - padR;
             const gh = h - padT - padB;
             const maxQ = 65;
@@ -4538,10 +4565,7 @@
             try { updateRisk(); } catch (e) {}
             try { updateHydraulics(); } catch (e) {}
 
-            if (window.innerWidth <= 850) {
-                const btn = document.getElementById('drawer-toggle-text');
-                if (btn) btn.innerHTML = '<span class="btn-text-short">Mostrar ▲</span>';
-            }
+            // Hydrograph drawer is OPEN by default on both desktop and mobile
 
             // Check URL parameters or hash for direct deep-linking (e.g. ?mode=2d, ?mode=profile, #2d, ?sheet=open)
             try {
