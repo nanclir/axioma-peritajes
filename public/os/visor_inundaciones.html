@@ -3490,19 +3490,8 @@
             ctx.textAlign = "left";
             ctx.fillText("Barrido Doppler 360° en vivo", legX + 8, radarCardY + 58);
 
-            // --- 9. INDICADORES CARDINALES EN LOS MÁRGENES (NORTE / SUR / ORIENTE / OCCIDENTE) ---
-            // Banner Norte (Top Edge - Ubicado debajo del Cockpit Ribbon para evitar solapamientos)
-            const bannerNW = 340;
-            const northBannerY = Math.max(54, drawY + 8);
-            ctx.fillStyle = "rgba(7, 13, 24, 0.88)";
-            ctx.fillRect(drawX + (drawW - bannerNW) * 0.5, northBannerY, bannerNW, 20);
-            ctx.strokeStyle = "rgba(0, 240, 255, 0.75)";
-            ctx.lineWidth = 1.2;
-            ctx.strokeRect(drawX + (drawW - bannerNW) * 0.5, northBannerY, bannerNW, 20);
-            ctx.fillStyle = "#00f0ff";
-            ctx.font = "bold 10px 'Share Tech Mono', monospace";
-            ctx.textAlign = "center";
-            ctx.fillText("▲ NORTE (N) // HACIA CALLE 33 & RÍO MEDELLÍN", drawX + drawW * 0.5, northBannerY + 14);
+            // --- 9. INDICADORES CARDINALES EN LOS MÁRGENES (SUR / ORIENTE / OCCIDENTE) ---
+            // (El Norte se indica con precisión en la rosa de los vientos / compás superior derecho)
 
             // Banner Sur (Bottom Edge)
             const bannerSW = 340;
