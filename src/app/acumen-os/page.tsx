@@ -576,6 +576,48 @@ export default function AcumenOSPage() {
             </div>
           </div>
 
+          {/* SECCIÓN 4: CONTROL DE INUNDACIONES BAJO NO ESTACIONARIEDAD */}
+          <div className="grid md:grid-cols-2 gap-16 items-center pt-20 border-t border-zinc-800">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 bg-blue-500"></div>
+                <span className="font-mono text-xs tracking-widest text-blue-400 uppercase font-semibold">Drenaje Urbano Integrado</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
+                Demo de Inundaciones (No Estacionariedad)
+              </h2>
+              <p className="text-zinc-400 leading-relaxed mb-8 text-lg">
+                Simule la interacción hidrológica distribuida de 5 afluentes urbanos sobre el Caño El Papa. Evalúe el riesgo real acumulado de falla según la formulación de Salas & Obeysekera (2014) y experimente con gemelo digital 3D, perfiles con curvas de remanso y mitigación con SUDS.
+              </p>
+              <div className="flex flex-wrap gap-4 items-center">
+                <a
+                  href="/os/visor_inundaciones.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-6 py-3.5 border border-transparent text-base font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-lg shadow-blue-900/30"
+                >
+                  Abrir Gemelo Digital 3D &rarr;
+                </a>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center">
+              <div className="bg-zinc-850 border border-zinc-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full">
+                <div className="bg-white p-3 rounded-lg shadow-inner">
+                  <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.acumeningenieria.com/os/visor_inundaciones.html"
+                    alt="Código QR del visor de Inundaciones"
+                    className="w-[180px] h-[180px] block"
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-bold text-sm text-white font-mono uppercase tracking-wider mb-1">Acceso Móvil</h4>
+                  <p className="text-xs text-zinc-400 leading-tight">Escanee este código con la cámara de su celular para abrir el gemelo digital interactivo directamente.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 

@@ -459,11 +459,11 @@ export default function Home() {
             <span className="text-xs font-mono font-bold tracking-widest text-zinc-500 uppercase">Tecnología ACUMEN OS</span>
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-zinc-900 mt-2 mb-4">Simuladores WebGL en Vivo</h2>
             <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
-              Pruebe de primera mano los algoritmos de nuestro sistema operativo. Hemos desplegado tres demos interactivas en 3D que puede operar directamente desde su navegador.
+              Pruebe de primera mano los algoritmos de nuestro sistema operativo. Hemos desplegado cuatro demos interactivas en 3D que puede operar directamente desde su navegador.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Demo 1: Geotecnia */}
             <div className="bg-white border border-zinc-200 hover:border-zinc-400 transition-all rounded-sm overflow-hidden flex flex-col shadow-sm">
               <div className="h-48 bg-zinc-900 relative overflow-hidden flex items-center justify-center">
@@ -531,6 +531,30 @@ export default function Home() {
                   </p>
                 </div>
                 <Link href="/os/visor_embalse.html" target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
+                  Iniciar Simulador <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Demo 4: Inundaciones */}
+            <div className="bg-white border border-zinc-200 hover:border-zinc-400 transition-all rounded-sm overflow-hidden flex flex-col shadow-sm">
+              <div className="h-48 bg-zinc-900 relative overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-[url('/images/inundaciones_simulador.png')] bg-cover bg-center opacity-40" />
+                <div className="relative z-10 text-center">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    DEMO ONLINE
+                  </div>
+                </div>
+              </div>
+              <div className="p-8 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-zinc-900 mb-2">Control de Inundaciones (No Estacionario)</h3>
+                  <p className="text-zinc-600 text-xs leading-relaxed mb-6">
+                    Simule la hidrodinámica 3D/2D del Caño El Papa con afluentes sincronizados, riesgo no estacionario (Salas &amp; Obeysekera) y desbordes en tiempo real.
+                  </p>
+                </div>
+                <Link href="/os/visor_inundaciones.html" target="_blank" rel="noopener noreferrer" className="mt-auto inline-flex items-center gap-2 text-zinc-950 font-bold text-sm uppercase tracking-wider hover:text-gold-600 transition-colors">
                   Iniciar Simulador <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

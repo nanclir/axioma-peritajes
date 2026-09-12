@@ -1,0 +1,4141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ACUMEN OS // Gemelo Digital de Inundaciones - Caño El Papa</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Three.js & OrbitControls for Real 3D WebGL Diorama -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        :root {
+            --bg-dark: #07090e;
+            --panel-bg: rgba(13, 18, 29, 0.94);
+            --panel-border: #1e293b;
+            --acumen-blue: #2563eb;
+            --acumen-cyan: #06b6d4;
+            --acumen-gold: #eab308;
+            --acumen-green: #10b981;
+            --acumen-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-sans: 'Outfit', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+        }
+
+        /* Tech Grid Background */
+        #radar-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 0),
+                radial-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* App Container */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            padding: 0 24px;
+            background: rgba(7, 9, 14, 0.92);
+            border-bottom: 1px solid var(--panel-border);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 1.5px;
+            color: #fff;
+        }
+
+        .brand-badge {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(37, 99, 235, 0.18);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            color: var(--acumen-cyan);
+            letter-spacing: 1px;
+        }
+
+        /* Mode Switcher Tabs */
+        .mode-switcher {
+            display: flex;
+            background: rgba(18, 24, 38, 0.85);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            gap: 4px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mode-btn.active {
+            background: var(--acumen-blue);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--acumen-green);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--acumen-green);
+            box-shadow: 0 0 8px var(--acumen-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Main Workspace */
+        .workspace {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Left / Center Viewport */
+        .viewport-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: #030509;
+            overflow: hidden;
+        }
+
+        /* 3D WebGL Canvas Container */
+        #three-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        /* 2D / Profile Canvas */
+        #render-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 6;
+        }
+
+        /* Telemetry Cockpit Ribbon (Option 1 - Sleek Minimalist T-Bar) */
+        .telemetry-ribbon {
+            position: absolute;
+            top: 10px;
+            left: 14px;
+            right: 14px;
+            height: 34px;
+            background: rgba(10, 16, 28, 0.90);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            z-index: 25;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+            font-family: var(--font-mono);
+            user-select: none;
+        }
+
+        .ribbon-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .ribbon-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .hud-val {
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+
+        .hud-unit {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .val-cyan { color: var(--acumen-cyan); }
+        .val-gold { color: var(--acumen-gold); }
+        .val-green { color: var(--acumen-green); }
+        .val-red { color: var(--acumen-red); }
+
+        .ribbon-divider {
+            width: 1px;
+            height: 18px;
+            background: rgba(56, 189, 248, 0.22);
+        }
+
+        .ribbon-compass {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .compass-dial {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compass-dial svg {
+            display: block;
+            transition: transform 0.08s ease-out;
+        }
+
+        .compass-heading {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--acumen-cyan);
+            letter-spacing: 0.5px;
+        }
+
+        /* Camera Tip for 3D */
+        .camera-tip {
+            position: absolute;
+            bottom: 180px;
+            left: 20px;
+            background: rgba(13, 18, 29, 0.85);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--acumen-cyan);
+            z-index: 15;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* 3D Floating Landmark Labels */
+        .landmark-badge {
+            position: absolute;
+            background: rgba(7, 9, 14, 0.88);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #fff;
+            pointer-events: none;
+            z-index: 15;
+            transform: translate(-50%, -100%);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .landmark-badge::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px 5px 0;
+            border-style: solid;
+            border-color: rgba(6, 182, 212, 0.5) transparent;
+        }
+
+        /* Bottom Hydrograph Drawer */
+        .bottom-drawer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 220px;
+            background: rgba(10, 14, 24, 0.96);
+            border-top: 1px solid var(--panel-border);
+            backdrop-filter: blur(14px);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            padding: 8px 18px 8px 18px;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bottom-drawer.collapsed {
+            transform: translateY(178px);
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+
+        .drawer-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .scrubber-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            max-width: 320px;
+            margin: 0 20px;
+        }
+
+        .scrubber-slider {
+            flex: 1;
+            accent-color: var(--acumen-blue);
+            height: 4px;
+            cursor: pointer;
+        }
+
+        .drawer-toggle-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            border-radius: 4px;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        /* Color-Coded Dynamic Hydrograph Legend */
+        .hydro-legend-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 6px;
+            margin-bottom: 4px;
+        }
+
+        .legend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--panel-border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.65rem;
+            font-family: var(--font-mono);
+            white-space: nowrap;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .legend-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .legend-pill.pill-total {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .legend-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-pill .pill-name {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .legend-pill .pill-flow {
+            color: #94a3b8;
+            font-size: 0.63rem;
+            margin-left: 2px;
+        }
+
+        .legend-pill .pill-flow strong {
+            color: #f1f5f9;
+        }
+
+        #hydrograph-canvas {
+            width: 100%;
+            height: 130px;
+            display: block;
+        }
+
+        /* Right Control Panel */
+        .sidebar {
+            width: 360px;
+            background: var(--panel-bg);
+            border-left: 1px solid var(--panel-border);
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            z-index: 30;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            color: var(--acumen-cyan);
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        .control-group {
+            margin-bottom: 14px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .control-value {
+            font-family: var(--font-mono);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 5px;
+            background: #1e293b;
+            border-radius: 3px;
+            accent-color: var(--acumen-blue);
+            cursor: pointer;
+        }
+
+        /* Toggle Switches */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-row:hover {
+            border-color: rgba(37, 99, 235, 0.3);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .toggle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toggle-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .toggle-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #1e293b;
+            border-radius: 20px;
+            transition: .3s;
+        }
+
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .3s;
+        }
+
+        input:checked + .slider-round {
+            background-color: var(--acumen-green);
+        }
+
+        input:checked + .slider-round:before {
+            transform: translateX(16px);
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--acumen-cyan);
+            line-height: 1.4;
+            margin-top: 10px;
+        }
+
+        /* PDF Modal & Header Button */
+        .pdf-modal-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(6, 182, 212, 0.22));
+            border: 1px solid rgba(56, 189, 248, 0.55);
+            color: #38bdf8;
+            padding: 5px 13px;
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            font-size: 0.80rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(6, 182, 212, 0.15);
+        }
+        .pdf-modal-btn:hover {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.45), rgba(6, 182, 212, 0.45));
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Fullscreen Interactive PDF Modal */
+        .pdf-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.88);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .pdf-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .pdf-modal-window {
+            width: 95vw;
+            max-width: 1400px;
+            height: 92vh;
+            background: #0b1120;
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            border-radius: 12px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .pdf-modal-header {
+            height: 56px;
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            gap: 16px;
+        }
+        .pdf-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 0.5px;
+        }
+        .pdf-modal-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .pdf-page-selector {
+            display: flex;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+            padding: 3px;
+            gap: 3px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        .pdf-page-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-family: var(--font-sans);
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .pdf-page-btn.active {
+            background: var(--acumen-blue);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+        }
+        .pdf-download-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #34d399;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pdf-download-btn:hover {
+            background: rgba(16, 185, 129, 0.35);
+            color: #fff;
+            border-color: #34d399;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+        }
+        .pdf-close-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pdf-close-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .pdf-modal-body {
+            flex: 1;
+            background: #050811;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .pdf-preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        /* Methodology Card styles */
+        .methodology-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .method-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.70rem;
+        }
+        .method-label {
+            color: var(--text-muted);
+        }
+        .method-val {
+            font-weight: 700;
+        }
+
+        /* Mobile / Small Screens */
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; }
+            .workspace { flex-direction: column; }
+            .sidebar { width: 100%; height: 300px; border-left: none; border-top: 1px solid var(--panel-border); }
+            .telemetry-ribbon { height: auto; flex-wrap: wrap; gap: 4px 8px; padding: 4px 10px; }
+            .ribbon-item { font-size: 0.70rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="radar-grid"></div>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <div class="brand-area">
+                <div class="brand-logo">
+                    <svg width="22" height="22" viewBox="0 0 100 100">
+                        <polygon points="50,10 90,32 90,68 50,90 10,68 10,32" stroke="#2563eb" stroke-width="8" fill="none"/>
+                        <polygon points="50,22 80,38 80,62 50,78 20,62 20,38" stroke="#06b6d4" stroke-width="5" fill="none"/>
+                        <circle cx="50" cy="50" r="10" fill="#fff"/>
+                    </svg>
+                    ACUMEN OS
+                </div>
+                <div class="brand-badge">DIGITAL TWIN // CAÑO EL PAPA</div>
+            </div>
+
+            <!-- View Modes Switcher -->
+            <div class="mode-switcher">
+                <button class="mode-btn active" id="btn-mode-3d" onclick="setMode('3d')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    3D Gemelo Digital
+                </button>
+                <button class="mode-btn" id="btn-mode-2d" onclick="setMode('2d')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                    Mapa 2D Riesgo
+                </button>
+                <button class="mode-btn" id="btn-mode-profile" onclick="setMode('profile')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+                    Perfil Hidráulico
+                </button>
+            </div>
+
+            <!-- Status Indicator & PDF Document Button -->
+            <div class="header-actions">
+                <button class="pdf-modal-btn" onclick="openPdfModal()" title="Consultar Memoria Metodológica e Infografía en Alta Resolución">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    <span>Memoria Metodológica (PDF)</span>
+                </button>
+                <div class="status-pill">
+                    <div class="pulse-dot"></div>
+                    <span>SIMULACIÓN HIDRÁULICA ACTIVA</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Fullscreen Interactive Infographic Modal -->
+        <div class="pdf-modal-overlay" id="pdf-modal" onclick="closePdfModal(event)">
+            <div class="pdf-modal-window" onclick="event.stopPropagation()">
+                <div class="pdf-modal-header">
+                    <div class="pdf-modal-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span>ACUMEN OS // MEMORIA METODOLÓGICA E INFOGRAFÍA TÉCNICA</span>
+                        <span class="brand-badge" style="margin-left:8px;">ALTA RIGUROSIDAD</span>
+                    </div>
+                    <div class="pdf-modal-actions">
+                        <div class="pdf-page-selector">
+                            <button class="pdf-page-btn active" id="btn-pdf-p1" onclick="selectPdfPage(1)">Pág. 1: Física y Disrupción</button>
+                            <button class="pdf-page-btn" id="btn-pdf-p2" onclick="selectPdfPage(2)">Pág. 2: TETIS & Salas-Obeysekera</button>
+                            <button class="pdf-page-btn" id="btn-pdf-p3" onclick="selectPdfPage(3)">Pág. 3: 2D & PINNs / IA</button>
+                        </div>
+                        <a href="memoria_metodologica_acumen.pdf" download="Memoria_Metodologica_Acumen_CanoElPapa.pdf" class="pdf-download-btn" title="Descargar documento PDF original">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Descargar PDF Oficial
+                        </a>
+                        <button class="pdf-close-btn" onclick="closePdfModal(null)">✕</button>
+                    </div>
+                </div>
+                <div class="pdf-modal-body">
+                    <img id="pdf-preview-img" src="memoria_p1.png" alt="Memoria Metodológica Acumen" class="pdf-preview-image">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="workspace">
+            
+            <!-- Viewport Container -->
+            <div class="viewport-container">
+                
+                <!-- Telemetry Cockpit Ribbon (Option 1 - Sleek Minimalist T-Bar) -->
+                <div class="telemetry-ribbon" id="telemetry-ribbon">
+                    <div class="ribbon-item">
+                        <span class="ribbon-label">Q Confluencia:</span>
+                        <div class="hud-val val-cyan" id="hud-flow">35.0 <span class="hud-unit">m³/s</span></div>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-label">Calado (h):</span>
+                        <div class="hud-val val-gold" id="hud-depth">2.42 <span class="hud-unit">m</span></div>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-label">Velocidad (V):</span>
+                        <div class="hud-val" id="hud-velocity">3.15 <span class="hud-unit">m/s</span></div>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-label">Borde Libre:</span>
+                        <div class="hud-val val-green" id="hud-freeboard">0.58 <span class="hud-unit">m</span></div>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-label">Riesgo (R 50a):</span>
+                        <div class="hud-val val-red" id="hud-risk">71.4 <span class="hud-unit">%</span></div>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item ribbon-compass" id="hud-compass">
+                        <div class="compass-dial">
+                            <svg width="22" height="22" viewBox="0 0 40 40">
+                                <circle cx="20" cy="20" r="18" fill="rgba(7, 13, 24, 0.9)" stroke="rgba(56, 189, 248, 0.5)" stroke-width="2"/>
+                                <polygon points="20,5 24,20 20,17" fill="#00f0ff"/>
+                                <polygon points="20,35 24,20 20,23" fill="#f59e0b"/>
+                                <text x="20" y="11" font-family="'Share Tech Mono'" font-size="8" font-weight="bold" fill="#00f0ff" text-anchor="middle">N</text>
+                                <text x="20" y="33" font-family="'Share Tech Mono'" font-size="8" font-weight="bold" fill="#f59e0b" text-anchor="middle">S</text>
+                            </svg>
+                        </div>
+                        <span class="compass-heading">RUMBO: 015° NNE</span>
+                    </div>
+                </div>
+
+                <!-- Three.js Real 3D Container -->
+                <div id="three-container"></div>
+
+                <!-- 2D / Profile Canvas -->
+                <canvas id="render-canvas"></canvas>
+
+                <!-- Camera Tip for 3D -->
+                <div class="camera-tip" id="camera-tip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+                    Órbita 3D: Clic y arrastrar para rotar | Rueda para zoom | Canal despejado
+                </div>
+
+                <!-- Bottom Drawer: Hydrographs -->
+                <div class="bottom-drawer" id="bottom-drawer">
+                    <div class="drawer-header" onclick="toggleDrawer()">
+                        <div class="drawer-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Hidrogramas Sincronizados de Tributarios vs. Caño El Papa
+                        </div>
+                        <div class="scrubber-box" onclick="event.stopPropagation()">
+                            <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);">Tiempo:</span>
+                            <input type="range" class="scrubber-slider" id="time-scrubber" min="0" max="180" value="45" oninput="onTimeChange(this.value)">
+                            <span id="time-display" style="font-family:var(--font-mono); font-size:0.75rem; color:#fff; width:45px;">45 min</span>
+                        </div>
+                        <button class="drawer-toggle-btn" id="drawer-toggle-text">Ocultar ▲</button>
+                    </div>
+
+                    <!-- Color-Coded Dynamic Legend -->
+                    <div class="hydro-legend-bar" id="hydro-legend-bar">
+                        <div class="legend-pill pill-total">
+                            <span class="legend-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
+                            <span class="pill-name">Caño El Papa (Total Sincronizado)</span>
+                            <span class="pill-flow" id="pill-flow-total">Q: <strong>35.0 m³/s</strong></span>
+                        </div>
+                        <div class="legend-pill">
+                            <span class="legend-dot" style="background:#06b6d4;"></span>
+                            <span class="pill-name">Q. La Guayabala</span>
+                            <span class="pill-flow" id="pill-flow-0">Q: <strong>14.5 m³/s</strong></span>
+                        </div>
+                        <div class="legend-pill">
+                            <span class="legend-dot" style="background:#a855f7;"></span>
+                            <span class="pill-name">Caño Panorama</span>
+                            <span class="pill-flow" id="pill-flow-1">Q: <strong>8.2 m³/s</strong></span>
+                        </div>
+                        <div class="legend-pill">
+                            <span class="legend-dot" style="background:#10b981;"></span>
+                            <span class="pill-name">Q. Las Playas</span>
+                            <span class="pill-flow" id="pill-flow-2">Q: <strong>11.7 m³/s</strong></span>
+                        </div>
+                        <div class="legend-pill">
+                            <span class="legend-dot" style="background:#f97316;"></span>
+                            <span class="pill-name">Caño San Bernardo</span>
+                            <span class="pill-flow" id="pill-flow-3">Q: <strong>6.8 m³/s</strong></span>
+                        </div>
+                        <div class="legend-pill">
+                            <span class="legend-dot" style="background:#ec4899;"></span>
+                            <span class="pill-name">Q. Altavista</span>
+                            <span class="pill-flow" id="pill-flow-4">Q: <strong>18.4 m³/s</strong></span>
+                        </div>
+                    </div>
+
+                    <canvas id="hydrograph-canvas"></canvas>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar: Controls -->
+            <div class="sidebar">
+                
+                <!-- Section 1: Non-Stationary Risk (Salas & Obeysekera) -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        No Estacionariedad (Salas & Obeysekera)
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label-row">
+                            <span>Vida Útil de Diseño (n)</span>
+                            <span class="control-value" id="val-lifespan">50 años</span>
+                        </div>
+                        <input type="range" class="range-slider" id="input-lifespan" min="10" max="100" value="50" step="5" oninput="updateRisk()">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label-row">
+                            <span>Período de Retorno Nominal (T)</span>
+                            <span class="control-value" id="val-return-period">100 años</span>
+                        </div>
+                        <input type="range" class="range-slider" id="input-return-period" min="10" max="200" value="100" step="10" oninput="updateRisk()">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label-row">
+                            <span>Tendencia Climática (Δp / año)</span>
+                            <span class="control-value" id="val-trend">+0.06%</span>
+                        </div>
+                        <input type="range" class="range-slider" id="input-trend" min="0" max="0.20" value="0.06" step="0.01" oninput="updateRisk()">
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Riesgo Acumulado:</strong> R = 1 - ∏(1 - p_t)<br>
+                        <strong>T No Estacionario:</strong> T_real = <span id="val-treal" style="color:#fff; font-weight:bold;">38.2 años</span>
+                    </div>
+                </div>
+
+                <!-- Section 2: Redesign and Optimization (Stage 9) -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 12l-4-4-4 4M12 16V8"/></svg>
+                        Rediseño y Mitigación (Etapa 9)
+                    </div>
+
+                    <label class="toggle-row">
+                        <div class="toggle-info">
+                            <span class="toggle-title">SUDS en Cuenca Alta</span>
+                            <span class="toggle-desc">Biorretención y pavimentos (-15% caudal)</span>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="toggle-suds" onchange="updateHydraulics()">
+                            <span class="slider-round"></span>
+                        </div>
+                    </label>
+
+                    <label class="toggle-row">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Laguna de Laminación</span>
+                            <span class="toggle-desc">Retención temporal en Confluencia Panorama (-22% pico)</span>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="toggle-detention" onchange="updateHydraulics()">
+                            <span class="slider-round"></span>
+                        </div>
+                    </label>
+
+                    <label class="toggle-row">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Ampliación de Sección</span>
+                            <span class="toggle-desc">Ensanche de solera Caño El Papa (+1.2m)</span>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="toggle-widening" onchange="updateHydraulics()">
+                            <span class="slider-round"></span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Section 3: Traditional vs Acumen Comparison -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                        Disrupción Metodológica: Acumen vs. Tradicional
+                    </div>
+
+                    <label class="toggle-row">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Enfoque Tradicional (Picos Ciegos)</span>
+                            <span class="toggle-desc">Suma algebraica no sincronizada (59.6 m³/s)</span>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="toggle-traditional" onchange="updateHydraulics()">
+                            <span class="slider-round"></span>
+                        </div>
+                    </label>
+
+                    <div class="methodology-card" id="methodology-card">
+                        <div class="method-row">
+                            <span class="method-label">Caudal Pico Acumen:</span>
+                            <span class="method-val val-green">35.0 m³/s (-41.2%)</span>
+                        </div>
+                        <div class="method-row">
+                            <span class="method-label">Caudal Tradicional (Hidrog. Unit.):</span>
+                            <span class="method-val val-red">59.6 m³/s (+70.3%)</span>
+                        </div>
+                        <div class="method-row">
+                            <span class="method-label">Riesgo No Estacionario (R₅₀):</span>
+                            <span class="method-val val-gold">71.4% vs 39.5% estac.</span>
+                        </div>
+                        <div class="method-row">
+                            <span class="method-label">Ahorro Estimado CAPEX:</span>
+                            <span class="method-val val-cyan">~38% (Canal 4.0m vs 6.5m)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Etapa 10 - Resiliencia y Mantenimiento de Puentes -->
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                        Etapa 10: Obstrucción y Mantenimiento
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label-row">
+                            <span>Colmatación / Palizadas en Puente Cll 30</span>
+                            <span class="control-value" id="val-obstruction">0%</span>
+                        </div>
+                        <input type="range" class="range-slider" id="input-obstruction" min="0" max="50" value="0" step="5" oninput="updateHydraulics()">
+                    </div>
+
+                    <div class="formula-box" id="box-obstruction-status">
+                        <strong>Efecto Remanso Adicional:</strong> Δh_obs = <span id="val-dh-obs" style="color:#38bdf8; font-weight:bold;">+0.00 m</span><br>
+                        <span id="txt-obstruction-status" style="font-size:0.72rem; color:var(--text-muted);">Sección libre sin palizadas ni sedimentos.</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts: Three.js Real 3D Engine + Hydrology -->
+    <script>
+        // State variables
+        let currentMode = '3d'; // '3d', '2d', 'profile'
+        let currentTime = 45; // Minutes into the storm
+        let isDrawerCollapsed = false;
+
+        // Tributary hydrographs definition (calibrated colors matching legend)
+        const tributaries = [
+            { name: "Q. La Guayabala", color: "#06b6d4", lag: 0,  tp: 35, qp: 14.5 },
+            { name: "Caño Panorama",   color: "#a855f7", lag: 15, tp: 22, qp: 8.2 },
+            { name: "Q. Las Playas",   color: "#10b981", lag: 28, tp: 30, qp: 11.7 },
+            { name: "Caño San Bernardo",color: "#f97316", lag: 40, tp: 20, qp: 6.8 },
+            { name: "Q. Altavista",    color: "#ec4899", lag: 50, tp: 42, qp: 18.4 }
+        ];
+
+        // 2D Canvas references & Satellite Basemap
+        const renderCanvas = document.getElementById('render-canvas');
+        const ctx = renderCanvas.getContext('2d');
+        const hydroCanvas = document.getElementById('hydrograph-canvas');
+        const hydroCtx = hydroCanvas.getContext('2d');
+
+        // Satellite Image Basemap Preloading (ESRI World Imagery / SIATA)
+        const satImage = new Image();
+        satImage.src = 'satelite_juanpablo_olaya.png';
+        let satImageLoaded = false;
+        satImage.onload = () => {
+            satImageLoaded = true;
+            if (currentMode === '2d') {
+                render2DView();
+            }
+        };
+        satImage.onerror = (e) => {
+            console.warn("Aviso: la imagen satelital se cargará vía HTTP en producción:", e);
+        };
+
+        // --- THREE.JS ENGINE SETUP ---
+        let scene, camera, renderer, controls;
+        let waterMesh, waterAltaMesh, waterBernardoMesh, waterGuayaMesh, waterPanoMesh, waterPlayasMesh, pondWaterMesh;
+        let overflowMesh3D, overflowBadge3D;
+        let dioramaGroup, airportGroup, parkGroup, bridgeGroup, buildingGroup, labelGroup, terrainMesh, c80Group;
+        let waterLight, bridgeLight, c80Light;
+        let flowParticles, particleGeo;
+        let bridgeCars = [];
+        let southRoadCars = [];
+
+        function initThreeJS() {
+            const container = document.getElementById('three-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x040711);
+            scene.fog = new THREE.FogExp2(0x040711, 0.0032);
+
+            // Isometric Perspective: View looking North-Northwest from South-East
+            // Places Olaya Herrera on East (Right), Caño El Papa parallel in center, Juan Pablo II on West (Left)
+            camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+            camera.position.set(65, 95, 80);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.3;
+            container.appendChild(renderer.domElement);
+
+            // Orbit Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2.15;
+            controls.minDistance = 30;
+            controls.maxDistance = 280;
+            controls.target.set(4, -1, 0);
+
+            // --- HIGH-CONTRAST LIGHTING SYSTEM ---
+            const ambientLight = new THREE.AmbientLight(0x283548, 2.4);
+            scene.add(ambientLight);
+
+            // Key Directional Sunlight
+            const dirLight = new THREE.DirectionalLight(0xffffff, 2.6);
+            dirLight.position.set(70, 140, 80);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.camera.near = 10;
+            dirLight.shadow.camera.far = 320;
+            dirLight.shadow.camera.left = -95;
+            dirLight.shadow.camera.right = 95;
+            dirLight.shadow.camera.top = 95;
+            dirLight.shadow.camera.bottom = -95;
+            scene.add(dirLight);
+
+            // Blue Rim / Sky Fill Light
+            const fillLight = new THREE.DirectionalLight(0x38bdf8, 1.4);
+            fillLight.position.set(-80, 70, -70);
+            scene.add(fillLight);
+
+            // Cyan Luminous Point Light directly inside Caño El Papa corridor (x=8)
+            waterLight = new THREE.PointLight(0x00f0ff, 3.8, 140);
+            waterLight.position.set(8, 4, 0);
+            scene.add(waterLight);
+
+            // Warm Bridge Streetlight Illumination on Calle 30 (z=-25)
+            bridgeLight = new THREE.PointLight(0xfff1db, 2.2, 60);
+            bridgeLight.position.set(8, 8, -25);
+            scene.add(bridgeLight);
+
+            buildDioramaTerrain();
+            buildOlayaHerreraAirport();
+            buildAeroparqueJuanPabloII();
+            buildUrbanBelénAndCorridors();
+            buildBridges();
+            buildCarrera80South();
+            buildWaterSystem();
+            buildWorldHotspots();
+
+            animateThree();
+        }
+
+        // Caño El Papa Centerline: straight channel parallel to runway along Z-axis
+        function getCanalX(z) {
+            return 8.0;
+        }
+
+        // Q. La Guayabala Centerline: descends from Belén (West) to Confluence at (x=8, z=12)
+        function getGuayabalaZ(x) {
+            return 12.0 + (x - 8.0) * 0.04;
+        }
+
+        // Build the Architectural Diorama Slab & Georeferenced Channel Excavations
+        function buildDioramaTerrain() {
+            dioramaGroup = new THREE.Group();
+
+            // 1. Dark Concrete Base Pedestal Slab
+            const slabGeo = new THREE.BoxGeometry(160, 10, 160);
+            const slabMat = new THREE.MeshStandardMaterial({
+                color: 0x0a101d,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const baseSlab = new THREE.Mesh(slabGeo, slabMat);
+            baseSlab.position.y = -6;
+            baseSlab.receiveShadow = true;
+            dioramaGroup.add(baseSlab);
+
+            // 2. Terrain Surface with Valley Slopes, Airport Platform, and Parallel Channel
+            const gridX = 95, gridZ = 95;
+            const terrainGeo = new THREE.PlaneGeometry(160, 160, gridX, gridZ);
+            terrainGeo.rotateX(-Math.PI / 2);
+
+            const pos = terrainGeo.attributes.position;
+            for (let i = 0; i < pos.count; i++) {
+                const x = pos.getX(i);
+                const z = pos.getZ(i);
+
+                // Distance to Caño El Papa (parallel along Z at x = 8.0)
+                const distPapa = Math.abs(x - 8.0);
+
+                // Distances to the 5 western tributaries entering Caño El Papa (x <= 8.0)
+                let distTrib = 999;
+                if (x <= 8.0) {
+                    // 1. Q. Altavista (entering at z = 42.0 from southwest)
+                    const dAlta = Math.abs(z - (42.0 + (x - 8.0) * 0.08));
+                    // 2. Caño San Bernardo (entering at z = 25.0 from southwest)
+                    const dBernardo = Math.abs(z - (25.0 + (x - 8.0) * 0.06));
+                    // 3. Q. La Guayabala (entering at z = 10.0 across park)
+                    const dGuaya = Math.abs(z - (10.0 + Math.sin(x * 0.08) * 1.5));
+                    // 4. Caño Panorama (entering at z = -8.0)
+                    const dPano = Math.abs(z - (-8.0 + (x - 8.0) * 0.05));
+                    // 5. Q. Las Playas (entering at z = -45.0 north of Cll 30)
+                    const dPlayas = Math.abs(z - (-45.0 + Math.sin(x * 0.1) * 1.2));
+
+                    distTrib = Math.min(dAlta * 1.25, dBernardo * 1.25, dGuaya * 1.1, dPano * 1.25, dPlayas * 1.2);
+                }
+
+                const distChannel = Math.min(distPapa, distTrib);
+
+                let y = 0.0;
+                if (distChannel < 4.2) {
+                    // Elevated channel bed: y = -1.6m (Water is at y = -0.6 to +0.2m, completely visible)
+                    y = -1.6;
+                } else if (distChannel < 8.0) {
+                    // Concrete Embankment (Talud canalizado)
+                    const t = (distChannel - 4.2) / 3.8;
+                    y = -1.6 + t * 1.6;
+                } else {
+                    // Bank / Ground Level
+                    // SUDS detention basin inside Parque Juan Pablo II (x around -16, z around -8)
+                    const dxPond = (x + 16) / 14;
+                    const dzPond = (z + 8) / 9;
+                    const rPond = Math.hypot(dxPond, dzPond);
+
+                    if (rPond < 1.0) {
+                        // Sunken Detention Basin (Laguna de Amortiguación SUDS)
+                        y = -0.7 * (1.0 - rPond * rPond);
+                    } else if (x < -48) {
+                        // Gentle hills of Belén / Comuna 16 rising to the West
+                        const ladera = (-x - 48) * 0.22;
+                        y = ladera + Math.sin(z * 0.08) * 0.5;
+                    } else if (x > 14) {
+                        // Airport Olaya Herrera Flat Apron & Runway Grounds
+                        y = 0.04;
+                    } else {
+                        // Flat urban ground plain
+                        y = 0.0;
+                    }
+                }
+
+                pos.setY(i, y);
+            }
+            terrainGeo.computeVertexNormals();
+
+            const terrainMat = new THREE.MeshStandardMaterial({
+                color: 0x141f30,
+                roughness: 0.85,
+                metalness: 0.15,
+                flatShading: true
+            });
+            terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
+            terrainMesh.receiveShadow = true;
+            terrainMesh.castShadow = true;
+            dioramaGroup.add(terrainMesh);
+
+            // Technical grid overlay
+            const wireMat = new THREE.MeshBasicMaterial({
+                color: 0x2563eb,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.16
+            });
+            const wireMesh = new THREE.Mesh(terrainGeo, wireMat);
+            wireMesh.position.y = 0.03;
+            dioramaGroup.add(wireMesh);
+
+            // 3. Ground Cardinal Navigational Arrows (North & South)
+            // North Cardinal Plate (z = -72, x = 8)
+            const nPlateGeo = new THREE.CylinderGeometry(4.5, 4.5, 0.2, 24);
+            const nPlateMat = new THREE.MeshStandardMaterial({ color: 0x0a101d, metalness: 0.5, roughness: 0.3 });
+            const nPlate = new THREE.Mesh(nPlateGeo, nPlateMat);
+            nPlate.position.set(8.0, 0.12, -72.0);
+            dioramaGroup.add(nPlate);
+
+            // North Pointer Chevron (Points along -Z)
+            const nArrowGeo = new THREE.ConeGeometry(1.6, 4.0, 4);
+            nArrowGeo.rotateX(-Math.PI / 2);
+            const nArrowMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+            const nArrow = new THREE.Mesh(nArrowGeo, nArrowMat);
+            nArrow.position.set(8.0, 0.25, -73.0);
+            dioramaGroup.add(nArrow);
+
+            // South Cardinal Plate (z = +72, x = 8)
+            const sPlate = new THREE.Mesh(nPlateGeo, nPlateMat);
+            sPlate.position.set(8.0, 0.12, 72.0);
+            dioramaGroup.add(sPlate);
+
+            // South Pointer Chevron (Points along +Z)
+            const sArrowGeo = new THREE.ConeGeometry(1.6, 4.0, 4);
+            sArrowGeo.rotateX(Math.PI / 2);
+            const sArrowMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+            const sArrow = new THREE.Mesh(sArrowGeo, sArrowMat);
+            sArrow.position.set(8.0, 0.25, 73.0);
+            dioramaGroup.add(sArrow);
+
+            scene.add(dioramaGroup);
+        }
+
+        // Build Aeropuerto Olaya Herrera (SKMD): Runway 02/20, Markings, Perimeter Fence & Apron
+        function buildOlayaHerreraAirport() {
+            airportGroup = new THREE.Group();
+
+            const asphaltMat = new THREE.MeshStandardMaterial({
+                color: 0x111622,
+                roughness: 0.8,
+                metalness: 0.15
+            });
+            const concApronMat = new THREE.MeshStandardMaterial({
+                color: 0x27354a,
+                roughness: 0.7,
+                metalness: 0.2
+            });
+            const whiteLineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const amberLightMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+            const greenThresholdMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+            const fenceMat = new THREE.MeshStandardMaterial({
+                color: 0x64748b,
+                roughness: 0.6,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.45
+            });
+
+            // 1. Runway 02/20 Strip (parallel to canal, x = 28, from z = +55 to z = -30, length 85m, width 14m)
+            const rWidth = 14.0, rLength = 85.0;
+            const rGeo = new THREE.PlaneGeometry(rWidth, rLength);
+            rGeo.rotateX(-Math.PI / 2);
+            const runway = new THREE.Mesh(rGeo, asphaltMat);
+            runway.position.set(28.0, 0.06, 12.5);
+            runway.receiveShadow = true;
+            airportGroup.add(runway);
+
+            // White Edge Lines
+            [-rWidth / 2 + 0.4, rWidth / 2 - 0.4].forEach(xOffset => {
+                const edgeLine = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.02, rLength), whiteLineMat);
+                edgeLine.position.set(28.0 + xOffset, 0.07, 12.5);
+                airportGroup.add(edgeLine);
+            });
+
+            // Centerline Dashed Stripes
+            for (let z = -24; z <= 48; z += 6) {
+                const dash = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 3.2), whiteLineMat);
+                dash.position.set(28.0, 0.07, z);
+                airportGroup.add(dash);
+            }
+
+            // Threshold Zebra Piano Keys
+            // South Threshold (Cabecera 02, z = 52)
+            for (let x = -5.5; x <= 5.5; x += 1.4) {
+                const bar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.02, 3.5), whiteLineMat);
+                bar.position.set(28.0 + x, 0.07, 52.0);
+                airportGroup.add(bar);
+            }
+            // North Threshold (Cabecera 20, z = -27)
+            for (let x = -5.5; x <= 5.5; x += 1.4) {
+                const bar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.02, 3.5), whiteLineMat);
+                bar.position.set(28.0 + x, 0.07, -27.0);
+                airportGroup.add(bar);
+            }
+
+            // Runway Edge Lights (Elevated glowing markers along edges every 8m)
+            for (let z = -28; z <= 52; z += 8) {
+                const isThreshold = (z === -28 || z === 52);
+                const lMat = isThreshold ? greenThresholdMat : amberLightMat;
+
+                [-rWidth / 2 - 0.6, rWidth / 2 + 0.6].forEach(xOffset => {
+                    const lightMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.35, 6), lMat);
+                    lightMesh.position.set(28.0 + xOffset, 0.22, z);
+                    airportGroup.add(lightMesh);
+                });
+            }
+
+            // 2. Airport Perimeter Security Fence (x = 14.5, running from z = -68 to z = +68)
+            // Visually separates the Airport runway from Caño El Papa
+            const fenceGeo = new THREE.PlaneGeometry(136, 2.4);
+            fenceGeo.rotateY(Math.PI / 2);
+            const fenceMesh = new THREE.Mesh(fenceGeo, fenceMat);
+            fenceMesh.position.set(14.5, 1.2, 0);
+            airportGroup.add(fenceMesh);
+
+            // Fence Posts every 8m
+            for (let z = -68; z <= 68; z += 8) {
+                const post = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.4, 6), asphaltMat);
+                post.position.set(14.5, 1.2, z);
+                airportGroup.add(post);
+            }
+
+            // 3. Aircraft Parking Apron & Hangars (x in [38, 56], z in [-12, 26])
+            const apronGeo = new THREE.PlaneGeometry(24, 46);
+            apronGeo.rotateX(-Math.PI / 2);
+            const apron = new THREE.Mesh(apronGeo, concApronMat);
+            apron.position.set(47.0, 0.05, 7.0);
+            apron.receiveShadow = true;
+            airportGroup.add(apron);
+
+            // 2 Arched Aircraft Hangars along Carrera 65
+            [-4, 16].forEach(zPos => {
+                const hangarGeo = new THREE.CylinderGeometry(6.5, 6.5, 16.0, 16, 1, false, 0, Math.PI);
+                hangarGeo.rotateZ(Math.PI / 2);
+                hangarGeo.rotateY(Math.PI / 2);
+                const hangarMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.6, roughness: 0.4 });
+                const hangar = new THREE.Mesh(hangarGeo, hangarMat);
+                hangar.position.set(51.0, 3.2, zPos);
+                hangar.castShadow = true;
+                airportGroup.add(hangar);
+            });
+
+            // 4. Stylized Twin-Turboprop Regional Aircraft parked on Apron
+            const planeGroup = new THREE.Group();
+            const fuselageMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 });
+            const wingMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3 });
+
+            // Fuselage
+            const fuseGeo = new THREE.CylinderGeometry(0.85, 0.75, 9.5, 12);
+            fuseGeo.rotateX(Math.PI / 2);
+            const fuse = new THREE.Mesh(fuseGeo, fuselageMat);
+            fuse.position.set(0, 1.3, 0);
+            planeGroup.add(fuse);
+
+            // Nose cone
+            const noseGeo = new THREE.ConeGeometry(0.75, 1.8, 12);
+            noseGeo.rotateX(-Math.PI / 2);
+            const nose = new THREE.Mesh(noseGeo, fuselageMat);
+            nose.position.set(0, 1.3, 5.2);
+            planeGroup.add(nose);
+
+            // Wings
+            const wingsGeo = new THREE.BoxGeometry(11.5, 0.15, 1.6);
+            const wings = new THREE.Mesh(wingsGeo, wingMat);
+            wings.position.set(0, 1.8, 0.6);
+            planeGroup.add(wings);
+
+            // Wingtip navigation beacon lights (Red port, Green starboard)
+            const redBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+            redBeacon.position.set(-5.7, 1.85, 0.6);
+            planeGroup.add(redBeacon);
+            const greenBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshBasicMaterial({ color: 0x10b981 }));
+            greenBeacon.position.set(5.7, 1.85, 0.6);
+            planeGroup.add(greenBeacon);
+
+            // T-Tail fin
+            const tailFin = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.0, 1.6), wingMat);
+            tailFin.position.set(0, 2.3, -4.0);
+            planeGroup.add(tailFin);
+
+            planeGroup.position.set(41.0, 0, 7.0);
+            planeGroup.rotation.y = -Math.PI / 4;
+            airportGroup.add(planeGroup);
+
+            scene.add(airportGroup);
+        }
+
+        // Build Aeroparque Juan Pablo II (West Sector, x in [-44, 2], z in [-18, 45])
+        function buildAeroparqueJuanPabloII() {
+            parkGroup = new THREE.Group();
+
+            // Park Grass Pedestal Area
+            const parkGrassMat = new THREE.MeshStandardMaterial({
+                color: 0x143324,
+                roughness: 0.9,
+                metalness: 0.05
+            });
+            const grassGeo = new THREE.PlaneGeometry(44, 60);
+            grassGeo.rotateX(-Math.PI / 2);
+            const parkGrass = new THREE.Mesh(grassGeo, parkGrassMat);
+            parkGrass.position.set(-20, 0.04, 14);
+            parkGrass.receiveShadow = true;
+            parkGroup.add(parkGrass);
+
+            // 1. Water Park Pool / Piscina de Olas (x = -16, z = 8)
+            const poolBorderMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.4 });
+            const poolWaterMat = new THREE.MeshStandardMaterial({
+                color: 0x0284c7,
+                emissive: 0x0369a1,
+                emissiveIntensity: 0.45,
+                roughness: 0.1,
+                metalness: 0.2,
+                transparent: true,
+                opacity: 0.85
+            });
+            const poolGeo = new THREE.BoxGeometry(16, 0.3, 10);
+            const poolBorder = new THREE.Mesh(poolGeo, poolBorderMat);
+            poolBorder.position.set(-16, 0.12, 8);
+            parkGroup.add(poolBorder);
+
+            const poolWater = new THREE.Mesh(new THREE.PlaneGeometry(14.8, 8.8), poolWaterMat);
+            poolWater.rotateX(-Math.PI / 2);
+            poolWater.position.set(-16, 0.28, 8);
+            parkGroup.add(poolWater);
+
+            // 2. Geodesic Coliseum Sports Dome (x = -22, z = 26)
+            const domeGeo = new THREE.SphereGeometry(5.8, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+            const domeMat = new THREE.MeshStandardMaterial({
+                color: 0x94a3b8,
+                roughness: 0.35,
+                metalness: 0.6
+            });
+            const dome = new THREE.Mesh(domeGeo, domeMat);
+            dome.position.set(-22, 0.04, 26);
+            dome.castShadow = true;
+            parkGroup.add(dome);
+
+            // Dome Glowing Rib
+            const domeRibMat = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 });
+            const domeEdges = new THREE.WireframeGeometry(domeGeo);
+            const domeLine = new THREE.LineSegments(domeEdges, domeRibMat);
+            domeLine.position.set(-22, 0.06, 26);
+            parkGroup.add(domeLine);
+
+            // 3. Athletic Running Track Oval (x = -28, z = -4)
+            const trackGeo = new THREE.PlaneGeometry(18, 11);
+            trackGeo.rotateX(-Math.PI / 2);
+            const trackMat = new THREE.MeshBasicMaterial({ color: 0xb45309, transparent: true, opacity: 0.6 });
+            const track = new THREE.Mesh(trackGeo, trackMat);
+            track.position.set(-28, 0.06, -4);
+            parkGroup.add(track);
+
+            // 4. Stylized Park Trees (Trunk + Foliage)
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x422006, roughness: 0.9 });
+            const leafMats = [
+                new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.7 }),
+                new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.7 }),
+                new THREE.MeshStandardMaterial({ color: 0x047857, roughness: 0.7 })
+            ];
+
+            const treePositions = [
+                { x: -5, z: 2 },   { x: -5, z: 18 },  { x: -5, z: 28 },  { x: -5, z: 38 },
+                { x: -12, z: 20 }, { x: -14, z: 34 }, { x: -26, z: 16 }, { x: -34, z: 12 },
+                { x: -36, z: 2 },  { x: -36, z: 24 }, { x: -36, z: 36 }, { x: -28, z: 38 },
+                { x: -12, z: -12 },{ x: -20, z: -14 },{ x: -32, z: -12 }
+            ];
+
+            treePositions.forEach((pos, idx) => {
+                const trunkGeo = new THREE.CylinderGeometry(0.18, 0.3, 2.0, 6);
+                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                trunk.position.set(pos.x, 1.0, pos.z);
+                trunk.castShadow = true;
+                parkGroup.add(trunk);
+
+                const folGeo = new THREE.DodecahedronGeometry(1.3, 1);
+                const fol = new THREE.Mesh(folGeo, leafMats[idx % 3]);
+                fol.position.set(pos.x, 2.6, pos.z);
+                fol.castShadow = true;
+                parkGroup.add(fol);
+            });
+
+            scene.add(parkGroup);
+        }
+
+        // Build Comuna 16 Belén (Hillside urban blocks positioned to keep tributary corridors open)
+        function buildUrbanBelénAndCorridors() {
+            buildingGroup = new THREE.Group();
+
+            const bldgMat = new THREE.MeshStandardMaterial({
+                color: 0x1e293b,
+                roughness: 0.4,
+                metalness: 0.6
+            });
+            const bldgEdgeMat = new THREE.LineBasicMaterial({
+                color: 0x00f0ff,
+                transparent: true,
+                opacity: 0.45
+            });
+            const greenRoofMat = new THREE.MeshStandardMaterial({
+                color: 0x10b981,
+                roughness: 0.85,
+                metalness: 0.1
+            });
+
+            // Urban blocks on the Belén hillside - kept lower (h: 10-15) so stream corridors stay visible
+            const buildings = [
+                { x: -68, z: -58, w: 10, d: 10, h: 12, yBase: 4.5 },
+                { x: -68, z: -32, w: 12, d: 10, h: 14, yBase: 4.5, greenRoof: true },
+                { x: -68, z: -20, w: 10, d: 10, h: 11, yBase: 4.5 },
+                { x: -68, z: 0,   w: 12, d: 10, h: 15, yBase: 4.5, greenRoof: true },
+                { x: -68, z: 18,  w: 10, d: 10, h: 12, yBase: 4.5 },
+                { x: -68, z: 34,  w: 12, d: 10, h: 14, yBase: 4.5, greenRoof: true },
+                { x: -68, z: 50,  w: 10, d: 10, h: 11, yBase: 4.5 }
+            ];
+
+            buildings.forEach(b => {
+                const geo = new THREE.BoxGeometry(b.w, b.h, b.d);
+                const mat = b.greenRoof ? [bldgMat, bldgMat, greenRoofMat, bldgMat, bldgMat, bldgMat] : bldgMat;
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(b.x, b.yBase + b.h / 2, b.z);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+
+                const edges = new THREE.EdgesGeometry(geo);
+                const line = new THREE.LineSegments(edges, bldgEdgeMat);
+                mesh.add(line);
+
+                buildingGroup.add(mesh);
+            });
+
+            scene.add(buildingGroup);
+        }
+
+        // Build Carrera 80 (Avenida 80) in the South Sector (z = 58.0, x in [-75, 65])
+        function buildCarrera80South() {
+            c80Group = new THREE.Group();
+            southRoadCars = [];
+
+            const asphaltMat = new THREE.MeshStandardMaterial({
+                color: 0x161d28,
+                roughness: 0.82,
+                metalness: 0.12
+            });
+            const concMat = new THREE.MeshStandardMaterial({
+                color: 0x64748b,
+                roughness: 0.45,
+                metalness: 0.35
+            });
+            const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const yellowLineMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+            const orangeGlowMat = new THREE.MeshBasicMaterial({ color: 0xf97316 });
+
+            const deckY = 0.55;
+            const roadW = 140.0;
+            const roadD = 12.0;
+            const centerZ = 58.0;
+
+            // Roadway Slab
+            const roadGeo = new THREE.BoxGeometry(roadW, 0.4, roadD);
+            const roadDeck = new THREE.Mesh(roadGeo, concMat);
+            roadDeck.position.set(-5.0, deckY, centerZ);
+            roadDeck.receiveShadow = true;
+            c80Group.add(roadDeck);
+
+            // Asphalt Layer
+            const aspGeo = new THREE.PlaneGeometry(roadW, roadD - 0.4);
+            aspGeo.rotateX(-Math.PI / 2);
+            const asp = new THREE.Mesh(aspGeo, asphaltMat);
+            asp.position.set(-5.0, deckY + 0.21, centerZ);
+            asp.receiveShadow = true;
+            c80Group.add(asp);
+
+            // Double Yellow Centerline
+            [-0.3, 0.3].forEach(offZ => {
+                const yLine = new THREE.Mesh(new THREE.BoxGeometry(roadW, 0.02, 0.2), yellowLineMat);
+                yLine.position.set(-5.0, deckY + 0.22, centerZ + offZ);
+                c80Group.add(yLine);
+            });
+
+            // Dashed White Lane Lines
+            for (let x = -65; x <= 55; x += 6) {
+                const dash1 = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.02, 0.2), lineMat);
+                dash1.position.set(x, deckY + 0.22, centerZ - 3.2);
+                c80Group.add(dash1);
+
+                const dash2 = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.02, 0.2), lineMat);
+                dash2.position.set(x, deckY + 0.22, centerZ + 3.2);
+                c80Group.add(dash2);
+            }
+
+            // Outer Guardrails with Amber Glow
+            [-roadD / 2 + 0.2, roadD / 2 - 0.2].forEach(zSide => {
+                const railBase = new THREE.Mesh(new THREE.BoxGeometry(roadW, 0.6, 0.25), concMat);
+                railBase.position.set(-5.0, deckY + 0.3, centerZ + zSide);
+                c80Group.add(railBase);
+
+                const railGlow = new THREE.Mesh(new THREE.BoxGeometry(roadW, 0.1, 0.1), orangeGlowMat);
+                railGlow.position.set(-5.0, deckY + 0.65, centerZ + zSide);
+                c80Group.add(railGlow);
+            });
+
+            // Slender Bridge Piers at Caño El Papa Crossing (x = 0 and x = 16)
+            [0.0, 16.0].forEach(px => {
+                const pierGeo = new THREE.CylinderGeometry(0.5, 0.6, deckY + 1.6, 16);
+                pierGeo.scale(0.6, 1.0, 1.8);
+                const pier = new THREE.Mesh(pierGeo, concMat);
+                pier.position.set(px, (deckY - 1.6) / 2, centerZ);
+                pier.castShadow = true;
+                c80Group.add(pier);
+            });
+
+            // LED Streetlights
+            [-45, -15, 15, 45].forEach(sx => {
+                const poleGeo = new THREE.CylinderGeometry(0.08, 0.1, 4.0, 8);
+                const pole = new THREE.Mesh(poleGeo, concMat);
+                pole.position.set(sx, deckY + 2.0, centerZ - 5.5);
+                c80Group.add(pole);
+
+                const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+                bulb.position.set(sx, deckY + 4.0, centerZ - 5.5);
+                c80Group.add(bulb);
+            });
+
+            // Animated Traffic on Carrera 80
+            const carColors = [0xef4444, 0x38bdf8, 0xf8fafc, 0xf59e0b, 0x10b981];
+            const carDefs = [
+                { x: -50, laneZ: centerZ - 2.8, dir: 1, speed: 0.38, color: carColors[0] },
+                { x: -10, laneZ: centerZ - 2.8, dir: 1, speed: 0.42, color: carColors[1] },
+                { x: 30,  laneZ: centerZ - 2.8, dir: 1, speed: 0.35, color: carColors[2] },
+                { x: 50,  laneZ: centerZ + 2.8, dir: -1, speed: 0.40, color: carColors[3] },
+                { x: 10,  laneZ: centerZ + 2.8, dir: -1, speed: 0.36, color: carColors[4] },
+                { x: -30, laneZ: centerZ + 2.8, dir: -1, speed: 0.44, color: carColors[0] }
+            ];
+
+            carDefs.forEach(c => {
+                const carMat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.3, metalness: 0.7 });
+                const carMesh = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.2, 1.8), carMat);
+                carMesh.position.set(c.x, deckY + 0.2 + 0.6, c.laneZ);
+                c80Group.add(carMesh);
+                southRoadCars.push({ mesh: carMesh, dir: c.dir, speed: c.speed });
+            });
+
+            scene.add(c80Group);
+        }
+
+        // Build Slender Calle 30 Viaduct Bridge (crossing along X at z = -25 with full clearance over Caño El Papa)
+        function buildBridges() {
+            bridgeGroup = new THREE.Group();
+            bridgeCars = [];
+
+            const asphaltMat = new THREE.MeshStandardMaterial({
+                color: 0x1e2530,
+                roughness: 0.8,
+                metalness: 0.1
+            });
+            const concMat = new THREE.MeshStandardMaterial({
+                color: 0x64748b,
+                roughness: 0.45,
+                metalness: 0.35
+            });
+            const lineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const cyanGlowMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+
+            // High clearance above bed: deck at y = 2.05m, bed at y = -1.6m (clearance 3.65m)
+            const deckThickness = 0.45;
+            const deckY = 2.05;
+            const bWidth = 140.0; // Crosses from x = -75 to x = +65
+            const bDepth = 12.5;
+
+            // Deck Box
+            const deckGeo = new THREE.BoxGeometry(bWidth, deckThickness, bDepth);
+            const deck = new THREE.Mesh(deckGeo, concMat);
+            deck.position.set(-5.0, deckY, -25.0);
+            deck.castShadow = true;
+            deck.receiveShadow = true;
+            bridgeGroup.add(deck);
+
+            // Asphalt Pavement
+            const roadGeo = new THREE.PlaneGeometry(bWidth, bDepth - 0.4);
+            roadGeo.rotateX(-Math.PI / 2);
+            const road = new THREE.Mesh(roadGeo, asphaltMat);
+            road.position.set(-5.0, deckY + deckThickness / 2 + 0.02, -25.0);
+            road.receiveShadow = true;
+            bridgeGroup.add(road);
+
+            // Median Strip
+            const medianGeo = new THREE.BoxGeometry(bWidth, 0.15, 0.8);
+            const median = new THREE.Mesh(medianGeo, concMat);
+            median.position.set(-5.0, deckY + deckThickness / 2 + 0.1, -25.0);
+            bridgeGroup.add(median);
+
+            // White dashed lane markings
+            for (let x = -65; x <= 55; x += 6) {
+                const dash1 = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.02, 0.2), lineMat);
+                dash1.position.set(x, deckY + deckThickness / 2 + 0.03, -25.0 - 3.0);
+                bridgeGroup.add(dash1);
+
+                const dash2 = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.02, 0.2), lineMat);
+                dash2.position.set(x, deckY + deckThickness / 2 + 0.03, -25.0 + 3.0);
+                bridgeGroup.add(dash2);
+            }
+
+            // Outer Safety Railings with Cyan Glowing Edge
+            [-bDepth / 2 + 0.2, bDepth / 2 - 0.2].forEach(zSide => {
+                const railBase = new THREE.Mesh(new THREE.BoxGeometry(bWidth, 0.7, 0.3), concMat);
+                railBase.position.set(-5.0, deckY + deckThickness / 2 + 0.35, -25.0 + zSide);
+                bridgeGroup.add(railBase);
+
+                const railGlow = new THREE.Mesh(new THREE.BoxGeometry(bWidth, 0.12, 0.12), cyanGlowMat);
+                railGlow.position.set(-5.0, deckY + deckThickness / 2 + 0.75, -25.0 + zSide);
+                bridgeGroup.add(railGlow);
+            });
+
+            // Slender Hydrodynamic Elliptical Piers (at x = 0 and x = 16, leaving central 12m canal opening unobstructed)
+            [0.0, 16.0].forEach(xPos => {
+                const pierGeo = new THREE.CylinderGeometry(0.5, 0.6, deckY + 1.6, 16);
+                pierGeo.scale(0.6, 1.0, 1.8); // Streamlined along river flow Z
+                const pier = new THREE.Mesh(pierGeo, concMat);
+                pier.position.set(xPos, (deckY - 1.6) / 2, -25.0);
+                pier.castShadow = true;
+                bridgeGroup.add(pier);
+            });
+
+            // LED Streetlight Poles on Calle 30 Viaduct
+            [-35, 8, 45].forEach(xPos => {
+                const poleGeo = new THREE.CylinderGeometry(0.08, 0.1, 4.0, 8);
+                const pole = new THREE.Mesh(poleGeo, concMat);
+                pole.position.set(xPos, deckY + 2.0, -25.0 - bDepth / 2 + 0.2);
+                bridgeGroup.add(pole);
+
+                const lampLight = new THREE.PointLight(0xfff1db, 0.9, 16);
+                lampLight.position.set(xPos, deckY + 3.8, -25.0);
+                bridgeGroup.add(lampLight);
+            });
+
+            // Stylized Miniature Moving Vehicles along Calle 30
+            const carDefs = [
+                { x: -45, laneZ: -25.0 - 3.0, color: 0xef4444, dir: 1, speed: 0.28 },
+                { x: -10, laneZ: -25.0 - 3.0, color: 0x3b82f6, dir: 1, speed: 0.22 },
+                { x: 30,  laneZ: -25.0 + 3.0, color: 0xf8fafc, dir: -1, speed: 0.26 },
+                { x: 5,   laneZ: -25.0 + 3.0, color: 0x10b981, dir: -1, speed: 0.24 }
+            ];
+
+            carDefs.forEach(c => {
+                const carGeo = new THREE.BoxGeometry(3.2, 0.8, 1.6);
+                const carMat = new THREE.MeshStandardMaterial({ color: c.color, roughness: 0.3 });
+                const carMesh = new THREE.Mesh(carGeo, carMat);
+                carMesh.position.set(c.x, deckY + deckThickness / 2 + 0.45, c.laneZ);
+                bridgeGroup.add(carMesh);
+
+                bridgeCars.push({ mesh: carMesh, dir: c.dir, speed: c.speed });
+            });
+
+            scene.add(bridgeGroup);
+        }
+
+        // Build Luminous Volumetric Water System (Caño El Papa + 5 Western Tributaries + SUDS Lagoon)
+        function buildWaterSystem() {
+            // 1. Caño El Papa Main Water Ribbon (elevated, width 8.5m along Z at x = 8.0)
+            const numSegments = 90;
+            const waterGeo = new THREE.PlaneGeometry(8.5, 155, 1, numSegments);
+            waterGeo.rotateX(-Math.PI / 2);
+
+            const waterMat = new THREE.MeshStandardMaterial({
+                color: 0x00e5ff,
+                emissive: 0x005577,
+                emissiveIntensity: 0.65,
+                roughness: 0.05,
+                metalness: 0.25,
+                transparent: true,
+                opacity: 0.88
+            });
+
+            waterMesh = new THREE.Mesh(waterGeo, waterMat);
+            waterMesh.position.set(8.0, -0.6, 0);
+            scene.add(waterMesh);
+
+            // Helper to build tributary water ribbons
+            function createTribRibbon(w, l, colorHex, emissiveHex, posX, posY, posZ) {
+                const geo = new THREE.PlaneGeometry(l, w, 30, 1);
+                geo.rotateX(-Math.PI / 2);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: colorHex,
+                    emissive: emissiveHex,
+                    emissiveIntensity: 0.70,
+                    roughness: 0.06,
+                    metalness: 0.2,
+                    transparent: true,
+                    opacity: 0.88
+                });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(posX, posY, posZ);
+                scene.add(mesh);
+                return mesh;
+            }
+
+            // 2. Tributary 1: Q. Altavista (enters from southwest at z = 42.0)
+            waterAltaMesh = createTribRibbon(4.5, 76, 0xec4899, 0x831843, -30.0, -0.6, 42.0);
+
+            // 3. Tributary 2: Caño San Bernardo (enters at z = 25.0)
+            waterBernardoMesh = createTribRibbon(4.0, 76, 0xf97316, 0x9a3412, -30.0, -0.6, 25.0);
+
+            // 4. Tributary 3: Q. La Guayabala (enters across park at z = 10.0)
+            waterGuayaMesh = createTribRibbon(5.2, 76, 0x06b6d4, 0x0891b2, -30.0, -0.6, 10.0);
+
+            // 5. Tributary 4: Caño Panorama (enters at z = -8.0)
+            waterPanoMesh = createTribRibbon(4.0, 76, 0xa855f7, 0x6b21a8, -30.0, -0.6, -8.0);
+
+            // 6. Tributary 5: Q. Las Playas (enters north of Cll 30 at z = -45.0)
+            waterPlayasMesh = createTribRibbon(4.2, 76, 0x10b981, 0x065f46, -30.0, -0.6, -45.0);
+
+            // 7. Detention Pond Water (Laguna Juan Pablo II SUDS at x = -16, z = -8)
+            const pondGeo = new THREE.CylinderGeometry(11.0, 11.0, 0.2, 32);
+            pondGeo.scale(1.25, 1.0, 0.8);
+            const pondMat = new THREE.MeshStandardMaterial({
+                color: 0x0ea5e9,
+                emissive: 0x0369a1,
+                emissiveIntensity: 0.5,
+                roughness: 0.08,
+                metalness: 0.3,
+                transparent: true,
+                opacity: 0.85
+            });
+            pondWaterMesh = new THREE.Mesh(pondGeo, pondMat);
+            pondWaterMesh.position.set(-16.0, -0.25, -8.0);
+            scene.add(pondWaterMesh);
+
+            // 8. Overland Overflow Water Plane (Calle 30 & SKMD runway threshold zone at z = -25, x = 12)
+            const ovGeo = new THREE.PlaneGeometry(38, 30);
+            ovGeo.rotateX(-Math.PI / 2);
+            const ovMat = new THREE.MeshStandardMaterial({
+                color: 0xef4444,
+                emissive: 0x991b1b,
+                emissiveIntensity: 0.85,
+                roughness: 0.1,
+                metalness: 0.2,
+                transparent: true,
+                opacity: 0.75
+            });
+            overflowMesh3D = new THREE.Mesh(ovGeo, ovMat);
+            overflowMesh3D.position.set(14.0, 0.12, -25.0);
+            overflowMesh3D.visible = false;
+            scene.add(overflowMesh3D);
+
+            // 9. Flow Particles along all 6 channels (650 particles)
+            const particleCount = 650;
+            particleGeo = new THREE.BufferGeometry();
+            const pPositions = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                if (i < 250) {
+                    // Caño El Papa (Flows Northward: z decreases from +75 towards -75)
+                    pPositions[i * 3] = 8.0 + (Math.random() - 0.5) * 6.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = (Math.random() - 0.5) * 150.0;
+                } else if (i < 330) {
+                    // Q. Altavista (Flows Eastward: x from -68 towards +8 at z ~ 42)
+                    pPositions[i * 3] = -68.0 + Math.random() * 76.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = 42.0 + (Math.random() - 0.5) * 3.5;
+                } else if (i < 410) {
+                    // Caño San Bernardo (Flows Eastward: x from -68 towards +8 at z ~ 25)
+                    pPositions[i * 3] = -68.0 + Math.random() * 76.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = 25.0 + (Math.random() - 0.5) * 3.0;
+                } else if (i < 490) {
+                    // Q. La Guayabala (Flows Eastward: x from -68 towards +8 at z ~ 10)
+                    pPositions[i * 3] = -68.0 + Math.random() * 76.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = 10.0 + (Math.random() - 0.5) * 4.0;
+                } else if (i < 570) {
+                    // Caño Panorama (Flows Eastward: x from -68 towards +8 at z ~ -8)
+                    pPositions[i * 3] = -68.0 + Math.random() * 76.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = -8.0 + (Math.random() - 0.5) * 3.0;
+                } else {
+                    // Q. Las Playas (Flows Eastward: x from -68 towards +8 at z ~ -45)
+                    pPositions[i * 3] = -68.0 + Math.random() * 76.0;
+                    pPositions[i * 3 + 1] = -0.45;
+                    pPositions[i * 3 + 2] = -45.0 + (Math.random() - 0.5) * 3.2;
+                }
+            }
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+
+            const pMat = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1.6,
+                transparent: true,
+                opacity: 0.85
+            });
+            flowParticles = new THREE.Points(particleGeo, pMat);
+            scene.add(flowParticles);
+        }
+
+        // Build Georeferenced Technical Floating Badges
+        function buildWorldHotspots() {
+            labelGroup = new THREE.Group();
+
+            function createFloatingBadge(text, x, y, z, colorHex) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 380;
+                canvas.height = 75;
+                const c = canvas.getContext('2d');
+
+                c.fillStyle = "rgba(7, 13, 24, 0.88)";
+                c.strokeStyle = colorHex;
+                c.lineWidth = 3;
+                c.beginPath();
+                c.roundRect(4, 4, 372, 67, 10);
+                c.fill();
+                c.stroke();
+
+                c.fillStyle = colorHex;
+                c.beginPath();
+                c.arc(24, 37, 6, 0, Math.PI * 2);
+                c.fill();
+
+                c.fillStyle = "#f8fafc";
+                c.font = "bold 18px 'Share Tech Mono', monospace";
+                c.textBaseline = "middle";
+                c.fillText(text, 38, 37);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+                const sprite = new THREE.Sprite(spriteMat);
+                sprite.position.set(x, y, z);
+                sprite.scale.set(16, 3.8, 1);
+                return sprite;
+            }
+
+            // 4 Cardinal Direction Badges
+            labelGroup.add(createFloatingBadge("▲ NORTE (N) // HACIA CLL 33 & RÍO", 8, 6.0, -72, "#00f0ff"));
+            labelGroup.add(createFloatingBadge("▼ SUR (S) // HACIA CRA 80 & GUAYABAL", 8, 6.0, 72, "#f59e0b"));
+            labelGroup.add(createFloatingBadge("◄ OCCIDENTE (W) // BELÉN & CUENCAS", -62, 6.0, 0, "#10b981"));
+            labelGroup.add(createFloatingBadge("► ORIENTE (E) // PISTA 02/20 SKMD", 45, 5.5, 0, "#38bdf8"));
+
+            // Primary Infrastructure Badges
+            labelGroup.add(createFloatingBadge("PISTA 02/20 - OLAYA HERRERA", 28, 4.0, 5, "#38bdf8"));
+            labelGroup.add(createFloatingBadge("CAÑO EL PAPA (CANAL PARALELO)", 8, 4.0, -2, "#00f0ff"));
+            labelGroup.add(createFloatingBadge("AEROPARQUE JUAN PABLO II", -18, 4.0, 8, "#10b981"));
+            labelGroup.add(createFloatingBadge("VIADUCTO CALLE 30", 8, 6.2, -25, "#38bdf8"));
+            labelGroup.add(createFloatingBadge("CARRERA 80 (AV. 80 // EJE SUR)", -10, 5.5, 58, "#fb923c"));
+
+            // 5 Tributary Confluence Badges
+            labelGroup.add(createFloatingBadge("🌸 CONFL. Q. ALTAVISTA", -8, 4.2, 42, "#ec4899"));
+            labelGroup.add(createFloatingBadge("🟧 CONFL. CAÑO SAN BERNARDO", -8, 4.2, 25, "#f97316"));
+            labelGroup.add(createFloatingBadge("🩵 CONFL. Q. LA GUAYABALA", -8, 4.2, 10, "#06b6d4"));
+            labelGroup.add(createFloatingBadge("🟪 CONFL. CAÑO PANORAMA", -8, 4.2, -8, "#a855f7"));
+            labelGroup.add(createFloatingBadge("🟩 CONFL. Q. LAS PLAYAS", -8, 4.2, -45, "#10b981"));
+
+            // Dynamic 3D Overflow Hazard Alert Badge (Calle 30 Viaduct & Runway 02/20 threshold)
+            overflowBadge3D = createFloatingBadge("⚠️ ALERTA: DESBORDE ACTIVO EN CALLE 30", 12, 8.8, -25, "#ef4444");
+            overflowBadge3D.visible = false;
+            labelGroup.add(overflowBadge3D);
+
+            scene.add(labelGroup);
+        }
+
+        // Animate Three.js loop
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+
+            if (controls) controls.update();
+
+            // Animate flow particles along georeferenced channels
+            if (flowParticles) {
+                const pos = flowParticles.geometry.attributes.position;
+                for (let i = 0; i < pos.count; i++) {
+                    if (i < 250) {
+                        // Caño El Papa: flows Northward (z decreasing towards -75)
+                        let pz = pos.getZ(i) - 0.75;
+                        if (pz < -75) pz = 75;
+                        pos.setZ(i, pz);
+                        pos.setX(i, 8.0 + Math.sin(i + pz * 0.1) * 2.2);
+                    } else if (i < 330) {
+                        // Q. Altavista: flows Eastward (x increasing towards +8, z ~ 42)
+                        let px = pos.getX(i) + 0.65;
+                        if (px > 8) px = -68;
+                        pos.setX(i, px);
+                        pos.setZ(i, 42.0 + Math.sin(i * 1.3) * 1.0);
+                    } else if (i < 410) {
+                        // Caño San Bernardo: flows Eastward (x increasing towards +8, z ~ 25)
+                        let px = pos.getX(i) + 0.65;
+                        if (px > 8) px = -68;
+                        pos.setX(i, px);
+                        pos.setZ(i, 25.0 + Math.sin(i * 1.2) * 1.0);
+                    } else if (i < 490) {
+                        // Q. La Guayabala: flows Eastward (x increasing towards +8, z ~ 10)
+                        let px = pos.getX(i) + 0.65;
+                        if (px > 8) px = -68;
+                        pos.setX(i, px);
+                        pos.setZ(i, 10.0 + Math.sin(i * 1.5) * 1.2);
+                    } else if (i < 570) {
+                        // Caño Panorama: flows Eastward (x increasing towards +8, z ~ -8)
+                        let px = pos.getX(i) + 0.65;
+                        if (px > 8) px = -68;
+                        pos.setX(i, px);
+                        pos.setZ(i, -8.0 + Math.sin(i * 1.4) * 1.0);
+                    } else {
+                        // Q. Las Playas: flows Eastward (x increasing towards +8, z ~ -45)
+                        let px = pos.getX(i) + 0.65;
+                        if (px > 8) px = -68;
+                        pos.setX(i, px);
+                        pos.setZ(i, -45.0 + Math.sin(i * 1.1) * 1.1);
+                    }
+                }
+                pos.needsUpdate = true;
+            }
+
+            // Animate moving traffic on Calle 30 Viaduct
+            if (bridgeCars && bridgeCars.length > 0) {
+                bridgeCars.forEach(car => {
+                    car.mesh.position.x += car.speed * car.dir;
+                    if (car.dir > 0 && car.mesh.position.x > 62) car.mesh.position.x = -68;
+                    if (car.dir < 0 && car.mesh.position.x < -68) car.mesh.position.x = 62;
+                });
+            }
+
+            // Animate moving traffic on Carrera 80 South
+            if (southRoadCars && southRoadCars.length > 0) {
+                southRoadCars.forEach(car => {
+                    car.mesh.position.x += car.speed * car.dir;
+                    if (car.dir > 0 && car.mesh.position.x > 62) car.mesh.position.x = -68;
+                    if (car.dir < 0 && car.mesh.position.x < -68) car.mesh.position.x = 62;
+                });
+            }
+
+            // Animate water ripple & pulsating emissive glow
+            if (waterMesh) {
+                const pulse = 0.55 + Math.sin(Date.now() * 0.0035) * 0.15;
+                if (!waterMesh.isOverflowing) {
+                    waterMesh.material.emissiveIntensity = pulse;
+                }
+            }
+
+            // Animate 3D overflow mesh & badge pulsation
+            if (overflowMesh3D && overflowMesh3D.visible) {
+                const ovPulse = 0.65 + Math.sin(Date.now() * 0.007) * 0.18;
+                overflowMesh3D.material.opacity = ovPulse;
+                if (overflowBadge3D) {
+                    overflowBadge3D.position.y = 8.8 + Math.sin(Date.now() * 0.005) * 0.35;
+                }
+            }
+
+            // Dynamic HUD compass orientation tracking
+            if (camera && controls) {
+                const camDx = camera.position.x - controls.target.x;
+                const camDz = camera.position.z - controls.target.z;
+                let deg = Math.atan2(camDx, camDz) * (180 / Math.PI);
+                if (deg < 0) deg += 360;
+
+                const dialSvg = document.querySelector('#hud-compass .compass-dial svg');
+                if (dialSvg) {
+                    dialSvg.style.transform = `rotate(${-deg}deg)`;
+                    dialSvg.style.transformOrigin = 'center center';
+                }
+                const headingEl = document.querySelector('#hud-compass .compass-heading');
+                if (headingEl) {
+                    const card = deg >= 337.5 || deg < 22.5 ? 'N' :
+                                 deg >= 22.5 && deg < 67.5 ? 'NNE' :
+                                 deg >= 67.5 && deg < 112.5 ? 'E' :
+                                 deg >= 112.5 && deg < 157.5 ? 'SSE' :
+                                 deg >= 157.5 && deg < 202.5 ? 'S' :
+                                 deg >= 202.5 && deg < 247.5 ? 'SSW' :
+                                 deg >= 247.5 && deg < 292.5 ? 'W' : 'NNW';
+                    headingEl.textContent = `RUMBO: ${Math.round(deg).toString().padStart(3, '0')}° ${card}`;
+                }
+            }
+
+            if (currentMode === '3d') {
+                if (renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                }
+            } else if (currentMode === '2d') {
+                render2DView();
+            } else if (currentMode === 'profile') {
+                renderProfileView();
+            }
+        }
+
+        // Resize handler with Retina / HiDPI crispness support
+        function resizeCanvases() {
+            const viewport = renderCanvas.parentElement || document.querySelector('.viewport') || document.body;
+            const w = viewport.clientWidth || window.innerWidth;
+            const h = viewport.clientHeight || window.innerHeight;
+
+            if (renderer && camera && w > 0 && h > 0) {
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            }
+
+            if (w > 0 && h > 0) {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                renderCanvas.width = Math.round(w * dpr);
+                renderCanvas.height = Math.round(h * dpr);
+                renderCanvas.style.width = w + 'px';
+                renderCanvas.style.height = h + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            if (hydroCanvas && hydroCanvas.parentElement) {
+                const hw = hydroCanvas.parentElement.clientWidth - 40;
+                const hh = 130;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                hydroCanvas.width = Math.round(hw * dpr);
+                hydroCanvas.height = Math.round(hh * dpr);
+                hydroCanvas.style.width = hw + 'px';
+                hydroCanvas.style.height = hh + 'px';
+                hydroCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                drawHydrographs();
+            }
+        }
+        window.addEventListener('resize', resizeCanvases);
+
+        // Hydrograph evaluation Gamma function
+        function hydroGamma(t, lag, tp, qp) {
+            const relT = t - lag;
+            if (relT <= 0) return 0;
+            const gamma = 3.5;
+            const r = relT / tp;
+            return qp * Math.pow(r, gamma - 1) * Math.exp(-(gamma - 1) * (r - 1));
+        }
+
+        function getFlowAtTime(t) {
+            let total = 0;
+            tributaries.forEach(trib => {
+                total += hydroGamma(t, trib.lag, trib.tp, trib.qp);
+            });
+
+            // Adjustments from controls
+            const isTraditional = document.getElementById('toggle-traditional').checked;
+            const hasSuds = document.getElementById('toggle-suds').checked;
+            const hasDetention = document.getElementById('toggle-detention').checked;
+
+            if (isTraditional) {
+                return Math.min(59.6, total * 1.7);
+            }
+
+            let factor = 1.0;
+            if (hasSuds) factor *= 0.85;
+            if (hasDetention) factor *= 0.78;
+
+            return total * factor;
+        }
+
+        // Non-Stationary Risk Math (Salas & Obeysekera, 2014)
+        function updateRisk() {
+            const n = parseInt(document.getElementById('input-lifespan').value);
+            const T = parseInt(document.getElementById('input-return-period').value);
+            const trend = parseFloat(document.getElementById('input-trend').value) / 100.0;
+
+            document.getElementById('val-lifespan').innerText = n + " años";
+            document.getElementById('val-return-period').innerText = T + " años";
+            document.getElementById('val-trend').innerText = "+" + (trend * 100).toFixed(2) + "%";
+
+            const p0 = 1.0 / T;
+            let prod = 1.0;
+            let tRealSum = 0.0;
+            let currentProd = 1.0;
+
+            for (let t = 1; t <= 120; t++) {
+                let pt = Math.min(0.99, p0 + trend * (t - 1));
+                currentProd *= (1.0 - pt);
+                tRealSum += currentProd;
+                if (t <= n) {
+                    prod *= (1.0 - pt);
+                }
+            }
+
+            const risk = (1.0 - prod) * 100.0;
+            const tReal = 1.0 + tRealSum;
+
+            document.getElementById('hud-risk').innerHTML = `${risk.toFixed(1)} <span class="hud-unit">%</span>`;
+            document.getElementById('val-treal').innerText = tReal.toFixed(1) + " años";
+
+            const riskHud = document.getElementById('hud-risk');
+            if (risk > 60) {
+                riskHud.className = "hud-val val-red";
+            } else if (risk > 35) {
+                riskHud.className = "hud-val val-gold";
+            } else {
+                riskHud.className = "hud-val val-green";
+            }
+        }
+
+        function updateHydraulics() {
+            const q = getFlowAtTime(currentTime);
+            const isWidened = document.getElementById('toggle-widening').checked;
+
+            // Hydraulic geometry of Caño El Papa (trapezoidal canal)
+            const b = isWidened ? 5.2 : 4.0;
+            const m = 0.5;
+            const Manning_n = 0.016;
+            const So = 0.0035;
+
+            let h = Math.pow((q * Manning_n) / (Math.sqrt(So) * b), 0.6);
+            let v = q / (b * h + m * h * h);
+            let canalDepth = isWidened ? 3.4 : 3.0;
+
+            // Etapa 10: Obstrucción de puente / sedimentos (0% a 50%)
+            const obsSlider = document.getElementById('input-obstruction');
+            const obsPct = obsSlider ? parseFloat(obsSlider.value) : 0;
+            const valObs = document.getElementById('val-obstruction');
+            if (valObs) valObs.innerText = `${obsPct}%`;
+
+            // Backwater increase due to bridge constriction and palizadas:
+            // Standard Yarnell/d'Aubuisson formulation: Δh_obs ≈ K * (V^2 / 2g) * (obstruction_ratio / (1 - obstruction_ratio))
+            const obsBackwaterM = (obsPct / 100) * 1.6 * (q / 35.0);
+            const valDhObs = document.getElementById('val-dh-obs');
+            if (valDhObs) valDhObs.innerText = `+${obsBackwaterM.toFixed(2)} m`;
+            const txtObsStatus = document.getElementById('txt-obstruction-status');
+            if (txtObsStatus) {
+                if (obsPct === 0) {
+                    txtObsStatus.innerText = "Sección libre sin palizadas ni sedimentos.";
+                    txtObsStatus.style.color = "var(--text-muted)";
+                } else if (obsPct <= 20) {
+                    txtObsStatus.innerText = "Sedimentación leve en estribos. Pérdida menor de sección.";
+                    txtObsStatus.style.color = "#f59e0b";
+                } else {
+                    txtObsStatus.innerText = "ALERTA: Palizada severa. Riesgo inminente de taponamiento y remanso crítico.";
+                    txtObsStatus.style.color = "#ef4444";
+                }
+            }
+
+            // Remanso hidráulico en el puente de la Calle 30
+            const remansoBase = Math.min(0.85, (q / 28) * 0.52);
+            const hAtBridge = h + remansoBase + obsBackwaterM;
+            const isTraditional = document.getElementById('toggle-traditional')?.checked;
+            const freeboard = canalDepth - h;
+            const bridgeFreeboard = canalDepth - hAtBridge;
+
+            // Unified, mathematically coherent overflow trigger across 3D, 2D, and Profile
+            const isOverflow = (bridgeFreeboard < 0) || (freeboard < 0) || isTraditional;
+
+            document.getElementById('hud-flow').innerHTML = `${q.toFixed(1)} <span class="hud-unit">m³/s</span>`;
+            document.getElementById('hud-depth').innerHTML = `${h.toFixed(2)} <span class="hud-unit">m</span>`;
+            document.getElementById('hud-velocity').innerHTML = `${v.toFixed(2)} <span class="hud-unit">m/s</span>`;
+
+            const fbHud = document.getElementById('hud-freeboard');
+            if (isOverflow) {
+                fbHud.className = "hud-val val-red";
+                const overflowAmount = Math.max(0.08, hAtBridge - canalDepth);
+                fbHud.innerHTML = `DESBORDE <span class="hud-unit">(+${overflowAmount.toFixed(2)}m)</span>`;
+            } else if (bridgeFreeboard < 0.4) {
+                fbHud.className = "hud-val val-gold";
+                fbHud.innerHTML = `${bridgeFreeboard.toFixed(2)} <span class="hud-unit">m</span>`;
+            } else {
+                fbHud.className = "hud-val val-green";
+                fbHud.innerHTML = `${bridgeFreeboard.toFixed(2)} <span class="hud-unit">m</span>`;
+            }
+
+            // Update 3D Water Mesh Height and Color in Three.js
+            if (waterMesh) {
+                // Hydraulic depth h (0 to 3.5m) mapped to elevation (bed is at -1.6m, bank is at 0.0m)
+                const waterY = -1.6 + Math.min(3.6, h * 0.9);
+                waterMesh.position.y = waterY;
+                if (waterAltaMesh) waterAltaMesh.position.y = waterY;
+                if (waterBernardoMesh) waterBernardoMesh.position.y = waterY;
+                if (waterGuayaMesh) waterGuayaMesh.position.y = waterY;
+                if (waterPanoMesh) waterPanoMesh.position.y = waterY;
+                if (waterPlayasMesh) waterPlayasMesh.position.y = waterY;
+
+                const hasSuds = document.getElementById('toggle-detention').checked || document.getElementById('toggle-suds').checked;
+                if (pondWaterMesh) {
+                    pondWaterMesh.visible = true;
+                    const pondScale = hasSuds ? 1.0 : 0.45;
+                    pondWaterMesh.scale.set(pondScale, 1.0, pondScale);
+                    pondWaterMesh.position.y = hasSuds ? -0.2 : -0.5;
+                }
+
+                // 3D Overflow Mesh and Alert Badge toggle
+                if (overflowMesh3D) overflowMesh3D.visible = isOverflow;
+                if (overflowBadge3D) overflowBadge3D.visible = isOverflow;
+
+                if (isOverflow) {
+                    // Critical Overflow: Luminous Fiery Red
+                    waterMesh.isOverflowing = true;
+                    const redColor = 0xef4444;
+                    [waterMesh, waterAltaMesh, waterBernardoMesh, waterGuayaMesh, waterPanoMesh, waterPlayasMesh].forEach(m => {
+                        if (m) {
+                            m.material.color.setHex(redColor);
+                            m.material.emissive = new THREE.Color(redColor);
+                            m.material.emissiveIntensity = 0.95;
+                        }
+                    });
+                    if (waterLight) waterLight.color.setHex(0xef4444);
+                } else if (bridgeFreeboard < 0.4) {
+                    // Warning threshold: Amber/Gold
+                    waterMesh.isOverflowing = false;
+                    const amberColor = 0xf59e0b;
+                    [waterMesh, waterAltaMesh, waterBernardoMesh, waterGuayaMesh, waterPanoMesh, waterPlayasMesh].forEach(m => {
+                        if (m) {
+                            m.material.color.setHex(amberColor);
+                            m.material.emissive = new THREE.Color(0xd97706);
+                            m.material.emissiveIntensity = 0.55;
+                        }
+                    });
+                    if (waterLight) waterLight.color.setHex(0xf59e0b);
+                } else {
+                    // Safe hydraulic capacity: Each tributary displays its unique hydrograph identity color
+                    waterMesh.isOverflowing = false;
+                    waterMesh.material.color.setHex(0x00e5ff);
+                    waterMesh.material.emissive = new THREE.Color(0x005577);
+                    waterMesh.material.emissiveIntensity = 0.65;
+
+                    if (waterAltaMesh) {
+                        waterAltaMesh.material.color.setHex(0xec4899);
+                        waterAltaMesh.material.emissive = new THREE.Color(0x831843);
+                    }
+                    if (waterBernardoMesh) {
+                        waterBernardoMesh.material.color.setHex(0xf97316);
+                        waterBernardoMesh.material.emissive = new THREE.Color(0x9a3412);
+                    }
+                    if (waterGuayaMesh) {
+                        waterGuayaMesh.material.color.setHex(0x06b6d4);
+                        waterGuayaMesh.material.emissive = new THREE.Color(0x044455);
+                    }
+                    if (waterPanoMesh) {
+                        waterPanoMesh.material.color.setHex(0xa855f7);
+                        waterPanoMesh.material.emissive = new THREE.Color(0x441166);
+                    }
+                    if (waterPlayasMesh) {
+                        waterPlayasMesh.material.color.setHex(0x10b981);
+                        waterPlayasMesh.material.emissive = new THREE.Color(0x065f46);
+                    }
+                    if (waterLight) waterLight.color.setHex(0x00f0ff);
+                }
+            }
+
+            drawHydrographs();
+            if (currentMode !== '3d') {
+                render2DOrProfile();
+            }
+        }
+
+        function onTimeChange(val) {
+            currentTime = parseInt(val);
+            document.getElementById('time-display').innerText = val + " min";
+            updateHydraulics();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            const threeCont = document.getElementById('three-container');
+            const camTip = document.getElementById('camera-tip');
+
+            if (mode === '3d') {
+                document.getElementById('btn-mode-3d').classList.add('active');
+                threeCont.style.display = 'block';
+                renderCanvas.style.display = 'none';
+                camTip.style.display = 'flex';
+                resizeCanvases();
+            } else {
+                threeCont.style.display = 'none';
+                renderCanvas.style.display = 'block';
+                camTip.style.display = 'none';
+
+                if (mode === '2d') {
+                    document.getElementById('btn-mode-2d').classList.add('active');
+                } else if (mode === 'profile') {
+                    document.getElementById('btn-mode-profile').classList.add('active');
+                }
+                resizeCanvases();
+                render2DOrProfile();
+            }
+        }
+
+        function toggleDrawer() {
+            const drawer = document.getElementById('bottom-drawer');
+            isDrawerCollapsed = !isDrawerCollapsed;
+            if (isDrawerCollapsed) {
+                drawer.classList.add('collapsed');
+                document.getElementById('drawer-toggle-text').innerText = "Mostrar ▲";
+            } else {
+                drawer.classList.remove('collapsed');
+                document.getElementById('drawer-toggle-text').innerText = "Ocultar ▼";
+            }
+        }
+
+        // --- INTERACTIVE INFOGRAPHIC MODAL FUNCTIONS ---
+        function openPdfModal() {
+            const modal = document.getElementById('pdf-modal');
+            if (modal) {
+                modal.classList.add('active');
+                selectPdfPage(1);
+            }
+        }
+
+        function closePdfModal(e) {
+            if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('pdf-close-btn')) {
+                return;
+            }
+            const modal = document.getElementById('pdf-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function selectPdfPage(pageNum) {
+            [1, 2, 3].forEach(n => {
+                const btn = document.getElementById(`btn-pdf-p${n}`);
+                if (btn) {
+                    if (n === pageNum) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+            });
+            const img = document.getElementById('pdf-preview-img');
+            if (img) {
+                img.src = `memoria_p${pageNum}.png`;
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('pdf-modal');
+                if (modal && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            }
+        });
+
+        // --- 2D AND PROFILE RENDERING (FOR TABS 2 AND 3) ---
+        function render2DOrProfile() {
+            ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
+            if (currentMode === '2d') {
+                render2DView();
+            } else if (currentMode === 'profile') {
+                renderProfileView();
+            }
+        }
+
+        function render2DView() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const w = renderCanvas.width / dpr;
+            const h = renderCanvas.height / dpr;
+
+            // Deep tactical background
+            ctx.fillStyle = "#050a14";
+            ctx.fillRect(0, 0, w, h);
+
+            // Fit satellite image preserving authentic geodetic aspect ratio (1200 / 1400)
+            const imgAspect = 1200 / 1400;
+            let drawW, drawH, drawX, drawY;
+            if (w / h > imgAspect) {
+                drawH = h;
+                drawW = drawH * imgAspect;
+                drawX = (w - drawW) * 0.5;
+                drawY = 0;
+            } else {
+                drawW = w;
+                drawH = drawW / imgAspect;
+                drawX = 0;
+                drawY = (h - drawH) * 0.5;
+            }
+
+            // Draw satellite orthophoto or fallback tactical grid
+            if (satImageLoaded && satImage.complete) {
+                ctx.drawImage(satImage, drawX, drawY, drawW, drawH);
+                // Subtle contrast & blueprint tint for technical legibility (crisp 0.08 tint)
+                ctx.fillStyle = "rgba(7, 13, 24, 0.08)";
+                ctx.fillRect(drawX, drawY, drawW, drawH);
+            } else {
+                // Tactical grid fallback
+                ctx.strokeStyle = "rgba(14, 165, 233, 0.15)";
+                ctx.lineWidth = 1;
+                for (let gx = drawX; gx <= drawX + drawW; gx += 40) {
+                    ctx.beginPath(); ctx.moveTo(gx, drawY); ctx.lineTo(gx, drawY + drawH); ctx.stroke();
+                }
+                for (let gy = drawY; gy <= drawY + drawH; gy += 40) {
+                    ctx.beginPath(); ctx.moveTo(drawX, gy); ctx.lineTo(drawX + drawW, gy); ctx.stroke();
+                }
+                ctx.fillStyle = "#38bdf8";
+                ctx.font = "12px 'Share Tech Mono'";
+                ctx.fillText("CARGANDO ORTOFOTO SATELITAL DE ALTA RESOLUCIÓN...", drawX + 40, drawY + drawH * 0.5);
+            }
+
+            // Side HUD tactical letterboxing
+            if (drawX > 0) {
+                ctx.fillStyle = "rgba(5, 10, 20, 0.85)";
+                ctx.fillRect(0, 0, drawX, h);
+                ctx.fillRect(drawX + drawW, 0, w - (drawX + drawW), h);
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.3)";
+                ctx.beginPath();
+                ctx.moveTo(drawX, 0); ctx.lineTo(drawX, h);
+                ctx.moveTo(drawX + drawW, 0); ctx.lineTo(drawX + drawW, h);
+                ctx.stroke();
+            }
+
+            // Geodetic to Pixel projection calibrated to exact WGS84 Bounding Box:
+            // BBox: Lat [6.208, 6.236], Lon [-75.604, -75.580]
+            const GEO_BBOX = { minLon: -75.604, maxLon: -75.580, minLat: 6.208, maxLat: 6.236 };
+            function toPix(lat, lon) {
+                const nx = (lon - GEO_BBOX.minLon) / (GEO_BBOX.maxLon - GEO_BBOX.minLon);
+                const ny = (GEO_BBOX.maxLat - lat) / (GEO_BBOX.maxLat - GEO_BBOX.minLat);
+                return {
+                    x: drawX + nx * drawW,
+                    y: drawY + ny * drawH
+                };
+            }
+
+            const q = getFlowAtTime(currentTime);
+            const isWidened = document.getElementById('toggle-widening').checked;
+            const isTraditional = document.getElementById('toggle-traditional')?.checked;
+            const hasSuds = document.getElementById('toggle-detention').checked || document.getElementById('toggle-suds').checked;
+            const obsPct = parseFloat(document.getElementById('input-obstruction')?.value || 0);
+            const canalDepth = isWidened ? 3.4 : 3.0;
+            const b = isWidened ? 5.2 : 4.0;
+            const hVal = Math.pow((q * 0.016) / (Math.sqrt(0.0035) * b), 0.6);
+            const obsBackwaterM = (obsPct / 100) * 1.6 * (q / 35.0);
+            const remansoBase = Math.min(0.85, (q / 28) * 0.52);
+            const hAtBridge = hVal + remansoBase + obsBackwaterM;
+            const isOverflow = (hAtBridge > canalDepth) || (hVal > canalDepth) || isTraditional;
+
+            // --- 1. AEROPUERTO OLAYA HERRERA (SKMD) - PISTA 02/20 ---
+            const p02 = toPix(6.20891, -75.59260); // Cabecera 02 (Sur)
+            const p20 = toPix(6.23114, -75.58839); // Cabecera 20 (Norte)
+            const rdx = p20.x - p02.x;
+            const rdy = p20.y - p02.y;
+            const rlen = Math.hypot(rdx, rdy);
+            const rAngle = Math.atan2(rdy, rdx);
+            const rHalfW = 10; // Scaled runway half-width in px (~45m real)
+
+            ctx.save();
+            ctx.translate(p02.x, p02.y);
+            ctx.rotate(rAngle);
+
+            // Runway asphalt strip
+            ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+            ctx.fillRect(0, -rHalfW, rlen, rHalfW * 2);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(0, -rHalfW, rlen, rHalfW * 2);
+
+            // Runway centerline dashed
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([8, 6]);
+            ctx.beginPath();
+            ctx.moveTo(15, 0);
+            ctx.lineTo(rlen - 15, 0);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Threshold stripes ("Piano Keys")
+            for (let i = -7; i <= 7; i += 2.2) {
+                // South threshold 02
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(4, i - 0.7, 8, 1.4);
+                // North threshold 20
+                ctx.fillRect(rlen - 12, i - 0.7, 8, 1.4);
+            }
+
+            // Runway numbers (rotated along runway)
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px 'Share Tech Mono'";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.save();
+            ctx.translate(22, 0);
+            ctx.rotate(Math.PI / 2);
+            ctx.fillText("02", 0, 0);
+            ctx.restore();
+
+            ctx.save();
+            ctx.translate(rlen - 22, 0);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText("20", 0, 0);
+            ctx.restore();
+
+            ctx.restore();
+
+            // Airport Boundary Fence (Western perimeter strictly parallel to runway)
+            const f02 = toPix(6.2095, -75.5932);
+            const f20 = toPix(6.2312, -75.5891);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.4)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(f02.x, f02.y);
+            ctx.lineTo(f20.x, f20.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Airport Label & Tag
+            const pMid = toPix(6.2200, -75.5905);
+            ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+            ctx.fillRect(pMid.x + 14, pMid.y - 12, 175, 24);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+            ctx.strokeRect(pMid.x + 14, pMid.y - 12, 175, 24);
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 10px 'Share Tech Mono'";
+            ctx.textAlign = "left";
+            ctx.fillText("SKMD // PISTA 02/20 (2,508 m)", pMid.x + 20, pMid.y + 3);
+
+            // --- 2. PARQUE METROPOLITANO JUAN PABLO II ---
+            // Bounded between Cra 70 (west) and Caño El Papa / Airport fence (east)
+            const jpPoly = [
+                toPix(6.2135, -75.5948), // SW corner (Cra 70)
+                toPix(6.2245, -75.5932), // NW corner (Cra 70 / Cll 30)
+                toPix(6.2245, -75.5905), // NE corner (Caño El Papa)
+                toPix(6.2135, -75.5928)  // SE corner (Caño El Papa)
+            ];
+
+            ctx.beginPath();
+            ctx.moveTo(jpPoly[0].x, jpPoly[0].y);
+            for (let i = 1; i < jpPoly.length; i++) ctx.lineTo(jpPoly[i].x, jpPoly[i].y);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(16, 185, 129, 0.14)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.75)";
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Wave Pool (Piscina de Olas)
+            const poolPt = toPix(6.2175, -75.5932);
+            ctx.fillStyle = "rgba(14, 165, 233, 0.7)";
+            ctx.beginPath();
+            ctx.ellipse(poolPt.x, poolPt.y, 14, 8, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.fillStyle = "#e0f2fe";
+            ctx.font = "9px 'Outfit'";
+            ctx.fillText("Piscina de Olas", poolPt.x - 28, poolPt.y - 11);
+
+            // Coliseum / Dome (Coliseo Deportivo)
+            const domePt = toPix(6.2210, -75.5925);
+            ctx.fillStyle = "rgba(241, 245, 249, 0.85)";
+            ctx.beginPath();
+            ctx.arc(domePt.x, domePt.y, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#00f0ff";
+            ctx.stroke();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "9px 'Outfit'";
+            ctx.fillText("Domo Deportivo", domePt.x + 10, domePt.y + 3);
+
+            // SUDS Detention Basin in Park
+            const sudsPt = toPix(6.2155, -75.5930);
+            ctx.beginPath();
+            ctx.ellipse(sudsPt.x, sudsPt.y, 18, 11, 0.1, 0, Math.PI * 2);
+            if (hasSuds) {
+                ctx.fillStyle = "rgba(6, 182, 212, 0.55)";
+                ctx.fill();
+                ctx.strokeStyle = "#00f0ff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = "#00f0ff";
+                ctx.font = "bold 9px 'Share Tech Mono'";
+                ctx.fillText("SUDS ACTIVO (RETENCIÓN 35%)", sudsPt.x - 55, sudsPt.y + 20);
+            } else {
+                ctx.strokeStyle = "rgba(245, 158, 11, 0.6)";
+                ctx.lineWidth = 1;
+                ctx.setLineDash([2, 2]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = "#fbbf24";
+                ctx.font = "9px 'Share Tech Mono'";
+                ctx.fillText("SUDS DISPONIBLE", sudsPt.x - 38, sudsPt.y + 20);
+            }
+
+            // Park Header Label
+            const jpLabelPt = toPix(6.2240, -75.5928);
+            ctx.fillStyle = "rgba(6, 78, 59, 0.85)";
+            ctx.fillRect(jpLabelPt.x - 70, jpLabelPt.y - 12, 140, 20);
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.8)";
+            ctx.strokeRect(jpLabelPt.x - 70, jpLabelPt.y - 12, 140, 20);
+            ctx.fillStyle = "#34d399";
+            ctx.font = "bold 9px 'Share Tech Mono'";
+            ctx.textAlign = "center";
+            ctx.fillText("PARQUE JUAN PABLO II", jpLabelPt.x, jpLabelPt.y + 2);
+
+            // --- 3. RED DE QUEBRADAS Y TRIBUTARIOS (5 AFLUENTES CALIBRADOS) ---
+            const tribGeometries = [
+                {
+                    name: "Q. Altavista",
+                    color: "#ec4899",
+                    symbol: "🌸",
+                    lag: 50, tp: 42, qp: 18.4,
+                    pts: [
+                        toPix(6.2142, -75.6040),
+                        toPix(6.2138, -75.5995),
+                        toPix(6.2134, -75.5950),
+                        toPix(6.2130, -75.5932)
+                    ]
+                },
+                {
+                    name: "Caño San Bernardo",
+                    color: "#f97316",
+                    symbol: "🟧",
+                    lag: 40, tp: 20, qp: 6.8,
+                    pts: [
+                        toPix(6.2158, -75.6035),
+                        toPix(6.2153, -75.5985),
+                        toPix(6.2149, -75.5945),
+                        toPix(6.2144, -75.5928)
+                    ]
+                },
+                {
+                    name: "Q. La Guayabala",
+                    color: "#06b6d4",
+                    symbol: "🩵",
+                    lag: 0, tp: 35, qp: 14.5,
+                    pts: [
+                        toPix(6.2185, -75.6035),
+                        toPix(6.2178, -75.5990),
+                        toPix(6.2170, -75.5950),
+                        toPix(6.2162, -75.5922)
+                    ]
+                },
+                {
+                    name: "Caño Panorama",
+                    color: "#a855f7",
+                    symbol: "🟪",
+                    lag: 15, tp: 22, qp: 8.2,
+                    pts: [
+                        toPix(6.2215, -75.6030),
+                        toPix(6.2210, -75.5980),
+                        toPix(6.2205, -75.5940),
+                        toPix(6.2200, -75.5915)
+                    ]
+                },
+                {
+                    name: "Q. Las Playas",
+                    color: "#10b981",
+                    symbol: "🟩",
+                    lag: 28, tp: 30, qp: 11.7,
+                    pts: [
+                        toPix(6.2260, -75.6030),
+                        toPix(6.2248, -75.5980),
+                        toPix(6.2238, -75.5935),
+                        toPix(6.2228, -75.5908)
+                    ]
+                }
+            ];
+
+            const tribPhase = (Date.now() * 0.0025) % 1.0;
+            tribGeometries.forEach((tr) => {
+                const trQ = hydroGamma(currentTime, tr.lag, tr.tp, tr.qp);
+
+                // Glow & Primary Stroke
+                ctx.save();
+                ctx.shadowColor = tr.color;
+                ctx.shadowBlur = 10;
+                ctx.strokeStyle = tr.color;
+                ctx.lineWidth = 3.6;
+                ctx.beginPath();
+                ctx.moveTo(tr.pts[0].x, tr.pts[0].y);
+                for (let i = 1; i < tr.pts.length; i++) {
+                    ctx.lineTo(tr.pts[i].x, tr.pts[i].y);
+                }
+                ctx.stroke();
+                ctx.restore();
+
+                // Directional Flow Chevrons towards Confluence (Eastward)
+                ctx.fillStyle = "#ffffff";
+                for (let s = 0; s < tr.pts.length - 1; s++) {
+                    const pA = tr.pts[s];
+                    const pB = tr.pts[s + 1];
+                    const segAngle = Math.atan2(pB.y - pA.y, pB.x - pA.x);
+                    for (let k = 0; k < 2; k++) {
+                        const fract = ((k * 0.5) + tribPhase) % 1.0;
+                        const ax = pA.x + (pB.x - pA.x) * fract;
+                        const ay = pA.y + (pB.y - pA.y) * fract;
+                        ctx.save();
+                        ctx.translate(ax, ay);
+                        ctx.rotate(segAngle);
+                        ctx.beginPath();
+                        ctx.moveTo(-3.5, -2.5);
+                        ctx.lineTo(3.5, 0);
+                        ctx.lineTo(-3.5, 2.5);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+
+                // Confluence Point Marker (Mouth into Caño El Papa)
+                const confPt = tr.pts[tr.pts.length - 1];
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(confPt.x, confPt.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = tr.color;
+                ctx.fill();
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = "#ffffff";
+                ctx.stroke();
+                ctx.restore();
+
+                // High-visibility Label Badge with real-time discharge Q(t)
+                const labelX = tr.pts[0].x + 6;
+                const labelY = tr.pts[0].y - 8;
+                const badgeText = `${tr.symbol} ${tr.name} [Q=${trQ.toFixed(1)} m³/s] →`;
+                ctx.font = "bold 9px 'Share Tech Mono', monospace";
+                const bWidth = ctx.measureText(badgeText).width + 12;
+
+                ctx.fillStyle = "rgba(7, 13, 24, 0.9)";
+                ctx.fillRect(labelX - 2, labelY - 11, bWidth, 16);
+                ctx.strokeStyle = tr.color;
+                ctx.lineWidth = 1.2;
+                ctx.strokeRect(labelX - 2, labelY - 11, bWidth, 16);
+
+                ctx.fillStyle = tr.color;
+                ctx.textAlign = "left";
+                ctx.fillText(badgeText, labelX + 4, labelY + 1);
+            });
+
+            // --- 4. CAÑO EL PAPA (COLECTOR OCCIDENTAL PARALELO A LA PISTA) ---
+            // Discurre paralelo a la malla del aeropuerto en dirección Sur -> Norte
+            const papaPts = [
+                toPix(6.2095, -75.5936),
+                toPix(6.2160, -75.5922),
+                toPix(6.2215, -75.5910),
+                toPix(6.2270, -75.5898),
+                toPix(6.2312, -75.5891), // Cruce Calle 30
+                toPix(6.2355, -75.5880)  // Hacia Calle 33
+            ];
+
+            const canalColor = isOverflow ? "#ef4444" : (hVal > 1.4 ? "#f59e0b" : "#00f0ff");
+            const canalWidth = 4.5 + Math.min(6, (q / 55) * 4);
+
+            // Outer glow
+            ctx.save();
+            ctx.shadowColor = canalColor;
+            ctx.shadowBlur = isOverflow ? 16 : 9;
+            ctx.strokeStyle = canalColor;
+            ctx.lineWidth = canalWidth;
+            ctx.beginPath();
+            ctx.moveTo(papaPts[0].x, papaPts[0].y);
+            for (let i = 1; i < papaPts.length; i++) ctx.lineTo(papaPts[i].x, papaPts[i].y);
+            ctx.stroke();
+            ctx.restore();
+
+            // Animated directional flow chevrons along Caño El Papa (pointing North)
+            const arrowPhase = (Date.now() * 0.003) % 1.0;
+            ctx.fillStyle = "#ffffff";
+            for (let seg = 0; seg < papaPts.length - 1; seg++) {
+                const sp0 = papaPts[seg];
+                const sp1 = papaPts[seg + 1];
+                for (let k = 0; k < 2; k++) {
+                    const fract = ((k * 0.5) + arrowPhase) % 1.0;
+                    const ax = sp0.x + (sp1.x - sp0.x) * fract;
+                    const ay = sp0.y + (sp1.y - sp0.y) * fract;
+                    const segAngle = Math.atan2(sp1.y - sp0.y, sp1.x - sp0.x);
+                    ctx.save();
+                    ctx.translate(ax, ay);
+                    ctx.rotate(segAngle);
+                    ctx.beginPath();
+                    ctx.moveTo(-4, -3);
+                    ctx.lineTo(4, 0);
+                    ctx.lineTo(-4, 3);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Canal Telemetry Badge
+            const tagPt = toPix(6.2190, -75.5912);
+            ctx.fillStyle = "rgba(10, 16, 26, 0.9)";
+            ctx.fillRect(tagPt.x - 170, tagPt.y - 12, 160, 24);
+            ctx.strokeStyle = canalColor;
+            ctx.strokeRect(tagPt.x - 170, tagPt.y - 12, 160, 24);
+            ctx.fillStyle = canalColor;
+            ctx.font = "bold 9px 'Share Tech Mono'";
+            ctx.textAlign = "left";
+            ctx.fillText(`CAÑO EL PAPA // Q=${q.toFixed(1)}m³/s`, tagPt.x - 164, tagPt.y + 4);
+
+            // --- 5. MALLA VIAL ESTRUCTURANTE Y CARRERA 80 (COSTADO SUR) ---
+            // Avenida 33 (Calle 33) - Límite Norte
+            const c33_L = toPix(6.2355, -75.604);
+            const c33_R = toPix(6.2355, -75.580);
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.7)";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.moveTo(c33_L.x, c33_L.y); ctx.lineTo(c33_R.x, c33_R.y); ctx.stroke();
+            ctx.fillStyle = "#fbbf24";
+            ctx.font = "bold 9px 'Share Tech Mono'";
+            ctx.fillText("AVENIDA 33 (CALLE 33) // LÍMITE NORTE", c33_L.x + 18, c33_L.y - 5);
+
+            // Calle 30 - Viaducto Transversal sobre Canal y Pista
+            const c30_L = toPix(6.2312, -75.604);
+            const c30_R = toPix(6.2312, -75.580);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.85)";
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(c30_L.x, c30_L.y); ctx.lineTo(c30_R.x, c30_R.y); ctx.stroke();
+            // Viaduct bridge deck symbol over canal
+            const viaductPt = toPix(6.2312, -75.5891);
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(viaductPt.x - 18, viaductPt.y - 5, 36, 10);
+            ctx.strokeStyle = "#00f0ff";
+            ctx.strokeRect(viaductPt.x - 18, viaductPt.y - 5, 36, 10);
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 9px 'Share Tech Mono'";
+            ctx.fillText("CALLE 30 // VIADUCTO VEHICULAR", c30_L.x + 18, c30_L.y - 6);
+
+            // Carrera 70 (Occidente del Parque Juan Pablo II)
+            const c70_T = toPix(6.236, -75.5940);
+            const c70_B = toPix(6.210, -75.5940);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.4)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(c70_T.x, c70_T.y); ctx.lineTo(c70_B.x, c70_B.y); ctx.stroke();
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "9px 'Share Tech Mono'";
+            ctx.fillText("CRA. 70", c70_B.x + 4, c70_B.y - 12);
+
+            // Carrera 65 (Oriente de la Terminal del Aeropuerto)
+            const c65_T = toPix(6.236, -75.5865);
+            const c65_B = toPix(6.208, -75.5865);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.4)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(c65_T.x, c65_T.y); ctx.lineTo(c65_B.x, c65_B.y); ctx.stroke();
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "9px 'Share Tech Mono'";
+            ctx.fillText("CRA. 65 // TERMINAL", c65_B.x - 90, c65_B.y - 12);
+
+            // Carrera 80 (Avenida 80) - Costado Sur y Corredor Occidental Belén
+            // 1. Costado Sur: Eje arterial este-oeste en el límite sur del Aeropuerto / Juan Pablo II
+            const c80S_L = toPix(6.2112, -75.6040);
+            const c80S_R = toPix(6.2112, -75.5800);
+
+            // Southern Avenue Roadway Slab
+            ctx.strokeStyle = "rgba(15, 23, 42, 0.85)";
+            ctx.lineWidth = 14;
+            ctx.beginPath(); ctx.moveTo(c80S_L.x, c80S_L.y); ctx.lineTo(c80S_R.x, c80S_R.y); ctx.stroke();
+
+            // Southern Avenue Guardrails / Borders
+            ctx.strokeStyle = "rgba(251, 146, 60, 0.75)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(c80S_L.x, c80S_L.y - 7); ctx.lineTo(c80S_R.x, c80S_R.y - 7); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(c80S_L.x, c80S_L.y + 7); ctx.lineTo(c80S_R.x, c80S_R.y + 7); ctx.stroke();
+
+            // Double Yellow Centerline
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 1.8;
+            ctx.beginPath(); ctx.moveTo(c80S_L.x, c80S_L.y); ctx.lineTo(c80S_R.x, c80S_R.y); ctx.stroke();
+
+            // Viaduct Bridge Deck over Caño El Papa (South)
+            const c80BridgePt = toPix(6.2112, -75.5934);
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(c80BridgePt.x - 16, c80BridgePt.y - 8, 32, 16);
+            ctx.strokeStyle = "#fb923c";
+            ctx.lineWidth = 1.8;
+            ctx.strokeRect(c80BridgePt.x - 16, c80BridgePt.y - 8, 32, 16);
+
+            // Carrera 80 South Badge
+            ctx.fillStyle = "rgba(10, 16, 26, 0.9)";
+            ctx.fillRect(c80S_L.x + 18, c80S_L.y - 12, 280, 24);
+            ctx.strokeStyle = "#fb923c";
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(c80S_L.x + 18, c80S_L.y - 12, 280, 24);
+            ctx.fillStyle = "#fb923c";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("CARRERA 80 (AVENIDA 80) // COSTADO SUR", c80S_L.x + 26, c80S_L.y + 4);
+
+            // 2. Corredor Occidental Belén (Norte-Sur)
+            const c80_T = toPix(6.236, -75.6005);
+            const c80_B = toPix(6.2112, -75.6005);
+            ctx.strokeStyle = "rgba(251, 146, 60, 0.65)";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.moveTo(c80_T.x, c80_T.y); ctx.lineTo(c80_B.x, c80_B.y); ctx.stroke();
+            ctx.fillStyle = "#fb923c";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.fillText("AVENIDA 80 (BELÉN)", c80_B.x + 5, c80_B.y - 18);
+
+            // --- 6. RADAR METEOROLÓGICO SIATA (REFLECTIVIDAD dBZ DINÁMICA) ---
+            // Célula convectiva que se desplaza de Occidente a Oriente
+            const stormLat = 6.223 - (currentTime / 180) * 0.006;
+            const stormLon = -75.602 + (currentTime / 180) * 0.012;
+            const stormPt = toPix(stormLat, stormLon);
+
+            // Factor de intensidad convectiva: pico en t ~ 60 min
+            const stormPeakFactor = Math.max(0.15, Math.exp(-Math.pow((currentTime - 60) / 40, 2)));
+
+            ctx.save();
+            // Contorno 25 dBZ (Verde exterior)
+            ctx.fillStyle = "rgba(34, 197, 94, " + (0.35 * stormPeakFactor) + ")";
+            ctx.beginPath();
+            ctx.ellipse(stormPt.x, stormPt.y, 90 * stormPeakFactor, 65 * stormPeakFactor, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Contorno 38 dBZ (Amarillo medio)
+            ctx.fillStyle = "rgba(234, 179, 8, " + (0.45 * stormPeakFactor) + ")";
+            ctx.beginPath();
+            ctx.ellipse(stormPt.x + 5, stormPt.y - 4, 60 * stormPeakFactor, 42 * stormPeakFactor, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Contorno 48 dBZ (Naranja / Rojo fuerte)
+            ctx.fillStyle = "rgba(239, 68, 68, " + (0.55 * stormPeakFactor) + ")";
+            ctx.beginPath();
+            ctx.ellipse(stormPt.x + 10, stormPt.y - 8, 35 * stormPeakFactor, 24 * stormPeakFactor, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Núcleo Convectivo > 55 dBZ (Púrpura / Magenta)
+            if (stormPeakFactor > 0.6) {
+                ctx.fillStyle = "rgba(168, 85, 247, " + (0.65 * stormPeakFactor) + ")";
+                ctx.beginPath();
+                ctx.ellipse(stormPt.x + 12, stormPt.y - 10, 18 * stormPeakFactor, 12 * stormPeakFactor, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Haz de barrido giratorio radar SIATA (360°)
+            const sweepAngle = (Date.now() * 0.0018) % (Math.PI * 2);
+            const radarOrigin = toPix(6.216, -75.596);
+            const sweepLen = 140;
+            ctx.strokeStyle = "rgba(34, 197, 94, 0.5)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(radarOrigin.x, radarOrigin.y);
+            ctx.lineTo(radarOrigin.x + Math.cos(sweepAngle) * sweepLen, radarOrigin.y + Math.sin(sweepAngle) * sweepLen);
+            ctx.stroke();
+
+            // Radar range rings
+            ctx.strokeStyle = "rgba(34, 197, 94, 0.15)";
+            ctx.lineWidth = 1;
+            [50, 95, 140].forEach(r => {
+                ctx.beginPath();
+                ctx.arc(radarOrigin.x, radarOrigin.y, r, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+            ctx.restore();
+
+            // --- 7. HUELLA DE INUNDACIÓN HIDRODINÁMICA (h x V) ---
+            if (isOverflow) {
+                const ovPt = toPix(6.2312, -75.5895);
+                const ovC30 = toPix(6.2312, -75.5908);
+                const ovRWY = toPix(6.2308, -75.5886);
+
+                ctx.save();
+                // 1. Medium Hazard Zone (Amber perimeter: h x V in [0.2, 0.5] m²/s)
+                ctx.fillStyle = "rgba(245, 158, 11, 0.38)";
+                ctx.beginPath();
+                ctx.ellipse(ovPt.x - 10, ovPt.y, 75, 42, -0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = "rgba(245, 158, 11, 0.85)";
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 3]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 2. High Hazard Zone (Deep Red core: h x V > 0.50 m²/s - Peligro Vital)
+                ctx.fillStyle = "rgba(239, 68, 68, 0.58)";
+                ctx.beginPath();
+                ctx.ellipse(ovPt.x, ovPt.y, 46, 26, -0.20, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // 3. Spreading overland velocity arrows onto Calle 30 & Runway Threshold
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+                ctx.lineWidth = 1.8;
+                [-14, 0, 14].forEach(dy => {
+                    ctx.beginPath();
+                    ctx.moveTo(ovC30.x + 15, ovPt.y + dy);
+                    ctx.lineTo(ovRWY.x - 12, ovPt.y + dy * 0.7);
+                    ctx.stroke();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.moveTo(ovRWY.x - 12, ovPt.y + dy * 0.7);
+                    ctx.lineTo(ovRWY.x - 19, ovPt.y + dy * 0.7 - 4);
+                    ctx.lineTo(ovRWY.x - 19, ovPt.y + dy * 0.7 + 4);
+                    ctx.fill();
+                });
+
+                // 4. High-Contrast Technical Hazard Alert Badge (Crisp & Readable)
+                const badgeW = 270, badgeH = 36;
+                const bx = ovPt.x - badgeW * 0.5;
+                const by = ovPt.y - 60;
+                ctx.fillStyle = "rgba(8, 14, 26, 0.95)";
+                ctx.beginPath();
+                ctx.roundRect(bx, by, badgeW, badgeH, 6);
+                ctx.fill();
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Pulsing Alert Indicator
+                ctx.fillStyle = "#ef4444";
+                ctx.beginPath();
+                ctx.arc(bx + 16, by + 18, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 11px 'Share Tech Mono', monospace";
+                ctx.textAlign = "left";
+                ctx.fillText("¡DESBORDE CALLE 30 // PISTA 02 SKMD!", bx + 28, by + 16);
+                ctx.font = "10px 'Share Tech Mono', monospace";
+                ctx.fillStyle = "#fca5a5";
+                const overflowDepth = Math.max(0.12, hAtBridge - canalDepth);
+                ctx.fillText(`Calado: +${overflowDepth.toFixed(2)}m // h×V > 0.5 m²/s (PELIGRO)`, bx + 28, by + 29);
+
+                ctx.restore();
+            }
+
+            // --- 8. ELEMENTOS CARTOGRÁFICOS: ROSA DE LOS VIENTOS Y ESCALA GRÁFICA ---
+            // Ubicación inteligente fuera de la ortofoto satelital (en el margen táctico derecho):
+            // Cuando drawX >= 130px, se ubican 100% en el área oscura lateral derecha, evitando cualquier
+            // solapamiento con la pista SKMD 02/20, calles o textos de la ortofoto.
+            const hasMargin = drawX >= 130;
+            const rightMarginX = drawX + drawW;
+
+            // 1. Rosa de los Vientos (Compass) en el margen derecho fuera de la imagen
+            const compassX = hasMargin ? rightMarginX + Math.min(drawX * 0.5, 75) : rightMarginX - 55;
+            const compassY = hasMargin ? 95 : drawY + 65;
+            ctx.save();
+            ctx.translate(compassX, compassY);
+            ctx.fillStyle = "rgba(8, 14, 26, 0.94)";
+            ctx.beginPath(); ctx.arc(0, 0, 28, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.65)"; ctx.lineWidth = 1.4; ctx.stroke();
+
+            // North Arrow (pointing straight up)
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(6, 0); ctx.lineTo(-6, 0); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.beginPath(); ctx.moveTo(0, 22); ctx.lineTo(6, 0); ctx.lineTo(-6, 0); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 10px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("N", 0, -25);
+            ctx.font = "8px 'Share Tech Mono', monospace";
+            ctx.fillStyle = "#38bdf8";
+            ctx.fillText("AZ 015°", 0, 36);
+            ctx.restore();
+
+            // 2. Barra de Escala Gráfica y Calibración Métrica (Ubicada en el margen derecho fuera de la ortofoto)
+            const pxPerMeter = drawW / 2656;
+            const bar500m = Math.max(60, Math.min(140, 500 * pxPerMeter));
+            const bar250m = bar500m * 0.5;
+
+            // Ancho y posición de la tarjeta de escala
+            const scaleCardW = hasMargin ? Math.min(drawX - 24, 215) : (bar500m + 36);
+            const scaleCardX = hasMargin ? rightMarginX + 12 : (rightMarginX - scaleCardW - 16);
+            const scaleCardY = hasMargin ? (compassY + 48) : (h - 250);
+            const scaleCardH = 74;
+
+            // Tarjeta contenedora sólida en el margen derecho (cero solapamiento con la foto satelital)
+            ctx.fillStyle = "rgba(8, 14, 26, 0.94)";
+            ctx.beginPath();
+            ctx.roundRect(scaleCardX, scaleCardY, scaleCardW, scaleCardH, 6);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.55)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            // Encabezado Tarjeta Escala
+            ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
+            ctx.fillRect(scaleCardX, scaleCardY, scaleCardW, 20);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.35)";
+            ctx.beginPath();
+            ctx.moveTo(scaleCardX, scaleCardY + 20);
+            ctx.lineTo(scaleCardX + scaleCardW, scaleCardY + 20);
+            ctx.stroke();
+
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("📏 ESCALA GRÁFICA", scaleCardX + 8, scaleCardY + 14);
+
+            // Barra segmentada bicolor (blanco / cian)
+            const barStartX = scaleCardX + (scaleCardW - bar500m) * 0.5;
+            const barY = scaleCardY + 34;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(barStartX, barY, bar250m, 5);
+            ctx.fillStyle = "#00f0ff";
+            ctx.fillRect(barStartX + bar250m, barY, bar250m, 5);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.8)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(barStartX, barY, bar500m, 5);
+
+            // Ticks y etiquetas métricas
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "8.5px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("0", barStartX, barY + 16);
+            ctx.fillText("250m", barStartX + bar250m, barY + 16);
+            ctx.fillText("500m", barStartX + bar500m, barY + 16);
+
+            // Resolución métrica en tiempo real
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "7.5px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`Calibración: 1 px ≈ ${(2656 / drawW).toFixed(2)} m`, scaleCardX + 8, scaleCardY + 64);
+
+            // --- METADATOS CARTOGRÁFICOS GIS Y LEYENDA RADAR SIATA ---
+            // Ubicación inteligente fuera de la ortofoto satelital (en el margen táctico izquierdo):
+            // Cuando drawX >= 130px, hay suficiente espacio libre a la izquierda de la imagen satelital.
+            // Se posiciona 100% en el área oscura limpia para eliminar el solapamiento visual.
+            const hasSideMargin = drawX >= 130;
+            const legW = hasSideMargin ? Math.min(drawX - 24, 215) : 215;
+            const legX = hasSideMargin ? 12 : Math.max(12, drawX + 16);
+            const legY = hasSideMargin ? 60 : drawY + 60;
+
+            // 1. Tarjeta de Metadatos Cartográficos GIS (Fuera de la imagen satelital)
+            const metaCardH = 108;
+            ctx.fillStyle = "rgba(8, 14, 26, 0.94)";
+            ctx.beginPath();
+            ctx.roundRect(legX, legY, legW, metaCardH, 6);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.55)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            // Encabezado Tarjeta GIS
+            ctx.fillStyle = "rgba(56, 189, 248, 0.15)";
+            ctx.fillRect(legX, legY, legW, 22);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.35)";
+            ctx.beginPath();
+            ctx.moveTo(legX, legY + 22);
+            ctx.lineTo(legX + legW, legY + 22);
+            ctx.stroke();
+
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("🌐 METADATOS CARTOGRÁFICOS", legX + 8, legY + 15);
+
+            ctx.font = "bold 8.5px 'Share Tech Mono', monospace";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("GIS SATELITAL REAL", legX + 8, legY + 36);
+
+            ctx.font = "8px 'Share Tech Mono', monospace";
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("• COBERTURA: Caño El Papa", legX + 8, legY + 50);
+            ctx.fillText("  Olaya Herrera (SKMD) - JPII", legX + 8, legY + 62);
+            ctx.fillText("• ORTOFOTO: ESRI World Imagery", legX + 8, legY + 76);
+            ctx.fillText("• VECTORES: AMVA / SIATA / IGAC", legX + 8, legY + 89);
+            ctx.fillText("• SISTEMA: WGS84 / Magna-Sirgas", legX + 8, legY + 102);
+
+            // 2. Tarjeta Leyenda Radar Meteorológico SIATA (Fuera de la imagen satelital)
+            const radarCardY = legY + metaCardH + 8;
+            const radarCardH = 68;
+            ctx.fillStyle = "rgba(8, 14, 26, 0.94)";
+            ctx.beginPath();
+            ctx.roundRect(legX, radarCardY, legW, radarCardH, 6);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(34, 197, 94, 0.55)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            // Encabezado Radar
+            ctx.fillStyle = "rgba(34, 197, 94, 0.15)";
+            ctx.fillRect(legX, radarCardY, legW, 20);
+            ctx.strokeStyle = "rgba(34, 197, 94, 0.35)";
+            ctx.beginPath();
+            ctx.moveTo(legX, radarCardY + 20);
+            ctx.lineTo(legX + legW, radarCardY + 20);
+            ctx.stroke();
+
+            ctx.fillStyle = "#22c55e";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("📡 RADAR SIATA // dBZ", legX + 8, radarCardY + 14);
+
+            // Reflectivity scale bars
+            const rColors = ["#22c55e", "#eab308", "#ef4444", "#a855f7"];
+            const rLabels = ["25", "38", "48", "60+"];
+            const rBarW = Math.floor((legW - 16) / 4);
+            rColors.forEach((c, idx) => {
+                const rx = legX + 8 + idx * rBarW;
+                ctx.fillStyle = c;
+                ctx.fillRect(rx, radarCardY + 27, rBarW - 2, 6);
+                ctx.fillStyle = "#cbd5e1";
+                ctx.font = "8px 'Share Tech Mono', monospace";
+                ctx.textAlign = "center";
+                ctx.fillText(rLabels[idx], rx + (rBarW - 2) * 0.5, radarCardY + 44);
+            });
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "7.5px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("Barrido Doppler 360° en vivo", legX + 8, radarCardY + 58);
+
+            // --- 9. INDICADORES CARDINALES EN LOS MÁRGENES (NORTE / SUR / ORIENTE / OCCIDENTE) ---
+            // Banner Norte (Top Edge - Ubicado debajo del Cockpit Ribbon para evitar solapamientos)
+            const bannerNW = 340;
+            const northBannerY = Math.max(54, drawY + 8);
+            ctx.fillStyle = "rgba(7, 13, 24, 0.88)";
+            ctx.fillRect(drawX + (drawW - bannerNW) * 0.5, northBannerY, bannerNW, 20);
+            ctx.strokeStyle = "rgba(0, 240, 255, 0.75)";
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(drawX + (drawW - bannerNW) * 0.5, northBannerY, bannerNW, 20);
+            ctx.fillStyle = "#00f0ff";
+            ctx.font = "bold 10px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("▲ NORTE (N) // HACIA CALLE 33 & RÍO MEDELLÍN", drawX + drawW * 0.5, northBannerY + 14);
+
+            // Banner Sur (Bottom Edge)
+            const bannerSW = 340;
+            ctx.fillStyle = "rgba(7, 13, 24, 0.88)";
+            ctx.fillRect(drawX + (drawW - bannerSW) * 0.5, drawY + drawH - 26, bannerSW, 20);
+            ctx.strokeStyle = "rgba(245, 158, 11, 0.75)";
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(drawX + (drawW - bannerSW) * 0.5, drawY + drawH - 26, bannerSW, 20);
+            ctx.fillStyle = "#f59e0b";
+            ctx.font = "bold 10px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("▼ SUR (S) // HACIA CARRERA 80 & GUAYABAL", drawX + drawW * 0.5, drawY + drawH - 12);
+
+            // Lateral Badge Occidente (Left)
+            ctx.save();
+            ctx.translate(drawX + 16, drawY + drawH * 0.5);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillStyle = "rgba(7, 13, 24, 0.88)";
+            ctx.fillRect(-85, -10, 170, 20);
+            ctx.strokeStyle = "rgba(16, 185, 129, 0.75)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-85, -10, 170, 20);
+            ctx.fillStyle = "#10b981";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("◄ OCCIDENTE (W) // BELÉN", 0, 4);
+            ctx.restore();
+
+            // Lateral Badge Oriente (Right)
+            ctx.save();
+            ctx.translate(drawX + drawW - 16, drawY + drawH * 0.5);
+            ctx.rotate(Math.PI / 2);
+            ctx.fillStyle = "rgba(7, 13, 24, 0.88)";
+            ctx.fillRect(-95, -10, 190, 20);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.75)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-95, -10, 190, 20);
+            ctx.fillStyle = "#38bdf8";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("► ORIENTE (E) // PISTA SKMD", 0, 4);
+            ctx.restore();
+        }
+
+        function renderProfileView() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const w = renderCanvas.width / dpr;
+            const h = renderCanvas.height / dpr;
+
+            // Deep tactical background
+            ctx.fillStyle = "#070d19";
+            ctx.fillRect(0, 0, w, h);
+
+            // Subtle engineering grid
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.07)";
+            ctx.lineWidth = 1;
+            for (let x = 60; x < w - 60; x += 80) {
+                ctx.beginPath(); ctx.moveTo(x, 40); ctx.lineTo(x, h - 230); ctx.stroke();
+            }
+            for (let y = 50; y < h - 230; y += 40) {
+                ctx.beginPath(); ctx.moveTo(60, y); ctx.lineTo(w - 60, y); ctx.stroke();
+            }
+
+            const ox = 110;
+            const oy = Math.min(h * 0.46, 360);
+            const length = w - 180;
+
+            const q = getFlowAtTime(currentTime);
+            const isWidened = document.getElementById('toggle-widening').checked;
+            const isTraditional = document.getElementById('toggle-traditional')?.checked;
+            const obsPct = parseFloat(document.getElementById('input-obstruction')?.value || 0);
+            const b = isWidened ? 5.2 : 4.0;
+            const Manning_n = 0.016;
+            const So = 0.0035;
+
+            // --- 1. CHANNEL BED (SOLERA) WITH REAL GRAVITY GRADIENT ---
+            // In the Aburrá Valley, Caño El Papa flows from South (high elevation) to North (lower elevation)
+            // Left (Sur, K0+000): higher on screen (smaller canvas y)
+            // Right (Norte, K2+000): lower on screen (larger canvas y)
+            const bedY0 = oy - 58;   // Cota ~ 1515.00 msnm (Sur / Cuenca Alta)
+            const bedYEnd = oy - 10; // Cota ~ 1508.00 msnm (Norte / Descarga Río Medellín)
+            function getBedY(s) {
+                return bedY0 + s * (bedYEnd - bedY0);
+            }
+
+            // --- 2. CHANNEL BANK (CORONA DEL CANAL / DESBORDE) ---
+            const bankHeightM = isWidened ? 3.4 : 3.0;
+            const scaleY = 32; // pixels per meter
+            const bankPx = bankHeightM * scaleY;
+            function getBankY(s) {
+                return getBedY(s) - bankPx;
+            }
+
+            // --- 3. CRITICAL DEPTH (CALADO CRÍTICO yc) ---
+            const qu = q / b;
+            const yc = Math.pow((qu * qu) / 9.81, 1 / 3);
+            const ycPx = yc * scaleY;
+            function getYcY(s) {
+                return getBedY(s) - ycPx;
+            }
+
+            // --- 4. WATER SURFACE PROFILE & M1 BACKWATER SWELL (CURVA DE REMANSO) ---
+            const yn = Math.pow((q * Manning_n) / (Math.sqrt(So) * b), 0.6);
+            const ynPx = yn * scaleY;
+            const s_bridge = 0.68; // K1+500 location (Viaducto Calle 30)
+            const bx = ox + length * s_bridge;
+
+            // Remanso swell upstream of Calle 30 bridge contraction + obstruction
+            const obsBackwaterM = (obsPct / 100) * 1.6 * (q / 35.0);
+            const remansoBase = Math.min(0.85, (q / 28) * 0.52);
+            const totalRemansoM = remansoBase + obsBackwaterM;
+            const totalRemansoPx = totalRemansoM * scaleY;
+
+            function getWaterDepth(s) {
+                let swell = 0;
+                if (s < s_bridge) {
+                    // M1 backwater profile upstream of bridge: smooth swelling
+                    const factor = Math.max(0, Math.min(1, (s - 0.20) / 0.48));
+                    swell = totalRemansoPx * Math.sin(factor * Math.PI * 0.5);
+                } else {
+                    // Downstream of bridge: flow contracts through bridge and recovers normal depth
+                    const factor = Math.max(0, Math.min(1, (s - s_bridge) / 0.28));
+                    swell = totalRemansoPx * 0.20 * (1 - factor);
+                }
+                return ynPx + swell;
+            }
+            function getWaterY(s) {
+                return getBedY(s) - getWaterDepth(s);
+            }
+
+            const hAtBridge = yn + totalRemansoM;
+            const isOverflow = (hAtBridge > bankHeightM) || (yn > bankHeightM) || isTraditional;
+            const steps = 70;
+
+            // --- 5. GEOTECHNICAL SUBGRADE HATCHING (DEPOSITOS ALUVIALES Qal) ---
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(ox, getBedY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getBedY(s));
+            }
+            ctx.lineTo(ox + length, oy + 24);
+            ctx.lineTo(ox, oy + 24);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+            ctx.fill();
+
+            // Soil diagonal hatching pattern ///
+            ctx.strokeStyle = "rgba(71, 85, 105, 0.30)";
+            ctx.lineWidth = 1;
+            ctx.clip(); // clip to ground polygon
+            for (let hx = ox - 200; hx <= ox + length + 200; hx += 16) {
+                ctx.beginPath();
+                ctx.moveTo(hx, oy - 120);
+                ctx.lineTo(hx + 120, oy + 40);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // Geotechnical classification label
+            ctx.fillStyle = "rgba(148, 163, 184, 0.65)";
+            ctx.font = "bold 8.5px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("ESTRATO GEOTÉCNICO: Depósitos Aluvio-torrenciales Cuaternarios (Qal) // Gravas y arenas densas permeables", ox + 15, oy + 18);
+
+            // --- 6. DRAW COORDINATE AXIS & DEPTH TICKS ---
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.45)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(ox, 40);
+            ctx.lineTo(ox, oy);
+            ctx.lineTo(ox + length, oy);
+            ctx.stroke();
+
+            // Y-axis Depth Ticks & Labels
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "10px 'Share Tech Mono', monospace";
+            ctx.textAlign = "right";
+            for (let d = 0; d <= 4; d++) {
+                const dy = oy - d * scaleY;
+                ctx.beginPath();
+                ctx.moveTo(ox - 6, dy);
+                ctx.lineTo(ox, dy);
+                ctx.stroke();
+                ctx.fillText(`+${d}.0m`, ox - 10, dy + 3);
+            }
+
+            // --- 7. DRAW CHANNEL BED (SOLERA) ---
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 4.5;
+            ctx.beginPath();
+            ctx.moveTo(ox, getBedY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getBedY(s));
+            }
+            ctx.stroke();
+
+            // Solera Label
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("Solera del Canal (Revestimiento de Hormigón)", ox + 15, getBedY(0) + 14);
+
+            // --- 8. DRAW CHANNEL BANK (CORONA DEL CANAL) ---
+            ctx.strokeStyle = "rgba(241, 245, 249, 0.8)";
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([5, 4]);
+            ctx.beginPath();
+            ctx.moveTo(ox, getBankY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getBankY(s));
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Bank Label positioned safely on the left (zero overlap)
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "bold 9.5px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`Corona del Canal (Cota Desborde: +${bankHeightM.toFixed(2)} m)`, ox + 15, getBankY(0) - 8);
+
+            // --- 9. DRAW CRITICAL DEPTH LINE (CALADO CRÍTICO yc) ---
+            ctx.strokeStyle = "rgba(244, 63, 94, 0.65)";
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([3, 4]);
+            ctx.beginPath();
+            ctx.moveTo(ox, getYcY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getYcY(s));
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = "rgba(244, 63, 94, 0.9)";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`Calado Crítico yc = ${yc.toFixed(2)} m (Froude Fr ≈ 1.0)`, ox + 15, getYcY(0) - 5);
+
+            // --- 10. DRAW WATER MASS (FILL GRADIENT) ---
+            const waterGrad = ctx.createLinearGradient(0, oy - 160, 0, oy);
+            waterGrad.addColorStop(0, isOverflow ? "rgba(239, 68, 68, 0.85)" : "rgba(6, 182, 212, 0.80)");
+            waterGrad.addColorStop(1, "rgba(37, 99, 235, 0.28)");
+
+            ctx.fillStyle = waterGrad;
+            ctx.beginPath();
+            ctx.moveTo(ox, getBedY(0));
+            ctx.lineTo(ox, getWaterY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getWaterY(s));
+            }
+            ctx.lineTo(ox + length, getBedY(1.0));
+            for (let i = steps - 1; i >= 0; i--) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getBedY(s));
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // --- 11. LATERAL OVERFLOW SPILL MASS WHEN WATER EXCEEDS BANK ---
+            if (isOverflow) {
+                ctx.save();
+                ctx.fillStyle = "rgba(239, 68, 68, 0.42)";
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const sStart = 0.52, sEnd = 0.82;
+                ctx.moveTo(ox + sStart * length, getBankY(sStart));
+                for (let i = 0; i <= 30; i++) {
+                    const s = sStart + (i / 30) * (sEnd - sStart);
+                    ctx.lineTo(ox + s * length, Math.min(getBankY(s), getWaterY(s)));
+                }
+                for (let i = 30; i >= 0; i--) {
+                    const s = sStart + (i / 30) * (sEnd - sStart);
+                    ctx.lineTo(ox + s * length, getBankY(s));
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Lateral spill badge
+                const cX = ox + s_bridge * length;
+                const cY = getBankY(s_bridge) - 52;
+                ctx.fillStyle = "rgba(8, 14, 26, 0.96)";
+                ctx.beginPath();
+                ctx.roundRect(cX - 150, cY - 14, 300, 26, 6);
+                ctx.fill();
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 1.8;
+                ctx.stroke();
+                ctx.fillStyle = "#ef4444";
+                ctx.beginPath(); ctx.arc(cX - 136, cY - 1, 4.5, 0, Math.PI * 2); ctx.fill();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 9.5px 'Share Tech Mono', monospace";
+                ctx.textAlign = "left";
+                ctx.fillText(`DESBORDE ACTIVO SOBRE CALLE 30 (+${(hAtBridge - bankHeightM).toFixed(2)}m)`, cX - 124, cY + 3);
+                ctx.restore();
+            }
+
+            // --- 12. WATER SURFACE LINE WITH GLOW ---
+            ctx.save();
+            ctx.strokeStyle = isOverflow ? "#ef4444" : "#00f0ff";
+            ctx.lineWidth = 2.6;
+            ctx.shadowColor = isOverflow ? "#ef4444" : "#00f0ff";
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.moveTo(ox, getWaterY(0));
+            for (let i = 1; i <= steps; i++) {
+                const s = i / steps;
+                ctx.lineTo(ox + s * length, getWaterY(s));
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // --- 13. PUENTE CALLE 30 STRUCTURE & CLEARANCE (GÁLIBO) ---
+            const deckSoffitY = getBankY(s_bridge) - 12; // Girder bottom
+            const deckTopY = deckSoffitY - 18;          // Girder top
+
+            // Bridge Deck Slab
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(bx - 38, deckTopY, 76, 18);
+            ctx.strokeStyle = isOverflow ? "#ef4444" : "#38bdf8";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(bx - 38, deckTopY, 76, 18);
+
+            // Pier under bridge
+            ctx.fillStyle = "#334155";
+            ctx.fillRect(bx - 4, deckSoffitY, 8, getBedY(s_bridge) - deckSoffitY);
+
+            // Safety Parapet
+            ctx.fillStyle = "#64748b";
+            ctx.fillRect(bx - 38, deckTopY - 4, 76, 4);
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("PUENTE CALLE 30", bx, deckTopY + 12);
+
+            // Hydraulic Clearance (Gálibo)
+            const waterAtBridgeY = getWaterY(s_bridge);
+            const galiboPx = waterAtBridgeY - deckSoffitY;
+            const galiboM = galiboPx / scaleY;
+
+            // Dimension line for Gálibo
+            ctx.strokeStyle = galiboM < 0 ? "#ef4444" : (galiboM < 0.4 ? "#f59e0b" : "#10b981");
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(bx + 44, deckSoffitY);
+            ctx.lineTo(bx + 44, waterAtBridgeY);
+            ctx.stroke();
+
+            // Arrowheads on dimension line
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.beginPath(); ctx.moveTo(bx + 42, deckSoffitY + 3); ctx.lineTo(bx + 44, deckSoffitY); ctx.lineTo(bx + 46, deckSoffitY + 3); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(bx + 42, waterAtBridgeY - 3); ctx.lineTo(bx + 44, waterAtBridgeY); ctx.lineTo(bx + 46, waterAtBridgeY - 3); ctx.fill();
+
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`Gálibo: ${galiboM.toFixed(2)} m ${galiboM < 0 ? '(SUMERGIDO)' : ''}`, bx + 50, deckSoffitY + 14);
+
+            // --- 14. REMANSO HIDRÁULICO (CURVA M1) ANNOTATION ---
+            const m1s = 0.50; // Upstream of bridge
+            const m1X = ox + length * m1s;
+            const m1Y = getWaterY(m1s) - 24;
+
+            ctx.fillStyle = "#f59e0b";
+            ctx.font = "bold 9px 'Share Tech Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(`Remanso M1 (Δh = +${totalRemansoM.toFixed(2)}m) ↘`, m1X, m1Y);
+
+            // Directional pointer arrow to swollen water surface
+            ctx.strokeStyle = "rgba(245, 158, 11, 0.6)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(m1X, m1Y + 4);
+            ctx.lineTo(m1X, getWaterY(m1s) - 4);
+            ctx.stroke();
+
+            // --- 15. GUITARRA DE PERFIL (NORMA INGENIERÍA CIVIL / CIVIL 3D & HEC-RAS) ---
+            const gTop = oy + 26;
+            const rowH = 17;
+            const gRows = [
+                { name: "COTA CORONA (msnm)", color: "#cbd5e1", getVal: (s) => (1515.0 - s * 7.0 + bankHeightM).toFixed(2) },
+                { name: "COTA LÁMINA (msnm)", color: isOverflow ? "#ef4444" : "#00f0ff", getVal: (s) => (1515.0 - s * 7.0 + (getWaterDepth(s) / scaleY)).toFixed(2) },
+                { name: "COTA SOLERA (msnm)", color: "#94a3b8", getVal: (s) => (1515.0 - s * 7.0).toFixed(2) },
+                { name: "CALADO h (m)", color: "#38bdf8", getVal: (s) => (getWaterDepth(s) / scaleY).toFixed(2) },
+                { name: "ABSCISA", color: "#f8fafc", getVal: (s) => `K${(s * 2).toFixed(1).replace('.', '+')}` }
+            ];
+
+            const headerW = 125;
+            const tableLeft = ox - headerW;
+            const tableW = length + headerW;
+            const tableH = gRows.length * rowH;
+
+            // Table Background
+            ctx.fillStyle = "rgba(10, 16, 28, 0.94)";
+            ctx.fillRect(tableLeft, gTop, tableW, tableH);
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(tableLeft, gTop, tableW, tableH);
+
+            // Row dividers & Header Labels
+            gRows.forEach((row, rIdx) => {
+                const ry = gTop + rIdx * rowH;
+                if (rIdx > 0) {
+                    ctx.strokeStyle = "rgba(71, 85, 105, 0.4)";
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath(); ctx.moveTo(tableLeft, ry); ctx.lineTo(tableLeft + tableW, ry); ctx.stroke();
+                }
+                // Header cell background & text
+                ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
+                ctx.fillRect(tableLeft, ry, headerW, rowH);
+                ctx.fillStyle = row.color;
+                ctx.font = "bold 8.5px 'Share Tech Mono', monospace";
+                ctx.textAlign = "left";
+                ctx.fillText(row.name, tableLeft + 6, ry + 12);
+            });
+
+            // Vertical divider between Header and Data
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.5)";
+            ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.moveTo(ox, gTop); ctx.lineTo(ox, gTop + tableH); ctx.stroke();
+
+            // Column station ticks across the profile and into the Guitarra table
+            const stationFractions = [0.0, 0.25, 0.50, 0.68, 0.75, 1.0];
+            stationFractions.forEach(sf => {
+                const sx = ox + sf * length;
+                // Vertical grid line from profile axis down through guitar
+                ctx.strokeStyle = sf === s_bridge ? "rgba(239, 68, 68, 0.55)" : "rgba(71, 85, 105, 0.35)";
+                ctx.lineWidth = sf === s_bridge ? 1.2 : 0.8;
+                ctx.beginPath();
+                ctx.moveTo(sx, oy);
+                ctx.lineTo(sx, gTop + tableH);
+                ctx.stroke();
+
+                // Values in each cell
+                gRows.forEach((row, rIdx) => {
+                    const ry = gTop + rIdx * rowH;
+                    ctx.fillStyle = row.color;
+                    ctx.font = "8.5px 'Share Tech Mono', monospace";
+                    ctx.textAlign = "center";
+                    ctx.fillText(row.getVal(sf), sx, ry + 12);
+                });
+            });
+
+            // Title at bottom positioned safely above drawer
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "11px 'Share Tech Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("PERFIL HIDRÁULICO LONGITUDINAL // CAÑO EL PAPA (CURVAS DE REMANSO & RÉGIMEN HIDRÁULICO)", ox, h - 230);
+        }
+
+        // --- DRAW HYDROGRAPH CANVAS (ENGINEERING SPECIFICATION) ---
+        function drawHydrographs() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            hydroCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const w = hydroCanvas.width / dpr;
+            const h = hydroCanvas.height / dpr;
+            hydroCtx.clearRect(0, 0, w, h);
+
+            const padL = 50, padR = 18, padT = 18, padB = 26;
+            const gw = w - padL - padR;
+            const gh = h - padT - padB;
+            const maxQ = 65;
+            const maxT = 180;
+
+            function xPos(t) { return padL + (t / maxT) * gw; }
+            function yPos(q) { return padT + gh - (Math.min(q, maxQ) / maxQ) * gh; }
+
+            // 1. Gridlines & Y-Axis Scale
+            const yTicks = [0, 15, 30, 45, 60];
+            hydroCtx.font = "10px 'Share Tech Mono', monospace";
+            hydroCtx.textAlign = "right";
+            hydroCtx.textBaseline = "middle";
+
+            yTicks.forEach(tickQ => {
+                const y = yPos(tickQ);
+                hydroCtx.strokeStyle = tickQ === 0 ? "rgba(71, 85, 105, 0.7)" : "rgba(51, 65, 85, 0.35)";
+                hydroCtx.lineWidth = tickQ === 0 ? 1.2 : 0.8;
+                hydroCtx.setLineDash(tickQ === 0 ? [] : [3, 4]);
+                hydroCtx.beginPath();
+                hydroCtx.moveTo(padL, y);
+                hydroCtx.lineTo(w - padR, y);
+                hydroCtx.stroke();
+                hydroCtx.setLineDash([]);
+
+                hydroCtx.fillStyle = "#64748b";
+                const yOffset = tickQ === 0 ? -4 : 0;
+                hydroCtx.fillText(tickQ.toString(), padL - 7, y + yOffset);
+            });
+
+            // Y-Axis Unit Label
+            hydroCtx.fillStyle = "#94a3b8";
+            hydroCtx.font = "9px 'Share Tech Mono', monospace";
+            hydroCtx.textAlign = "left";
+            hydroCtx.fillText("Q (m³/s)", 8, padT - 6);
+
+            // 2. X-Axis Time Ticks
+            const xTicks = [0, 30, 60, 90, 120, 150, 180];
+            hydroCtx.textAlign = "center";
+            hydroCtx.textBaseline = "top";
+
+            xTicks.forEach(tickT => {
+                const x = xPos(tickT);
+                hydroCtx.strokeStyle = "rgba(51, 65, 85, 0.25)";
+                hydroCtx.lineWidth = 0.8;
+                hydroCtx.setLineDash([2, 4]);
+                hydroCtx.beginPath();
+                hydroCtx.moveTo(x, padT);
+                hydroCtx.lineTo(x, padT + gh);
+                hydroCtx.stroke();
+                hydroCtx.setLineDash([]);
+
+                hydroCtx.fillStyle = "#64748b";
+                const xOffset = tickT === 0 ? 8 : 0;
+                hydroCtx.fillText(tickT + "m", x + xOffset, padT + gh + 6);
+            });
+
+            // X-Axis Unit Label
+            hydroCtx.fillStyle = "#94a3b8";
+            hydroCtx.textAlign = "right";
+            hydroCtx.fillText("Tiempo t (min)", w - padR, padT + gh + 16);
+
+            // 3. Individual Tributary Curves & Dynamic Legend Updates
+            const curTribFlows = [];
+            tributaries.forEach((trib, idx) => {
+                hydroCtx.strokeStyle = trib.color;
+                hydroCtx.lineWidth = 1.6;
+                hydroCtx.beginPath();
+                for (let t = 0; t <= maxT; t += 2) {
+                    const q = hydroGamma(t, trib.lag, trib.tp, trib.qp);
+                    const x = xPos(t);
+                    const y = yPos(q);
+                    if (t === 0) hydroCtx.moveTo(x, y);
+                    else hydroCtx.lineTo(x, y);
+                }
+                hydroCtx.stroke();
+
+                const curQ = hydroGamma(currentTime, trib.lag, trib.tp, trib.qp);
+                curTribFlows.push(curQ);
+                const pillEl = document.getElementById('pill-flow-' + idx);
+                if (pillEl) pillEl.innerHTML = `Q: <strong>${curQ.toFixed(1)} m³/s</strong>`;
+            });
+
+            // 4. Combined Synchronized Hydrograph (Caño El Papa)
+            // Gradient Fill under curve
+            const areaGrad = hydroCtx.createLinearGradient(0, padT, 0, padT + gh);
+            areaGrad.addColorStop(0, "rgba(56, 189, 248, 0.25)");
+            areaGrad.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+
+            hydroCtx.fillStyle = areaGrad;
+            hydroCtx.beginPath();
+            hydroCtx.moveTo(xPos(0), yPos(0));
+            for (let t = 0; t <= maxT; t += 2) {
+                const q = getFlowAtTime(t);
+                hydroCtx.lineTo(xPos(t), yPos(q));
+            }
+            hydroCtx.lineTo(xPos(maxT), yPos(0));
+            hydroCtx.closePath();
+            hydroCtx.fill();
+
+            // Bold Blue Curve
+            hydroCtx.strokeStyle = "#38bdf8";
+            hydroCtx.lineWidth = 2.8;
+            hydroCtx.beginPath();
+            for (let t = 0; t <= maxT; t += 2) {
+                const q = getFlowAtTime(t);
+                const x = xPos(t);
+                const y = yPos(q);
+                if (t === 0) hydroCtx.moveTo(x, y);
+                else hydroCtx.lineTo(x, y);
+            }
+            hydroCtx.stroke();
+
+            // Update Total Flow in Legend
+            const totalCurQ = getFlowAtTime(currentTime);
+            const totalPill = document.getElementById('pill-flow-total');
+            if (totalPill) totalPill.innerHTML = `Q: <strong>${totalCurQ.toFixed(1)} m³/s</strong>`;
+
+            // 5. Scrubber Current Time Marker Line
+            const curX = xPos(currentTime);
+            hydroCtx.strokeStyle = "#eab308";
+            hydroCtx.lineWidth = 1.8;
+            hydroCtx.setLineDash([4, 3]);
+            hydroCtx.beginPath();
+            hydroCtx.moveTo(curX, padT - 2);
+            hydroCtx.lineTo(curX, padT + gh);
+            hydroCtx.stroke();
+            hydroCtx.setLineDash([]);
+
+            // Dot on Total curve at currentTime
+            const curY = yPos(totalCurQ);
+            hydroCtx.fillStyle = "#eab308";
+            hydroCtx.beginPath();
+            hydroCtx.arc(curX, curY, 4.5, 0, Math.PI * 2);
+            hydroCtx.fill();
+            hydroCtx.strokeStyle = "#ffffff";
+            hydroCtx.lineWidth = 1.5;
+            hydroCtx.stroke();
+
+            // Dots on individual tributary curves
+            curTribFlows.forEach((q, i) => {
+                if (q > 0.3) {
+                    const ty = yPos(q);
+                    hydroCtx.fillStyle = tributaries[i].color;
+                    hydroCtx.beginPath();
+                    hydroCtx.arc(curX, ty, 3, 0, Math.PI * 2);
+                    hydroCtx.fill();
+                }
+            });
+        }
+
+        // Init on page load
+        window.onload = () => {
+            initThreeJS();
+            resizeCanvases();
+            updateRisk();
+            updateHydraulics();
+
+            // Check URL parameters or hash for direct deep-linking (e.g. ?mode=2d, ?mode=profile, #2d)
+            const urlParams = new URLSearchParams(window.location.search);
+            const hashMode = window.location.hash.replace('#', '');
+            const initialMode = urlParams.get('mode') || hashMode;
+            if (initialMode && (initialMode === '2d' || initialMode === 'profile' || initialMode === '3d')) {
+                setMode(initialMode);
+            }
+        };
+    </script>
+</body>
+</html>
