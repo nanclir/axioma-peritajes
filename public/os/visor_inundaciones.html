@@ -814,13 +814,380 @@
             font-weight: 700;
         }
 
-        /* Mobile / Small Screens */
-        @media (max-width: 900px) {
-            .app-container { flex-direction: column; }
-            .workspace { flex-direction: column; }
-            .sidebar { width: 100%; height: 300px; border-left: none; border-top: 1px solid var(--panel-border); }
-            .telemetry-ribbon { height: auto; flex-wrap: wrap; gap: 4px 8px; padding: 4px 10px; }
-            .ribbon-item { font-size: 0.70rem; }
+        /* Text swapping between desktop and mobile */
+        .btn-text-short {
+            display: none !important;
+        }
+        .btn-text-full {
+            display: inline !important;
+        }
+
+        /* =========================================================================
+           MOBILE-ONLY ELEMENTS: HIDDEN BY DEFAULT ON DESKTOP (> 850px)
+           La visualización en escritorio permanece 100% calibrada e idéntica.
+           ========================================================================= */
+        .mobile-fab,
+        .mobile-backdrop,
+        .mobile-sidebar-header,
+        .mobile-only {
+            display: none !important;
+        }
+
+        /* =========================================================================
+           RESPONSIVE MOBILE ADAPTATION (Activo exclusivamente en pantallas <= 850px)
+           ========================================================================= */
+        @media (max-width: 850px) {
+            .btn-text-short {
+                display: inline !important;
+            }
+            .btn-text-full {
+                display: none !important;
+            }
+
+            /* Header Móvil Ultracompacto */
+            header {
+                height: 46px !important;
+                padding: 0 6px !important;
+                gap: 2px !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                box-sizing: border-box !important;
+                width: 100% !important;
+            }
+
+            .brand-area {
+                gap: 2px !important;
+                flex: 0 0 auto !important;
+            }
+
+            .brand-badge {
+                display: none !important;
+            }
+
+            .brand-logo {
+                font-size: 0.74rem !important;
+                letter-spacing: 0 !important;
+                gap: 3px !important;
+                white-space: nowrap !important;
+            }
+
+            .brand-logo svg {
+                width: 15px !important;
+                height: 15px !important;
+            }
+
+            .mode-switcher {
+                padding: 1px !important;
+                gap: 2px !important;
+                flex: 0 0 auto !important;
+            }
+
+            .mode-btn {
+                padding: 3px 5px !important;
+                font-size: 0.62rem !important;
+                gap: 2px !important;
+            }
+
+            .mode-btn svg {
+                width: 10px !important;
+                height: 10px !important;
+            }
+
+            .header-actions {
+                display: none !important;
+            }
+
+            .mobile-only {
+                display: flex !important;
+            }
+
+            .pdf-modal-btn svg {
+                width: 11px !important;
+                height: 11px !important;
+            }
+
+            /* Workspace y Contenedor Principal: 100% Pantalla Móvil */
+            .workspace {
+                position: relative !important;
+                width: 100% !important;
+                height: calc(100vh - 46px) !important;
+                overflow: hidden !important;
+                flex-direction: column !important;
+            }
+
+            .viewport-container {
+                position: absolute !important;
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            /* Telemetry Cockpit en Móvil: Barra horizontal tipo chip deslizable */
+            .telemetry-ribbon {
+                top: 5px !important;
+                left: 6px !important;
+                right: 6px !important;
+                height: 28px !important;
+                padding: 0 8px !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                justify-content: flex-start !important;
+                gap: 10px !important;
+                border-radius: 6px !important;
+                scrollbar-width: none !important;
+            }
+
+            .telemetry-ribbon::-webkit-scrollbar {
+                display: none !important;
+            }
+
+            .ribbon-item {
+                flex-shrink: 0 !important;
+                gap: 4px !important;
+            }
+
+            .ribbon-label {
+                font-size: 0.55rem !important;
+            }
+
+            .hud-val {
+                font-size: 0.72rem !important;
+            }
+
+            .ribbon-compass {
+                flex-shrink: 0 !important;
+                gap: 4px !important;
+            }
+
+            .compass-dial svg {
+                width: 16px !important;
+                height: 16px !important;
+            }
+
+            .compass-heading {
+                font-size: 0.62rem !important;
+            }
+
+            /* Camera Tip en Móvil: Ocultar para máxima limpieza táctil */
+            .camera-tip {
+                display: none !important;
+            }
+
+            /* Bottom Drawer (Hidrogramas) en Móvil */
+            .bottom-drawer {
+                height: 245px !important;
+                padding: 6px 8px 8px 8px !important;
+                transform: translateY(calc(100% - 36px)) !important;
+                z-index: 45 !important;
+                box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.85) !important;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+
+            .bottom-drawer.expanded-mobile {
+                transform: translateY(0) !important;
+            }
+
+            .drawer-header {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                gap: 4px !important;
+                margin-bottom: 4px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .drawer-title {
+                font-size: 0.60rem !important;
+                gap: 3px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                flex: 1 1 auto !important;
+            }
+
+            .scrubber-box {
+                margin: 0 !important;
+                flex: 0 0 auto !important;
+                gap: 2px !important;
+            }
+
+            .scrubber-box > span:first-child {
+                display: none !important;
+            }
+
+            .scrubber-slider {
+                width: 48px !important;
+                flex: none !important;
+            }
+
+            #time-display {
+                width: 34px !important;
+                font-size: 0.64rem !important;
+            }
+
+            .drawer-toggle-btn {
+                padding: 2px 6px !important;
+                font-size: 0.62rem !important;
+                flex: 0 0 auto !important;
+                white-space: nowrap !important;
+            }
+
+            #hydrograph-canvas {
+                height: 110px !important;
+            }
+
+            .hydro-legend-bar {
+                gap: 2px 3px !important;
+                margin-bottom: 2px !important;
+            }
+
+            .legend-pill {
+                padding: 1px 4px !important;
+                font-size: 0.56rem !important;
+            }
+
+            /* Sidebar: Cajón Deslizante Bottom-Sheet para Celulares */
+            .sidebar {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                top: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                max-height: 82vh !important;
+                transform: translateY(100%) !important;
+                transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                z-index: 100 !important;
+                border-radius: 18px 18px 0 0 !important;
+                border-top: 1px solid var(--acumen-cyan) !important;
+                border-left: none !important;
+                background: rgba(10, 14, 24, 0.98) !important;
+                box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.95) !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 30px !important;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateY(0) !important;
+            }
+
+            .mobile-sidebar-header {
+                display: block !important;
+                position: sticky !important;
+                top: 0 !important;
+                background: rgba(10, 14, 24, 0.98) !important;
+                border-bottom: 1px solid var(--panel-border) !important;
+                padding: 10px 16px 8px 16px !important;
+                z-index: 10 !important;
+            }
+
+            .sheet-handle {
+                width: 40px;
+                height: 4px;
+                border-radius: 2px;
+                background: rgba(255, 255, 255, 0.35);
+                margin: 0 auto 10px auto;
+            }
+
+            .sheet-title-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .sheet-title {
+                font-family: var(--font-mono);
+                font-size: 0.76rem;
+                font-weight: 700;
+                color: var(--acumen-cyan);
+                letter-spacing: 0.5px;
+            }
+
+            .sheet-close-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--panel-border);
+                color: #fff;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 0.72rem;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            /* Fondo Oscuro / Backdrop al abrir controles */
+            .mobile-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.65);
+                backdrop-filter: blur(3px);
+                z-index: 95;
+            }
+
+            .mobile-backdrop.active {
+                display: block !important;
+            }
+
+            /* Botón Flotante (FAB) de Parámetros en Móvil */
+            .mobile-fab {
+                display: flex !important;
+                position: fixed;
+                bottom: 44px;
+                right: 12px;
+                z-index: 40;
+                background: linear-gradient(135deg, var(--acumen-blue), #0284c7);
+                color: #fff;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 24px;
+                padding: 7px 13px;
+                font-family: var(--font-sans);
+                font-size: 0.74rem;
+                font-weight: 700;
+                box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+                align-items: center;
+                gap: 5px;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .mobile-fab:active {
+                transform: scale(0.95);
+            }
+
+            /* Modal Infográfico en Móvil */
+            .pdf-modal-window {
+                width: 96vw !important;
+                height: 92vh !important;
+                max-height: 94vh !important;
+                padding: 8px !important;
+            }
+
+            .pdf-modal-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 8px !important;
+            }
+
+            .pdf-modal-actions {
+                flex-wrap: wrap !important;
+                justify-content: space-between !important;
+                gap: 6px !important;
+            }
+
+            .pdf-page-selector {
+                flex-wrap: wrap !important;
+                gap: 4px !important;
+            }
+
+            .pdf-page-btn {
+                padding: 3px 6px !important;
+                font-size: 0.68rem !important;
+            }
         }
     </style>
 </head>
@@ -848,15 +1215,22 @@
             <div class="mode-switcher">
                 <button class="mode-btn active" id="btn-mode-3d" onclick="setMode('3d')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                    3D Gemelo Digital
+                    <span class="btn-text-full">3D Gemelo Digital</span>
+                    <span class="btn-text-short">3D</span>
                 </button>
                 <button class="mode-btn" id="btn-mode-2d" onclick="setMode('2d')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
-                    Mapa 2D Riesgo
+                    <span class="btn-text-full">Mapa 2D Riesgo</span>
+                    <span class="btn-text-short">2D</span>
                 </button>
                 <button class="mode-btn" id="btn-mode-profile" onclick="setMode('profile')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-                    Perfil Hidráulico
+                    <span class="btn-text-full">Perfil Hidráulico</span>
+                    <span class="btn-text-short">Perfil</span>
+                </button>
+                <button class="mode-btn mode-btn-pdf mobile-only" onclick="openPdfModal()" title="Consultar Memoria Metodológica (PDF)">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    <span>PDF</span>
                 </button>
             </div>
 
@@ -869,7 +1243,8 @@
                         <line x1="16" y1="13" x2="8" y2="13"></line>
                         <line x1="16" y1="17" x2="8" y2="17"></line>
                     </svg>
-                    <span>Memoria Metodológica (PDF)</span>
+                    <span class="btn-text-full">Memoria Metodológica (PDF)</span>
+                    <span class="btn-text-short">PDF</span>
                 </button>
                 <div class="status-pill">
                     <div class="pulse-dot"></div>
@@ -969,7 +1344,8 @@
                 <!-- Camera Tip for 3D -->
                 <div class="camera-tip" id="camera-tip">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-                    Órbita 3D: Clic y arrastrar para rotar | Rueda para zoom | Canal despejado
+                    <span class="btn-text-full">Órbita 3D: Clic y arrastrar para rotar | Rueda para zoom | Canal despejado</span>
+                    <span class="btn-text-short">👆 1 dedo rota 3D | 2 dedos zoom</span>
                 </div>
 
                 <!-- Bottom Drawer: Hydrographs -->
@@ -977,14 +1353,18 @@
                     <div class="drawer-header" onclick="toggleDrawer()">
                         <div class="drawer-title">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                            Hidrogramas Sincronizados de Tributarios vs. Caño El Papa
+                            <span class="btn-text-full">Hidrogramas Sincronizados de Tributarios vs. Caño El Papa</span>
+                            <span class="btn-text-short">Hidrogramas Caño El Papa</span>
                         </div>
                         <div class="scrubber-box" onclick="event.stopPropagation()">
                             <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);">Tiempo:</span>
                             <input type="range" class="scrubber-slider" id="time-scrubber" min="0" max="180" value="45" oninput="onTimeChange(this.value)">
                             <span id="time-display" style="font-family:var(--font-mono); font-size:0.75rem; color:#fff; width:45px;">45 min</span>
                         </div>
-                        <button class="drawer-toggle-btn" id="drawer-toggle-text">Ocultar ▲</button>
+                        <button class="drawer-toggle-btn" id="drawer-toggle-text">
+                            <span class="btn-text-full">Ocultar ▼</span>
+                            <span class="btn-text-short">Mostrar ▲</span>
+                        </button>
                     </div>
 
                     <!-- Color-Coded Dynamic Legend -->
@@ -1029,6 +1409,15 @@
             <!-- Right Sidebar: Controls -->
             <div class="sidebar">
                 
+                <!-- Mobile Drawer Header (Hidden on Desktop) -->
+                <div class="mobile-sidebar-header">
+                    <div class="sheet-handle"></div>
+                    <div class="sheet-title-row">
+                        <span class="sheet-title">⚙️ PARÁMETROS & MITIGACIÓN</span>
+                        <button class="sheet-close-btn" onclick="closeMobileSidebar()">✕ Listo</button>
+                    </div>
+                </div>
+
                 <!-- Section 1: Non-Stationary Risk (Salas & Obeysekera) -->
                 <div class="sidebar-section">
                     <div class="section-header">
@@ -1169,6 +1558,15 @@
             </div>
 
         </div>
+
+        <!-- Mobile Backdrop Overlay (Hidden on Desktop) -->
+        <div class="mobile-backdrop" id="mobile-backdrop" onclick="closeMobileSidebar()"></div>
+
+        <!-- Mobile Floating Action Button (FAB) (Hidden on Desktop) -->
+        <button class="mobile-fab" id="mobile-fab-controls" onclick="openMobileSidebar()" title="Configurar Parámetros y Mitigación SUDS">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Parámetros & SUDS</span>
+        </button>
 
     </div>
 
@@ -2582,15 +2980,38 @@
 
         function toggleDrawer() {
             const drawer = document.getElementById('bottom-drawer');
-            isDrawerCollapsed = !isDrawerCollapsed;
-            if (isDrawerCollapsed) {
-                drawer.classList.add('collapsed');
-                document.getElementById('drawer-toggle-text').innerText = "Mostrar ▲";
+            const toggleBtn = document.getElementById('drawer-toggle-text');
+            if (window.innerWidth <= 850) {
+                const isExp = drawer.classList.toggle('expanded-mobile');
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = isExp ? '<span class="btn-text-short">Ocultar ▼</span>' : '<span class="btn-text-short">Mostrar ▲</span>';
+                }
             } else {
-                drawer.classList.remove('collapsed');
-                document.getElementById('drawer-toggle-text').innerText = "Ocultar ▼";
+                isDrawerCollapsed = !isDrawerCollapsed;
+                if (isDrawerCollapsed) {
+                    drawer.classList.add('collapsed');
+                    if (toggleBtn) toggleBtn.innerHTML = '<span class="btn-text-full">Mostrar ▲</span>';
+                } else {
+                    drawer.classList.remove('collapsed');
+                    if (toggleBtn) toggleBtn.innerHTML = '<span class="btn-text-full">Ocultar ▼</span>';
+                }
             }
         }
+
+        function openMobileSidebar() {
+            const sb = document.querySelector('.sidebar');
+            const bd = document.getElementById('mobile-backdrop');
+            if (sb) sb.classList.add('mobile-open');
+            if (bd) bd.classList.add('active');
+        }
+
+        function closeMobileSidebar() {
+            const sb = document.querySelector('.sidebar');
+            const bd = document.getElementById('mobile-backdrop');
+            if (sb) sb.classList.remove('mobile-open');
+            if (bd) bd.classList.remove('active');
+        }
+
 
         // --- INTERACTIVE INFOGRAPHIC MODAL FUNCTIONS ---
         function openPdfModal() {
@@ -4112,18 +4533,28 @@
 
         // Init on page load
         window.onload = () => {
-            initThreeJS();
-            resizeCanvases();
-            updateRisk();
-            updateHydraulics();
+            try { initThreeJS(); } catch (e) { console.warn("WebGL init:", e); }
+            try { resizeCanvases(); } catch (e) {}
+            try { updateRisk(); } catch (e) {}
+            try { updateHydraulics(); } catch (e) {}
 
-            // Check URL parameters or hash for direct deep-linking (e.g. ?mode=2d, ?mode=profile, #2d)
-            const urlParams = new URLSearchParams(window.location.search);
-            const hashMode = window.location.hash.replace('#', '');
-            const initialMode = urlParams.get('mode') || hashMode;
-            if (initialMode && (initialMode === '2d' || initialMode === 'profile' || initialMode === '3d')) {
-                setMode(initialMode);
+            if (window.innerWidth <= 850) {
+                const btn = document.getElementById('drawer-toggle-text');
+                if (btn) btn.innerHTML = '<span class="btn-text-short">Mostrar ▲</span>';
             }
+
+            // Check URL parameters or hash for direct deep-linking (e.g. ?mode=2d, ?mode=profile, #2d, ?sheet=open)
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const hashMode = window.location.hash.replace('#', '');
+                const initialMode = urlParams.get('mode') || hashMode;
+                if (initialMode && (initialMode === '2d' || initialMode === 'profile' || initialMode === '3d')) {
+                    setMode(initialMode);
+                }
+                if (urlParams.get('sheet') === 'open') {
+                    openMobileSidebar();
+                }
+            } catch (e) { console.error(e); }
         };
     </script>
 </body>
