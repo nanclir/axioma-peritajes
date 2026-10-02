@@ -16,7 +16,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         {children}
       </main>
       {!isOsRoute && <Footer />}
-      {!isOsRoute && <WhatsAppButton />}
+      <WhatsAppButton />
     </>
   );
 }
