@@ -25,6 +25,7 @@ interface SliderConfig {
 interface Division {
   number: string;
   title: string;
+  subtitle?: string;
   tagline: string;
   category: string;
   subservices: SubService[];
@@ -39,6 +40,39 @@ interface Division {
 const divisions: Division[] = [
   {
     number: "01",
+    title: "Peritajes Técnicos",
+    subtitle: "(Arbitraje y controversias)",
+    tagline: "Dictámenes periciales concluyentes ante controversias y litigios arbitrales",
+    category: "INGENIERÍA DE DECISIONES",
+    subservices: [
+      {
+        name: "Peritaje Técnico Judicial y Arbitral",
+        desc: "Estudios patológicos de fallos y sustentación oral experta ante tribunales de arbitramento nacionales e internacionales."
+      },
+      {
+        name: "Auditoría de Patologías y Fallos",
+        desc: "Análisis técnico de patologías estructurales y fallos geotécnicos en infraestructura vial colapsada o con daños severos."
+      },
+      {
+        name: "Peritaje Técnico Hidroclimatológico",
+        desc: "Determinación por métodos de ingeniería de las causas de fallos geotécnicos o estructurales en megaproyectos viales."
+      }
+    ],
+    megaproject: {
+      title: "Peritajes Técnicos en Megaobras",
+      detail: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas."
+    },
+    pdf: "/pdf/ficha_tecnica_embalse.pdf",
+    sim: {
+      title: "Esfuerzos Flectores en Viga",
+      sliders: [
+        { name: "Carga Puntual (P)", min: 50, max: 400, val: 180, unit: "kN", key: "loadP" },
+        { name: "Longitud de la Luz (L)", min: 10, max: 50, val: 30, unit: "m", key: "spanL" }
+      ]
+    }
+  },
+  {
+    number: "02",
     title: "FutureProof Decisions®",
     tagline: "Modelación estocástica y decisiones inteligentes bajo incertidumbre",
     category: "INGENIERÍA BAJO INCERTIDUMBRE",
@@ -70,7 +104,7 @@ const divisions: Division[] = [
     }
   },
   {
-    number: "02",
+    number: "03",
     title: "Movilidad 360",
     tagline: "Modelación avanzada y analítica activa de sistemas urbanos de transporte",
     category: "TRANSPORTE INTELIGENTE",
@@ -102,7 +136,7 @@ const divisions: Division[] = [
     }
   },
   {
-    number: "03",
+    number: "04",
     title: "Obras Subterráneas",
     tagline: "Diseño geomecánico y auditoría técnica de túneles y taludes complejos",
     category: "GEOTECNIA E INFRAESTRUCTURA",
@@ -134,7 +168,7 @@ const divisions: Division[] = [
     }
   },
   {
-    number: "04",
+    number: "05",
     title: "Ordenamiento Territorial",
     tagline: "Planificación urbana a escala regional, metropolitana y municipal",
     category: "PLANIFICACIÓN URBANA",
@@ -164,38 +198,6 @@ const divisions: Division[] = [
         { name: "Espacio Público Libre", min: 10, max: 40, val: 20, unit: "%", key: "greenS" }
       ]
     }
-  },
-  {
-    number: "05",
-    title: "Peritajes Técnicos",
-    tagline: "Dictámenes periciales concluyentes ante controversias y litigios arbitrales",
-    category: "INGENIERÍA FORENSE",
-    subservices: [
-      {
-        name: "Peritaje Técnico Judicial y Arbitral",
-        desc: "Estudios patológicos de fallos y sustentación oral experta ante tribunales de arbitramento nacionales e internacionales."
-      },
-      {
-        name: "Auditoría de Patologías y Fallos",
-        desc: "Análisis forense de patologías estructurales y fallos geotécnicos en infraestructura vial colapsada o con daños severos."
-      },
-      {
-        name: "Peritaje Técnico Hidroclimatológico",
-        desc: "Determinación por métodos de ingeniería de las causas de fallos geotécnicos o estructurales en megaproyectos viales."
-      }
-    ],
-    megaproject: {
-      title: "Peritajes Técnicos en Megaobras",
-      detail: "Consolidación de dictámenes técnicos concluyentes para litigios y controversias contractuales complejas en megaobras. Incluye auditoría estructural, evaluación geotécnica y análisis determinístico de desequilibrios económicos y cronogramas."
-    },
-    pdf: "/pdf/ficha_tecnica_embalse.pdf",
-    sim: {
-      title: "Esfuerzos Flectores en Viga",
-      sliders: [
-        { name: "Carga Puntual (P)", min: 50, max: 400, val: 180, unit: "kN", key: "loadP" },
-        { name: "Longitud de la Luz (L)", min: 10, max: 50, val: 30, unit: "m", key: "spanL" }
-      ]
-    }
   }
 ];
 
@@ -203,14 +205,49 @@ export default function AcumenOSMicrosite() {
   const [activeColumn, setActiveColumn] = useState<number | null>(null);
   const [mobileActive, setMobileActive] = useState<number | null>(null);
   const [souvenirOpen, setSouvenirOpen] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(true);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   const [simulations, setSimulations] = useState([
-    { peakQ: 2500, timeP: 12 },   // FP
-    { trafficV: 1200, congest: 4 }, // MV
-    { radius: 6, bolts: 16 },      // OB
-    { density: 150, greenS: 20 },  // OT
-    { loadP: 180, spanL: 30 }      // PR
+    { loadP: 180, spanL: 30 },      // 01: Peritajes
+    { peakQ: 2500, timeP: 12 },     // 02: FutureProof
+    { trafficV: 1200, congest: 4 }, // 03: Movilidad
+    { radius: 6, bolts: 16 },       // 04: Obras Subterráneas
+    { density: 150, greenS: 20 },   // 05: Ordenamiento
   ]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone) {
+        setIsInstalled(true);
+      }
+      const ua = window.navigator.userAgent.toLowerCase();
+      setIsIOS(/iphone|ipad|ipod/.test(ua));
+
+      const handleBeforeInstall = (e: Event) => {
+        e.preventDefault();
+        setInstallPrompt(e);
+      };
+      window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+      return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+    }
+  }, []);
+
+  const handleInstallToHomeScreen = async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      if (choice.outcome === "accepted") {
+        setIsInstalled(true);
+      }
+      setInstallPrompt(null);
+    } else {
+      setShowIOSGuide(prev => !prev);
+    }
+  };
 
   const updateSimulationSlider = (divIndex: number, key: string, val: number) => {
     setSimulations(prev => {
@@ -219,7 +256,6 @@ export default function AcumenOSMicrosite() {
       return copy;
     });
   };
-
 
   const openWhatsAppSolve = (divIndex: number) => {
     const div = divisions[divIndex];
@@ -251,7 +287,18 @@ export default function AcumenOSMicrosite() {
   // SVGs render mapping for preview columns
   const renderPreviewSVG = (index: number) => {
     switch (index) {
-      case 0:
+      case 0: // Peritajes Técnicos
+        return (
+          <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
+            <line x1="40" y1="100" x2="260" y2="100" stroke="currentColor" strokeWidth="2.5" />
+            <polygon points="40,100 30,115 50,115" stroke="currentColor" fill="none" />
+            <polygon points="260,100 250,115 270,115" stroke="currentColor" fill="none" />
+            <path d="M 40 100 Q 150 170 260 100" stroke="#cbd5e1" fill="none" strokeDasharray="3 3" />
+            <path d="M 150 50 L 150 100 M 150 100 L 145 90 M 150 100 L 155 90" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            <text x="145" y="45" className="font-mono text-[9px] fill-slate-400" stroke="none">P</text>
+          </svg>
+        );
+      case 1: // FutureProof Decisions
         return (
           <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
             <line x1="40" y1="160" x2="280" y2="160" stroke="#cbd5e1" strokeDasharray="3 3" />
@@ -262,7 +309,7 @@ export default function AcumenOSMicrosite() {
             <text x="15" y="30" className="font-mono text-[9px] fill-slate-400" stroke="none">Q</text>
           </svg>
         );
-      case 1:
+      case 2: // Movilidad 360
         return (
           <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
             <circle cx="150" cy="100" r="30" stroke="currentColor" fill="none" strokeDasharray="4 2" />
@@ -275,7 +322,7 @@ export default function AcumenOSMicrosite() {
             <path d="M 210 110 L 195 100 L 210 90 Z" fill="currentColor" fillOpacity="0.1" stroke="none" />
           </svg>
         );
-      case 2:
+      case 3: // Obras Subterráneas
         return (
           <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
             <path d="M 60 160 A 90 90 0 0 1 240 160" stroke="currentColor" fill="none" strokeWidth="2" />
@@ -289,7 +336,7 @@ export default function AcumenOSMicrosite() {
             <circle cx="235" cy="80" r="2" fill="#cbd5e1" stroke="none" />
           </svg>
         );
-      case 3:
+      case 4: // Ordenamiento Territorial
         return (
           <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
             <rect x="40" y="30" width="80" height="60" stroke="currentColor" fill="none" strokeDasharray="3 3" />
@@ -298,17 +345,6 @@ export default function AcumenOSMicrosite() {
             <rect x="180" y="110" width="80" height="60" stroke="currentColor" fill="none" strokeDasharray="3 3" />
             <text x="65" y="65" className="font-mono text-[8px] fill-slate-400" stroke="none">ZONA RES-1</text>
             <text x="205" y="65" className="font-mono text-[8px] fill-slate-400" stroke="none">COM-02</text>
-          </svg>
-        );
-      case 4:
-        return (
-          <svg viewBox="0 0 300 200" className="w-5/6 h-36 stroke-[1.5] transition-colors duration-300">
-            <line x1="40" y1="100" x2="260" y2="100" stroke="currentColor" strokeWidth="2.5" />
-            <polygon points="40,100 30,115 50,115" stroke="currentColor" fill="none" />
-            <polygon points="260,100 250,115 270,115" stroke="currentColor" fill="none" />
-            <path d="M 40 100 Q 150 170 260 100" stroke="#cbd5e1" fill="none" strokeDasharray="3 3" />
-            <path d="M 150 50 L 150 100 M 150 100 L 145 90 M 150 100 L 155 90" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            <text x="145" y="45" className="font-mono text-[9px] fill-slate-400" stroke="none">P</text>
           </svg>
         );
       default:
@@ -322,7 +358,27 @@ export default function AcumenOSMicrosite() {
     if (targetCol === null) return null;
     const data = simulations[targetCol];
     
-    if (targetCol === 0) { // FutureProof (Hydrograph)
+    if (targetCol === 0) { // Peritajes (Structural Beam)
+      const load = data.loadP ?? 180;
+      const span = data.spanL ?? 30;
+      const arrowLength = 20 + (load / 400) * 40;
+      const beamHeight = 100;
+      
+      return (
+        <svg viewBox="0 0 300 200" className="w-5/6 h-48 stroke-slate-900 fill-none stroke-[1.5]">
+          <line x1="40" y1={beamHeight} x2="260" y2={beamHeight} stroke="#1e293b" strokeWidth="3" />
+          <polygon points={`40,${beamHeight} 30,${beamHeight + 15} 50,${beamHeight + 15}`} stroke="#1e293b" fill="#f1f5f9" />
+          <polygon points={`260,${beamHeight} 250,${beamHeight + 15} 270,${beamHeight + 15}`} stroke="#1e293b" fill="#f1f5f9" />
+          <path d={`M 150 ${beamHeight - arrowLength} L 150 ${beamHeight} M 150 ${beamHeight} L 145 ${beamHeight - 8} M 150 ${beamHeight} L 155 ${beamHeight - 8}`} stroke="#d97706" strokeWidth="2.5" fill="none" />
+          <text x="140" y={beamHeight - arrowLength - 8} className="font-mono text-[10px] fill-slate-900 font-bold" stroke="none">{`P=${load}kN`}</text>
+          <path d={`M 40 ${beamHeight} Q 150 ${beamHeight + (arrowLength * 1.5)} 260 ${beamHeight}`} stroke="#3b82f6" strokeWidth="1.8" strokeDasharray="4 2" />
+          <text x="156" y={beamHeight + (arrowLength * 1.5) + 12} className="font-mono text-[9px] fill-blue-600" stroke="none">{`Mmax = ${((load * span) / 4).toFixed(1)} kNm`}</text>
+          <line x1="40" y1={beamHeight + 25} x2="260" y2={beamHeight + 25} stroke="#cbd5e1" strokeWidth="0.8" />
+          <text x="138" y={beamHeight + 36} className="font-mono text-[8px] fill-slate-400" stroke="none">{`L = ${span}m`}</text>
+        </svg>
+      );
+    }
+    else if (targetCol === 1) { // FutureProof (Hydrograph)
       const peak = data.peakQ ?? 2500;
       const time = data.timeP ?? 12;
       const peakY = 160 - (peak / 4000) * 120;
@@ -343,7 +399,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (targetCol === 1) { // Movilidad 360 (Traffic)
+    else if (targetCol === 2) { // Movilidad 360 (Traffic)
       const traffic = data.trafficV ?? 1200;
       const congest = data.congest ?? 4;
       const circleSize = 30 + congest * 2;
@@ -362,7 +418,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (targetCol === 2) { // Obras Subterráneas (Tunnel)
+    else if (targetCol === 3) { // Obras Subterráneas (Tunnel)
       const radius = data.radius ?? 6;
       const bolts = data.bolts ?? 16;
       const drawRadius = radius * 9;
@@ -392,7 +448,7 @@ export default function AcumenOSMicrosite() {
         </svg>
       );
     } 
-    else if (targetCol === 3) { // Ordenamiento (POT Layout)
+    else if (targetCol === 4) { // Ordenamiento (POT Layout)
       const density = data.density ?? 150;
       const green = data.greenS ?? 20;
       const gridSpacing = 40 - (density / 10);
@@ -413,31 +469,9 @@ export default function AcumenOSMicrosite() {
           <text x="195" y="73" className="font-mono text-[7px] fill-amber-700" stroke="none">MAX DENS</text>
         </svg>
       );
-    } 
-    else if (targetCol === 4) { // Peritajes (Structural Beam)
-      const load = data.loadP ?? 180;
-      const span = data.spanL ?? 30;
-      const arrowLength = 20 + (load / 400) * 40;
-      const beamHeight = 100;
-      
-      return (
-        <svg viewBox="0 0 300 200" className="w-5/6 h-48 stroke-slate-900 fill-none stroke-[1.5]">
-          <line x1="40" y1={beamHeight} x2="260" y2={beamHeight} stroke="#1e293b" strokeWidth="3" />
-          <polygon points={`40,${beamHeight} 30,${beamHeight + 15} 50,${beamHeight + 15}`} stroke="#1e293b" fill="#f1f5f9" />
-          <polygon points={`260,${beamHeight} 250,${beamHeight + 15} 270,${beamHeight + 15}`} stroke="#1e293b" fill="#f1f5f9" />
-          <path d={`M 150 ${beamHeight - arrowLength} L 150 ${beamHeight} M 150 ${beamHeight} L 145 ${beamHeight - 8} M 150 ${beamHeight} L 155 ${beamHeight - 8}`} stroke="#d97706" strokeWidth="2.5" fill="none" />
-          <text x="140" y={beamHeight - arrowLength - 8} className="font-mono text-[10px] fill-slate-900 font-bold" stroke="none">{`P=${load}kN`}</text>
-          <path d={`M 40 ${beamHeight} Q 150 ${beamHeight + (arrowLength * 1.5)} 260 ${beamHeight}`} stroke="#3b82f6" strokeWidth="1.8" strokeDasharray="4 2" />
-          <text x="156" y={beamHeight + (arrowLength * 1.5) + 12} className="font-mono text-[9px] fill-blue-600" stroke="none">{`Mmax = ${((load * span) / 4).toFixed(1)} kNm`}</text>
-          <line x1="40" y1={beamHeight + 25} x2="260" y2={beamHeight + 25} stroke="#cbd5e1" strokeWidth="0.8" />
-          <text x="138" y={beamHeight + 36} className="font-mono text-[8px] fill-slate-400" stroke="none">{`L = ${span}m`}</text>
-        </svg>
-      );
     }
     return null;
   };
-
-
 
   return (
     <div style={gridStyle} className="font-sans text-slate-900 min-h-screen flex flex-col overflow-x-hidden relative select-none">
@@ -455,7 +489,14 @@ export default function AcumenOSMicrosite() {
           </div>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setWelcomeOpen(true)} 
+            className="bg-amber-600 hover:bg-amber-700 text-white font-mono text-[10px] font-bold px-3 py-1.5 rounded-sm uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            Guardar Contacto
+          </button>
           <button 
             onClick={() => setSouvenirOpen(true)} 
             className="bg-amber-600/10 hover:bg-amber-600/20 text-amber-700 border border-amber-600/30 px-3 py-1.5 rounded-sm text-[10px] font-mono tracking-widest uppercase transition-all"
@@ -480,8 +521,11 @@ export default function AcumenOSMicrosite() {
               className="col-item flex-1 h-full flex flex-col justify-between p-6 cursor-pointer bg-white/40 hover:bg-white/95 opacity-90 transition-all duration-500 ease-out hover:flex-[2.5] hover:opacity-100 group-hover:opacity-60 group-hover:flex-[0.6] group-hover:bg-white/10 hover:text-amber-700"
             >
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-xs text-slate-400 font-medium">{`[ 0${div.number} ]`}</span>
+                <span className="font-mono text-xs text-slate-400 font-medium">{`[ ${div.number} ]`}</span>
                 <h3 className="font-bold text-lg text-slate-950 tracking-tight leading-none uppercase">{div.title}</h3>
+                {div.subtitle && (
+                  <span className="font-mono text-[11px] text-slate-500 font-medium -mt-1">{div.subtitle}</span>
+                )}
                 <p className="text-[10px] font-mono text-amber-700 tracking-widest uppercase">{div.category}</p>
               </div>
               
@@ -508,8 +552,11 @@ export default function AcumenOSMicrosite() {
                   className="w-full p-6 flex justify-between items-center text-left focus:outline-none"
                 >
                   <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[10px] text-slate-400 font-medium">{`[ 0${div.number} ]`}</span>
+                    <span className="font-mono text-[10px] text-slate-400 font-medium">{`[ ${div.number} ]`}</span>
                     <h3 className="font-bold text-base text-slate-950 uppercase">{div.title}</h3>
+                    {div.subtitle && (
+                      <span className="font-mono text-[10px] text-slate-500 font-medium">{div.subtitle}</span>
+                    )}
                     <span className="text-[9px] font-mono text-amber-700 tracking-wider uppercase">{div.category}</span>
                   </div>
                   <span className="text-xs text-slate-400 font-mono transition-transform duration-300">
@@ -586,7 +633,7 @@ export default function AcumenOSMicrosite() {
           })}
         </div>
 
-        {/* DETAILED PANEL VIEW (DESKTOP EXPANDED) */}
+        {/* EXPANDED COLUMN VIEW (DESKTOP) */}
         {activeColumn !== null && (
           <div id="detailed-panel" className="absolute inset-0 z-20 bg-white/95 backdrop-blur-md flex flex-col md:flex-row overflow-hidden">
             <div style={gridStyle} className="absolute inset-0 pointer-events-none z-0"></div>
@@ -603,9 +650,14 @@ export default function AcumenOSMicrosite() {
                 </button>
                 
                 <span className="font-mono text-[11px] text-amber-700 tracking-widest uppercase mb-1 block">CAPÍTULO TÉCNICO</span>
-                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 uppercase mb-3">
+                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-950 uppercase mb-1">
                   {divisions[activeColumn].title}
                 </h1>
+                {divisions[activeColumn].subtitle && (
+                  <span className="font-mono text-sm text-slate-500 font-medium block mb-3">
+                    {divisions[activeColumn].subtitle}
+                  </span>
+                )}
                 <p className="text-sm font-medium text-slate-500 mb-8 italic">
                   {`"${divisions[activeColumn].tagline}"`}
                 </p>
@@ -682,7 +734,138 @@ export default function AcumenOSMicrosite() {
           </div>
         )}
 
+        {/* WELCOME / NFC LANDING CARD (GUARDAR CONTACTO & ACCESO DIRECTO) */}
+        {welcomeOpen && (
+          <div id="welcome-nfc-modal" className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex justify-center items-center p-4 md:p-6 overflow-y-auto animate-fadeIn">
+            <div style={gridStyle} className="w-full max-w-lg bg-white border border-slate-300 p-6 md:p-8 shadow-2xl relative rounded-sm my-auto max-h-[95vh] flex flex-col overflow-y-auto">
+              <div style={gridMajorStyle} className="absolute inset-0 pointer-events-none z-0"></div>
 
+              <button 
+                onClick={() => setWelcomeOpen(false)} 
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-950 font-mono text-base z-20"
+                aria-label="Cerrar modal"
+              >
+                ✕
+              </button>
+
+              <div className="relative z-10 flex flex-col gap-5">
+                {/* Badge NFC & Identidad */}
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span className="font-mono text-[10px] text-amber-700 font-bold tracking-widest uppercase">ACUMEN OS • CONTACTO VERIFICADO</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="font-mono text-[10px] text-slate-400 uppercase">TARJETA NFC</span>
+                </div>
+
+                {/* Perfil Rafael Nanclares */}
+                <div className="flex gap-4 items-center">
+                  <div className="w-20 h-24 shrink-0 bg-zinc-100 rounded-sm overflow-hidden border border-slate-200 relative shadow-sm">
+                    <img 
+                      src="/team/rafael-nanclares.jpg" 
+                      alt="Rafael Nanclares Ospina" 
+                      className="w-full h-full object-cover object-top" 
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <h2 className="font-extrabold text-xl md:text-2xl text-slate-950 tracking-tight leading-tight">
+                      Rafael Nanclares Ospina
+                    </h2>
+                    <p className="font-mono text-[11px] text-amber-700 font-bold uppercase tracking-wider mt-1 leading-snug">
+                      Socio Director / Ingeniero Civil / Esp en Gerencia / Magíster en Filosofía
+                    </p>
+                    <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-1">
+                      INGENIERÍA DE DECISIONES • ARBITRAJE Y CONTROVERSIAS
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed font-light border-t border-slate-100 pt-3">
+                  Bienvenido a <strong>ACUMEN OS</strong>. Puedes guardar mi contacto profesional directo en tu celular y añadir un acceso directo del micrositio en tu pantalla de inicio para futuras consultas y proyectos.
+                </p>
+
+                {/* Botones Principales de Acción */}
+                <div className="flex flex-col gap-3 pt-1">
+                  {/* BOTÓN 1: Guardar Contacto vCard */}
+                  <a
+                    href="/vcard/rafael-nanclares.vcf"
+                    download="Rafael_Nanclares_ACUMEN.vcf"
+                    className="w-full py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-mono text-xs font-bold tracking-wider uppercase rounded-sm flex items-center justify-center gap-2.5 shadow-md transition-all text-center"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                      <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Guardar Contacto de Rafael Nanclares
+                  </a>
+                  <span className="text-[10px] font-mono text-slate-400 text-center -mt-1 block">
+                    Incluye teléfono (+57 300 577 1484), correo y enlace directo a acumeningenieria.com
+                  </span>
+
+                  {/* BOTÓN 2: Añadir a Pantalla de Inicio */}
+                  <button
+                    onClick={handleInstallToHomeScreen}
+                    className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white font-mono text-xs font-semibold tracking-wider uppercase rounded-sm flex items-center justify-center gap-2.5 transition-all text-center border border-slate-800"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-amber-500">
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                    {isInstalled ? "✓ Instalado en Pantalla de Inicio" : "Guardar en Pantalla de Inicio (Acceso Directo)"}
+                  </button>
+
+                  {/* GUÍA PASO A PASO PARA IPHONE / SAFARI O CHROME */}
+                  {showIOSGuide && (
+                    <div className="bg-amber-500/10 border border-amber-600/30 p-3.5 rounded-sm flex flex-col gap-2 text-left animate-fadeIn">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[10px] text-amber-800 font-bold uppercase tracking-wider">
+                          {isIOS ? "Instrucciones para iPhone (Safari):" : "Instrucciones de Instalación:"}
+                        </span>
+                        <button onClick={() => setShowIOSGuide(false)} className="text-amber-800 text-xs font-mono">✕</button>
+                      </div>
+                      <ol className="text-[11px] text-slate-700 space-y-1.5 list-decimal list-inside font-medium">
+                        {isIOS ? (
+                          <>
+                            <li>Toca el botón <strong>Compartir</strong> <span className="inline-block px-1 bg-white border border-slate-300 rounded font-mono text-[10px]">⎋</span> en la barra inferior de Safari.</li>
+                            <li>Desliza hacia abajo y selecciona <strong>&quot;Añadir a la pantalla de inicio&quot;</strong> <span className="inline-block px-1 bg-white border border-slate-300 rounded font-mono text-[10px]">⊞</span>.</li>
+                            <li>Pulsa <strong>&quot;Añadir&quot;</strong> arriba a la derecha.</li>
+                          </>
+                        ) : (
+                          <>
+                            <li>Toca el menú de opciones <span className="inline-block px-1 bg-white border border-slate-300 rounded font-mono text-[10px]">⋮</span> en la parte superior derecha de tu navegador.</li>
+                            <li>Selecciona <strong>&quot;Añadir a la pantalla principal&quot;</strong> o <strong>&quot;Instalar aplicación&quot;</strong>.</li>
+                          </>
+                        )}
+                      </ol>
+                      <span className="text-[9px] font-mono text-amber-800/80">
+                        Se guardará con el icono oficial de ACUMEN OS como una app independiente.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* BOTÓN 3: WhatsApp Directo & Cerrar */}
+                  <div className="flex gap-2 pt-1">
+                    <a
+                      href="https://wa.me/573005771484?text=Hola%20Ing.%20Rafael%20Nanclares%2C%20le%20contacto%20desde%20su%20tarjeta%20NFC%20en%20ACUMEN%20OS..."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-mono text-[10px] tracking-wider uppercase rounded-sm flex items-center justify-center gap-1.5 transition-colors text-center"
+                    >
+                      WhatsApp Directo
+                    </a>
+                    <button
+                      onClick={() => setWelcomeOpen(false)}
+                      className="px-4 py-2.5 border border-slate-300 hover:bg-slate-100 text-slate-800 font-mono text-[10px] uppercase rounded-sm transition-colors text-center"
+                    >
+                      Explorar Micrositio →
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* EXECUTIVE LEADERSHIP & CONTACT MODAL (FICHA DE IDENTIDAD) */}
         {souvenirOpen && (
@@ -795,10 +978,10 @@ export default function AcumenOSMicrosite() {
                         <div className="flex flex-col">
                           <h3 className="font-bold text-base text-slate-950 leading-tight">Rafael Nanclares Ospina</h3>
                           <span className="font-mono text-[10px] text-amber-700 font-semibold uppercase tracking-wider mt-0.5">
-                            Socio Director / Magíster en Filosofía
+                            Socio Director / Ingeniero Civil / Esp en Gerencia / Magíster en Filosofía
                           </span>
                           <p className="text-[11px] text-slate-500 font-medium mt-1 leading-snug">
-                            M.Phil. por la UPB. Esp. por la Universidad de Medellín. Ingeniero Civil por la Universidad Nacional de Colombia.
+                            M.Phil. por la UPB. Esp. en Gerencia por la Universidad de Medellín. Ingeniero Civil por la Universidad Nacional de Colombia.
                           </p>
                         </div>
                       </div>
@@ -811,11 +994,14 @@ export default function AcumenOSMicrosite() {
                           Su perfil fusiona la gerencia técnica de infraestructura con el pensamiento crítico, la ética tecnológica y la analítica computacional avanzada. Ha ocupado cargos como Secretario de Infraestructura Física de Antioquia, Secretario de Tránsito y Transporte de Medellín y Asesor de Infraestructura del estado de Nuevo León (México).
                         </p>
                         <p>
-                          En Acumen, es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la consultoría de infraestructura y la estructuración de decisiones periciales.
+                          En Acumen, lidera la práctica de <strong>Ingeniería de Decisiones</strong> y es el arquitecto principal de <strong>ACUMEN OS</strong>, integrando el conocimiento técnico profundo con herramientas de análisis de datos, visualización y trazabilidad para transformar la consultoría de infraestructura y la estructuración de decisiones periciales.
                         </p>
                       </div>
 
                       <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-100">
+                        <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
+                          Ingeniería de Decisiones
+                        </span>
                         <span className="bg-slate-100 text-slate-700 font-mono text-[9px] px-2 py-1 rounded">
                           Filosofía e IA (Berkeley)
                         </span>

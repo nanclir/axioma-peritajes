@@ -3,9 +3,13 @@ VERSION:3.0
 N:Nanclares Ospina;Rafael;;Ing.;
 FN:Rafael Nanclares Ospina
 ORG:ACUMEN INGENIERÍA S.A.S.
-TITLE:Socio Director / Magíster en Filosofía
+TITLE:Socio Director / Ingeniero Civil / Esp en Gerencia / Magíster en Filosofía
 TEL;TYPE=CELL,VOICE,PREF:+573005771484
 EMAIL;TYPE=WORK,PREF:contacto@acumeningenieria.com
 URL;TYPE=WORK:https://www.acumeningenieria.com
-NOTE:M.Phil. (UPB), Esp. (U. de Medellín), Ingeniero Civil (UNAL). Estudios en IA en UC Berkeley. Arquitecto ACUMEN OS.
+item1.URL:https://www.acumeningenieria.com
+item1.X-ABLabel:Portal Principal
+item2.URL:https://www.acumeningenieria.com/os
+item2.X-ABLabel:ACUMEN OS
+NOTE:Ingeniería de Decisiones. M.Phil. por la UPB, Esp. en Gerencia por la Universidad de Medellín, Ingeniero Civil por la Universidad Nacional de Colombia. Estudios en IA en UC Berkeley. Arquitecto ACUMEN OS.
 END:VCARD
