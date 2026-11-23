@@ -774,7 +774,7 @@ export default function AcumenOSMicrosite() {
                       Socio Director / Ingeniero Civil / Esp en Gerencia / Magíster en Filosofía
                     </p>
                     <p className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-1">
-                      INGENIERÍA DE DECISIONES • ARBITRAJE Y CONTROVERSIAS
+                      INGENIERÍA DE DECISIONES • PERITAJE Y CONTROVERSIAS
                     </p>
                   </div>
                 </div>
